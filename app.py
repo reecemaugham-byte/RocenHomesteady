@@ -23,14 +23,13 @@ try:
 except:
     client = None
 
-# Define the Theme Function
 def apply_forest_theme():
     st.markdown("""
     <style>
-    /* Main Background - Darker Sage */
+    /* Main Background - Mossy Green */
     .stApp {
-        background-color: #C8D6C8; /* Darker than before */
-        background-image: radial-gradient(#A8BCA8 1px, transparent 1px);
+        background-color: #DCE8DC; /* Misty Green */
+        background-image: radial-gradient(#C8D6C8 1px, transparent 1px);
         background-size: 20px 20px;
     }
 
@@ -39,11 +38,11 @@ def apply_forest_theme():
         color: #1B4D3E !important;
     }
 
-    /* Headings - Darker Brown */
+    /* Headings - Earthy Brown */
     h1, h2, h3 {
-        color: #3E2723 !important; /* Darker brown */
+        color: #5D4037 !important;
         font-family: 'Georgia', serif !important;
-        border-bottom: 2px solid #8FBC8F; /* Softer green border */
+        border-bottom: 2px solid #A5D6A7;
         padding-bottom: 10px;
     }
 
@@ -62,14 +61,14 @@ def apply_forest_theme():
         transform: scale(1.02);
     }
 
-    /* Sidebar - Dark Sage */
+    /* Sidebar - Sage Green */
     [data-testid="stSidebar"] {
-        background-color: #A8C0A8; /* Darker Sage */
+        background-color: #C8D6C8;
     }
 
-    /* Metric Boxes - Soft Off-White */
+    /* Metric Boxes (Game Stats) */
     [data-testid="stMetric"] {
-        background-color: #F5F9F5; /* Not pure white */
+        background-color: #FFFFFF;
         border-radius: 10px;
         padding: 10px;
         box-shadow: 0 0 0 1px #C8E6C9;
@@ -88,7 +87,7 @@ def apply_forest_theme():
 
     /* Expander (Used in Learning) */
     .streamlit-expanderHeader {
-        background-color: #F5F9F5; /* Soft off-white */
+        background-color: #FFFFFF;
         border-radius: 10px;
         border-left: 5px solid #4CAF50;
         font-weight: bold;
@@ -96,39 +95,77 @@ def apply_forest_theme():
     </style>
     """, unsafe_allow_html=True)
 
-# Apply the theme immediately
 apply_forest_theme()
 
 # ==========================================
 # DATA (Expanded)
 # ==========================================
-UK_PLANTS = {
-    "edible": [
-        {"name": "Wild Garlic", "months": ["March", "April", "May"], "habitat": "Woodlands", "regions": ["All"], "difficulty": 1, "parts": "Leaves, Flowers", "warnings": "Strong smell helps identification", "description": "**Identification:** Broad leaves, white flowers, smells strongly of garlic."},
-        {"name": "Nettles", "months": ["February", "March", "April", "May", "June"], "habitat": "Woodlands, Gardens", "regions": ["All"], "difficulty": 1, "parts": "Young leaves", "warnings": "Wear gloves when picking", "description": "**Identification:** Jagged leaves, stinging hairs. **Uses:** Soup, tea."},
-        {"name": "Dandelion", "months": ["February", "March", "April", "May", "June", "July"], "habitat": "Everywhere", "regions": ["All"], "difficulty": 1, "parts": "Leaves, Flowers, Roots", "warnings": "Avoid areas with dog waste", "description": "**Identification:** Yellow flowers, hollow stems, 'lion's tooth' leaves."},
-        {"name": "Three-Cornered Leek", "months": ["January", "February", "March", "April"], "habitat": "Woodlands, Hedgerows", "regions": ["England", "Wales"], "difficulty": 1, "parts": "Leaves, Flowers, Bulbs", "warnings": "Invasive species - pick freely!", "description": "**Identification:** Strap-like leaves with a 'keel' (triangular shape). Smells like onion/garlic."},
-        {"name": "Wood Ear (Jelly Ear)", "months": ["January", "February", "November", "December"], "habitat": "Woodlands (Elder trees)", "regions": ["All"], "difficulty": 2, "parts": "Fungus", "warnings": "Must be cooked, raw can cause itchiness", "description": "**Identification:** Brown, jelly-like, grows on Elder branches."},
-        {"name": "Sorrel", "months": ["April", "May", "June", "July"], "habitat": "Grassland, Meadows", "regions": ["All"], "difficulty": 1, "parts": "Leaves", "warnings": "Contains oxalic acid, eat in moderation", "description": "**Identification:** Arrow-shaped leaves, sharp lemon taste."},
-        {"name": "Elderflower", "months": ["June", "July"], "habitat": "Hedgerows", "regions": ["All"], "difficulty": 2, "parts": "Flowers", "warnings": "Don't confuse with dwarf elder", "description": "**Identification:** Creamy-white flat flower heads."},
-        {"name": "Blackberries", "months": ["August", "September"], "habitat": "Hedgerows, Woods", "regions": ["All"], "difficulty": 1, "parts": "Berries", "warnings": "Watch for thorns", "description": "**Identification:** Bramble with thorns and dark purple/black berries."},
-        {"name": "Rosehips", "months": ["September", "October", "November", "December"], "habitat": "Hedgerows", "regions": ["All"], "difficulty": 2, "parts": "Fruit", "warnings": "Remove seeds before eating", "description": "**Identification:** Red, oval hips on wild rose bushes."},
-        {"name": "Hawthorn", "months": ["September", "October"], "habitat": "Hedgerows", "regions": ["All"], "difficulty": 2, "parts": "Berries", "warnings": "Pips contain cyanide - spit out", "description": "**Identification:** Thorny shrub with red berries (Haws)."},
-        {"name": "Chanterelle", "months": ["July", "August", "September"], "habitat": "Woodlands", "regions": ["All"], "difficulty": 3, "parts": "Whole mushroom", "warnings": "EXPERT ONLY - False gills", "description": "**Identification:** Egg-yolk yellow, false gills (ridges), smells of apricots."},
-        {"name": "Field Mushroom", "months": ["August", "September", "October"], "habitat": "Fields, Meadows", "regions": ["All"], "difficulty": 2, "parts": "Whole mushroom", "warnings": "Beware of yellow staining lookalikes", "description": "**Identification:** White cap, pink gills turning brown."},
-        {"name": "Hazelnut", "months": ["September", "October"], "habitat": "Hedgerows, Woods", "regions": ["All"], "difficulty": 1, "parts": "Nuts", "warnings": "Pick before squirrels get them", "description": "**Identification:** Shrubby tree, nuts in green husks."},
-        {"name": "Sweet Chestnut", "months": ["October", "November"], "habitat": "Woodlands", "regions": ["England", "Wales"], "difficulty": 1, "parts": "Nuts", "warnings": "Do not confuse with Horse Chestnut", "description": "**Identification:** Pointed nuts, many nuts per case."}
+"edible": [
+        # --- GREENS & HERBS ---
+        {"name": "Wild Garlic", "months": ["March", "April", "May"], "habitat": "Woodlands", "regions": ["All"], "difficulty": 1, "parts": "Leaves, Flowers", "warnings": "Strong smell helps identification", "lookalikes": ["Lily of the Valley (Poisonous)", "Autumn Crocus (Poisonous)"], "description": "**Identification:** Broad leaves, white flowers, smells strongly of garlic."},
+        {"name": "Nettles", "months": ["February", "March", "April", "May", "June"], "habitat": "Woodlands, Gardens", "regions": ["All"], "difficulty": 1, "parts": "Young leaves", "warnings": "Wear gloves when picking", "lookalikes": ["Dead-nettle (Edible, no sting)"], "description": "**Identification:** Jagged leaves, stinging hairs. **Uses:** Soup, tea."},
+        {"name": "Dandelion", "months": ["February", "March", "April", "May", "June", "July"], "habitat": "Everywhere", "regions": ["All"], "difficulty": 1, "parts": "Leaves, Flowers, Roots", "warnings": "Avoid areas with dog waste", "lookalikes": ["Cat's Ear (Edible)"], "description": "**Identification:** Yellow flowers, hollow stems, 'lion's tooth' leaves."},
+        {"name": "Shepherd's Purse", "months": ["January", "February", "March", "April", "May", "June"], "habitat": "Fields, Gardens", "regions": ["All"], "difficulty": 1, "parts": "Leaves, Seeds", "warnings": "Best when young, can be peppery", "lookalikes": ["Thale Cress"], "description": "**Identification:** Heart-shaped seed pods (purses). Rosette of lobed leaves. **Taste:** Peppery, like watercress."},
+        {"name": "Garlic Mustard", "months": ["April", "May", "June"], "habitat": "Hedgerows, Woods", "regions": ["All"], "difficulty": 1, "parts": "Leaves, Flowers", "warnings": "Smells of garlic when crushed", "lookalikes": ["None dangerous"], "description": "**Identification:** Heart-shaped leaves, white flowers, tall stems. **Uses:** Pesto, salads."},
+        {"name": "Ground Elder", "months": ["March", "April", "May"], "habitat": "Gardens, Woodlands", "regions": ["All"], "difficulty": 2, "parts": "Young leaves", "warnings": "Can be invasive, pick young", "lookalikes": ["Elder (poisonous bark, different leaves)"], "description": "**Identification:** Leaflets in groups of three, celery smell."},
+        {"name": "Sorrel", "months": ["April", "May", "June", "July"], "habitat": "Grassland, Meadows", "regions": ["All"], "difficulty": 1, "parts": "Leaves", "warnings": "Contains oxalic acid, eat in moderation", "lookalikes": ["Lords and Ladies (Poisonous)"], "description": "**Identification:** Arrow-shaped leaves, sharp lemon taste."},
+
+        # --- THE CARROT FAMILY (APIACEAE) - DIFFICULT GROUP ---
+        {"name": "Wild Carrot", "months": ["June", "July", "August"], "habitat": "Grassland, Meadows", "regions": ["All"], "difficulty": 3, "parts": "Root (young)", "warnings": "EXPERT ONLY. Check for hairy stem. Smells of carrot.", "lookalikes": ["Hemlock (Poisonous)"], "description": "**Identification:** White flat-topped flower, one central red flower (often), hairy stem. **Root:** Edible when young."},
+        {"name": "Pignut", "months": ["May", "June"], "habitat": "Meadows, Hedgerows", "regions": ["All"], "difficulty": 3, "parts": "Tubers", "warnings": "EXPERT ONLY. Difficult to identify.", "lookalikes": ["Other umbellifers"], "description": "**Identification:** Delicate white flower, finely divided leaves. Tubers taste like chestnuts."},
+        {"name": "Alexanders", "months": ["March", "April", "May"], "habitat": "Coastal, Roadsides", "regions": ["Coastal"], "difficulty": 2, "parts": "Stem, Flower buds", "warnings": "Strong celery smell", "lookalikes": ["Hemlock (Poisonous)"], "description": "**Identification:** Yellow-green flowers, glossy leaves. Common on coast."},
+
+        # --- THE CABBAGE FAMILY (BRASSICACEAE) ---
+        {"name": "Sea Kale", "months": ["May", "June", "July"], "habitat": "Coastal Shingle", "regions": ["Coastal"], "difficulty": 2, "parts": "Shoots, Leaves", "warnings": "Protected in some areas, pick sparingly", "lookalikes": ["None dangerous"], "description": "**Identification:** Blueish leaves, white flowers, found on shingle beaches."},
+        {"name": "Hedge Mustard", "months": ["May", "June", "July"], "habitat": "Hedgerows, Roadsides", "regions": ["All"], "difficulty": 2, "parts": "Leaves, Flowers", "warnings": "Very bitter when old", "lookalikes": ["Other mustards"], "description": "**Identification:** Tall, spindly plant with tiny yellow flowers. 'Garlic' varieties exist."},
+
+        # --- BERRIES & FRUITS ---
+        {"name": "Blackberries", "months": ["August", "September"], "habitat": "Hedgerows, Woods", "regions": ["All"], "difficulty": 1, "parts": "Berries", "warnings": "Watch for thorns", "lookalikes": ["None dangerous in UK"], "description": "**Identification:** Bramble with thorns and dark purple/black berries."},
+        {"name": "Rosehips", "months": ["September", "October", "November", "December"], "habitat": "Hedgerows", "regions": ["All"], "difficulty": 2, "parts": "Fruit", "warnings": "Remove seeds before eating (itchy powder)", "lookalikes": ["None dangerous"], "description": "**Identification:** Red, oval hips on wild rose bushes."},
+        {"name": "Elderflower", "months": ["June", "July"], "habitat": "Hedgerows", "regions": ["All"], "difficulty": 2, "parts": "Flowers", "warnings": "Don't confuse with dwarf elder", "lookalikes": ["Hemlock (Poisonous)", "Cow Parsley"], "description": "**Identification:** Creamy-white flat flower heads."},
+        {"name": "Hawthorn", "months": ["September", "October"], "habitat": "Hedgerows", "regions": ["All"], "difficulty": 2, "parts": "Berries", "warnings": "Pips contain cyanide - spit out or strain", "lookalikes": ["None dangerous"], "description": "**Identification:** Thorny shrub with red berries (Haws)."},
+        {"name": "Wild Strawberry", "months": ["June", "July"], "habitat": "Woodlands, Grassland", "regions": ["All"], "difficulty": 1, "parts": "Berries", "warnings": "Tiny but tasty", "lookalikes": ["Barren Strawberry (Dry, tasteless)"], "description": "**Identification:** Small berries, seeds on outside, white flowers."},
+
+        # --- TREES & LEAVES ---
+        {"name": "Beech Leaves", "months": ["April", "May"], "habitat": "Woodlands", "regions": ["All"], "difficulty": 1, "parts": "Young Leaves", "warnings": "Only eat young leaves", "lookalikes": ["None dangerous"], "description": "**Identification:** Oval leaves, soft and hairy when young. **Uses:** Salad or 'Beech Leaf Noyau' liqueur."},
+        {"name": "Lime Leaves", "months": ["April", "May", "June"], "habitat": "Woodlands, Parks", "regions": ["All"], "difficulty": 1, "parts": "Young Leaves, Flowers", "warnings": "None", "lookalikes": ["None dangerous"], "description": "**Identification:** Heart-shaped leaves. **Uses:** Excellent salad green when young."},
+        {"name": "Pine Needles", "months": ["January", "February", "December"], "habitat": "Woodlands", "regions": ["All"], "difficulty": 1, "parts": "Needles", "warnings": "Avoid Yew (flat needles)", "lookalikes": ["Yew (Poisonous)"], "description": "**Identification:** Long needles in bundles. **Uses:** Tea, rich in Vitamin C."},
+
+        # --- MUSHROOMS (EXPERT ONLY) ---
+        {"name": "Chanterelle", "months": ["July", "August", "September"], "habitat": "Woodlands", "regions": ["All"], "difficulty": 3, "parts": "Whole mushroom", "warnings": "EXPERT ONLY - False gills, smells fruity", "lookalikes": ["False Chanterelle (Inedible)", "Jack O'Lantern (Poisonous - rare)"], "description": "**Identification:** Egg-yolk yellow, false gills (ridges), smells of apricots."},
+        {"name": "Penny Bun (Cep)", "months": ["August", "September", "October"], "habitat": "Woodlands", "regions": ["England", "Scotland"], "difficulty": 3, "parts": "Whole mushroom", "warnings": "EXPERT ONLY - Check for Bitter Bolete lookalike", "lookalikes": ["Bitter Bolete (Inedible)"], "description": "**Identification:** Brown bun-shaped cap, white net pattern on stem."},
+        {"name": "Hedgehog Fungus", "months": ["August", "September", "October", "November"], "habitat": "Woodlands", "regions": ["All"], "difficulty": 2, "parts": "Whole mushroom", "warnings": "Safe beginner mushroom - has 'teeth' not gills", "lookalikes": ["None dangerous in UK"], "description": "**Identification:** Underneaths are spines (teeth), not gills. Very tasty."},
+        {"name": "Field Mushroom", "months": ["August", "September", "October"], "habitat": "Fields, Meadows", "regions": ["All"], "difficulty": 2, "parts": "Whole mushroom", "warnings": "Beware of yellow staining lookalikes", "lookalikes": ["Yellow Stainer (Poisonous)", "Destroying Angel (Deadly)"], "description": "**Identification:** White cap, pink gills turning brown, ring on stem."},
+        {"name": "Puffball", "months": ["August", "September"], "habitat": "Fields, Grassland", "regions": ["All"], "difficulty": 2, "parts": "Whole mushroom (young)", "warnings": "Must be pure white inside. Cut in half.", "lookalikes": ["Earthballs (Poisonous, purple inside)", "Stinkhorn (Poisonous egg stage)"], "description": "**Identification:** Round white balls. **Safety:** If inside is not pure white, do not eat."},
+        
+        # --- ROOTS & NUTS ---
+        {"name": "Hazelnut", "months": ["September", "October"], "habitat": "Hedgerows, Woods", "regions": ["All"], "difficulty": 1, "parts": "Nuts", "warnings": "Pick before squirrels get them", "lookalikes": ["None dangerous"], "description": "**Identification:** Shrubby tree, nuts in green husks."},
+        {"name": "Sweet Chestnut", "months": ["October", "November"], "habitat": "Woodlands", "regions": ["England", "Wales"], "difficulty": 1, "parts": "Nuts", "warnings": "Do not confuse with Horse Chestnut (Conkers)", "lookalikes": ["Horse Chestnut (Poisonous)"], "description": "**Identification:** Pointed nuts, many nuts per case."},
+        {"name": "Jerusalem Artichoke", "months": ["October", "November", "December"], "habitat": "Gardens, Waste Ground", "regions": ["All"], "difficulty": 1, "parts": "Tubers", "warnings": "Can cause wind (flatulence)", "lookalikes": ["None dangerous"], "description": "**Identification:** Tall sunflower-like plant, knobbly tubers underground."},
+
+        # --- WINTER / EARLY SPRRING ---
+        {"name": "Three-Cornered Leek", "months": ["January", "February", "March", "April"], "habitat": "Woodlands, Hedgerows", "regions": ["England", "Wales"], "difficulty": 1, "parts": "Leaves, Flowers, Bulbs", "warnings": "Invasive species - pick freely!", "lookalikes": ["Snowdrop (Inedible)", "Bluebell (Poisonous)"], "description": "**Identification:** Strap-like leaves with a 'keel' (triangular shape). Smells like onion/garlic."},
+        {"name": "Cleavers", "months": ["February", "March", "April"], "habitat": "Hedgerows", "regions": ["All"], "difficulty": 1, "parts": "Young stems", "warnings": "Best cooked or as tea", "lookalikes": ["None dangerous"], "description": "**Identification:** Sticky stems that cling to clothes."},
+        {"name": "Wood Ear (Jelly Ear)", "months": ["January", "February", "November", "December"], "habitat": "Woodlands (Elder trees)", "regions": ["All"], "difficulty": 2, "parts": "Fungus", "warnings": "Must be cooked, raw can cause itchiness", "lookalikes": ["Other tree fungi (mostly inedible woody brackets)"], "description": "**Identification:** Brown, jelly-like, grows on Elder branches. Looks like a human ear."}
     ],
     "poisonous": [
-        {"name": "Deadly Nightshade", "months": ["June", "July", "August", "September"], "habitat": "Woodlands, Gardens", "regions": ["All"], "danger": "EXTREME", "symptoms": "Dilated pupils, hallucinations, death", "description": "**Identification:** Bell-shaped purple flowers, shiny black berries. **Danger:** Fatal."},
-        {"name": "Foxglove", "months": ["June", "July", "August"], "habitat": "Gardens, Woodlands", "regions": ["All"], "danger": "HIGH", "symptoms": "Heart failure, nausea", "description": "**Identification:** Tall spikes of pink/purple trumpet flowers. **Danger:** All parts toxic."},
-        {"name": "Hemlock", "months": ["April", "May", "June", "July"], "habitat": "Rivers, Damp areas", "regions": ["All"], "danger": "EXTREME", "symptoms": "Respiratory failure, death", "description": "**Identification:** Tall, purple-spotted stems, smell of mouse urine."},
-        {"name": "Death Cap", "months": ["July", "August", "September"], "habitat": "Woodlands", "regions": ["All"], "danger": "EXTREME", "symptoms": "Liver/kidney failure, often fatal", "description": "**Identification:** Green-yellow cap, white gills, volva at base."},
-        {"name": "Lords and Ladies", "months": ["March", "April", "May"], "habitat": "Hedgerows, Woods", "regions": ["All"], "danger": "HIGH", "symptoms": "Mouth blistering, swelling", "description": "**Identification:** Arrow-shaped leaves, orange berries. **Danger:** Causes burning pain."},
-        {"name": "Yew", "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], "habitat": "Churchyards, Gardens", "regions": ["All"], "danger": "EXTREME", "symptoms": "Cardiac arrest, death", "description": "**Identification:** Dark evergreen needles, red berry cups (arils). **Danger:** Needles and seeds are deadly."},
-        {"name": "Giant Hogweed", "months": ["June", "July", "August"], "habitat": "Riverbanks, Waste ground", "regions": ["England", "Scotland"], "danger": "HIGH", "symptoms": "Severe burns, skin sensitivity", "description": "**Identification:** Huge (3m+), hairy stem with purple blotches. **Danger:** Sap burns skin."},
-        {"name": "Dog's Mercury", "months": ["February", "March", "April"], "habitat": "Woodlands", "regions": ["All"], "danger": "MEDIUM", "symptoms": "Vomiting, diarrhoea", "description": "**Identification:** Low growing, jagged leaves. **Danger:** Eaten by mistake as salad green."},
-        {"name": "Bluebell", "months": ["April", "May"], "habitat": "Woodlands", "regions": ["All"], "danger": "MEDIUM", "symptoms": "Stomach upset, skin irritation", "description": "**Identification:** Blue, bell-shaped flowers. **Danger:** Bulbs are toxic."}
+        # --- THE CARROT FAMILY (APIACEAE) - THE DEADLIEST ---
+        {"name": "Hemlock", "months": ["April", "May", "June", "July"], "habitat": "Rivers, Damp areas", "regions": ["All"], "danger": "EXTREME", "symptoms": "Respiratory failure, death", "lookalikes": ["Wild Carrot", "Cow Parsley", "Elderflower (leaves)"], "description": "**Identification:** Tall, purple-spotted stems, smell of mouse urine. **Danger:** Can be fatal with small dose."},
+        {"name": "Hemlock Water Dropwort", "months": ["April", "May", "June", "July"], "habitat": "Riverbanks, Wet ground", "regions": ["All"], "danger": "EXTREME", "symptoms": "Seizures, death", "lookalikes": ["Wild Parsnip", "Pignut"], "description": "**Identification:** White flowers, tuberous roots (deadliest part). **Danger:** Deadliest plant in UK."},
+        {"name": "Fool's Parsley", "months": ["May", "June", "July"], "habitat": "Gardens, Waste ground", "regions": ["All"], "danger": "HIGH", "symptoms": "Vomiting, burning mouth", "lookalikes": ["Parsley", "Wild Carrot"], "description": "**Identification:** Looks like Parsley but has a long bract under flower. Smells unpleasant (aluminium/mouse)."},
+        
+        # --- OTHER DANGERS ---
+        {"name": "Deadly Nightshade", "months": ["June", "July", "August", "September"], "habitat": "Woodlands, Gardens", "regions": ["All"], "danger": "EXTREME", "symptoms": "Dilated pupils, hallucinations, death", "lookalikes": ["Bilberry (Superficial similarity)"], "description": "**Identification:** Bell-shaped purple flowers, shiny black berries. **Danger:** Fatal. Do not touch."},
+        {"name": "Foxglove", "months": ["June", "July", "August"], "habitat": "Gardens, Woodlands", "regions": ["All"], "danger": "HIGH", "symptoms": "Heart failure, nausea", "lookalikes": ["Comfrey (Vague similarity)"], "description": "**Identification:** Tall spikes of pink/purple trumpet flowers. **Danger:** Affects heart. All parts toxic."},
+        {"name": "Lords and Ladies", "months": ["March", "April", "May"], "habitat": "Hedgerows, Woods", "regions": ["All"], "danger": "HIGH", "symptoms": "Mouth blistering, swelling", "lookalikes": ["Sorrel", "Wild Garlic (before leaves spread)"], "description": "**Identification:** Arrow-shaped leaves, orange berries. **Danger:** Causes burning pain in mouth."},
+        {"name": "Yew", "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], "habitat": "Churchyards, Gardens", "regions": ["All"], "danger": "EXTREME", "symptoms": "Cardiac arrest, death", "lookalikes": ["None (Distinctive tree)"], "description": "**Identification:** Dark evergreen needles, red berry cups (arils). **Danger:** Needles and seeds are deadly. Only the red flesh is non-toxic."},
+        {"name": "Giant Hogweed", "months": ["June", "July", "August"], "habitat": "Riverbanks, Waste ground", "regions": ["England", "Scotland"], "danger": "HIGH", "symptoms": "Severe burns, skin sensitivity", "lookalikes": ["Cow Parsley", "Common Hogweed"], "description": "**Identification:** Huge (3m+), hairy stem with purple blotches. **Danger:** Sap makes skin sensitive to sun, causing burns."},
+        {"name": "Dog's Mercury", "months": ["February", "March", "April"], "habitat": "Woodlands", "regions": ["All"], "danger": "MEDIUM", "symptoms": "Vomiting, diarrhoea", "lookalikes": ["Nettles (before flowers)", "Good King Henry"], "description": "**Identification:** Low growing, jagged leaves, inconspicuous flowers. **Danger:** Very common in woods. Eaten by mistake as salad green."},
+        {"name": "Bluebell", "months": ["April", "May"], "habitat": "Woodlands", "regions": ["All"], "danger": "MEDIUM", "symptoms": "Stomach upset, skin irritation", "lookalikes": ["Three-Cornered Leek (Smells like onion)"], "description": "**Identification:** Blue, bell-shaped flowers, distinct curl back at tips. **Danger:** Bulbs are toxic and look like onions."},
+        {"name": "Death Cap", "months": ["July", "August", "September"], "habitat": "Woodlands", "regions": ["All"], "danger": "EXTREME", "symptoms": "Liver/kidney failure, often fatal", "lookalikes": ["Straw Mushroom", "Caesar's Mushroom"], "description": "**Identification:** Green-yellow cap, white gills, skirt, volva (cup) at base. **Danger:** Responsible for most mushroom deaths."},
+        {"name": "Fly Agaric", "months": ["August", "September", "October"], "habitat": "Woodlands", "regions": ["All"], "danger": "HIGH", "symptoms": "Hallucinations, nausea", "lookalikes": ["None distinctive"], "description": "**Identification:** Classic red cap with white spots. Iconic fairy tale mushroom. **Danger:** Psychoactive and toxic."},
+        {"name": "Monkshood", "months": ["June", "July"], "habitat": "Woodlands, Stream banks", "regions": ["UK"], "danger": "EXTREME", "symptoms": "Heart failure", "lookalikes": ["Larkspur"], "description": "**Identification:** Purple helmet-shaped flowers. **Danger:** Very toxic, touching sap can be harmful."},
+        {"name": "Bracken", "months": ["Summer"], "habitat": "Moorland, Woods", "regions": ["All"], "danger": "MEDIUM", "symptoms": "Cancer risk (long term)", "lookalikes": ["Other ferns"], "description": "**Identification:** Large fern. **Danger:** Young shoots (fiddleheads) are carcinogenic if eaten. Avoid."}
     ]
 }
 
@@ -188,97 +225,226 @@ main_tab1, main_tab2 = st.tabs(["📖 Learning", "🎮 Games"])
 # TAB 1: LEARNING
 # ==========================================
 with main_tab1:
-    st.header("📖 UK Foraging Guide")
-    st.info("**Disclaimer:** This guide is for educational purposes. Always consult a local expert before consuming wild plants.")
-    
-    # Create Sub-tabs for Learning
-    learn_tab1, learn_tab2 = st.tabs(["🌱 Plant Guide", "🎓 Learning Modules"])
-
-    # --- SUB-TAB 1: PLANT GUIDE ---
-    with learn_tab1:
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            search_term = st.text_input("🔍 Search Plant")
-        with col2:
-            filter_type = st.selectbox("Type", ["All", "Edible Only", "Poisonous Only"])
-        with col3:
-            region_filter = st.selectbox("Region", ["All", "England", "Scotland", "Wales", "N. Ireland"])
+        st.header("📖 UK Foraging Guide")
+        st.info("**Disclaimer:** This guide is for educational purposes. Never eat a plant based solely on app ID. Always cross-reference with a field guide.")
         
-        st.markdown("---")
-        
-        plants = []
-        if filter_type == "Edible Only":
-            plants = [("Edible", p) for p in UK_PLANTS["edible"]]
-        elif filter_type == "Poisonous Only":
-            plants = [("Poisonous", p) for p in UK_PLANTS["poisonous"]]
-        else:
-            plants = [("Edible", p) for p in UK_PLANTS["edible"]] + [("Poisonous", p) for p in UK_PLANTS["poisonous"]]
+        # Create Sub-tabs for Learning
+        learn_tab1, learn_tab2 = st.tabs(["🌱 Plant Guide", "🎓 Learning Modules"])
 
-        for status, plant in plants:
-            if search_term and search_term.lower() not in plant['name'].lower():
-                continue
+        # --- SUB-TAB 1: PLANT GUIDE ---
+        with learn_tab1:
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                search_term = st.text_input("🔍 Search Plant")
+            with col2:
+                filter_type = st.selectbox("Type", ["All", "Edible Only", "Poisonous Only"])
+            with col3:
+                region_filter = st.selectbox("Region", ["All", "England", "Scotland", "Wales", "N. Ireland"])
+            
+            st.markdown("---")
+            
+            plants = []
+            if filter_type == "Edible Only":
+                plants = [("Edible", p) for p in UK_PLANTS["edible"]]
+            elif filter_type == "Poisonous Only":
+                plants = [("Poisonous", p) for p in UK_PLANTS["poisonous"]]
+            else:
+                plants = [("Edible", p) for p in UK_PLANTS["edible"]] + [("Poisonous", p) for p in UK_PLANTS["poisonous"]]
+
+            for status, plant in plants:
+                if search_term and search_term.lower() not in plant['name'].lower():
+                    continue
                 
-            with st.expander(f"{'🌿' if status == 'Edible' else '☠️'} {plant['name']}"):
-                c1, c2 = st.columns(2)
-                with c1:
-                    st.markdown(f"**Habitat:** {plant.get('habitat', 'Various')}")
-                    st.markdown(f"**Months:** {', '.join(plant.get('months', []))}")
-                with c2:
-                    if status == "Edible":
-                        st.markdown(f"**Parts:** {plant.get('parts', 'Various')}")
-                        st.markdown(f"**Difficulty:** {'🌱' * plant.get('difficulty', 1)}")
-                    else:
-                        st.markdown(f"**Danger:** {plant.get('danger', 'Unknown')}")
-                
-                st.info(plant.get('description', 'No info available.'))
+                # Safety Check for parts
+                parts_text = plant.get('parts', 'Various')
+                if isinstance(parts_text, list): parts_text = ", ".join(parts_text)
 
-    # --- SUB-TAB 2: LEARNING MODULES ---
-    with learn_tab2:
-        st.header("🎓 Learning Modules")
-        st.markdown("### Structured learning paths for UK foraging")
-        
-        modules = {
-            "🌱 Beginner": [
-                {"title": "Introduction to Foraging", "duration": "30 min", "topics": ["Safety basics", "UK Foraging Laws (Countryside Act)", "Essential equipment"]},
-                {"title": "Easy Plants to Identify", "duration": "45 min", "topics": ["Dandelions", "Nettles", "Blackberries", "Sorrel"]},
-                {"title": "Foraging Ethics", "duration": "20 min", "topics": ["Sustainable harvesting", "Leave no trace", "Sharing knowledge"]},
-            ],
-            "🌿 Intermediate": [
-                {"title": "Seasonal Foraging", "duration": "60 min", "topics": ["Spring greens", "Summer berries", "Autumn nuts", "Winter roots"]},
-                {"title": "Coastal Foraging", "duration": "60 min", "topics": ["Seaweeds (Laver)", "Shellfish regulations", "Coastal plants (Samphire)"]},
-                {"title": "Preservation Methods", "duration": "45 min", "topics": ["Drying", "Freezing", "Pickling", "Jams"]},
-            ],
-            "🌲 Advanced": [
-                {"title": "Mushroom Foraging", "duration": "90 min", "topics": ["Identification keys", "Spore prints", "Common lookalikes (Death Cap)"]},
-                {"title": "The Umbellifer Challenge", "duration": "60 min", "topics": ["Identifying the Carrot family", "Hemlock vs Cow Parsley", "Hogweed safety"]},
-                {"title": "Wild Game & Laws", "duration": "90 min", "topics": ["Legal requirements (Deer Act)", "Preparation", "Safety"]},
-            ],
-            "⚖️ UK Law & Land": [
-                {"title": "The Law of the Land", "duration": "45 min", "topics": ["Theft Act 1968", "Countryside Act 1981", "Roadside Verges", "Public Rights of Way"]},
-                {"title": "Access Rights", "duration": "30 min", "topics": ["Scotland vs England Laws", "Landowner permissions", "Byelaws"]},
-            ]
-        }
-        
-        for level, module_list in modules.items():
-            st.markdown(f"### {level}")
-            for module in module_list:
-                with st.expander(f"📚 {module['title']} ({module['duration']})"):
-                    st.markdown("**Topics Covered:**")
-                    for topic in module['topics']:
-                        st.markdown(f"- {topic}")
+                with st.expander(f"{'🌿' if status == 'Edible' else '☠️'} {plant['name']}"):
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        st.markdown(f"**Habitat:** {plant.get('habitat', 'Various')}")
+                        st.markdown(f"**Months:** {', '.join(plant.get('months', []))}")
+                    with c2:
+                        if status == "Edible":
+                            st.markdown(f"**Parts:** {parts_text}")
+                            st.markdown(f"**Difficulty:** {'🌱' * plant.get('difficulty', 1)}")
+                        else:
+                            st.markdown(f"**Danger:** {plant.get('danger', 'Unknown')}")
                     
-                    btn_key = f"module_{module['title']}".replace(" ", "_")
+                    st.info(plant.get('description', 'No info available.'))
                     
-                    if st.button(f"Start Module: {module['title']}", key=btn_key):
-                        with st.spinner("Generating module content..."):
-                            prompt = (
-                                f"Create a comprehensive foraging lesson on: {module['title']} specifically for the UK. "
-                                f"Include specific UK laws (Wildlife and Countryside Act 1981, Theft Act 1968). "
-                                f"CRITICAL: Clearly distinguish between 'Picking for Personal Use' vs 'Commercial Sale'. "
-                                f"Explain the 'Uprooting' rule. Structure it for a KS2/KS3 student."
-                            )
-                            content = generate_text(prompt)
-                            st.markdown(content)
+                    # Accessibility: Read Aloud Button
+                    if st.button(f"🔊 Read Aloud", key=f"read_{plant['name']}"):
+                        with st.spinner("Generating audio..."):
+                            text_to_read = f"{plant['name']}. {plant.get('description', '')}"
+                            audio_file = generate_voice(text_to_read)
+                            if audio_file:
+                                st.audio(audio_file)
+
+        # --- SUB-TAB 2: LEARNING MODULES ---
+        with learn_tab2:
+            st.header("🎓 Learning Modules")
+            st.markdown("### Structured learning paths for UK foraging")
+            
+            modules = {
+                "🌱 Beginner": [
+                    {"title": "Introduction to Foraging", "duration": "30 min", "topics": ["Safety basics", "UK Foraging Laws (Countryside Act)", "Essential equipment"]},
+                    {"title": "Easy Plants to Identify", "duration": "45 min", "topics": ["Dandelions", "Nettles", "Blackberries", "Sorrel"]},
+                    {"title": "Foraging Ethics", "duration": "20 min", "topics": ["Sustainable harvesting", "Leave no trace", "Sharing knowledge"]},
+                ],
+                "🌿 Intermediate": [
+                    {"title": "Seasonal Foraging", "duration": "60 min", "topics": ["Spring greens", "Summer berries", "Autumn nuts", "Winter roots"]},
+                    {"title": "Coastal Foraging", "duration": "60 min", "topics": ["Seaweeds (Laver)", "Shellfish regulations", "Coastal plants (Samphire)"]},
+                    {"title": "The Carrot Family", "duration": "45 min", "topics": ["Identifying the Carrot family", "Hemlock vs Wild Carrot", "Pignut identification"]},
+                ],
+                "🌲 Advanced": [
+                    {"title": "Mushroom Foraging", "duration": "90 min", "topics": ["Identification keys", "Spore prints", "Common lookalikes (Death Cap)"]},
+                    {"title": "The Umbellifer Challenge", "duration": "60 min", "topics": ["Identifying the Carrot family", "Hemlock vs Cow Parsley", "Hogweed safety"]},
+                ],
+                "⚖️ UK Law & Land": [
+                    {"title": "The Law of the Land", "duration": "45 min", "topics": ["Theft Act 1968", "Countryside Act 1981", "Roadside Verges", "Public Rights of Way"]},
+                    {"title": "Access Rights", "duration": "30 min", "topics": ["Scotland vs England Laws", "Landowner permissions", "Byelaws"]},
+                ]
+            }
+            
+            for level, module_list in modules.items():
+                st.markdown(f"### {level}")
+                for module in module_list:
+                    with st.expander(f"📚 {module['title']} ({module['duration']})"):
+                        st.markdown("**Topics Covered:**")
+                        for topic in module['topics']:
+                            st.markdown(f"- {topic}")
+                        
+                        btn_key = f"module_{module['title']}".replace(" ", "_")
+                        
+                        # 1. Start Module Button
+                        if st.button(f"Start Module: {module['title']}", key=btn_key):
+                            with st.spinner("Generating module content..."):
+                                prompt = (
+                                    f"Create a comprehensive foraging lesson on: {module['title']} specifically for the UK. "
+                                    f"Include specific UK laws (Wildlife and Countryside Act 1981, Theft Act 1968). "
+                                    f"CRITICAL: Clearly distinguish between 'Picking for Personal Use' vs 'Commercial Sale'. "
+                                    f"Explain the 'Uprooting' rule. Structure it for a KS2/KS3 student."
+                                )
+                                content = generate_text(prompt)
+                                st.session_state['current_lesson_text'] = content
+                                st.session_state['current_lesson_title'] = module['title']
+                                # Reset quiz state
+                                st.session_state['quiz_active'] = False
+                                st.session_state['module_questions'] = None
+                                st.rerun()
+                        
+                        # 2. Display Lesson & Actions (if generated)
+                        if st.session_state.get('current_lesson_title') == module['title']:
+                            st.markdown("---")
+                            st.markdown(st.session_state['current_lesson_text'])
+                            
+                            # Read Aloud Button
+                            if st.button("🔊 Read Aloud", key=f"read_{btn_key}"):
+                                with st.spinner("Generating audio..."):
+                                    audio_file = generate_voice(st.session_state['current_lesson_text'])
+                                    if audio_file:
+                                        st.audio(audio_file)
+                            
+                            st.markdown("---")
+                            
+                            # 3. Quiz Logic
+                            if not st.session_state.get('quiz_active'):
+                                if st.button("📝 Take Quiz", key=f"start_quiz_{btn_key}"):
+                                    st.session_state['quiz_active'] = True
+                                    st.rerun()
+                            else:
+                                # Generate Quiz Question (JSON format for reliability)
+                                if 'module_questions' not in st.session_state or st.session_state.get('module_title_quiz') != module['title']:
+                                    with st.spinner("Generating quiz question..."):
+                                        q_prompt = (
+                                            f"Based on the following lesson: '{st.session_state['current_lesson_text']}', "
+                                            f"create ONE multiple choice question. "
+                                            f"Return ONLY valid JSON: {{\"question\": \"...\", \"options\": [\"A\", \"B\", \"C\"], \"answer\": \"A\"}}."
+                                        )
+                                        q_text = generate_text(q_prompt)
+                                        
+                                        # Simple JSON parser
+                                        try:
+                                            import json
+                                            # Find JSON content
+                                            start = q_text.find('{')
+                                            end = q_text.rfind('}') + 1
+                                            json_str = q_text[start:end]
+                                            q_data = json.loads(json_str)
+                                            st.session_state['module_questions'] = q_data
+                                            st.session_state['module_title_quiz'] = module['title']
+                                            st.session_state['quiz_score_mod'] = 0
+                                        except Exception as e:
+                                            st.error("Error generating quiz. Please try again.")
+                                            st.session_state['quiz_active'] = False
+
+                                # Display Quiz
+                                if 'module_questions' in st.session_state:
+                                    q = st.session_state['module_questions']
+                                    st.markdown("### ❓ Quiz Question:")
+                                    st.write(q['question'])
+                                    
+                                    user_ans = st.radio("Select your answer:", q['options'], key=f"radio_{btn_key}")
+                                    
+                                    if st.button("Submit Answer", key=f"submit_ans_{btn_key}"):
+                                        if user_ans == q['answer']:
+                                            st.success("✅ Correct! You have completed this module.")
+                                            st.balloons()
+                                            st.session_state['quiz_active'] = False
+                                            
+                                            # CERTIFICATE LOGIC
+                                            st.markdown("### 🏆 Claim your Certificate")
+                                            cert_name = st.text_input("Enter your name:", key=f"name_{btn_key}")
+                                            if st.button("Download Certificate", key=f"dl_{btn_key}"):
+                                                if cert_name:
+                                                    cert_text = f"""
+CERTIFICATE OF COMPLETION
+------------------------
+Student: {cert_name}
+Module: {module['title']}
+Date: {datetime.now().strftime("%Y-%m-%d")}
+Platform: Rocen Homesteady
+Status: PASSED
+"""
+                                                    st.download_button("📥 Download Certificate (.txt)", cert_text, file_name=f"certificate_{module['title'].replace(' ', '_')}.txt")
+                                                else:
+                                                    st.warning("Please enter your name.")
+                                        else:
+                                            st.error(f"❌ Incorrect. The correct answer was {q['answer']}. Please review the lesson and try again.")
+                                            st.session_state['quiz_active'] = False
+                                            st.rerun()
+2. Update Farm Tycoon (Invasive Names)
+Find the # --- NEXT DAY BUTTON --- section in Tab 5 and replace the logic inside it (specifically the invasive spawning part) with this. This ensures real names are used.
+
+        # --- NEXT DAY BUTTON ---
+        if st.button("⏭️ Next Day", key="next_day_farm"):
+            # 1. Crop Growth
+            for r in range(5):
+                for c in range(6):
+                    if game['grid'][r][c] == 2: game['grid'][r][c] = 3
+                    elif game['grid'][r][c] == 3: game['grid'][r][c] = 4
+
+            # 2. INVASIVE SPECIES EVENT (Educational)
+            if random.random() < 0.3: # 30% chance
+                # Define real invasive species with facts
+                invasives = [
+                    {"name": "Japanese Knotweed", "fact": "Damages foundations! Very hard to remove."},
+                    {"name": "Himalayan Balsam", "fact": "Outcompetes native flowers."},
+                    {"name": "Giant Hogweed", "fact": "Sap causes burns! Avoid touching."},
+                    {"name": "Rhododendron", "fact": "Toxic soil, prevents trees growing."}
+                ]
+                invasive = random.choice(invasives)
+                
+                empty_spots = [(r,c) for r in range(5) for c in range(6) if game['grid'][r][c] == 0]
+                if empty_spots:
+                    rr, cc = random.choice(empty_spots)
+                    game['grid'][rr][cc] = 7
+                    st.toast(f"⚠️ {invasive['name']} spotted! {invasive['fact']}")
+
+            # 3. Weather / Day Logic
+            game['day'] += 1
+            st.rerun()
 
 # ==========================================
 # TAB 2: GAMES
@@ -471,61 +637,153 @@ with main_tab2:
     with tab3:
         st.header("🎯 The Daily Challenge")
         st.caption("📚 Curriculum Link: Science (Plants), Seasonal Changes")
-        with st.expander("📖 How to Play"):
-            st.markdown("Answer 5 questions to complete the challenge. Build a streak for bonus points!")
 
+        # Instructions
+        with st.expander("📖 How to Play"):
+            st.markdown("""
+            - Answer 5 questions to complete the challenge.
+            - Build a **Streak** for bonus points!
+            - Questions cover **Edibility**, **Plant Parts**, and **Seasonality**.
+            """)
+
+        # --- STREAK LOGIC ---
+        if 'daily_streak' not in st.session_state:
+            st.session_state.daily_streak = 0
+        
+        # --- HEADER ---
         col1, col2, col3 = st.columns(3)
         col1.metric("🔥 Streak", f"{st.session_state.daily_streak} Days")
         col2.metric("🌟 Score", st.session_state.quiz_score)
         col3.metric("❓ Question", f"{st.session_state.quiz_q_num}/{st.session_state.quiz_max}")
-        st.progress(st.session_state.quiz_q_num / st.session_state.quiz_max)
 
+        progress = st.session_state.quiz_q_num / st.session_state.quiz_max
+        st.progress(progress)
+
+        # --- QUESTION GENERATOR ---
         if st.session_state.quiz_q_num < st.session_state.quiz_max:
+            
+            # Generate Question Data if not exists
             if st.session_state.get('q_data') is None:
+                
+                # Pick a random question TYPE
                 q_type = random.choice(["edible_check", "parts_check", "season_check"])
-                plant = random.choice(UK_PLANTS['edible'] + UK_PLANTS['poisonous'])
-                question_text, correct_answer, options, fun_fact = "", "", [], ""
+                
+                # Prepare plant lists
+                all_plants = UK_PLANTS['edible'] + UK_PLANTS['poisonous']
+                edible_plants = UK_PLANTS['edible']
+                
+                question_text = ""
+                correct_answer = ""
+                options = []
+                fun_fact = ""
+
                 if q_type == "edible_check":
+                    # Logic: Pick a plant and ask if it's safe
+                    plant = random.choice(all_plants)
+                    
+                    # Determine status based on which list it came from (robust check)
+                    is_edible = plant in UK_PLANTS['edible']
+                    
                     question_text = f"Is **{plant['name']}** safe to eat?"
-                    correct_answer = "Edible" if plant in UK_PLANTS['edible'] else "Poisonous"
+                    correct_answer = "Edible" if is_edible else "Poisonous"
                     options = ["Edible", "Poisonous"]
-                    fun_fact = f"**Warning:** {plant.get('warnings', 'Check ID')}" if correct_answer == "Edible" else f"**Danger:** {plant.get('symptoms', 'Toxic')}"
+                    
+                    if is_edible:
+                        fun_fact = f"**Tip:** {plant.get('warnings', 'Always double check.')}"
+                    else:
+                        fun_fact = f"**Danger:** {plant.get('symptoms', 'Toxic! Do not eat.')}"
+
                 elif q_type == "parts_check":
-                    plant = random.choice(UK_PLANTS['edible'])
-                    parts = plant.get('parts', ['Leaves'])
+                    # Logic: Ask which part we eat (Only for edible plants)
+                    plant = random.choice(edible_plants) 
+                    
+                    # Robust splitting of "parts" string
+                    raw_parts = plant.get('parts', 'Leaves')
+                    if isinstance(raw_parts, str):
+                        parts = [p.strip() for p in raw_parts.split(',')]
+                    else:
+                        parts = raw_parts
+                    
+                    if not parts: parts = ['Leaves'] # Fallback
+                    
                     correct_answer = parts[0]
-                    wrong_parts = ["Roots", "Berries", "Flowers", "Seeds"]
+                    
+                    # Create wrong options
+                    wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark"]
                     wrong_options = [p for p in wrong_parts if p not in parts]
+                    
                     question_text = f"Which part of **{plant['name']}** do we usually eat?"
-                    options = [correct_answer] + random.sample(wrong_options, 2)
-                    fun_fact = f"**Tip:** {plant.get('warnings', 'Wash before eating.')}"
+                    options = [correct_answer] + random.sample(wrong_options, min(2, len(wrong_options)))
+                    fun_fact = f"**Tip:** {plant.get('warnings', 'Always wash plants before eating.')}"
+
                 elif q_type == "season_check":
-                    plant = random.choice(UK_PLANTS['edible'])
+                    # Logic: Ask when it's best harvested
+                    plant = random.choice(edible_plants)
                     correct_months = plant.get('months', ['Summer'])
-                    correct_answer = correct_months[0]
+                    
+                    # Pick one correct month from the list
+                    correct_answer = random.choice(correct_months)
+                    
+                    # Generate wrong months
                     all_months = ["January", "March", "June", "August", "October", "December"]
                     wrong_months = [m for m in all_months if m not in correct_months]
+                    
                     question_text = f"When is **{plant['name']}** best harvested?"
-                    options = [correct_answer] + random.sample(wrong_months, 2)
+                    options = [correct_answer] + random.sample(wrong_months, min(2, len(wrong_months)))
                     fun_fact = f"**Habitat:** {plant.get('habitat', 'Various')}"
-                random.shuffle(options)
-                st.session_state.q_data = {"plant": plant, "text": question_text, "correct": correct_answer, "options": options, "fact": fun_fact}
 
+                random.shuffle(options)
+                
+                st.session_state.q_data = {
+                    "plant": plant,
+                    "text": question_text,
+                    "correct": correct_answer,
+                    "options": options,
+                    "type": q_type,
+                    "fact": fun_fact
+                }
+
+            # DISPLAY QUESTION
             q = st.session_state.q_data
             st.markdown("### 🧠 Quick Question:")
             st.markdown(f"#### {q['text']}")
+
+            # Answer Buttons
             cols = st.columns(len(q['options']))
             for i, opt in enumerate(q['options']):
                 if cols[i].button(f"👉 {opt}", key=f"ans_{i}", use_container_width=True):
-                    if opt == q['correct']: st.session_state.quiz_score += 1; st.session_state.daily_streak += 1; st.toast("✅ Correct!")
-                    else: st.session_state.daily_streak = 0; st.toast("❌ Oops!")
-                    st.session_state.quiz_q_num += 1; st.session_state.q_data = None; time.sleep(0.5); st.rerun()
+                    if opt == q['correct']:
+                        st.session_state.quiz_score += 1
+                        st.session_state.daily_streak += 1
+                        st.toast("✅ Correct!")
+                    else:
+                        st.session_state.daily_streak = 0
+                        st.toast("❌ Oops!")
+                    
+                    # Move to next question
+                    st.session_state.quiz_q_num += 1
+                    st.session_state.q_data = None
+                    time.sleep(0.5)
+                    st.rerun()
+
         else:
-            st.balloons(); st.markdown("## 🎉 Challenge Complete!")
-            if st.session_state.quiz_score == st.session_state.quiz_max: st.success("PERFECT SCORE!")
-            elif st.session_state.quiz_score >= st.session_state.quiz_max / 2: st.info("Good job!")
-            else: st.warning("Keep practicing!")
-            if st.button("🔄 Try Again", key="restart_quiz"): st.session_state.quiz_score = 0; st.session_state.quiz_q_num = 0; st.session_state.q_data = None; st.rerun()
+            # --- QUIZ COMPLETE ---
+            st.balloons()
+            st.markdown("## 🎉 Challenge Complete!")
+            
+            final_score = st.session_state.quiz_score
+            if final_score == st.session_state.quiz_max:
+                st.success("PERFECT SCORE! You are a Foraging Master!")
+            elif final_score >= st.session_state.quiz_max / 2:
+                st.info("Good job! Keep learning to get a perfect score.")
+            else:
+                st.warning("Keep practicing! The forest has many secrets.")
+
+            if st.button("🔄 Try Again", key="restart_quiz"):
+                st.session_state.quiz_score = 0
+                st.session_state.quiz_q_num = 0
+                st.session_state.q_data = None
+                st.rerun()
 
     # --- GAME TAB 4: ECO-VILLAGE ---
     with tab4:
@@ -754,25 +1012,52 @@ with main_tab2:
         st.markdown("---")
 
         # --- NEXT DAY BUTTON ---
-        if st.button("⏭️ Next Day", key="next_day_farm"):
+         if st.button("⏭️ Next Day", key="next_day_farm"):
             # 1. Crop Growth
             for r in range(5):
                 for c in range(6):
                     if game['grid'][r][c] == 2: game['grid'][r][c] = 3
                     elif game['grid'][r][c] == 3: game['grid'][r][c] = 4
 
-            # 2. INVASIVE SPECIES EVENT
-            if random.random() < 0.3: # 30% chance
-                empty_spots = []
-                for r in range(5):
-                    for c in range(6):
-                        if game['grid'][r][c] == 0:
-                            empty_spots.append((r, c))
+            # 2. RANDOM EVENTS (New Educational Layer)
+            event_roll = random.random()
+            
+            # Event: Market Prices (30% chance)
+            if event_roll < 0.3:
+                market_item = random.choice(["Carrot", "Wheat", "Corn"])
+                price_change = random.choice([-5, +10]) # Price drops or rises
+                if price_change > 0:
+                    st.toast(f"📈 Good News! {market_item} prices are UP! Sell now for bonus.")
+                    # We can't track specific crop types easily in this grid, so we add a temporary bonus logic
+                    game['money'] += 5 # Simplified bonus for now
+                else:
+                    st.toast(f"📉 Bad News! {market_item} prices crashed!")
+                    # No immediate penalty, just flavor
+            
+            # Event: Weather Storm (10% chance)
+            elif event_roll < 0.4:
+                st.toast("🌧️ Heavy Rain! Some crops were washed away.")
+                # Destroy one random crop
+                crops = [(r,c) for r in range(5) for c in range(6) if game['grid'][r][c] in [2, 3]]
+                if crops:
+                    rr, cc = random.choice(crops)
+                    game['grid'][rr][cc] = 0 # Destroy crop
+
+            # 3. INVASIVE SPECIES EVENT
+            elif event_roll < 0.7: # 30% chance
+                invasives = [
+                    {"name": "Japanese Knotweed", "fact": "Damages foundations!"},
+                    {"name": "Himalayan Balsam", "fact": "Takes over riverbanks."},
+                    {"name": "Giant Hogweed", "fact": "Sap causes burns!"},
+                    {"name": "Rhododendron", "fact": "Poisonous soil."}
+                ]
+                invasive = random.choice(invasives)
                 
+                empty_spots = [(r,c) for r in range(5) for c in range(6) if game['grid'][r][c] == 0]
                 if empty_spots:
                     rr, cc = random.choice(empty_spots)
                     game['grid'][rr][cc] = 7
-                    st.toast("⚠️ Invasive Species Spotted!")
+                    st.toast(f"⚠️ {invasive['name']} spotted! {invasive['fact']}")
 
             game['day'] += 1
             st.rerun()
