@@ -569,9 +569,24 @@ with main_tab2:
         else:
             if st.session_state.get('current_question') is None:
                 plant = random.choice(available_plants)
-                correct_habitat = plant['habitat'].split(',')[0].strip()
-                if correct_habitat == "Woodlands": correct_habitat = "Woodland"
-                if correct_habitat == "Hedgerows": correct_habitat = "Hedgerow"
+                
+                # --- FIX: Standardize Habitat Names ---
+                raw_habitat = plant['habitat'].split(',')[0].strip()
+                
+                # Map variations to the standard 5 buttons
+                if raw_habitat in ["Woodlands", "Woods", "Wood"]: 
+                    correct_habitat = "Woodland"
+                elif raw_habitat in ["Hedgerows", "Hedgerow", "Roadsides"]: 
+                    correct_habitat = "Hedgerow"
+                elif raw_habitat in ["Meadows", "Grassland", "Fields", "Fields, Gardens"]: 
+                    correct_habitat = "Meadow"
+                elif raw_habitat in ["Coastal", "Coastal Shingle"]: 
+                    correct_habitat = "Coastal"
+                elif raw_habitat in ["Gardens", "Urban", "Everywhere", "Waste Ground"]: 
+                    correct_habitat = "Urban"
+                else:
+                    # Fallback if something unexpected comes up
+                    correct_habitat = "Woodland" 
 
                 all_habitats = ["Woodland", "Coastal", "Hedgerow", "Urban", "Meadow"]
                 wrong_habitats = [h for h in all_habitats if h != correct_habitat]
