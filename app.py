@@ -648,17 +648,275 @@ with main_tab2:
             """)
 
         # Expanded Case Files
+        # Added 'rule' to help learning, 'hint' for stuck players, and expanded safety reports.
         CASE_FILES = [
-            {"clue": "You find a plant with white umbrella-shaped flowers. The stem is smooth and has **purple spots** on it.", "safe_plant": "Wild Carrot", "danger_plant": "Hemlock", "safe_icon": "🥕", "danger_icon": "☠️", "fact": "Hemlock is deadly! The purple spots and smooth stem are the danger signs. Wild Carrot has a hairy stem.", "safe_habitat": "Meadows"},
-            {"clue": "You see a plant with broad green leaves in a damp woodland. You crush a leaf, and it smells strongly of **garlic**.", "safe_plant": "Wild Garlic", "danger_plant": "Lily of the Valley", "safe_icon": "🌿", "danger_icon": "☠️", "fact": "Smell is a great identifier! Wild Garlic smells like garlic. Lily of the Valley has no smell and is poisonous.", "safe_habitat": "Woodland"},
-            {"clue": "A bright orange mushroom grows under an oak tree. Under the cap, it has ridges (like false gills) that run down the stem. It smells **fruity**.", "safe_plant": "Chanterelle", "danger_plant": "False Chanterelle", "safe_icon": "🍄", "danger_icon": "🚫", "fact": "Chanterelles have 'false gills' (ridges) and smell of apricots. False Chanterelles have true gills and no smell.", "safe_habitat": "Woodland"},
-            {"clue": "You find a bush with dark berries. The leaves are arranged in **pairs** opposite each other on the stem.", "safe_plant": "Elderflower", "danger_plant": "Dwarf Elder", "safe_icon": "🌸", "danger_icon": "☠️", "fact": "Elder leaves are opposite (in pairs). Dwarf Elder (Danewort) looks similar but the flowers stand upright, not drooping.", "safe_habitat": "Hedgerow"},
-            {"clue": "A tall plant with white flowers grows by a river. The root smells like a pleasant **carrot/parsnip**, not mouse urine.", "safe_plant": "Wild Parsnip", "danger_plant": "Hemlock Water Dropwort", "safe_icon": "🥬", "danger_icon": "💀", "fact": "Hemlock Water Dropwort is the deadliest plant in the UK. Never eat roots unless 100% sure. Always check the smell!", "safe_habitat": "Riverbanks"},
-            {"clue": "You see a patch of green leaves growing on the forest floor. They have **jagged edges** and sting when you touch them.", "safe_plant": "Nettles", "danger_plant": "Dog's Mercury", "safe_icon": "🌿", "danger_icon": "⚠️", "fact": "Nettles sting and are edible when cooked. Dog's Mercury does NOT sting but is poisonous. Always check for the sting (with gloves)!", "safe_habitat": "Woodland"},
-            {"clue": "You find a tree with dark green needles and a red berry cup. It grows near a **churchyard**.", "safe_plant": "Juniper Berry", "danger_plant": "Yew", "safe_icon": "🫐", "danger_icon": "💀", "fact": "Yew trees are extremely common in churchyards. **Every part is deadly except the red berry flesh.** Avoid completely.", "safe_habitat": "Churchyards"},
-            {"clue": "A plant with strap-like leaves grows in the woods. It has a **triangular stem** and smells like onions.", "safe_plant": "Three-Cornered Leek", "danger_plant": "Bluebell", "safe_icon": "🌸", "danger_icon": "☠️", "fact": "Three-Cornered Leek is edible and invasive. Bluebells are poisonous. The 'triangle' stem and onion smell are the keys.", "safe_habitat": "Woodland"},
-            {"clue": "A huge plant (over 2 meters tall) with white flowers grows by a river. The stem has **bristly hairs**.", "safe_plant": "Common Hogweed", "danger_plant": "Giant Hogweed", "safe_icon": "🌻", "danger_icon": "⚠️", "fact": "Giant Hogweed sap burns skin in sunlight! It is huge and has bristly purple hairs. Common Hogweed is smaller and safe.", "safe_habitat": "Riverbanks"},
-            {"clue": "A fungus grows on an **Elder tree**. It is brown, jelly-like, and looks like an ear.", "safe_plant": "Wood Ear", "danger_plant": "Beech Bracket", "safe_icon": "👂", "danger_icon": "🪵", "fact": "Wood Ear grows specifically on Elder trees. Most other brackets on trees are woody and inedible.", "safe_habitat": "Woodland"}
+            # --- ORIGINAL 10 CASES ---
+            {
+                "clue": "You find a tall plant with white umbrella-shaped flowers ☂️. You check the stem. It is **smooth** (no hairs) and has **purple spots** on it.",
+                "rule": "🚨 **Rule:** In the Carrot family, purple spots usually mean POISON.",
+                "hint": "Check the stem texture! Safe Carrot family members usually have hairy stems.",
+                "safe_plant": "Wild Carrot",
+                "danger_plant": "Hemlock",
+                "safe_icon": "🥕",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Hemlock (POISON):** Smooth stem with purple spots. Smells like mouse urine.\n- **Wild Carrot (Safe):** Hairy stem. Smells like carrots. Remember: **Hairy is Happy, Smooth is Suspicious!**",
+                "safe_habitat": "Meadows"
+            },
+            {
+                "clue": "You find a plant with broad green leaves in a damp woodland. You crush a leaf and it smells strongly of **garlic** 🧄.",
+                "rule": "✅ **Rule:** Strong onion/garlic smell is usually a good sign.",
+                "hint": "Use your nose! If it smells like food (garlic/onion), it might be food. If it has no smell, be careful.",
+                "safe_plant": "Wild Garlic",
+                "danger_plant": "Lily of the Valley",
+                "safe_icon": "🌿",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Lily of the Valley (POISON):** Has no garlic smell. Has bell-shaped flowers.\n- **Wild Garlic (Safe):** Smells strongly of garlic. Perfect for pesto! **No smell = Leave it be.**",
+                "safe_habitat": "Woodland"
+            },
+            {
+                "clue": "A bright orange mushroom grows under an oak tree. Under the cap, it has **ridges** (like false gills) that run down the stem. It smells like **apricots** 🍑.",
+                "rule": "✅ **Rule:** True gills are thin sheets. Ridges are blunt and thick.",
+                "hint": "Look under the cap! Are they thin paper-like gills, or thick forked ridges?",
+                "safe_plant": "Chanterelle",
+                "danger_plant": "False Chanterelle",
+                "safe_icon": "🍄",
+                "danger_icon": "🚫",
+                "fact": "🕵️ **Inspector's Report:**\n- **False Chanterelle (Inedible):** Has true gills (thin sheets). No apricot smell.\n- **Chanterelle (Safe):** Has 'false gills' (ridges) and smells fruity. **Ridges = Rewarding.**",
+                "safe_habitat": "Woodland"
+            },
+            {
+                "clue": "You find a bush with dark berries. The leaves are arranged in **pairs** opposite each other on the stem.",
+                "rule": "✅ **Rule:** 'Opposite' leaves (pairs) are safe for Elder. 'Alternate' leaves are dangerous.",
+                "hint": "Look at the leaves! Do they split off the stem in pairs, or one by one?",
+                "safe_plant": "Elderflower",
+                "danger_plant": "Dwarf Elder",
+                "safe_icon": "🌸",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Dwarf Elder (POISON):** Leaves are alternate (one by one). Flowers stand upright.\n- **Elderflower (Safe):** Leaves are opposite (in pairs). Flowers droop down.",
+                "safe_habitat": "Hedgerow"
+            },
+            {
+                "clue": "A tall plant with white flowers grows by a river. You dig up the root. It smells like a **carrot** 🥕.",
+                "rule": "✅ **Rule:** Smell is key! Carrot family roots should smell pleasant.",
+                "hint": "Smell test! A pleasant veg smell is good. A rotten or mousey smell is bad.",
+                "safe_plant": "Wild Parsnip",
+                "danger_plant": "Hemlock Water Dropwort",
+                "safe_icon": "🥬",
+                "danger_icon": "💀",
+                "fact": "🕵️ **Inspector's Report:**\n- **Hemlock Water Dropwort (POISON):** Smells unpleasant. Has tuberous roots (look like fingers). **Deadliest plant in UK.**\n- **Wild Parsnip (Safe):** Smells like parsnip/carrot. **Warning:** Be 100% sure before eating any root!",
+                "safe_habitat": "Riverbanks"
+            },
+            {
+                "clue": "You see a patch of green leaves growing on the forest floor. You touch them carefully with gloves. They **sting** your fingers!",
+                "rule": "✅ **Rule:** A sting is painful, but usually safe if cooked.",
+                "hint": "Does it hurt? A sting usually identifies Nettles. Non-stinging lookalikes might be dangerous.",
+                "safe_plant": "Nettles",
+                "danger_plant": "Dog's Mercury",
+                "safe_icon": "🌿",
+                "danger_icon": "⚠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Dog's Mercury (POISON):** Does not sting. Can make you very sick.\n- **Nettles (Safe):** Stings! But cooking destroys the sting. Delicious in soup. **Sting = Signal!**",
+                "safe_habitat": "Woodland"
+            },
+            {
+                "clue": "You find a tree with dark green needles and a red berry cup. It grows near a **churchyard** ⛪.",
+                "rule": "🚨 **Rule:** Red berry cups (Yew) are often deadly.",
+                "hint": "Look at the leaves! Are they flat needles? Are they dark green? Yew is deadly.",
+                "safe_plant": "Juniper Berry",
+                "danger_plant": "Yew",
+                "safe_icon": "🫐",
+                "danger_icon": "💀",
+                "fact": "🕵️ **Inspector's Report:**\n- **Yew (POISON):** Every part is deadly except the red berry flesh. Common in churchyards.\n- **Juniper (Safe):** Blue berries, spiky needles. Used for gin. **Yew = You Die.**",
+                "safe_habitat": "Churchyards"
+            },
+            {
+                "clue": "A plant with strap-like leaves grows in the woods. You roll the stem between your fingers—it feels **triangular** (like a keel ⛵).",
+                "rule": "✅ **Rule:** A triangular stem is a unique ID feature.",
+                "hint": "Feel the stem! Is it round, or does it have edges/corners?",
+                "safe_plant": "Three-Cornered Leek",
+                "danger_plant": "Bluebell",
+                "safe_icon": "🌸",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Bluebell (POISON):** Round stem. Blue bells. All parts toxic.\n- **Three-Cornered Leek (Safe):** Triangular stem. White flowers. Smells like onion/garlic. **Triangle = Tasty.**",
+                "safe_habitat": "Woodland"
+            },
+            {
+                "clue": "A huge plant (over 2 meters tall) with white flowers grows by a river. The stem has **bristly hairs** and is green.",
+                "rule": "🚨 **Rule:** Giant Hogweed burns skin. Hairs can be a clue to identity.",
+                "hint": "Size matters! If it's huge (taller than you) and has purple blotches, run!",
+                "safe_plant": "Common Hogweed",
+                "danger_plant": "Giant Hogweed",
+                "safe_icon": "🌻",
+                "danger_icon": "⚠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Giant Hogweed (POISON):** Sap burns skin in sunlight! Huge (3m+). Often has purple blotches.\n- **Common Hogweed (Safe):** Smaller (1-2m). Bristly stem. **Giant = Dangerous.**",
+                "safe_habitat": "Riverbanks"
+            },
+            {
+                "clue": "A fungus grows on an **Elder tree**. It is brown, jelly-like, and looks like an ear.",
+                "rule": "✅ **Rule:** Fungi grow on specific trees. Host tree identification helps.",
+                "hint": "Which tree is it on? Wood Ear only grows on Elder trees.",
+                "safe_plant": "Wood Ear",
+                "danger_plant": "Beech Bracket",
+                "safe_icon": "👂",
+                "danger_icon": "🪵",
+                "fact": "🕵️ **Inspector's Report:**\n- **Beech Bracket (Inedible):** Woody texture. Grows on Beech trees.\n- **Wood Ear (Safe):** Jelly texture. Grows on Elder trees. **Jelly on Elder = Edible.**",
+                "safe_habitat": "Woodland"
+            },
+            
+            # --- NEW 15 CASES (Checked & Fixed) ---
+            {
+                "clue": "You find a nut on the ground. It is brown and sits inside a **spiky green case** (a bur).",
+                "rule": "✅ **Rule:** Spikes outside usually mean sweet inside.",
+                "hint": "Touch the case! Is it spiky? That's usually a Sweet Chestnut.",
+                "safe_plant": "Sweet Chestnut",
+                "danger_plant": "Horse Chestnut",
+                "safe_icon": "🌰",
+                "danger_icon": "🥜",
+                "fact": "🕵️ **Inspector's Report:**\n- **Horse Chestnut (POISON):** Case is warty/bumpy, not spiky. Nut is shiny. (Conkers).\n- **Sweet Chestnut (Safe):** Case has long, sharp spikes. Nut has a 'tail' point. **Spikes are Safe!**",
+                "safe_habitat": "Woodland"
+            },
+            {
+                "clue": "A small white flower grows in the grass. It has **arrow-shaped leaves**. You take a tiny bite of a leaf and it tastes like **lemon sherbet**.",
+                "rule": "✅ **Rule:** Taste is a clue! Sorrel tastes like apple/lemon peels.",
+                "hint": "Does it taste like salad? If it burns your mouth, spit it out!",
+                "safe_plant": "Wood Sorrel",
+                "danger_plant": "Lords and Ladies",
+                "safe_icon": "☘️",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Lords & Ladies (POISON):** Leaves can burn the mouth. Orange berries later in year.\n- **Wood Sorrel (Safe):** Tastes like lemon. Heart-shaped leaves. **Tasty = Safe. Burning = Bad.**",
+                "safe_habitat": "Woodland"
+            },
+            {
+                "clue": "A white mushroom grows in a field. You cut it open. The gills are **pink**, turning brown.",
+                "rule": "✅ **Rule:** Field mushrooms have pink gills.",
+                "hint": "Look under the cap! If the gills stain yellow when you rub them, DO NOT EAT.",
+                "safe_plant": "Field Mushroom",
+                "danger_plant": "Yellow Stainer",
+                "safe_icon": "🍄",
+                "danger_icon": "🚫",
+                "fact": "🕵️ **Inspector's Report:**\n- **Yellow Stainer (POISON):** Stains bright yellow when rubbed. Smells like ink/chemicals.\n- **Field Mushroom (Safe):** Pink gills turn brown. Smells like mushrooms. **Yellow Stain = Pain.**",
+                "safe_habitat": "Fields"
+            },
+            {
+                "clue": "A round white ball sits on the grass. You cut it in half. The inside is **pure white** and solid.",
+                "rule": "✅ **Rule:** Puffballs must be pure white inside.",
+                "hint": "Cut it open! If it is purple, black, or powdery inside, it is dangerous.",
+                "safe_plant": "Puffball",
+                "danger_plant": "Earthball",
+                "safe_icon": "⚪",
+                "danger_icon": "🟤",
+                "fact": "🕵️ **Inspector's Report:**\n- **Earthball (POISON):** Inside is purple/black. Thick skin.\n- **Puffball (Safe):** Inside is pure white (like a marshmallow). **White is Right.**",
+                "safe_habitat": "Fields"
+            },
+            {
+                "clue": "You see a tree with young green leaves. The leaves are **soft and hairy**. You want to make a salad.",
+                "rule": "✅ **Rule:** Soft young leaves are often edible.",
+                "hint": "Feel the leaf! Is it soft like paper? Or thick and leathery?",
+                "safe_plant": "Beech Leaves",
+                "danger_plant": "Cherry Laurel",
+                "safe_icon": "🍃",
+                "danger_icon": "🌿",
+                "fact": "🕵️ **Inspector's Report:**\n- **Cherry Laurel (POISON):** Leaves are thick, leathery, and evergreen. Contains cyanide.\n- **Beech Leaves (Safe):** Soft, hairy, paper-thin. Only eat young ones. **Soft = Salad. Leathery = Leave it.**",
+                "safe_habitat": "Hedgerow"
+            },
+            {
+                "clue": "A bright yellow flower grows in the grass. The stem is **hollow** and has a milky white sap.",
+                "rule": "✅ **Rule:** Dandelions have hollow stems.",
+                "hint": "Check the stem! Is it hollow? Does it have milky sap?",
+                "safe_plant": "Dandelion",
+                "danger_plant": "Ragwort",
+                "safe_icon": "🌼",
+                "danger_icon": "🌻",
+                "fact": "🕵️ **Inspector's Report:**\n- **Ragwort (POISON):** Toxic to liver. Tall, ragged leaves.\n- **Dandelion (Safe):** Hollow stem with milky sap. Leaves are 'Lion's Teeth'. **Hollow Stem = Dandelion.**",
+                "safe_habitat": "Meadow"
+            },
+            {
+                "clue": "A bush grows by the sea. It has **fleshy blue-green leaves**. The leaves taste salty.",
+                "rule": "✅ **Rule:** Coastal plants are often salty/succulent.",
+                "hint": "Taste! Is it salty? Succulent leaves hold water.",
+                "safe_plant": "Sea Kale",
+                "danger_plant": "Hemlock", # Hemlock can grow near water/coastal, providing a valid danger
+                "safe_icon": "🥬",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Hemlock (POISON):** Purple spotted stem. Smells bad.\n- **Sea Kale (Safe):** Blue leaves, white flowers. Tastes salty. **Salty = Success.**",
+                "safe_habitat": "Coastal"
+            },
+            {
+                "clue": "A bright orange berry grows on a bush. You check the **seeds inside**. There is one single large stone/seed.",
+                "rule": "✅ **Rule:** Single stone = usually a Sloe/Plum.",
+                "hint": "Cut the berry open! Count the seeds. Many seeds in a berry can be dangerous.",
+                "safe_plant": "Sloe (Blackthorn)",
+                "danger_plant": "Deadly Nightshade",
+                "safe_icon": "🫐",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Deadly Nightshade (POISON):** Shiny black berry with MANY seeds inside.\n- **Sloe (Safe):** One single stone inside. Very sour. Makes gin! **One Stone = Safe. Many Seeds = Danger.**",
+                "safe_habitat": "Hedgerow"
+            },
+            {
+                "clue": "A green plant grows in the hedge. It has **triangular leaves** that smell spicy.",
+                "rule": "✅ **Rule:** Garlic smell = Leek. Pepper smell = Pepper.",
+                "hint": "Crush the leaves! Does it smell like garlic or pepper?",
+                "safe_plant": "Garlic Mustard",
+                "danger_plant": "Lords and Ladies", # Fixed: Lords and Ladies is dangerous, Hedge Mustard is edible
+                "safe_icon": "🌱",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Lords and Ladies (POISON):** Arrow-shaped leaves. Burns mouth.\n- **Garlic Mustard (Safe):** Smells of garlic! Triangular leaves. **Garlic Mustard is the tasty one!**",
+                "safe_habitat": "Hedgerow"
+            },
+            {
+                "clue": "A plant grows by the river. It has **yellow flowers**. You check the stem—it is smooth.",
+                "rule": "🚨 **Rule:** Yellow flowers on a river? Check for hairs.",
+                "hint": "Look at the stem! Hairs = safe (Alexanders). Smooth/Spotted = danger (Hemlock).",
+                "safe_plant": "Alexanders",
+                "danger_plant": "Hemlock",
+                "safe_icon": "🌼",
+                "danger_icon": "☠️",
+                "fact": "🕵️ **Inspector's Report:**\n- **Hemlock (POISON):** White flowers. Purple spots. Smooth.\n- **Alexanders (Safe):** Yellow flowers. Smooth stem. Smells like celery. **Yellow is good (Alexanders). White is worry (Hemlock).**",
+                "safe_habitat": "Coastal"
+            },
+            {
+                "clue": "A tree has hanging clusters of brown nuts. The nuts have a **green leafy collar** around them.",
+                "rule": "✅ **Rule:** Hazelnuts have a leafy 'skirt'.",
+                "hint": "Look at the nut! Does it wear a leafy hat?",
+                "safe_plant": "Hazelnut",
+                "danger_plant": "Buckeye",
+                "safe_icon": "🌰",
+                "danger_icon": "🥜",
+                "fact": "🕵️ **Inspector's Report:**\n- **Buckeye (POISON):** Similar nuts but the casing is smooth, not leafy.\n- **Hazelnut (Safe):** Leafy husk. Pointed nut. **Leafy Hat = Tasty.**",
+                "safe_habitat": "Hedgerow"
+            },
+            {
+                "clue": "A plant grows in the garden. It has **sticky stems** that cling to your clothes.",
+                "rule": "✅ **Rule:** Sticky stems = Cleavers/Goosegrass.",
+                "hint": "Does it stick to you? If yes, it's usually Cleavers.",
+                "safe_plant": "Cleavers",
+                "danger_plant": "Bindweed",
+                "safe_icon": "🌿",
+                "danger_icon": "🌸",
+                "fact": "🕵️ **Inspector's Report:**\n- **Bindweed (POISON):** Twists around plants. Has large white trumpet flowers.\n- **Cleavers (Safe):** Sticky! Sticks to clothes. Tiny hairs. **Sticky = Safe.**",
+                "safe_habitat": "Gardens"
+            },
+            {
+                "clue": "A mushroom grows in the grass. It has a **white cap** and a ring around the stem.",
+                "rule": "🚨 **Rule:** White cap + ring + sack at base = Death Cap. DEADLY.",
+                "hint": "Dig around the base! Is there a cup/volva? If yes, DO NOT TOUCH.",
+                "safe_plant": "Field Mushroom",
+                "danger_plant": "Death Cap",
+                "safe_icon": "🍄",
+                "danger_icon": "💀",
+                "fact": "🕵️ **Inspector's Report:**\n- **Death Cap (POISON):** White cap, ring, and a cup (volva) at the base. KILLS you.\n- **Field Mushroom (Safe):** Pink gills. No cup at the base. **White Gills + Cup = Cut!**",
+                "safe_habitat": "Fields"
+            },
+            {
+                "clue": "A red berry grows in the hedge. It looks like a small apple. The leaves are **serrated** (like a saw).",
+                "rule": "✅ **Rule:** Red berries are often haws (Hawthorn) or Rosehips.",
+                "hint": "Look at the leaves! Saw-tooth edges are Hawthorn.",
+                "safe_plant": "Hawthorn",
+                "danger_plant": "Cotoneaster",
+                "safe_icon": "🍎",
+                "danger_icon": "🚫",
+                "fact": "🕵️ **Inspector's Report:**\n- **Cotoneaster (POISON):** Often garden escape. Berries contain cyanide.\n- **Hawthorn (Safe):** 'Haws' are edible. Saw-tooth leaves. Thorns. **Saw-tooth = Safe.**",
+                "safe_habitat": "Hedgerow"
+            }
         ]
 
         st.markdown("### 🕵️‍♂️ The Safety Inspector")
