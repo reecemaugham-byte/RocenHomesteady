@@ -790,56 +790,149 @@ with main_tab2:
             - **Watch out!** Invasive plants (🥀) will try to grow. Use the **Clear** tool to remove them!
             """)
 
+        # --- GAME STATE INIT ---
         if st.session_state.get('farm_game') is None:
+            # Create Grid 5x6 (30 tiles)
+            # 0 = Dirt, 1 = Water, 2 = Seed, 3 = Growing, 4 = Ready, 5 = Chicken, 6 = Cow, 7 = INVASIVE
             grid = [[0 for _ in range(6)] for _ in range(5)]
+            
+            # Generate Random Stream
             stream_col = random.randint(1, 4)
             for r in range(5):
                 grid[r][stream_col] = 1
                 if random.random() > 0.5: stream_col = max(0, min(5, stream_col + random.choice([-1, 1]))); grid[r][stream_col] = 1
-            st.session_state.farm_game = {'grid': grid, 'money': 100, 'day': 1, 'tool': 'Carrot', 'invasives_cleared': 0}
+
+            st.session_state.farm_game = {
+                'grid': grid,
+                'money': 100,
+                'day': 1,
+                'season': 'Spring',
+                'weather': '☀️ Sunny',
+                'tool': 'Carrot', # Default tool
+                'game_over': False,
+                'invasives_cleared': 0
+            }
         
         game = st.session_state.farm_game
+        
+        # --- UI HEADER ---
         col1, col2, col3 = st.columns(3)
         col1.metric("📅 Day", game['day'])
         col2.metric("💰 Money", f"£{game['money']}")
         col3.metric("🛡️ Guard Badge", game['invasives_cleared'])
         
-        tools = {"🥕 Carrot (£10)": "Carrot", "🧹 Clear Invasive (Free)": "Clear"}
-        tool_cols = st.columns(len(tools))
-        for i, (label, val) in enumerate(tools.items()):
-            if tool_cols[i].button(label, key=f"tool_{val}"): game['tool'] = val; st.rerun()
-            if game['tool'] == val: tool_cols[i].markdown("**✅ Selected**")
+        st.markdown("---")
 
-        icons = {0: "🟤", 1: "🌊", 2: "🌱", 3: "🌿", 4: "🌾", 7: "🥀"}
-        st.markdown("`🟤` Dirt | `🌊` Stream | `🌱` Seed | `🌿` Growing | `🌾` Ready | `🥀` **Invasive**")
+        # --- TOOL SELECTION ---
+        st.markdown("### 🛠️ Toolbox")
         
+        # Expanded Tools
+        tools = {
+            "🥕 Carrot (£10)": "Carrot",
+            "🌾 Wheat (£15)": "Wheat",
+            "🌽 Corn (£20)": "Corn",
+            "🐔 Chicken (£50)": "Chicken",
+            "🐄 Cow (£100)": "Cow",
+            "🧹 Clear Invasive (Free)": "Clear"
+        }
+        
+        tool_cols = st.columns(len(tools))
+        
+        for i, (label, val) in enumerate(tools.items()):
+            if tool_cols[i].button(label, key=f"tool_{val}"):
+                game['tool'] = val
+                st.rerun()
+            
+            # Highlight selected tool
+            if game['tool'] == val:
+                tool_cols[i].markdown("**✅ Selected**")
+
+        st.markdown("---")
+
+        # --- THE GRID ---
+        st.markdown("### 🗺️ Your Farm")
+        st.markdown("`🟤` Dirt | `🌊` Stream | `🌱` Seed | `🌿` Growing | `🌾` Ready | `🐔` Chicken | `🐄` Cow | `🥀` **Invasive**")
+        
+        # Icons
+        icons = {0: "🟤", 1: "🌊", 2: "🌱", 3: "🌿", 4: "🌾", 5: "🐔", 6: "🐄", 7: "🥀"}
+
+        # Render Grid
         for r in range(5):
             cols = st.columns(6)
             for c in range(6):
-                val = game['grid'][r][c]
-                icon = icons.get(val, "❓")
-                if val == 7 and game['tool'] == "Clear":
+                tile_val = game['grid'][r][c]
+                icon = icons.get(tile_val, "❓")
+                
+                # 1. HANDLE INVASIVE CLEARING
+                if tile_val == 7 and game['tool'] == "Clear":
                     if cols[c].button("🥀 CLEAR", key=f"{r}_{c}"):
                         game['grid'][r][c] = 0
                         game['invasives_cleared'] += 1
                         st.success("Invasive Removed!")
                         st.rerun()
-                elif val == 0 and game['tool'] == "Carrot":
-                    can_afford = game['money'] >= 10
-                    if cols[c].button(f"Plant (£10)", key=f"plant_{r}_{c}", disabled=not can_afford):
-                        game['money'] -= 10
-                        game['grid'][r][c] = 2
+                
+                # 2. HANDLE PLANTING CROPS (Carrot, Wheat, Corn)
+                elif tile_val == 0 and game['tool'] in ["Carrot", "Wheat", "Corn"]:
+                    
+                    # Define costs
+                    costs = {"Carrot": 10, "Wheat": 15, "Corn": 20}
+                    cost = costs[game['tool']]
+                    
+                    can_afford = game['money'] >= cost
+                    if cols[c].button(f"Plant (£{cost})", key=f"plant_{r}_{c}", disabled=not can_afford):
+                        game['money'] -= cost
+                        game['grid'][r][c] = 2 # All crops start as Seed (ID 2)
                         st.rerun()
-                elif val == 4:
+
+                # 3. HANDLE ANIMALS (Chicken, Cow)
+                elif tile_val == 0 and game['tool'] in ["Chicken", "Cow"]:
+                    
+                    # Define costs
+                    costs = {"Chicken": 50, "Cow": 100}
+                    cost = costs[game['tool']]
+                    
+                    # Define ID for grid
+                    animal_ids = {"Chicken": 5, "Cow": 6}
+                    
+                    can_afford = game['money'] >= cost
+                    if cols[c].button(f"Buy (£{cost})", key=f"buy_{r}_{c}", disabled=not can_afford):
+                        game['money'] -= cost
+                        game['grid'][r][c] = animal_ids[game['tool']]
+                        st.rerun()
+                
+                # 4. HANDLE HARVESTING (Crops - Ready)
+                elif tile_val == 4:
                     if cols[c].button("🌾 Harvest", key=f"harv_{r}_{c}"):
-                        game['money'] += 15
+                        # Harvest value depends on crop? For now random.
+                        harvest_val = random.randint(15, 30)
+                        game['money'] += harvest_val
                         game['grid'][r][c] = 0
-                        st.success("Sold Crop! +£15")
+                        st.success(f"Harvested! +£{harvest_val}")
                         st.rerun()
+
+                # 5. HANDLE SELLING ANIMALS (Click to sell)
+                elif tile_val == 5: # Chicken
+                    if cols[c].button("🐔 Sell", key=f"sell_chick_{r}_{c}"):
+                        game['money'] += 25
+                        game['grid'][r][c] = 0
+                        st.success("Sold Chicken! +£25")
+                        st.rerun()
+                
+                elif tile_val == 6: # Cow
+                    if cols[c].button("🐄 Sell", key=f"sell_cow_{r}_{c}"):
+                        game['money'] += 60
+                        game['grid'][r][c] = 0
+                        st.success("Sold Cow! +£60")
+                        st.rerun()
+
+                # 6. DEFAULT DISPLAY (Show Icon)
                 else:
                     cols[c].markdown(f"<div style='text-align:center; font-size:24px;'>{icon}</div>", unsafe_allow_html=True)
 
-         if st.button("⏭️ Next Day", key="next_day_farm"):
+        st.markdown("---")
+
+        # --- NEXT DAY BUTTON ---
+        if st.button("⏭️ Next Day", key="next_day_farm"):
             # 1. Crop Growth
             for r in range(5):
                 for c in range(6):
@@ -849,17 +942,10 @@ with main_tab2:
             # 2. RANDOM EVENTS (Weather & Market)
             event_roll = random.random()
             
-            # Event: Market Prices (20% chance)
             if event_roll < 0.2:
                 market_item = random.choice(["Carrot", "Wheat", "Corn"])
-                price_change = random.choice([-5, +10])
-                if price_change > 0:
-                    st.toast(f"📈 Good News! {market_item} prices are UP! Sell now for bonus.")
-                    game['money'] += 5 # Simplified bonus
-                else:
-                    st.toast(f"📉 Bad News! {market_item} prices crashed.")
-
-            # Event: Weather Storm (10% chance)
+                st.toast(f"📈 Market News: {market_item} prices fluctuated!")
+            
             elif event_roll < 0.3:
                 st.toast("🌧️ Heavy Rain! Some crops were washed away.")
                 crops = [(r,c) for r in range(5) for c in range(6) if game['grid'][r][c] in [2, 3]]
@@ -867,17 +953,15 @@ with main_tab2:
                     rr, cc = random.choice(crops)
                     game['grid'][rr][cc] = 0
 
-            # 3. INVASIVE SPECIES EVENT (Educational)
-            elif event_roll < 0.6: # 30% chance
-                # Pick a real invasive species
+            # 3. INVASIVE SPECIES EVENT
+            elif event_roll < 0.6:
                 invasives = [
-                    {"name": "Japanese Knotweed", "fact": "Damages foundations! Very hard to remove."},
-                    {"name": "Himalayan Balsam", "fact": "Outcompetes native flowers."},
-                    {"name": "Giant Hogweed", "fact": "Sap causes burns! Avoid touching."},
-                    {"name": "Rhododendron", "fact": "Toxic soil, prevents trees growing."}
+                    {"name": "Japanese Knotweed", "fact": "Damages foundations!"},
+                    {"name": "Himalayan Balsam", "fact": "Takes over riverbanks."},
+                    {"name": "Giant Hogweed", "fact": "Sap causes burns!"},
+                    {"name": "Rhododendron", "fact": "Toxic soil."}
                 ]
                 invasive = random.choice(invasives)
-                
                 empty_spots = [(r,c) for r in range(5) for c in range(6) if game['grid'][r][c] == 0]
                 if empty_spots:
                     rr, cc = random.choice(empty_spots)
