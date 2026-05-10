@@ -155,7 +155,7 @@ def init_session_state():
 init_session_state()
 
 # --- SIDEBAR ---
-st.sidebar.title("🌿 Rocen Homestead")
+st.sidebar.title("🌿 Rocen Homesteady")
 st.sidebar.markdown("**Educational Foraging Tools**")
 
 # --- MAIN TABS ---
