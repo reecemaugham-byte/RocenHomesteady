@@ -642,9 +642,13 @@ with main_tab2:
         # --- TOOL SELECTION ---
         st.markdown("### 🛠️ Toolbox")
         
-        # Tools: "Carrot" costs 10. "Clear" is free.
+        # Expanded Tools
         tools = {
             "🥕 Carrot (£10)": "Carrot",
+            "🌾 Wheat (£15)": "Wheat",
+            "🌽 Corn (£20)": "Corn",
+            "🐔 Chicken (£50)": "Chicken",
+            "🐄 Cow (£100)": "Cow",
             "🧹 Clear Invasive (Free)": "Clear"
         }
         
@@ -664,10 +668,15 @@ with main_tab2:
 
         # --- THE GRID ---
         st.markdown("### 🗺️ Your Farm")
-        st.markdown("`🟤` Dirt | `🌊` Stream | `🌱` Seed | `🌿` Growing | `🌾` Ready | `🥀` **Invasive**")
+        st.markdown("`🟤` Dirt | `🌊` Stream | `🌱` Seed | `🌿` Growing | `🌾` Ready | `🐔` Chicken | `🐄` Cow | `🥀` **Invasive**")
         
         # Icons
-        icons = {0: "🟤", 1: "🌊", 2: "🌱", 3: "🌿", 4: "🌾", 7: "🥀"}
+        # 0=Dirt, 1=Stream, 2=Seed, 3=Growing, 4=Ready
+        # 5=Chicken, 6=Cow, 7=Invasive
+        icons = {
+            0: "🟤", 1: "🌊", 2: "🌱", 3: "🌿", 4: "🌾", 
+            5: "🐔", 6: "🐄", 7: "🥀"
+        }
 
         # Render Grid
         for r in range(5):
@@ -679,31 +688,65 @@ with main_tab2:
                 # 1. HANDLE INVASIVE CLEARING
                 if tile_val == 7 and game['tool'] == "Clear":
                     if cols[c].button("🥀 CLEAR", key=f"{r}_{c}"):
-                        game['grid'][r][c] = 0 # Remove invasive
+                        game['grid'][r][c] = 0
                         game['invasives_cleared'] += 1
                         st.success("Invasive Removed!")
                         st.rerun()
                 
-                # 2. HANDLE PLANTING (If tile is Dirt 0 and Tool is Carrot)
-                elif tile_val == 0 and game['tool'] == "Carrot":
-                    can_afford = game['money'] >= 10
-                    if cols[c].button(f"Plant (£10)", key=f"plant_{r}_{c}", disabled=not can_afford):
-                        game['money'] -= 10
-                        game['grid'][r][c] = 2 # Set to Seed stage
+                # 2. HANDLE PLANTING CROPS (Carrot, Wheat, Corn)
+                elif tile_val == 0 and game['tool'] in ["Carrot", "Wheat", "Corn"]:
+                    # Define costs
+                    costs = {"Carrot": 10, "Wheat": 15, "Corn": 20}
+                    cost = costs[game['tool']]
+                    
+                    can_afford = game['money'] >= cost
+                    if cols[c].button(f"Plant (£{cost})", key=f"plant_{r}_{c}", disabled=not can_afford):
+                        game['money'] -= cost
+                        game['grid'][r][c] = 2 # All crops start as Seed (ID 2)
                         st.rerun()
 
-                # 3. HANDLE HARVESTING (If tile is Ready 4)
+                # 3. HANDLE ANIMALS (Chicken, Cow)
+                elif tile_val == 0 and game['tool'] in ["Chicken", "Cow"]:
+                    # Define costs
+                    costs = {"Chicken": 50, "Cow": 100}
+                    cost = costs[game['tool']]
+                    
+                    # Define ID for grid
+                    animal_ids = {"Chicken": 5, "Cow": 6}
+                    
+                    can_afford = game['money'] >= cost
+                    if cols[c].button(f"Buy (£{cost})", key=f"buy_{r}_{c}", disabled=not can_afford):
+                        game['money'] -= cost
+                        game['grid'][r][c] = animal_ids[game['tool']]
+                        st.rerun()
+                
+                # 4. HANDLE HARVESTING (Crops - Ready)
                 elif tile_val == 4:
                     if cols[c].button("🌾 Harvest", key=f"harv_{r}_{c}"):
-                        harvest_val = 15 # Sell price
+                        # Harvest value random for now
+                        harvest_val = random.randint(15, 30)
                         game['money'] += harvest_val
                         game['grid'][r][c] = 0 # Reset to dirt
-                        st.success(f"Sold for £{harvest_val}!")
+                        st.success(f"Sold Crop! +£{harvest_val}")
                         st.rerun()
 
-                # 4. DEFAULT DISPLAY
+                # 5. HANDLE SELLING ANIMALS (Click to sell)
+                elif tile_val == 5: # Chicken
+                    if cols[c].button("🐔 Sell", key=f"sell_chick_{r}_{c}"):
+                        game['money'] += 25 # Sell for profit
+                        game['grid'][r][c] = 0
+                        st.success("Sold Chicken! +£25")
+                        st.rerun()
+                
+                elif tile_val == 6: # Cow
+                    if cols[c].button("🐄 Sell", key=f"sell_cow_{r}_{c}"):
+                        game['money'] += 60 # Sell for profit
+                        game['grid'][r][c] = 0
+                        st.success("Sold Cow! +£60")
+                        st.rerun()
+
+                # 6. DEFAULT DISPLAY (Show Icon)
                 else:
-                    # Just show the icon
                     cols[c].markdown(f"<div style='text-align:center; font-size:24px;'>{icon}</div>", unsafe_allow_html=True)
 
         st.markdown("---")
