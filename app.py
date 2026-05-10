@@ -23,13 +23,14 @@ try:
 except:
     client = None
 
+# Define the Theme Function
 def apply_forest_theme():
     st.markdown("""
     <style>
-    /* Main Background - Mossy Green */
+    /* Main Background - Darker Sage */
     .stApp {
-        background-color: #DCE8DC; /* Misty Green */
-        background-image: radial-gradient(#C8D6C8 1px, transparent 1px);
+        background-color: #C8D6C8; /* Darker than before */
+        background-image: radial-gradient(#A8BCA8 1px, transparent 1px);
         background-size: 20px 20px;
     }
 
@@ -38,11 +39,11 @@ def apply_forest_theme():
         color: #1B4D3E !important;
     }
 
-    /* Headings - Earthy Brown */
+    /* Headings - Darker Brown */
     h1, h2, h3 {
-        color: #5D4037 !important;
+        color: #3E2723 !important; /* Darker brown */
         font-family: 'Georgia', serif !important;
-        border-bottom: 2px solid #A5D6A7;
+        border-bottom: 2px solid #8FBC8F; /* Softer green border */
         padding-bottom: 10px;
     }
 
@@ -61,14 +62,14 @@ def apply_forest_theme():
         transform: scale(1.02);
     }
 
-    /* Sidebar - Sage Green */
+    /* Sidebar - Dark Sage */
     [data-testid="stSidebar"] {
-        background-color: #C8D6C8;
+        background-color: #A8C0A8; /* Darker Sage */
     }
 
-    /* Metric Boxes (Game Stats) */
+    /* Metric Boxes - Soft Off-White */
     [data-testid="stMetric"] {
-        background-color: #FFFFFF;
+        background-color: #F5F9F5; /* Not pure white */
         border-radius: 10px;
         padding: 10px;
         box-shadow: 0 0 0 1px #C8E6C9;
@@ -87,7 +88,7 @@ def apply_forest_theme():
 
     /* Expander (Used in Learning) */
     .streamlit-expanderHeader {
-        background-color: #FFFFFF;
+        background-color: #F5F9F5; /* Soft off-white */
         border-radius: 10px;
         border-left: 5px solid #4CAF50;
         font-weight: bold;
@@ -95,6 +96,7 @@ def apply_forest_theme():
     </style>
     """, unsafe_allow_html=True)
 
+# Apply the theme immediately
 apply_forest_theme()
 
 # ==========================================
