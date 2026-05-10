@@ -211,6 +211,336 @@ UK_PLANTS = {
 }
 
 # ==========================================
+# STATIC LESSON CONTENT (No AI Cost)
+# ==========================================
+LESSON_CONTENT = {
+    # --- BEGINNER ---
+    "Introduction to Foraging": {
+        "text": """
+## Welcome to Foraging! 🌿
+
+**What is Foraging?**
+Foraging is the act of finding and gathering wild food. It is the oldest human skill, but today we do it for fun, health, and connection to nature.
+
+**The Golden Rule:** 
+> *If in doubt, leave it out.* 
+Never eat anything unless you are 100% sure what it is.
+
+### The Safety Toolkit 🎒
+1. **A Good Guide Book:** Pictures are never as good as a real book.
+2. **Scissors/Knife:** To cut stems cleanly.
+3. **Basket/Bag:** Never use plastic bags (plants sweat and go slimy).
+4. **Gloves:** Essential for Nettles or suspicious plants.
+5. **Phone:** For emergencies.
+
+### The Conservation Code 🌍
+We never take more than we need.
+- **The 10% Rule:** Never pick more than 10% of a patch. Leave 90% for wildlife and for the plant to reproduce.
+- **The 1 in 3 Rule:** Only pick from areas where there are at least 3 plants. If you only see one, leave it alone.
+        """,
+        "quiz": {
+            "question": "How much of a plant patch should you leave for wildlife?",
+            "options": ["10%", "50%", "90%", "All of it"],
+            "answer": "90%"
+        }
+    },
+    "Easy Plants to Identify": {
+        "text": """
+## The 'Big 4' for Beginners 🌼
+
+These are the best plants to start with because they have clear identifying features and no deadly lookalikes.
+
+### 1. Dandelion 🦁
+- **Where:** Lawns, fields, path edges.
+- **ID:** Yellow flower, hollow stem with white milky sap, 'Lion's Tooth' leaves (jagged edges).
+- **Eat:** Leaves (bitter, good in salad), Flowers (wine/fritters), Roots (coffee).
+- **Warning:** Avoid dog walking areas!
+
+### 2. Nettle 🌿
+- **Where:** Hedges, woods, gardens.
+- **ID:** Jagged leaves, stinging hairs (ouch!).
+- **Eat:** Young leaves (cooked like spinach). **Must be cooked** to remove sting.
+- **Uses:** Soup, tea, pesto. High in iron!
+
+### 3. Blackberry (Bramble) 🖤
+- **Where:** Hedges, woods.
+- **ID:** Thorns, 5-leaflet leaves, berries turn from red to black.
+- **Eat:** Berries (raw, crumble, jam).
+- **Warning:** Wear long sleeves to avoid scratches.
+
+### 4. Wild Garlic (Ramsons) 🧄
+- **Where:** Damp woodlands, near streams. Spring only.
+- **ID:** Broad green leaves, smells strongly of garlic when crushed.
+- **Warning:** Do not pick Lily of the Valley (no smell, poisonous).
+        """,
+        "quiz": {
+            "question": "Why must Nettles be cooked before eating?",
+            "options": ["They taste better", "They are poisonous raw", "To remove the sting", "They are too crunchy"],
+            "answer": "To remove the sting"
+        }
+    },
+    "Foraging Ethics": {
+        "text": """
+## Respecting the Land 🌍
+
+Foraging is a privilege, not a right. We must respect nature so it stays for future generations.
+
+### The Forager's Promise
+1. **Leave No Trace:** If you brought a wrapper, take it home.
+2. **Do Not Up-root:** Never pull a whole plant out of the ground. It kills the plant.
+3. **Respect Wildlife:** Berries feed birds in winter; leave plenty for them.
+
+### The Law (Quick Look)
+- **Picking for Personal Use:** Usually allowed on public land.
+- **Uprooting:** Illegal without permission.
+- **Commercial Sale:** Illegal without landowner permission.
+
+### Safety & Hygiene
+- **Dog Waste:** Avoid areas near paths where dogs walk.
+- **Roadside:** Avoid busy roads (pollution).
+- **Spraying:** Check if fields have been sprayed with chemicals.
+        """,
+        "quiz": {
+            "question": "Is it legal to pull a whole plant (uproot) from public land?",
+            "options": ["Yes, if I only take one", "No, it is illegal without permission", "Only if it is a weed"],
+            "answer": "No, it is illegal without permission"
+        }
+    },
+    
+    # --- INTERMEDIATE ---
+    "Seasonal Foraging": {
+        "text": """
+## The Seasonal Calendar 🗓️
+
+Nature has a menu that changes every month.
+
+### 🌸 Spring (March - May)
+*The Time of Greens.*
+- **Wild Garlic:** Look for white flowers and that smell!
+- **Nettles:** Pick the top 4-6 leaves (tips).
+- **Dandelion:** Young leaves are less bitter now.
+- **Elderflower:** Blossoms for cordial (June).
+
+### ☀️ Summer (June - August)
+*The Time of Flowers & Fruits.*
+- **Elderflower:** (June/July) Cordial, fritters.
+- **Wild Strawberry:** Tiny but tasty.
+- **Cherries:** Look for trees in parks.
+- **Meadowsweet:** Almond smell, good for tea.
+
+### 🍂 Autumn (September - November)
+*The Time of Nuts & Roots.*
+- **Blackberries:** The classic foraging fruit.
+- **Hazelnuts:** Look for squirrel signs (shells on ground).
+- **Rosehips:** High Vitamin C.
+- **Sweet Chestnuts:** Roasting material.
+- **Sloes:** Gin ingredient (frost makes them sweeter).
+
+### ❄️ Winter (December - February)
+*The Time of Resilience.*
+- **Pine Needles:** Tea (Vitamin C).
+- **Rosehips:** Still available.
+- **Winter Chanterelle:** Only for experts.
+        """,
+        "quiz": {
+            "question": "Which season is best for picking Wild Garlic?",
+            "options": ["Summer", "Autumn", "Spring", "Winter"],
+            "answer": "Spring"
+        }
+    },
+    "Coastal Foraging": {
+        "text": """
+## The Seashore Larder 🏖️
+
+The coast offers unique foods, but you must check water quality and laws.
+
+### Common Finds
+1. **Samphire (Marsh Samphire):** 
+   - 'Sea asparagus'. Green, juicy stems.
+   - **Habitat:** Mudflats, estuaries.
+   - **Eat:** Steam with butter. Salty!
+
+2. **Sea Kale:**
+   - Blueish leaves, white flowers.
+   - **Warning:** Protected in some areas. Pick sparingly.
+
+3. **Sea Spinach:**
+   - Fleshy leaves, grows on shingle.
+
+### Seaweeds 🌊
+- **Laver (Sloke):** Purple/black sheets. Wash thoroughly! Used for Laverbread (Welsh).
+- **Sugar Kelp:** Long, ribbon-like. Sweet taste.
+
+### Rules 📜
+- Check **Local Byelaws**: Some beaches ban picking.
+- **Water Quality:** Do not pick near sewage outlets or harbours.
+- **Clean:** Wash everything thoroughly to remove sand and salt.
+        """,
+        "quiz": {
+            "question": "What should you do before eating Seaweeds like Laver?",
+            "options": ["Eat raw", "Cook immediately", "Wash thoroughly to remove sand/salt", "Nothing"],
+            "answer": "Wash thoroughly to remove sand/salt"
+        }
+    },
+    "The Carrot Family": {
+        "text": """
+## The Umbellifer Challenge 🥕
+
+The Carrot family (Apiaceae) has delicious foods and **deadly poisons**. You must learn to tell them apart.
+
+### The Good (Edible)
+- **Wild Carrot:** Hairy stem, smells of carrot.
+- **Cow Parsley:** Rough hairy stem, smells parsley.
+- **Alexanders:** Yellow-green flowers, celery smell (Coastal).
+
+### The Bad (Dangerous)
+- **Hemlock (DEADLY):** Smooth purple-spotted stem. Smells of mouse urine.
+- **Hemlock Water Dropwort (DEADLY):** Grows in water. Tubers look like fingers. Deadliest in UK.
+- **Fool's Parsley:** Smells 'hot' or metallic.
+
+### ID Tips for Beginners
+1. **Smell:** Does it smell like food (carrot/parsley/celery)? If it smells musty/mousy, leave it.
+2. **Stem:** Hairy stems are usually safer in this family. Smooth/Purple spotted = Danger.
+3. **Habitat:** Hemlock loves damp ditches.
+
+> **Rule:** If you are not 100% sure, do not eat white umbrellas!
+        """,
+        "quiz": {
+            "question": "What does Hemlock smell like?",
+            "options": ["Carrot", "Parsley", "Mouse urine", "Garlic"],
+            "answer": "Mouse urine"
+        }
+    },
+
+    # --- ADVANCED ---
+    "Mushroom Foraging": {
+        "text": """
+## Fungi: The Advanced Class 🍄
+
+**Warning:** Mushroom foraging requires expert knowledge. One mistake can be fatal.
+
+### The Golden Rules
+1. **Never eat a mushroom unless 100% sure.**
+2. **Cut, don't pull:** Use a knife to cut the stem. This leaves the 'roots' (mycelium) for next year.
+3. **Spore Prints:** Sometimes you need to leave a cap on paper overnight to see the colour of the spores.
+
+### The Deadly Duo to Avoid ☠️
+1. **Death Cap (Amanita phalloides):**
+   - Green-yellow cap.
+   - White gills.
+   - Volva (cup) at base (often underground).
+   - Responsible for most mushroom deaths.
+
+2. **Destroying Angel:** White all over.
+
+### Good Beginners
+- **Chanterelle:** Egg yolk yellow, false gills (ridges), smells of apricots.
+- **Puffball:** Must be pure white inside. If purple/yellow inside, it is old.
+- **Field Mushroom:** Pink gills turning brown. Avoid yellow stainers.
+        """,
+        "quiz": {
+            "question": "If a mushroom has a 'volva' (cup) at the base, what should you do?",
+            "options": ["Eat it", "Cut it open", "Leave it (High Poison Risk)", "Smell it"],
+            "answer": "Leave it (High Poison Risk)"
+        }
+    },
+    "The Umbellifer Challenge": {
+        "text": """
+## Mastering the Carrot Family 🥕
+
+This module is for advanced students who want to master the ID of white flowers.
+
+### Anatomy of an Umbellifer
+- **Umbel:** The umbrella shape of the flowers.
+- **Bracts:** The tiny leaves under the flower. **Key ID feature.**
+- **Stem:** Check for spots, hairs, or ridges.
+
+### The 'Hemlock' Checklist
+If you see a tall white flower:
+1. **Check the Stem:** Purple spots? Smooth? -> **HEMLOCK (POISON).**
+2. **Check the Smell:** Mouse wee? -> **HEMLOCK.**
+3. **Check the Root:** Does it have tubers like fingers? -> **HEMLOCK WATER DROPWORT (POISON).**
+
+### The 'Safe' Checklist
+1. **Hairy Stem:** Usually Cow Parsley or Wild Carrot.
+2. **Smell:** Carrot, Parsley, Celery = Safe.
+3. **Root:** Carrot smell = Wild Carrot (Edible, but illegal to uproot).
+
+> **Final Word:** Do not uproot roots without permission. It is illegal and kills the plant.
+        """,
+        "quiz": {
+            "question": "What feature usually indicates a SAFE member of the Carrot family?",
+            "options": ["Purple spots", "Smooth stem", "Hairy stem", "Mouse smell"],
+            "answer": "Hairy stem"
+        }
+    },
+
+    # --- LAW & LAND ---
+    "The Law of the Land": {
+        "text": """
+## Foraging and the Law ⚖️
+
+Knowing the law protects you and nature.
+
+### The Theft Act 1968
+- **Wild Plants:** You can pick flowers, fruit, and foliage for **personal use**.
+- **Uprooting:** It is illegal to dig up any wild plant without the landowner's permission.
+- **Commercial:** You cannot sell what you pick without permission.
+
+### The Countryside Act 1981
+- **Protected Species:** It is a crime to pick, uproot, or destroy any plant listed under this Act (e.g., rare orchids).
+- **SSSIs:** Sites of Special Scientific Interest have strict rules. Do not pick anything inside them.
+
+### The 'Four Fs'
+You can legally pick:
+- **F**ruit
+- **F**oliage
+- **F**lowers
+- **F**ungi
+...for personal consumption, provided it is not a protected site or species.
+
+### Key Takeaway
+> If you are on a public footpath, you can pick blackberries. You cannot dig up roots. If you see a rare orchid, look but don't touch!
+        """,
+        "quiz": {
+            "question": "Is it legal to dig up a Wild Carrot root from a public field?",
+            "options": ["Yes, if I eat it", "Yes, if it is for dinner", "No, uprooting is illegal without permission"],
+            "answer": "No, uprooting is illegal without permission"
+        }
+    },
+    "Access Rights": {
+        "text": """
+## Where Can I Walk? 🚶‍♀️
+
+Access rights vary across the UK.
+
+### England & Wales
+- **Public Rights of Way:** You can walk on footpaths, bridleways, and byways.
+- **Access Land:** Some areas (mountains, moors, heaths) have 'Right to Roam'.
+- **Private Land:** You need permission. Trespass is a civil offense.
+
+### Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+- **Right to Roam:** Much more open. You can walk on most land (hills, forests, coast) provided you act responsibly.
+- **Restrictions:** Do not disturb crops, livestock, or houses.
+
+### The Forager's Code
+1. **Ask Permission:** If you see a private wood with mushrooms, find the owner and ask.
+2. **Be Discreet:** Do not strip an area.
+3. **Respect Farmers:** Close gates. Do not scare sheep.
+
+### Summary
+- **Roadside Verges:** Often council land. Safe to pick, but wash well (spray/runoff).
+- **Nature Reserves:** Often No Picking. Check signs.
+        """,
+        "quiz": {
+            "question": "Which country has the most open 'Right to Roam' laws?",
+            "options": ["England", "Wales", "Scotland", "Northern Ireland"],
+            "answer": "Scotland"
+        }
+    }
+}
+
+# ==========================================
 # SESSION STATE INIT
 # ==========================================
 def init_session_state():
@@ -365,136 +695,413 @@ with main_tab1:
         st.header("🎓 Learning Modules")
         st.markdown("### Structured learning paths for UK foraging")
 
+        # ==========================================
+        # STATIC LESSON CONTENT (No AI Cost)
+        # ==========================================
+        LESSON_CONTENT = {
+            # --- BEGINNER ---
+            "Introduction to Foraging": {
+                "text": """
+## Welcome to Foraging! 🌿
+
+**What is Foraging?**
+Foraging is the act of finding and gathering wild food. It is the oldest human skill, but today we do it for fun, health, and connection to nature.
+
+**The Golden Rule:** 
+> *If in doubt, leave it out.* 
+Never eat anything unless you are 100% sure what it is.
+
+### The Safety Toolkit 🎒
+1. **A Good Guide Book:** Pictures are never as good as a real book.
+2. **Scissors/Knife:** To cut stems cleanly.
+3. **Basket/Bag:** Never use plastic bags (plants sweat and go slimy).
+4. **Gloves:** Essential for Nettles or suspicious plants.
+5. **Phone:** For emergencies.
+
+### The Conservation Code 🌍
+We never take more than we need.
+- **The 10% Rule:** Never pick more than 10% of a patch. Leave 90% for wildlife and for the plant to reproduce.
+- **The 1 in 3 Rule:** Only pick from areas where there are at least 3 plants. If you only see one, leave it alone.
+                """,
+                "quiz": {
+                    "question": "How much of a plant patch should you leave for wildlife?",
+                    "options": ["10%", "50%", "90%", "All of it"],
+                    "answer": "90%"
+                }
+            },
+            "Easy Plants to Identify": {
+                "text": """
+## The 'Big 4' for Beginners 🌼
+
+These are the best plants to start with because they have clear identifying features and no deadly lookalikes.
+
+### 1. Dandelion 🦁
+- **Where:** Lawns, fields, path edges.
+- **ID:** Yellow flower, hollow stem with white milky sap, 'Lion's Tooth' leaves (jagged edges).
+- **Eat:** Leaves (bitter, good in salad), Flowers (wine/fritters), Roots (coffee).
+- **Warning:** Avoid dog walking areas!
+
+### 2. Nettle 🌿
+- **Where:** Hedges, woods, gardens.
+- **ID:** Jagged leaves, stinging hairs (ouch!).
+- **Eat:** Young leaves (cooked like spinach). **Must be cooked** to remove sting.
+- **Uses:** Soup, tea, pesto. High in iron!
+
+### 3. Blackberry (Bramble) 🖤
+- **Where:** Hedges, woods.
+- **ID:** Thorns, 5-leaflet leaves, berries turn from red to black.
+- **Eat:** Berries (raw, crumble, jam).
+- **Warning:** Wear long sleeves to avoid scratches.
+
+### 4. Wild Garlic (Ramsons) 🧄
+- **Where:** Damp woodlands, near streams. Spring only.
+- **ID:** Broad green leaves, smells strongly of garlic when crushed.
+- **Warning:** Do not pick Lily of the Valley (no smell, poisonous).
+                """,
+                "quiz": {
+                    "question": "Why must Nettles be cooked before eating?",
+                    "options": ["They taste better", "They are poisonous raw", "To remove the sting", "They are too crunchy"],
+                    "answer": "To remove the sting"
+                }
+            },
+            "Foraging Ethics": {
+                "text": """
+## Respecting the Land 🌍
+
+Foraging is a privilege, not a right. We must respect nature so it stays for future generations.
+
+### The Forager's Promise
+1. **Leave No Trace:** If you brought a wrapper, take it home.
+2. **Do Not Up-root:** Never pull a whole plant out of the ground. It kills the plant.
+3. **Respect Wildlife:** Berries feed birds in winter; leave plenty for them.
+
+### The Law (Quick Look)
+- **Picking for Personal Use:** Usually allowed on public land.
+- **Uprooting:** Illegal without permission.
+- **Commercial Sale:** Illegal without landowner permission.
+
+### Safety & Hygiene
+- **Dog Waste:** Avoid areas near paths where dogs walk.
+- **Roadside:** Avoid busy roads (pollution).
+- **Spraying:** Check if fields have been sprayed with chemicals.
+                """,
+                "quiz": {
+                    "question": "Is it legal to pull a whole plant (uproot) from public land?",
+                    "options": ["Yes, if I only take one", "No, it is illegal without permission", "Only if it is a weed"],
+                    "answer": "No, it is illegal without permission"
+                }
+            },
+            
+            # --- INTERMEDIATE ---
+            "Seasonal Foraging": {
+                "text": """
+## The Seasonal Calendar 🗓️
+
+Nature has a menu that changes every month.
+
+### 🌸 Spring (March - May)
+*The Time of Greens.*
+- **Wild Garlic:** Look for white flowers and that smell!
+- **Nettles:** Pick the top 4-6 leaves (tips).
+- **Dandelion:** Young leaves are less bitter now.
+- **Elderflower:** Blossoms for cordial (June).
+
+### ☀️ Summer (June - August)
+*The Time of Flowers & Fruits.*
+- **Elderflower:** (June/July) Cordial, fritters.
+- **Wild Strawberry:** Tiny but tasty.
+- **Cherries:** Look for trees in parks.
+- **Meadowsweet:** Almond smell, good for tea.
+
+### 🍂 Autumn (September - November)
+*The Time of Nuts & Roots.*
+- **Blackberries:** The classic foraging fruit.
+- **Hazelnuts:** Look for squirrel signs (shells on ground).
+- **Rosehips:** High Vitamin C.
+- **Sweet Chestnuts:** Roasting material.
+- **Sloes:** Gin ingredient (frost makes them sweeter).
+
+### ❄️ Winter (December - February)
+*The Time of Resilience.*
+- **Pine Needles:** Tea (Vitamin C).
+- **Rosehips:** Still available.
+- **Winter Chanterelle:** Only for experts.
+                """,
+                "quiz": {
+                    "question": "Which season is best for picking Wild Garlic?",
+                    "options": ["Summer", "Autumn", "Spring", "Winter"],
+                    "answer": "Spring"
+                }
+            },
+            "Coastal Foraging": {
+                "text": """
+## The Seashore Larder 🏖️
+
+The coast offers unique foods, but you must check water quality and laws.
+
+### Common Finds
+1. **Samphire (Marsh Samphire):** 
+   - 'Sea asparagus'. Green, juicy stems.
+   - **Habitat:** Mudflats, estuaries.
+   - **Eat:** Steam with butter. Salty!
+
+2. **Sea Kale:**
+   - Blueish leaves, white flowers.
+   - **Warning:** Protected in some areas. Pick sparingly.
+
+3. **Sea Spinach:**
+   - Fleshy leaves, grows on shingle.
+
+### Seaweeds 🌊
+- **Laver (Sloke):** Purple/black sheets. Wash thoroughly! Used for Laverbread (Welsh).
+- **Sugar Kelp:** Long, ribbon-like. Sweet taste.
+
+### Rules 📜
+- Check **Local Byelaws**: Some beaches ban picking.
+- **Water Quality:** Do not pick near sewage outlets or harbours.
+- **Clean:** Wash everything thoroughly to remove sand and salt.
+                """,
+                "quiz": {
+                    "question": "What should you do before eating Seaweeds like Laver?",
+                    "options": ["Eat raw", "Cook immediately", "Wash thoroughly to remove sand/salt", "Nothing"],
+                    "answer": "Wash thoroughly to remove sand/salt"
+                }
+            },
+            "The Carrot Family": {
+                "text": """
+## The Umbellifer Challenge 🥕
+
+The Carrot family (Apiaceae) has delicious foods and **deadly poisons**. You must learn to tell them apart.
+
+### The Good (Edible)
+- **Wild Carrot:** Hairy stem, smells of carrot.
+- **Cow Parsley:** Rough hairy stem, smells parsley.
+- **Alexanders:** Yellow-green flowers, celery smell (Coastal).
+
+### The Bad (Dangerous)
+- **Hemlock (DEADLY):** Smooth purple-spotted stem. Smells of mouse urine.
+- **Hemlock Water Dropwort (DEADLY):** Grows in water. Tubers look like fingers. Deadliest in UK.
+- **Fool's Parsley:** Smells 'hot' or metallic.
+
+### ID Tips for Beginners
+1. **Smell:** Does it smell like food (carrot/parsley/celery)? If it smells musty/mousy, leave it.
+2. **Stem:** Hairy stems are usually safer in this family. Smooth/Purple spotted = Danger.
+3. **Habitat:** Hemlock loves damp ditches.
+
+> **Rule:** If you are not 100% sure, do not eat white umbrellas!
+                """,
+                "quiz": {
+                    "question": "What does Hemlock smell like?",
+                    "options": ["Carrot", "Parsley", "Mouse urine", "Garlic"],
+                    "answer": "Mouse urine"
+                }
+            },
+
+            # --- ADVANCED ---
+            "Mushroom Foraging": {
+                "text": """
+## Fungi: The Advanced Class 🍄
+
+**Warning:** Mushroom foraging requires expert knowledge. One mistake can be fatal.
+
+### The Golden Rules
+1. **Never eat a mushroom unless 100% sure.**
+2. **Cut, don't pull:** Use a knife to cut the stem. This leaves the 'roots' (mycelium) for next year.
+3. **Spore Prints:** Sometimes you need to leave a cap on paper overnight to see the colour of the spores.
+
+### The Deadly Duo to Avoid ☠️
+1. **Death Cap (Amanita phalloides):**
+   - Green-yellow cap.
+   - White gills.
+   - Volva (cup) at base (often underground).
+   - Responsible for most mushroom deaths.
+
+2. **Destroying Angel:** White all over.
+
+### Good Beginners
+- **Chanterelle:** Egg yolk yellow, false gills (ridges), smells of apricots.
+- **Puffball:** Must be pure white inside. If purple/yellow inside, it is old.
+- **Field mushroom:** Pink gills turning brown. Avoid yellow stainers.
+                """,
+                "quiz": {
+                    "question": "If a mushroom has a 'volva' (cup) at the base, what should you do?",
+                    "options": ["Eat it", "Cut it open", "Leave it (High Poison Risk)", "Smell it"],
+                    "answer": "Leave it (High Poison Risk)"
+                }
+            },
+            "The Umbellifer Challenge": {
+                "text": """
+## Mastering the Carrot Family 🥕
+
+This module is for advanced students who want to master the ID of white flowers.
+
+### Anatomy of an Umbellifer
+- **Umbel:** The umbrella shape of the flowers.
+- **Bracts:** The tiny leaves under the flower. **Key ID feature.**
+- **Stem:** Check for spots, hairs, or ridges.
+
+### The 'Hemlock' Checklist
+If you see a tall white flower:
+1. **Check the Stem:** Purple spots? Smooth? -> **HEMLOCK (POISON).**
+2. **Check the Smell:** Mouse wee? -> **HEMLOCK.**
+3. **Check the Root:** Does it have tubers like fingers? -> **HEMLOCK WATER DROPWORT (POISON).**
+
+### The 'Safe' Checklist
+1. **Hairy Stem:** Usually Cow Parsley or Wild Carrot.
+2. **Smell:** Carrot, Parsley, Celery = Safe.
+3. **Root:** Carrot smell = Wild Carrot (Edible, but illegal to uproot).
+
+> **Final Word:** Do not uproot roots without permission. It is illegal and kills the plant.
+                """,
+                "quiz": {
+                    "question": "What feature usually indicates a SAFE member of the Carrot family?",
+                    "options": ["Purple spots", "Smooth stem", "Hairy stem", "Mouse smell"],
+                    "answer": "Hairy stem"
+                }
+            },
+
+            # --- LAW & LAND ---
+            "The Law of the Land": {
+                "text": """
+## Foraging and the Law ⚖️
+
+Knowing the law protects you and nature.
+
+### The Theft Act 1968
+- **Wild Plants:** You can pick flowers, fruit, and foliage for **personal use**.
+- **Uprooting:** It is illegal to dig up any wild plant without the landowner's permission.
+- **Commercial:** You cannot sell what you pick without permission.
+
+### The Countryside Act 1981
+- **Protected Species:** It is a crime to pick, uproot, or destroy any plant listed under this Act (e.g., rare orchids).
+- **SSSIs:** Sites of Special Scientific Interest have strict rules. Do not pick anything inside them.
+
+### The 'Four Fs'
+You can legally pick:
+- **F**ruit
+- **F**oliage
+- **F**lowers
+- **F**ungi
+...for personal consumption, provided it is not a protected site or species.
+
+### Key Takeaway
+> If you are on a public footpath, you can pick blackberries. You cannot dig up roots. If you see a rare orchid, look but don't touch!
+                """,
+                "quiz": {
+                    "question": "Is it legal to dig up a Wild Carrot root from a public field?",
+                    "options": ["Yes, if I eat it", "Yes, if it is for dinner", "No, uprooting is illegal without permission"],
+                    "answer": "No, uprooting is illegal without permission"
+                }
+            },
+            "Access Rights": {
+                "text": """
+## Where Can I Walk? 🚶‍♀️
+
+Access rights vary across the UK.
+
+### England & Wales
+- **Public Rights of Way:** You can walk on footpaths, bridleways, and byways.
+- **Access Land:** Some areas (mountains, moors, heaths) have 'Right to Roam'.
+- **Private Land:** You need permission. Trespass is a civil offense.
+
+### Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+- **Right to Roam:** Much more open. You can walk on most land (hills, forests, coast) provided you act responsibly.
+- **Restrictions:** Do not disturb crops, livestock, or houses.
+
+### The Forager's Code
+1. **Ask Permission:** If you see a private wood with mushrooms, find the owner and ask.
+2. **Be Discreet:** Do not strip an area.
+3. **Respect Farmers:** Close gates. Do not scare sheep.
+
+### Summary
+- **Roadside Verges:** Often council land. Safe to pick, but wash well (spray/runoff).
+- **Nature Reserves:** Often No Picking. Check signs.
+                """,
+                "quiz": {
+                    "question": "Which country has the most open 'Right to Roam' laws?",
+                    "options": ["England", "Wales", "Scotland", "Northern Ireland"],
+                    "answer": "Scotland"
+                }
+            }
+        }
+
+        # ==========================================
+        # DISPLAY LOGIC
+        # ==========================================
         modules = {
-            "🌱 Beginner": [
-                {"title": "Introduction to Foraging", "duration": "30 min", "topics": ["Safety basics", "UK Foraging Laws (Countryside Act)", "Essential equipment"]},
-                {"title": "Easy Plants to Identify", "duration": "45 min", "topics": ["Dandelions", "Nettles", "Blackberries", "Sorrel"]},
-                {"title": "Foraging Ethics", "duration": "20 min", "topics": ["Sustainable harvesting", "Leave no trace", "Sharing knowledge"]},
-            ],
-            "🌿 Intermediate": [
-                {"title": "Seasonal Foraging", "duration": "60 min", "topics": ["Spring greens", "Summer berries", "Autumn nuts", "Winter roots"]},
-                {"title": "Coastal Foraging", "duration": "60 min", "topics": ["Seaweeds (Laver)", "Shellfish regulations", "Coastal plants (Samphire)"]},
-                {"title": "The Carrot Family", "duration": "45 min", "topics": ["Identifying the Carrot family", "Hemlock vs Wild Carrot", "Pignut identification"]},
-            ],
-            "🌲 Advanced": [
-                {"title": "Mushroom Foraging", "duration": "90 min", "topics": ["Identification keys", "Spore prints", "Common lookalikes (Death Cap)"]},
-                {"title": "The Umbellifer Challenge", "duration": "60 min", "topics": ["Identifying the Carrot family", "Hemlock vs Cow Parsley", "Hogweed safety"]},
-            ],
-            "⚖️ UK Law & Land": [
-                {"title": "The Law of the Land", "duration": "45 min", "topics": ["Theft Act 1968", "Countryside Act 1981", "Roadside Verges", "Public Rights of Way"]},
-                {"title": "Access Rights", "duration": "30 min", "topics": ["Scotland vs England Laws", "Landowner permissions", "Byelaws"]},
-            ]
+            "🌱 Beginner": ["Introduction to Foraging", "Easy Plants to Identify", "Foraging Ethics"],
+            "🌿 Intermediate": ["Seasonal Foraging", "Coastal Foraging", "The Carrot Family"],
+            "🌲 Advanced": ["Mushroom Foraging", "The Umbellifer Challenge"],
+            "⚖️ UK Law & Land": ["The Law of the Land", "Access Rights"]
         }
 
         for level, module_list in modules.items():
             st.markdown(f"### {level}")
-            for module in module_list:
-                with st.expander(f"📚 {module['title']} ({module['duration']})"):
-                    st.markdown("**Topics Covered:**")
-                    for topic in module['topics']:
-                        st.markdown(f"- {topic}")
-
-                    btn_key = f"module_{module['title']}".replace(" ", "_")
-
-                    # 1. Start Module Button
-                    if st.button(f"Start Module: {module['title']}", key=btn_key):
-                        with st.spinner("Generating module content..."):
-                            prompt = (
-                                f"Create a comprehensive foraging lesson on: {module['title']} specifically for the UK. "
-                                f"Include specific UK laws (Wildlife and Countryside Act 1981, Theft Act 1968). "
-                                f"CRITICAL: Clearly distinguish between 'Picking for Personal Use' vs 'Commercial Sale'. "
-                                f"Explain the 'Uprooting' rule clearly. "
-                                f"Structure it for a KS2/KS3 student (ages 7-14). Define hard words like 'Umbellifer' or 'Volva'."
-                            )
-                            content = generate_text(prompt)
-                            st.session_state['current_lesson_text'] = content
-                            st.session_state['current_lesson_title'] = module['title']
-                            # Reset quiz state
-                            st.session_state['quiz_active'] = False
-                            st.session_state['module_questions'] = None
+            for title in module_list:
+                # Check if we have content for this module
+                if title in LESSON_CONTENT:
+                    data = LESSON_CONTENT[title]
+                    
+                    with st.expander(f"📚 {title} ({data['quiz']['question'][:20]}...)"): # Simple preview
+                        # 1. Start Module Button
+                        if st.button(f"Start Module: {title}", key=f"start_{title}"):
+                            st.session_state['active_module'] = title
+                            st.session_state['quiz_answered'] = False
                             st.rerun()
 
-                    # 2. Display Lesson & Actions (if generated)
-                    if st.session_state.get('current_lesson_title') == module['title']:
-                        st.markdown("---")
-                        st.markdown(st.session_state['current_lesson_text'])
+                        # 2. Display Lesson Content
+                        if st.session_state.get('active_module') == title:
+                            st.markdown("---")
+                            st.markdown(data['text'])
 
-                        # Read Aloud Button
-                        if EDGE_TTS_AVAILABLE:
-                            if st.button("🔊 Read Aloud", key=f"read_{btn_key}"):
-                                with st.spinner("Generating audio..."):
-                                    audio_file = generate_voice(st.session_state['current_lesson_text'])
-                                    if audio_file:
-                                        st.audio(audio_file)
+                            # 3. Audio Button
+                            if EDGE_TTS_AVAILABLE:
+                                if st.button("🔊 Read Aloud", key=f"audio_{title}"):
+                                    with st.spinner("Generating audio..."):
+                                        audio_file = generate_voice(data['text'])
+                                        if audio_file:
+                                            st.audio(audio_file)
+                            
+                            st.markdown("---")
+                            
+                            # 4. Quiz Section
+                            st.markdown("### 📝 Quiz")
+                            q = data['quiz']
+                            
+                            # Display radio buttons
+                            user_ans = st.radio(q['question'], q['options'], key=f"radio_{title}")
+                            
+                            # Submit Button
+                            if st.button("Submit Answer", key=f"submit_{title}"):
+                                if user_ans == q['answer']:
+                                    st.success("✅ Correct! You have completed this module.")
+                                    st.balloons()
+                                    st.session_state['quiz_answered'] = True
+                                else:
+                                    st.error(f"❌ Incorrect. The correct answer was: {q['answer']}. Please review the lesson.")
+                                    # Don't reset session state, let them try again or restart
 
-                        st.markdown("---")
-
-                        # 3. Quiz Logic
-                        if not st.session_state.get('quiz_active'):
-                            if st.button("📝 Take Quiz", key=f"start_quiz_{btn_key}"):
-                                st.session_state['quiz_active'] = True
-                                st.rerun()
-                        else:
-                            # Generate Quiz Question (JSON format for reliability)
-                            if 'module_questions' not in st.session_state or st.session_state.get('module_title_quiz') != module['title']:
-                                with st.spinner("Generating quiz question..."):
-                                    q_prompt = (
-                                        f"Based on the following lesson: '{st.session_state['current_lesson_text']}', "
-                                        f"create ONE multiple choice question suitable for a KS2 student. "
-                                        f"Return ONLY valid JSON: {{\"question\": \"...\", \"options\": [\"A\", \"B\", \"C\"], \"answer\": \"A\"}}."
-                                    )
-                                    q_text = generate_text(q_prompt)
-
-                                    # Simple JSON parser
-                                    try:
-                                        import json
-                                        # Find JSON content
-                                        start = q_text.find('{')
-                                        end = q_text.rfind('}') + 1
-                                        json_str = q_text[start:end]
-                                        q_data = json.loads(json_str)
-                                        st.session_state['module_questions'] = q_data
-                                        st.session_state['module_title_quiz'] = module['title']
-                                        st.session_state['quiz_score_mod'] = 0
-                                    except Exception as e:
-                                        st.error("Error generating quiz. Please try again.")
-                                        st.session_state['quiz_active'] = False
-
-                            # Display Quiz
-                            if 'module_questions' in st.session_state:
-                                q = st.session_state['module_questions']
-                                st.markdown("### ❓ Quiz Question:")
-                                st.write(q['question'])
-
-                                user_ans = st.radio("Select your answer:", q['options'], key=f"radio_{btn_key}")
-
-                                if st.button("Submit Answer", key=f"submit_ans_{btn_key}"):
-                                    if user_ans == q['answer']:
-                                        st.success("✅ Correct! You have completed this module.")
-                                        st.balloons()
-                                        st.session_state['quiz_active'] = False
-
-                                        # CERTIFICATE LOGIC
-                                        st.markdown("### 🏆 Claim your Certificate")
-                                        cert_name = st.text_input("Enter your name:", key=f"name_{btn_key}")
-                                        if st.button("Download Certificate", key=f"dl_{btn_key}"):
-                                            if cert_name:
-                                                cert_text = f"""
+                            # 5. Certificate Logic (Only shows after correct answer)
+                            if st.session_state.get('quiz_answered'):
+                                st.markdown("### 🏆 Claim your Certificate")
+                                cert_name = st.text_input("Enter your name for the certificate:", key=f"name_{title}")
+                                if st.button("Download Certificate", key=f"cert_{title}"):
+                                    if cert_name:
+                                        cert_text = f"""
 CERTIFICATE OF COMPLETION
 ------------------------
 Student: {cert_name}
-Module: {module['title']}
+Module: {title}
 Date: {datetime.now().strftime("%Y-%m-%d")}
 Platform: Rocen Homesteady
 Status: PASSED
-                                                """
-                                                st.download_button("📥 Download Certificate (.txt)", cert_text, file_name=f"certificate_{module['title'].replace(' ', '_')}.txt")
-                                            else:
-                                                st.warning("Please enter your name.")
+                                        """
+                                        st.download_button("📥 Download Certificate (.txt)", cert_text, file_name=f"certificate_{title.replace(' ', '_')}.txt")
                                     else:
-                                        st.error(f"❌ Incorrect. The correct answer was {q['answer']}. Please review the lesson and try again.")
-                                        st.session_state['quiz_active'] = False
-                                        st.rerun()
+                                        st.warning("Please enter your name.")
+                else:
+                    # Fallback if content is missing from dictionary
+                    st.warning(f"Content for '{title}' coming soon.")
 
 # ==========================================
 # TAB 2: GAMES
