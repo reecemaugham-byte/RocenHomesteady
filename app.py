@@ -66,96 +66,116 @@ st.set_page_config(
 def apply_forest_theme():
     st.markdown("""
     <style>
-    /* Main Background - Darker Sage */
-    .stApp {
-        background-color: #C8D6C8;
-        background-image: radial-gradient(#A8BCA8 1px, transparent 1px);
-        background-size: 20px 20px;
+    /* --- Main Background - Deep Forest Night --- */
+    .stApp, section.main > div {
+        background-color: #2E4A36; /* Deep Slate Green */
     }
 
-    /* Text Color - Deep Jungle Green */
-    .stMarkdown, .stHeader, p, label {
-        color: #1B4D3E !important;
+    /* --- Text Color - Light Mint --- */
+    /* Targeting standard text, markdown, and labels */
+    .stMarkdown, .stHeader, p, label, .stTextInput > div > div > input, .stTextArea > div > div > textarea {
+        color: #E0F0E0 !important; /* Light Greenish White */
     }
 
-    /* Headings - Darker Brown */
+    /* --- Headings - Soft Lime --- */
     h1, h2, h3 {
-        color: #3E2723 !important; 
+        color: #A5D6A7 !important; /* Light Green Accent */
         font-family: 'Georgia', serif !important;
-        border-bottom: 2px solid #8FBC8F;
+        border-bottom: 2px solid #4E6E5D;
         padding-bottom: 10px;
     }
 
-    /* Buttons - Primary Green */
+    /* --- Buttons - Bright Green --- */
     .stButton > button {
-        background-color: #4CAF50;
-        color: white;
+        background-color: #4E6E5D; /* Muted Forest */
+        color: white !important;
         border-radius: 20px;
-        border: 2px solid #388E3C;
+        border: 1px solid #66BB6A;
         padding: 10px 24px;
         font-weight: bold;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     }
     .stButton > button:hover {
-        background-color: #388E3C;
+        background-color: #66BB6A; /* Lighter Hover */
+        color: #1B4D3E !important;
         transform: scale(1.02);
     }
 
-    /* Sidebar - Dark Sage */
+    /* --- Sidebar - Darker Forest --- */
     [data-testid="stSidebar"] {
-        background-color: #A8C0A8;
+        background-color: #243B2B; /* Very Dark Green */
+    }
+    /* Sidebar Text */
+    [data-testid="stSidebar"] * {
+        color: #C8E6C9 !important;
     }
 
-    /* Metric Boxes - Soft Off-White */
+    /* --- Metric Boxes - Dark Cards --- */
     [data-testid="stMetric"] {
-        background-color: #F5F9F5;
+        background-color: #3A5A40; /* Card Background */
         border-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 0 0 1px #C8E6C9;
-        border-left: 5px solid #4CAF50;
+        padding: 15px;
+        box-shadow: 0 0 0 1px #4E6E5D;
+        border-left: 5px solid #66BB6A;
+        color: white;
+    }
+    [data-testid="stMetric"] label {
+        color: #A5D6A7 !important; /* Label Color */
+    }
+    [data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: white !important; /* Value Color */
     }
 
-    /* Tabs */
+    /* --- Tabs --- */
     .stTabs [data-badges="badge"] {
-        background-color: #F1F8E9;
-        color: #2E4A3E;
+        background-color: #3A5A40;
+        color: #C8E6C9;
     }
     button[aria-selected="true"] {
         background-color: #66BB6A !important;
-        color: white !important;
+        color: #1B4D3E !important;
+        border-bottom: 2px solid #A5D6A7;
     }
 
-    /* Expander (Used in Learning) */
+    /* --- Expander --- */
     .streamlit-expanderHeader {
-        background-color: #F5F9F5;
+        background-color: #3A5A40 !important;
         border-radius: 10px;
-        border-left: 5px solid #4CAF50;
+        border-left: 5px solid #66BB6A;
+        color: #E0F0E0 !important;
         font-weight: bold;
     }
     
-    /* Custom Warning Box for Plants */
+    /* --- Input Fields --- */
+    .stTextInput > div > div > input, .stTextArea > div > div > textarea, .stSelectbox > div > div {
+        background-color: #364F3F !important;
+        color: #E0F0E0 !important;
+        border: 1px solid #66BB6A;
+    }
+
+    /* --- Custom Warning Box --- */
     .warning-box {
-        background-color: #fff3cd;
+        background-color: #4E4527; /* Dark Brown */
         border-left: 5px solid #ffc107;
+        color: #FFE082 !important;
         padding: 10px;
         border-radius: 5px;
         margin-top: 10px;
-        color: #856404;
     }
     
-    /* Danger Box for Poisonous Plants */
+    /* --- Danger Box --- */
     .danger-box {
-        background-color: #f8d7da;
+        background-color: #4E2727; /* Dark Red */
         border-left: 5px solid #dc3545;
+        color: #EF9A9A !important;
         padding: 10px;
         border-radius: 5px;
         margin-top: 10px;
-        color: #721c24;
     }
     </style>
     """, unsafe_allow_html=True)
-    
-        # --- APPLY THEME ---
+
+# --- EXECUTE THEME ---
 apply_forest_theme()
     
 # ==========================================
