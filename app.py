@@ -66,123 +66,95 @@ st.set_page_config(
 def apply_forest_theme():
     st.markdown("""
     <style>
-    /* --- Main Background - Deep Dark Forest --- */
+    /* Main Background - Darker Sage */
     .stApp {
-        background-color: #1F2D22; /* Deep Jungle Green */
-        background-image: radial-gradient(#2A3D2E 1px, transparent 1px); /* Subtle texture */
+        background-color: #C8D6C8;
+        background-image: radial-gradient(#A8BCA8 1px, transparent 1px);
         background-size: 20px 20px;
     }
 
-    /* --- Text Colors - Light Sage for Readability --- */
+    /* Text Color - Deep Jungle Green */
     .stMarkdown, .stHeader, p, label {
-        color: #C8E6C9 !important; /* Soft Mint White */
-    }
-    
-    /* Fix input text visibility */
-    .stTextInput > div > div > input, 
-    .stTextArea > div > div > textarea {
-        color: #C8E6C9 !important;
-        background-color: #2A3D2E !important;
-        border: 1px solid #4E6E5D;
-    }
-
-    /* --- Headings - Lighter Accent --- */
-    h1, h2, h3 {
-        color: #A5D6A7 !important; /* Light Green */
-        font-family: 'Georgia', serif !important;
-        border-bottom: 2px solid #4E6E5D; /* Muted Border */
-        padding-bottom: 10px;
-    }
-
-    /* --- Buttons - Earthy Dark Green --- */
-    .stButton > button {
-        background-color: #4E6E5D; /* Muted Forest Green */
-        color: #E8F5E9 !important;
-        border-radius: 20px;
-        border: 1px solid #66BB6A;
-        padding: 10px 24px;
-        font-weight: bold;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    }
-    .stButton > button:hover {
-        background-color: #66BB6A; /* Brighter Hover */
-        transform: scale(1.02);
         color: #1B4D3E !important;
     }
 
-    /* --- Sidebar - Darker Slate --- */
-    [data-testid="stSidebar"] {
-        background-color: #172618; /* Very Dark Green */
-    }
-    /* Sidebar Text fix */
-    [data-testid="stSidebar"] * {
-        color: #C8E6C9 !important;
+    /* Headings - Darker Brown */
+    h1, h2, h3 {
+        color: #3E2723 !important; 
+        font-family: 'Georgia', serif !important;
+        border-bottom: 2px solid #8FBC8F;
+        padding-bottom: 10px;
     }
 
-    /* --- Metric Boxes - Dark Cards --- */
+    /* Buttons - Primary Green */
+    .stButton > button {
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 20px;
+        border: 2px solid #388E3C;
+        padding: 10px 24px;
+        font-weight: bold;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    .stButton > button:hover {
+        background-color: #388E3C;
+        transform: scale(1.02);
+    }
+
+    /* Sidebar - Dark Sage */
+    [data-testid="stSidebar"] {
+        background-color: #A8C0A8;
+    }
+
+    /* Metric Boxes - Soft Off-White */
     [data-testid="stMetric"] {
-        background-color: #2A3D2E;
+        background-color: #F5F9F5;
         border-radius: 10px;
         padding: 10px;
-        box-shadow: 0 0 0 1px #3E4E3F;
-        border-left: 5px solid #66BB6A;
-        color: #E8F5E9;
-    }
-    [data-testid="stMetric"] label {
-        color: #A5D6A7 !important;
+        box-shadow: 0 0 0 1px #C8E6C9;
+        border-left: 5px solid #4CAF50;
     }
 
-    /* --- Tabs --- */
+    /* Tabs */
     .stTabs [data-badges="badge"] {
-        background-color: #2A3D2E;
-        color: #C8E6C9;
+        background-color: #F1F8E9;
+        color: #2E4A3E;
     }
     button[aria-selected="true"] {
-        background-color: #4E6E5D !important;
+        background-color: #66BB6A !important;
         color: white !important;
-        border-bottom: 2px solid #66BB6A;
     }
 
-    /* --- Expander (Used in Learning) --- */
+    /* Expander (Used in Learning) */
     .streamlit-expanderHeader {
-        background-color: #2A3D2E;
+        background-color: #F5F9F5;
         border-radius: 10px;
-        border-left: 5px solid #66BB6A;
-        color: #E8F5E9 !important;
+        border-left: 5px solid #4CAF50;
         font-weight: bold;
     }
     
-    /* --- Custom Warning Box --- */
+    /* Custom Warning Box for Plants */
     .warning-box {
-        background-color: #4E4527; /* Dark Brown */
+        background-color: #fff3cd;
         border-left: 5px solid #ffc107;
-        color: #FFE082 !important;
         padding: 10px;
         border-radius: 5px;
         margin-top: 10px;
+        color: #856404;
     }
     
-    /* --- Danger Box --- */
+    /* Danger Box for Poisonous Plants */
     .danger-box {
-        background-color: #4E2727; /* Dark Red */
+        background-color: #f8d7da;
         border-left: 5px solid #dc3545;
-        color: #EF9A9A !important;
         padding: 10px;
         border-radius: 5px;
         margin-top: 10px;
-    }
-    
-    /* --- Select Box Styling --- */
-    .stSelectbox > div > div {
-        background-color: #2A3D2E !important;
-        border: 1px solid #4E6E5D;
-    }
-    /* Dropdown menu items */
-    .stSelectbox ul {
-        background-color: #2A3D2E !important;
+        color: #721c24;
     }
     </style>
     """, unsafe_allow_html=True)
+    
     apply_forest_theme()
     
 # ==========================================
