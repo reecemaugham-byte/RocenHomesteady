@@ -183,6 +183,7 @@ def apply_forest_theme():
     }
     </style>
     """, unsafe_allow_html=True)
+    apply_forest_theme()
     
 # ==========================================
 # DATA (Expanded & Improved)
