@@ -52,70 +52,84 @@ else:
 # ==========================================
 # PAGE CONFIG & THEME
 # ==========================================
-st.set_page_config(
-    page_title="Rocen Homesteady",
-    page_icon="🌿",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# Set page title and try to use logo as favicon
+try:
+    st.set_page_config(
+        page_title="Rocen Homesteady",
+        page_icon="logo.png", 
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+except:
+    st.set_page_config(
+        page_title="Rocen Homesteady",
+        page_icon="🌿",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
 
 # --- THEME FUNCTION ---
-def apply_forest_theme():
+def apply_brand_theme():
     st.markdown("""
     <style>
-    /* --- Main Background - Deep Forest Night --- */
+    /* --- Main Background - Dark Earth --- */
     .stApp, section.main > div {
-        background-color: #2E4A36; /* Deep Slate Green */
+        background-color: #3A2416; /* Dark Coffee */
     }
 
-    /* --- Text Color - Light Mint --- */
+    /* --- Text Color - White for contrast --- */
     .stMarkdown, .stHeader, p, label, .stTextInput > div > div > input, .stTextArea > div > div > textarea {
-        color: #E0F0E0 !important; /* Light Greenish White */
+        color: #FFFFFF !important; 
     }
 
-    /* --- Headings - Soft Lime --- */
+    /* --- Headings - Golden Yellow --- */
     h1, h2, h3 {
-        color: #A5D6A7 !important; /* Light Green Accent */
+        color: #E5B83E !important; /* Gold */
         font-family: 'Georgia', serif !important;
-        border-bottom: 2px solid #4E6E5D;
+        border-bottom: 2px solid #6B4226; /* Saddle Brown underline */
         padding-bottom: 10px;
     }
 
-    /* --- Buttons - Bright Green --- */
+    /* --- Buttons - Saddle Brown --- */
     .stButton > button {
-        background-color: #4E6E5D; /* Muted Forest */
+        background-color: #6B4226; /* Saddle Brown */
         color: white !important;
         border-radius: 20px;
-        border: 1px solid #66BB6A;
+        border: 1px solid #E5B83E; /* Gold border */
         padding: 10px 24px;
         font-weight: bold;
         box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     }
     .stButton > button:hover {
-        background-color: #66BB6A; /* Lighter Hover */
-        color: #1B4D3E !important;
+        background-color: #E5B83E; /* Gold Hover */
+        color: #3A2416 !important; /* Dark Text */
         transform: scale(1.02);
     }
 
-    /* --- Sidebar - Darker Forest --- */
+    /* --- Sidebar - Forest Green --- */
     [data-testid="stSidebar"] {
-        background-color: #243B2B; /* Very Dark Green */
+        background-color: #3F5F2A; /* Deep Forest Green */
     }
     [data-testid="stSidebar"] * {
-        color: #C8E6C9 !important;
+        color: #FFFFFF !important; /* White text on green */
+    }
+    
+    /* Sidebar specific adjustments */
+    [data-testid="stSidebar"] .stMarkdown hr {
+        border-color: #E5B83E;
     }
 
-    /* --- Metric Boxes - Dark Cards --- */
+    /* --- Metric Boxes - Wood Brown --- */
     [data-testid="stMetric"] {
-        background-color: #3A5A40; /* Card Background */
+        background-color: #6B4226; /* Saddle Brown */
         border-radius: 10px;
         padding: 15px;
-        box-shadow: 0 0 0 1px #4E6E5D;
-        border-left: 5px solid #66BB6A;
+        box-shadow: 0 0 0 1px #E5B83E; /* Gold outline */
+        border-left: 5px solid #E5B83E; /* Gold left bar */
         color: white;
     }
     [data-testid="stMetric"] label {
-        color: #A5D6A7 !important; /* Label Color */
+        color: #E5B83E !important; /* Gold Label */
     }
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
         color: white !important; /* Value Color */
@@ -123,36 +137,36 @@ def apply_forest_theme():
 
     /* --- Tabs --- */
     .stTabs [data-badges="badge"] {
-        background-color: #3A5A40;
-        color: #C8E6C9;
+        background-color: #3F5F2A;
+        color: #FFFFFF;
     }
     button[aria-selected="true"] {
-        background-color: #66BB6A !important;
-        color: #1B4D3E !important;
-        border-bottom: 2px solid #A5D6A7;
+        background-color: #E5B83E !important; /* Gold active tab */
+        color: #3A2416 !important;
+        border-bottom: 2px solid #6B4226;
     }
 
     /* --- Expander --- */
     .streamlit-expanderHeader {
-        background-color: #3A5A40 !important;
+        background-color: #6B4226 !important; /* Saddle Brown */
         border-radius: 10px;
-        border-left: 5px solid #66BB6A;
-        color: #E0F0E0 !important;
+        border-left: 5px solid #E5B83E; /* Gold left bar */
+        color: #FFFFFF !important;
         font-weight: bold;
     }
     
     /* --- Input Fields --- */
     .stTextInput > div > div > input, .stTextArea > div > div > textarea, .stSelectbox > div > div {
-        background-color: #364F3F !important;
-        color: #E0F0E0 !important;
-        border: 1px solid #66BB6A;
+        background-color: #3F5F2A !important; /* Green input bg */
+        color: #FFFFFF !important;
+        border: 1px solid #E5B83E;
     }
 
     /* --- Custom Warning Box --- */
     .warning-box {
-        background-color: #4E4527; /* Dark Brown */
-        border-left: 5px solid #ffc107;
-        color: #FFE082 !important;
+        background-color: #6B4226;
+        border-left: 5px solid #E5B83E;
+        color: #FFFFFF !important;
         padding: 10px;
         border-radius: 5px;
         margin-top: 10px;
@@ -160,7 +174,7 @@ def apply_forest_theme():
     
     /* --- Danger Box --- */
     .danger-box {
-        background-color: #4E2727; /* Dark Red */
+        background-color: #6B4226;
         border-left: 5px solid #dc3545;
         color: #EF9A9A !important;
         padding: 10px;
@@ -170,7 +184,7 @@ def apply_forest_theme():
     </style>
     """, unsafe_allow_html=True)
 
-apply_forest_theme()
+apply_brand_theme()
 
 # ==========================================
 # DATA (Upgraded with Latin Names & ID Keys)
@@ -426,10 +440,19 @@ def generate_voice(text, filename="temp_audio.mp3"):
 # ==========================================
 # SIDEBAR
 # ==========================================
-st.sidebar.title("🌿 Rocen Homesteady")
+# --- LOGO SECTION ---
+# Attempts to load your logo.png. Falls back to text if file not found.
+try:
+    st.sidebar.image("logo.png", width=150)
+except:
+    st.sidebar.title("🌿 Rocen Homesteady")
+
+# --- PLAYER STATS ---
 st.sidebar.markdown(f"**🎓 Rank:** {st.session_state.player_title}")
 st.sidebar.markdown(f"**🌱 Plants ID'd:** {st.session_state.total_plants_identified}")
 st.sidebar.markdown("---")
+
+# --- SAFETY INFO ---
 st.sidebar.warning("⚠️ **Safety First**")
 st.sidebar.markdown("""
 - Never eat a plant based solely on app ID.
@@ -437,6 +460,18 @@ st.sidebar.markdown("""
 - **UK Law:** Only pick for personal use.
 - It is illegal to uproot plants without permission.
 """)
+
+# --- BUSINESS DETAILS ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("""
+<div style="text-align: center; font-size: 12px; line-height: 1.4;">
+    <b>Rocen Homesteady LTD</b><br>
+    4th Floor<br>
+    14 Museum Place, City Centre<br>
+    Cardiff<br>
+    CF10 3BH
+</div>
+""", unsafe_allow_html=True)
 
 # ==========================================
 # TABS
