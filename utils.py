@@ -57,7 +57,10 @@ def init_session_state():
         'season_badge_progress': [], 'survival_correct_count': 0, 'survival_current_case': None,
         'survival_result': None, 'daily_streak': 0, 'quiz_active': False, 'module_questions': None,
         'player_title': "Novice Gatherer",
-        'total_plants_identified': 0
+        'total_plants_identified': 0,
+        # NEW GAMIFICATION VARIABLES:
+        'total_xp': 0,
+        'completed_modules': []
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -563,7 +566,6 @@ UK_PLANTS = {
             ],
             "confusion_notes": "Critical: Pine needles are round and in bundles. Yew needles are flat and toxic."
         },
-
         # --- BATCH 1 ADDITIONS (Trees, Coastal, Fungi) ---
         {
             "name": "Silver Birch",
@@ -1162,6 +1164,64 @@ UK_PLANTS = {
                 }
             ],
             "confusion_notes": "Confused with Hemlock. **Key Diff:** Hemlock has purple spots and smells of mouse urine. Alexanders is green, solid-stemmed, and smells like celery."
+        },
+        # --- NEW ADDITIONS: CABBAGE FAMILY (BRASSICACEAE) ---
+         {
+            "name": "Charlock",
+            "latin_name": "Sinapis arvensis",
+            "category": "Plant",
+            "months": ["May", "June", "July", "August"],
+            "habitat": "Fields, Waste Ground, Arable Land",
+            "regions": ["All"],
+            "difficulty": 1,
+            "parts": "Leaves, Flowers, Seeds",
+            "warnings": "Taste is hot/spicy (mustard). Use in moderation.",
+            "description": "**Identification:** Bright yellow flowers (4 petals in a cross). Rough/hairy leaves. Seed pods are like small sausage shapes.",
+            "id_keys": {
+                "Flowers": "Yellow, 4 petals in a cross (Crucifer)",
+                "Leaves": "Rough, hairy, lobed",
+                "Stem": "Hairy",
+                "Smell": "Hot/Mustardy when crushed"
+            },
+            "foraging_tips": {
+                "where": "Fields, roadsides, arable land.",
+                "when": "May - August.",
+                "sustainable": "Common weed. Pick freely.",
+                "danger_zone": "Can be spicy! Cook like spinach or use as seasoning."
+            },
+            "lookalikes": [
+                {"name": "Rape (Oilseed Rape)", "danger": "EDIBLE", "diff": "Tall, blue-green leaves. Yellow flowers. Edible but bitter."},
+                {"name": "Hedge Mustard", "danger": "EDIBLE", "diff": "Has a distinctive 'sauce' smell. Edible."}
+            ],
+            "confusion_notes": "Safe. The Cabbage family (Brassicaceae) is generally safe in the UK. If it has 4 petals in a cross and smells mustardy, it is likely edible."
+        },
+        {
+            "name": "Shepherd's Purse",
+            "latin_name": "Capsella bursa-pastoris",
+            "category": "Plant",
+            "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            "habitat": "Gardens, Fields, Paths, Waste Ground",
+            "regions": ["All"],
+            "difficulty": 1,
+            "parts": "Leaves, Seeds (peppery)",
+            "warnings": "Seeds are peppery. Leaves best when young.",
+            "description": "**Identification:** Rosette of leaves at base (dandelion-like). Tiny white flowers. Distinctive heart-shaped seed pods (purses).",
+            "id_keys": {
+                "Leaves": "Lobed, dandelion-like rosette (deep teeth)",
+                "Flowers": "Tiny white, 4 petals",
+                "Seeds": "Heart-shaped purses (distinctive)",
+                "Height": "Low to medium (up to 40cm)"
+            },
+            "foraging_tips": {
+                "where": "Everywhere. Gardens, paths, fields.",
+                "when": "Year round (Best in Spring).",
+                "sustainable": "Very common weed. Pick freely.",
+                "danger_zone": "Seeds can be used as a pepper substitute."
+            },
+            "lookalikes": [
+                {"name": "None dangerous", "danger": "SAFE", "diff": "Distinctive heart-shaped seed pods make it easy to ID."}
+            ],
+            "confusion_notes": "Safe. One of the most common weeds. Look for the 'purse' shaped seed pods."
         }
     ],
     "poisonous": [
@@ -1563,164 +1623,319 @@ UK_PLANTS = {
             "confusion_notes": "Do not touch the berries (irritant). Distinctive from wild hops or hops which have different fruit."
         }
     ]
-} # <--- THIS WAS MISSING
+}
 
 LESSON_CONTENT = {
     "Introduction to Foraging": {
-        "text": """
+        "steps": [
+            {
+                "type": "text",
+                "content": """
 ## Welcome to Foraging! 🌿
 
 **What is Foraging?**
 Foraging is the act of finding and gathering wild food. It is the oldest human skill, but today we do it for fun, health, and connection to nature.
 
-**The Golden Rule:**
-> *If in doubt, leave it out.*
+**The Golden Rule:** 
+> *If in doubt, leave it out.* 
 Never eat anything unless you are 100% sure what it is.
-
+"""
+            },
+            {
+                "type": "quiz",
+                "question": "The 'Golden Rule' of foraging is...",
+                "options": ["Eat everything you find", "If in doubt, leave it out", "Cook it first"],
+                "answer": "If in doubt, leave it out",
+                "feedback": "Correct! Safety is always the priority."
+            },
+            {
+                "type": "text",
+                "content": """
 ### The Safety Toolkit 🎒
+Before you go out, you need the right gear.
 1. **A Good Guide Book:** Pictures are never as good as a real book.
 2. **Scissors/Knife:** To cut stems cleanly.
 3. **Basket/Bag:** Never use plastic bags (plants sweat and go slimy).
 4. **Gloves:** Essential for Nettles or suspicious plants.
 5. **Phone:** For emergencies.
-
+"""
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Nettles"
+            },
+            {
+                "type": "text",
+                "content": """
 ### The Conservation Code 🌍
 We never take more than we need.
-- **The 10% Rule:** Never pick more than 10% of a patch. Leave 90% for wildlife and for the plant to reproduce.
+- **The 10% Rule:** Never pick more than 10% of a patch. Leave 90% for wildlife.
 - **The 1 in 3 Rule:** Only pick from areas where there are at least 3 plants. If you only see one, leave it alone.
-""",
-        "quiz": {
-            "question": "How much of a plant patch should you leave for wildlife?",
-            "options": ["10%", "50%", "90%", "All of it"],
-            "answer": "90%"
-        }
+"""
+            },
+            {
+                "type": "final_quiz",
+                "question": "How much of a plant patch should you leave for wildlife?",
+                "options": ["10%", "50%", "90%", "All of it"],
+                "answer": "90%",
+                "reward": 10
+            }
+        ]
     },
     "Easy Plants to Identify": {
-        "text": """
-## The 'Big 4' for Beginners 🌼
-
-These are the best plants to start with because they have clear identifying features and no deadly lookalikes.
-
-### 1. Dandelion 🦁
-- **Where:** Lawns, fields, path edges.
-- **ID:** Yellow flower, hollow stem with white milky sap, 'Lion's Tooth' leaves (jagged edges).
-- **Eat:** Leaves (bitter, good in salad), Flowers (wine/fritters), Roots (coffee).
-- **Warning:** Avoid dog walking areas!
-
-### 2. Nettle 🌿
-- **Where:** Hedges, woods, gardens.
-- **ID:** Jagged leaves, stinging hairs (ouch!).
-- **Eat:** Young leaves (cooked like spinach). **Must be cooked** to remove sting.
-- **Uses:** Soup, tea, pesto. High in iron!
-
-### 3. Blackberry (Bramble) 🖤
-- **Where:** Hedges, woods.
-- **ID:** Thorns, 5-leaflet leaves, berries turn from red to black.
-- **Eat:** Berries (raw, crumble, jam).
-- **Warning:** Wear long sleeves to avoid scratches.
-
-### 4. Wild Garlic (Ramsons) 🧄
-- **Where:** Damp woodlands, near streams. Spring only.
-- **ID:** Broad green leaves, smells strongly of garlic when crushed.
-- **Warning:** Do not pick Lily of the Valley (no smell, poisonous).
-""",
-        "quiz": {
-            "question": "Why must Nettles be cooked before eating?",
-            "options": ["They taste better", "They are poisonous raw", "To remove the sting", "They are too crunchy"],
-            "answer": "To remove the sting"
-        }
+        "steps": [
+            {
+                "type": "text",
+                "content": "## The 'Big 3' for Beginners 🌼\nThese are the best plants to start with because they have clear identifying features and no deadly lookalikes."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Dandelion"
+            },
+            {
+                "type": "quiz",
+                "question": "What is the 'Lion's Tooth'?",
+                "options": ["The root", "The jagged leaves", "The yellow flower"],
+                "answer": "The jagged leaves",
+                "feedback": "Correct! The leaves look like lion's teeth."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Blackberries"
+            },
+            {
+                "type": "text",
+                "content": "### ⚠️ Safety Tip\nBlackberries have **thorns**. Always wear long sleeves and gloves when picking them to avoid scratches."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Wild Garlic"
+            },
+            {
+                "type": "text",
+                "content": "### The Smell Test\nWild Garlic is one of the safest plants because of its strong smell. If it doesn't smell like garlic, **do not eat it**."
+            },
+            {
+                "type": "final_quiz",
+                "question": "Why is Wild Garlic considered safe for beginners?",
+                "options": ["It grows everywhere", "The strong garlic smell identifies it", "It has no thorns"],
+                "answer": "The strong garlic smell identifies it",
+                "reward": 15
+            }
+        ]
     },
     "The Carrot Family": {
-        "text": """
-## The Umbellifer Challenge 🥕
-
-The Carrot family (Apiaceae) has delicious foods and **deadly poisons**. You must learn to tell them apart.
-
-### The Good (Edible)
-- **Wild Carrot:** Hairy stem, smells of carrot.
-- **Cow Parsley:** Rough hairy stem, smells parsley.
-- **Alexanders:** Yellow-green flowers, celery smell (Coastal).
-
-### The Bad (Dangerous)
-- **Hemlock (DEADLY):** Smooth purple-spotted stem. Smells of mouse urine.
-- **Hemlock Water Dropwort (DEADLY):** Grows in water. Tubers look like fingers. Deadliest in UK.
-- **Fool's Parsley:** Smells 'hot' or metallic.
-
-### ID Tips for Beginners
-1. **Smell:** Does it smell like food (carrot/parsley/celery)? If it smells musty/mousy, leave it.
-2. **Stem:** Hairy stems are usually safer in this family. Smooth/Purple spotted = Danger.
-3. **Habitat:** Hemlock loves damp ditches.
-
-> **Rule:** If you are not 100% sure, do not eat white umbrellas!
-""",
-        "quiz": {
-            "question": "What does Hemlock smell like?",
-            "options": ["Carrot", "Parsley", "Mouse urine", "Garlic"],
-            "answer": "Mouse urine"
-        }
+        "steps": [
+            {
+                "type": "text",
+                "content": "## The Umbellifer Challenge 🥕\nThe Carrot family (Apiaceae) has delicious foods and **deadly poisons**. You must learn to tell them apart."
+            },
+            {
+                "type": "text",
+                "content": "### The Good (Edible)\n- **Wild Carrot:** Hairy stem, smells of carrot.\n- **Cow Parsley:** Rough hairy stem, smells parsley."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Hemlock"
+            },
+            {
+                "type": "quiz",
+                "question": "Hemlock has a distinctive feature on its stem. What is it?",
+                "options": ["Hairy texture", "Purple spots", "Blue stripes"],
+                "answer": "Purple spots",
+                "feedback": "Correct! Purple spots usually mean danger in this family."
+            },
+            {
+                "type": "text",
+                "content": "### ID Tips for Beginners\n1. **Smell:** Does it smell like food (carrot/parsley)? If it smells musty/mousy, leave it.\n2. **Stem:** Hairy stems are usually safer. Smooth/Purple spotted = Danger.\n3. **Habitat:** Hemlock loves damp ditches."
+            },
+            {
+                "type": "final_quiz",
+                "question": "What does Hemlock smell like?",
+                "options": ["Carrot", "Parsley", "Mouse urine", "Garlic"],
+                "answer": "Mouse urine",
+                "reward": 20
+            }
+        ]
     },
     "Mushroom Foraging": {
-        "text": """
-## Fungi: The Advanced Class 🍄
-
-**Warning:** Mushroom foraging requires expert knowledge. One mistake can be fatal.
-
-### The Golden Rules
-1. **Never eat a mushroom unless 100% sure.**
-2. **Cut, don't pull:** Use a knife to cut the stem. This leaves the 'roots' (mycelium) for next year.
-3. **Spore Prints:** Sometimes you need to leave a cap on paper overnight to see the colour of the spores.
-
-### The Deadly Duo to Avoid ☠️
-1. **Death Cap (Amanita phalloides):**
-   - Green-yellow cap.
-   - White gills.
-   - Volva (cup) at base (often underground).
-   - Responsible for most mushroom deaths.
-
-2. **Destroying Angel:** White all over.
-
-### Good Beginners
-- **Chanterelle:** Egg yolk yellow, false gills (ridges), smells of apricots.
-- **Puffball:** Must be pure white inside. If Purple/yellow inside, it is old.
-- **Field mushroom:** Pink gills turning brown. Avoid yellow stainers.
-""",
-        "quiz": {
-            "question": "If a mushroom has a 'volva' (cup) at the base, what should you do?",
-            "options": ["Eat it", "Cut it open", "Leave it (High Poison Risk)", "Smell it"],
-            "answer": "Leave it (High Poison Risk)"
-        }
+        "steps": [
+            {
+                "type": "text",
+                "content": "## Fungi: The Advanced Class 🍄\n**Warning:** Mushroom foraging requires expert knowledge. One mistake can be fatal."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Death Cap"
+            },
+            {
+                "type": "quiz",
+                "question": "What feature does the Death Cap have at its base?",
+                "options": ["A ring", "A volva (cup)", "Blue spots"],
+                "answer": "A volva (cup)",
+                "feedback": "Correct! The volva is often underground, so you must dig carefully."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Chanterelle"
+            },
+            {
+                "type": "text",
+                "content": "### Golden Rules\n1. **Never eat a mushroom unless 100% sure.**\n2. **Cut, don't pull:** Leave the 'roots' (mycelium) for next year.\n3. **Spore Prints:** Sometimes you need to leave a cap on paper overnight to check spore colour."
+            },
+            {
+                "type": "final_quiz",
+                "question": "Should you pull mushrooms out of the ground?",
+                "options": ["Yes, get the whole thing", "No, cut the stem", "Only if they are red"],
+                "answer": "No, cut the stem",
+                "reward": 25
+            }
+        ]
     },
     "The Law of the Land": {
-        "text": """
-## Foraging and the Law ⚖️
-
-Knowing the law protects you and nature.
-
-### The Theft Act 1968
-- **Wild Plants:** You can pick flowers, fruit, and foliage for **personal use**.
-- **Uprooting:** It is illegal to dig up any wild plant without the landowner's permission.
-- **Commercial:** You cannot sell what you pick without permission.
-
-### The Countryside Act 1981
-- **Protected Species:** It is a crime to pick, uproot, or destroy any plant listed under this Act (e.g., rare orchids).
-- **SSSIs:** Sites of Special Scientific Interest have strict rules. Do not pick anything inside them.
-
-### The 'Four Fs'
-You can legally pick:
-- **F**ruit
-- **F**oliage
-- **F**lowers
-- **F**ungi
-...for personal consumption, provided it is not a protected site or species.
-
-### Key Takeaway
-> If you are on a public footpath, you can pick blackberries. You cannot dig up roots. If you see a rare orchid, look but don't touch!
-""",
-        "quiz": {
-            "question": "Is it legal to dig up a Wild Carrot root from a public field?",
-            "options": ["Yes, if I only take one", "Yes, if it is for dinner", "No, uprooting is illegal without permission"],
-            "answer": "No, uprooting is illegal without permission"
-        }
+        "steps": [
+            {
+                "type": "text",
+                "content": "## Foraging and the Law ⚖️\nKnowing the law protects you and nature."
+            },
+            {
+                "type": "text",
+                "content": "### The Theft Act 1968\n- **Wild Plants:** You can pick flowers, fruit, and foliage for **personal use**.\n- **Uprooting:** It is illegal to dig up any wild plant without the landowner's permission.\n- **Commercial:** You cannot sell what you pick without permission."
+            },
+            {
+                "type": "quiz",
+                "question": "Is it legal to dig up a Wild Carrot root from a public field?",
+                "options": ["Yes, if I only take one", "Yes, if it is for dinner", "No, uprooting is illegal without permission"],
+                "answer": "No, uprooting is illegal without permission",
+                "feedback": "Correct! You can pick the leaves/flowers, but digging requires permission."
+            },
+            {
+                "type": "text",
+                "content": "### The 'Four Fs'\nYou can legally pick:\n- **F**ruit\n- **F**oliage\n- **F**lowers\n- **F**ungi\n...for personal consumption, provided it is not a protected site or species."
+            },
+            {
+                "type": "final_quiz",
+                "question": "What are the 'Four Fs' you can legally pick?",
+                "options": ["Food, Fuel, Furniture, Fences", "Fruit, Foliage, Flowers, Fungi", "Fish, Fowl, Foxes, Ferns"],
+                "answer": "Fruit, Foliage, Flowers, Fungi",
+                "reward": 15
+            }
+        ]
+    },
+    # --- NEW MODULES ---
+    "The Coastal Code": {
+        "steps": [
+            {
+                "type": "text",
+                "content": "## Coastal Foraging 🏖️\nThe coast offers amazing food like Samphire and Cockles, but it has unique dangers."
+            },
+            {
+                "type": "text",
+                "content": "### Safety First\n1. **Tides:** Always check the tide times. You can get cut off by rising water.\n2. **Pollution:** Do not pick shellfish near sewage pipes or harbours.\n3. **Red Tides:** Algal blooms can make shellfish toxic. Check local warnings."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Marsh Samphire"
+            },
+            {
+                "type": "quiz",
+                "question": "Why should you avoid picking shellfish near harbours?",
+                "options": ["Too many boats", "Pollution risk", "They are protected"],
+                "answer": "Pollution risk",
+                "feedback": "Correct! Harbours often have heavy boat traffic and pollution."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Cockles"
+            },
+            {
+                "type": "text",
+                "content": "### The 'R' Rule\nOnly harvest shellfish in months with an 'R' (Septemb**r** to Ap**r**il). In summer, they spawn and can be less safe to eat."
+            },
+            {
+                "type": "final_quiz",
+                "question": "When is it safer to eat shellfish?",
+                "options": ["Summer months", "Months with an 'R'", "Only on Mondays"],
+                "answer": "Months with an 'R'",
+                "reward": 20
+            }
+        ]
+    },
+    "Winter Foraging": {
+        "steps": [
+            {
+                "type": "text",
+                "content": "## Winter Survival ❄️\nForaging doesn't stop in winter! This is the time for roots and evergreens."
+            },
+            {
+                "type": "text",
+                "content": "### Roots & Bark\nWinter is the best time to dig roots because the plants send energy down to their roots.\n- **Burdock:** Look for the dead flower stalks (burrs) to find the root."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Burdock (Root)"
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Pine Needles"
+            },
+            {
+                "type": "quiz",
+                "question": "Why are roots often better in winter?",
+                "options": ["They are sweeter", "Plants store energy in roots", "They are easier to see"],
+                "answer": "Plants store energy in roots",
+                "feedback": "Correct! The energy moves from leaves to roots in winter."
+            },
+            {
+                "type": "text",
+                "content": "### Safety\nBeware of **Yew** trees in winter. They are evergreen but **deadly poisonous**. Remember: Pine needles are ROUND, Yew needles are FLAT."
+            },
+            {
+                "type": "final_quiz",
+                "question": "Which needle is POISONOUS?",
+                "options": ["Pine (Round)", "Yew (Flat)", "Spruce (Sharp)"],
+                "answer": "Yew (Flat)",
+                "reward": 25
+            }
+        ]
+    },
+    "The Cabbage Family": {
+        "steps": [
+            {
+                "type": "text",
+                "content": "## The Brassicaceae Family (Cabbage) 🥬\nThis is one of the **safest** families for beginners.\n\n**Why?** Almost all plants in this family are edible. They have a distinctive 'Cross' shape (4 petals)."
+            },
+            {
+                "type": "text",
+                "content": "### The 'Cross' Rule ✝️\nLook at the flower. Does it have **4 petals** in the shape of a cross?\n\n- **YES?** It is likely a Cabbage/Mustard relative.\n- **NO?** Be careful.\n\n**Mnemonic:** 'Crucifers have Crosses.'"
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Shepherd's Purse"
+            },
+            {
+                "type": "quiz",
+                "question": "If a flower has 4 petals arranged in a cross shape, which family is it likely from?",
+                "options": ["Carrot Family", "Cabbage Family", "Rose Family"],
+                "answer": "Cabbage Family",
+                "feedback": "Correct! The Cabbage family (Brassicaceae) always has 4 petals in a cross."
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Charlock"
+            },
+            {
+                "type": "text",
+                "content": "### Safety Check ⚠️\nWhile the Cabbage family is safe, **Hairy Bittercress** (also edible) looks similar.\nAlways check the smell. Most Brassicas have a mustardy/cabbage smell when crushed."
+            },
+            {
+                "type": "final_quiz",
+                "question": "What is the key identifier for the Cabbage family?",
+                "options": ["5 petals", "4 petals in a cross", "Umbrella flowers"],
+                "answer": "4 petals in a cross",
+                "reward": 20
+            }
+        ]
     }
 }
 
@@ -1762,9 +1977,7 @@ def render_sidebar():
     """)
 
     # --- RESET BUTTON ---
-    # Adds a button to clear progress for a new user
     if st.sidebar.button("🔄 Reset Game Stats"):
-        # Reset scores
         st.session_state.game_score = 0
         st.session_state.game_lives = 3
         st.session_state.game_streak = 0
@@ -1774,11 +1987,9 @@ def render_sidebar():
         st.session_state.total_plants_identified = 0
         st.session_state.player_title = "Novice Gatherer"
         st.session_state.season_badge_progress = []
-        # Clear specific game states if needed
         st.session_state.village = None
         st.session_state.farm_game = None
         st.sidebar.success("Stats Reset! Refreshing...")
-        # Rerun to update the UI immediately
         st.rerun()
 
     # --- BUSINESS DETAILS ---
@@ -1792,3 +2003,20 @@ def render_sidebar():
         CF10 3BH
     </div>
     """, unsafe_allow_html=True)
+
+# --- MAIN EXECUTION BLOCK ---
+if __name__ == "__main__":
+    init_session_state()
+    apply_brand_theme()
+    render_sidebar()
+    
+    st.title("🌿 Foraging Learning Platform")
+    st.write("Welcome! Use the sidebar to navigate or start a lesson below.")
+    
+    # Basic Example Usage (Placeholder)
+    lesson_names = list(LESSON_CONTENT.keys())
+    selected_lesson = st.selectbox("Choose a Lesson:", lesson_names)
+    
+    if st.button("Start Lesson"):
+        st.session_state['selected_page'] = selected_lesson
+        st.write(f"Loading {selected_lesson}...") # In a full app, this would switch pages/modes
