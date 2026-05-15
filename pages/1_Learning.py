@@ -8,7 +8,7 @@ st.set_page_config(
     page_title="Learning - Rocen Homesteady",
     page_icon="📖",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 # --- INIT ---
@@ -124,7 +124,6 @@ with learn_tab1:
                     st.markdown("#### ⚠️ Lookalike Showdown")
                     st.markdown("*Compare the safe plant with its dangerous lookalike:*")
                     
-                    # Create a DataFrame for clear comparison
                     # We reconstruct the Safe Plant data for the table
                     safe_keys = plant.get('id_keys', {})
                     
@@ -162,9 +161,11 @@ with learn_tab2:
     st.header("🎓 Learning Modules")
     st.markdown("### Structured learning paths for UK foraging")
 
+    # CORRECTED INDENTATION BELOW
     modules = {
-        "🌱 Beginner": ["Introduction to Foraging", "Easy Plants to Identify", "The Carrot Family"],
-        "🌲 Advanced": ["Mushroom Foraging", "The Law of the Land"]
+        "🌱 Beginner": ["Introduction to Foraging", "Easy Plants to Identify", "The Carrot Family", "The Cabbage Family"],
+        "🌲 Advanced": ["Mushroom Foraging", "The Law of the Land"],
+        "🏖️ Specialist": ["The Coastal Code", "Winter Foraging"]
     }
 
     for level, module_list in modules.items():
@@ -173,18 +174,99 @@ with learn_tab2:
             if title in LESSON_CONTENT:
                 data = LESSON_CONTENT[title]
                 with st.expander(f"📚 {title}"):
-                    st.markdown(data['text'])
-                    
-                    # Quiz Section
-                    st.markdown("### 📝 Quiz")
-                    q = data['quiz']
-                    user_ans = st.radio(q['question'], q['options'], key=f"radio_{title}")
-                    
-                    if st.button("Submit Answer", key=f"submit_{title}"):
-                        if user_ans == q['answer']:
-                            st.success("✅ Correct!")
-                            st.balloons()
-                        else:
-                            st.error(f"❌ Incorrect. The correct answer was: {q['answer']}.")
+                    # CHECK IF NEW FORMAT (has 'steps') or OLD FORMAT (has 'text')
+                    if "steps" in data:
+                        # --- NEW INTERACTIVE ENGINE ---
+                        total_steps = len(data['steps'])
+                        # Initialize progress for this module if not exists
+                        if f"module_progress_{title}" not in st.session_state:
+                            st.session_state[f"module_progress_{title}"] = 0
+                        
+                        current_step_idx = st.session_state[f"module_progress_{title}"]
+
+                        # Render current step
+                        step = data['steps'][current_step_idx]
+                        
+                        if step['type'] == 'text':
+                            st.markdown(step['content'])
+                            if st.button("Next ➡️", key=f"next_{title}_{current_step_idx}"):
+                                st.session_state[f"module_progress_{title}"] += 1
+                                st.rerun()
+
+                        elif step['type'] == 'quiz':
+                            st.markdown("#### ❓ Quick Check")
+                            ans = st.radio(step['question'], step['options'], key=f"quiz_{title}_{current_step_idx}")
+                            if st.button("Check Answer", key=f"check_{title}_{current_step_idx}"):
+                                if ans == step['answer']:
+                                    st.success(step.get('feedback', "Correct!"))
+                                    st.session_state[f"module_progress_{title}"] += 1
+                                    st.rerun()
+                                else:
+                                    st.error(f"Incorrect. The answer was: {step['answer']}")
+                        
+                        elif step['type'] == 'plant_card':
+                            # Find the plant in the database
+                            plant_name = step['plant_name']
+                            plant_data = next((p for p in UK_PLANTS['edible'] if p['name'] == plant_name), None)
+                            if plant_data:
+                                st.markdown(f"#### 🌿 Featured Plant: {plant_name}")
+                                st.markdown(f"**Habitat:** {plant_data.get('habitat')}")
+                                st.markdown(f"**Warning:** {plant_data.get('warnings')}")
+                                st.markdown(plant_data.get('description'))
+                            else:
+                                st.warning(f"Plant {plant_name} not found.")
+                            
+                            if st.button("Next ➡️", key=f"next_plant_{title}_{current_step_idx}"):
+                                st.session_state[f"module_progress_{title}"] += 1
+                                st.rerun()
+
+                        elif step['type'] == 'final_quiz':
+                            st.markdown("## 🏁 Module Complete!")
+                            st.markdown("Take this final quiz to finish the module.")
+                            user_ans = st.radio(step['question'], step['options'], key=f"final_{title}")
+                            if st.button("Finish Module", key=f"finish_{title}"):
+                                if user_ans == step['answer']:
+                                    st.balloons()
+                                    
+                                    # --- GAMIFICATION LOGIC ---
+                                    # 1. Award XP
+                                    xp_reward = step.get('reward', 20)
+                                    st.session_state.total_xp += xp_reward
+                                    
+                                    # 2. Award Badge (Add to list if not already there)
+                                    if title not in st.session_state.completed_modules:
+                                        st.session_state.completed_modules.append(title)
+                                    
+                                    # 3. Rank Up Logic
+                                    current_xp = st.session_state.total_xp
+                                    if current_xp >= 500:
+                                        st.session_state.player_title = "Master Forager"
+                                    elif current_xp >= 200:
+                                        st.session_state.player_title = "Expert Gatherer"
+                                    elif current_xp >= 50:
+                                        st.session_state.player_title = "Junior Forager"
+                                    
+                                    st.success(f"Module Completed! You earned **{xp_reward} XP**.")
+                                    # Reset for next time
+                                    st.session_state[f"module_progress_{title}"] = 0 
+                                else:
+                                    st.error("Not quite right. Try again!")
+                        
+                        # Progress Bar
+                        st.progress((current_step_idx + 1) / total_steps)
+
+                    else:
+                        # --- OLD FORMAT (Fallback) ---
+                        st.markdown(data.get('text', 'No content.'))
+                        st.markdown("### 📝 Quiz")
+                        q = data.get('quiz', {})
+                        if q:
+                            user_ans = st.radio(q.get('question', ''), q.get('options', []), key=f"radio_{title}")
+                            if st.button("Submit Answer", key=f"submit_{title}"):
+                                if user_ans == q.get('answer'):
+                                    st.success("✅ Correct!")
+                                    st.balloons()
+                                else:
+                                    st.error(f"❌ Incorrect. The correct answer was: {q.get('answer')}.")
             else:
                 st.warning(f"Content for '{title}' coming soon.")
