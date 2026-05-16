@@ -49,18 +49,39 @@ else:
 # --- SESSION STATE INIT ---
 def init_session_state():
     defaults = {
-        'game_score': 0, 'game_lives': 3, 'game_streak': 0, 'current_question': None,
-        'village': None, 'farm_game': None, 'survival_lives': 3, 'survival_score': 0,
-        'current_survival_pair': None, 'quiz_score': 0, 'quiz_q_num': 0, 'quiz_max': 5,
-        'q_data': None, 'chat_language': 'English', 'messages': [], 'selected_page': "Home",
-        'book_content': {}, 'book_outline': "", 'active_season': "Summer",
-        'season_badge_progress': [], 'survival_correct_count': 0, 'survival_current_case': None,
-        'survival_result': None, 'daily_streak': 0, 'quiz_active': False, 'module_questions': None,
+        'game_score': 0, 
+        'game_lives': 3, 
+        'game_streak': 0, 
+        'current_question': None,
+        'village': None, 
+        'farm_game': None, 
+        'survival_lives': 3, 
+        'survival_score': 0,
+        'current_survival_pair': None, 
+        'quiz_score': 0, 
+        'quiz_q_num': 0, 
+        'quiz_max': 5,
+        'q_data': None, 
+        'chat_language': 'English', 
+        'messages': [], 
+        'selected_page': "Home",
+        'book_content': {}, 
+        'book_outline': "", 
+        'active_season': "Summer",
+        'season_badge_progress': [], 
+        'survival_correct_count': 0, 
+        'survival_current_case': None,
+        'survival_result': None, 
+        'daily_streak': 0, 
+        'quiz_active': False, 
+        'module_questions': None,
         'player_title': "Novice Gatherer",
         'total_plants_identified': 0,
-        # NEW GAMIFICATION VARIABLES:
         'total_xp': 0,
-        'completed_modules': []
+        'completed_modules': [],
+        # NEW DIAMOND FEATURES:
+        'collection_edible': [], 
+        'game_streak_bonus': False
     }
     for key, value in defaults.items():
         if key not in st.session_state:
