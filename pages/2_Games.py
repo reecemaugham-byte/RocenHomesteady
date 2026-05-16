@@ -1,8 +1,3 @@
-import streamlit as st
-import random
-import time
-import pandas as pd
-from datetime import datetime
 from utils import init_session_state, apply_brand_theme, render_sidebar, UK_PLANTS, generate_voice, EDGE_TTS_AVAILABLE
 
 # --- PAGE CONFIG ---
@@ -14,7 +9,7 @@ st.set_page_config(
 )
 
 # --- INIT ---
-init_session_state()
+init_session_state() # <--- ENSURE THIS RUNS FIRST
 apply_brand_theme()
 render_sidebar()
 
@@ -73,20 +68,24 @@ with tab1:
     st.info(f"**Current Season:** {st.session_state.active_season} {season_icons[st.session_state.active_season]}")
 
     # --- SIDEBAR: COLLECTION TRACKER ---
-    # Show progress in sidebar
-    total_found = len(st.session_state.collection_edible)
-    st.sidebar.metric("🌿 Species Found", f"{total_found}/50")
-    if total_found > 0:
-        with st.sidebar.expander("View Collection"):
-            # Show last 5 found
-            for p in st.session_state.collection_edible[-5:]:
-                st.write(f"✅ {p}")
+        # Show progress in sidebar
+        # FIX: Use .get() to prevent AttributeError if state is missing
+        collection_list = st.session_state.get('collection_edible', [])
+        total_found = len(collection_list)
+        
+        st.sidebar.metric("🌿 Species Found", f"{total_found}/50")
+        if total_found > 0:
+            with st.sidebar.expander("View Collection"):
+                # Show last 5 found
+                for p in collection_list[-5:]:
+                    st.write(f"✅ {p}")
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("🌟 Score", st.session_state.game_score)
-    col2.metric("❤️ Lives", "❤️" * max(0, st.session_state.game_lives))
-    col3.metric("🔥 Streak", st.session_state.game_streak)
-    st.markdown("---")
+        col1, col2, col3 = st.columns(3)
+        # FIX: Also use .get() for score/lives just in case
+        col1.metric("🌟 Score", st.session_state.get('game_score', 0))
+        col2.metric("❤️ Lives", "❤️" * max(0, st.session_state.get('game_lives', 3)))
+        col3.metric("🔥 Streak", st.session_state.get('game_streak', 0))
+        st.markdown("---")
 
     active_season = st.session_state.active_season
     season_months = {"Spring": ["March", "April", "May"], "Summer": ["June", "July", "August"], "Autumn": ["September", "October", "November"], "Winter": ["December", "January", "February"]}
