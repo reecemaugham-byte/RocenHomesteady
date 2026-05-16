@@ -7,7 +7,7 @@ st.set_page_config(
     page_title="Rocen Homesteady",
     page_icon="🌿",
     layout="wide",
-    initial_sidebar_state="auto"  # CHANGED: Collapses on mobile, open on desktop
+    initial_sidebar_state="auto"
 )
 
 # --- INIT ---
@@ -30,7 +30,7 @@ st.markdown("---")
 col1, col2, col3 = st.columns(3)
 col1.metric("🌱 Plants Database", "50+")
 col2.metric("⚠️ Safety Warnings", "100+")
-col3.metric("🎮 Interactive Games", "5")
+col3.metric("🎮 Interactive Games", "6") # UPDATED: Changed from 5 to 6
 
 # --- MAIN CONTENT COLUMNS ---
 left_col, right_col = st.columns(2)
@@ -39,7 +39,7 @@ with left_col:
     st.markdown("### How to Use")
     st.markdown("""
     1. **Learn:** Study plants, trees, and fungi in the **Learning** tab.
-    2. **Play:** Test your skills in the **Games** section.
+    2. **Play:** Test your skills in the **Games** section (6 unique games!).
     3. **Track:** Check your rank and stats in the **Sidebar**.
     """)
     
@@ -58,7 +58,6 @@ with right_col:
     Based in Cardiff, we provide educational tools for families, schools, and nature enthusiasts across the UK.
     """)
     
-    # UPDATED: Business Email
     st.markdown("📧 [Contact Us](mailto:Maughamijelekhai@gmail.com)")
 
 st.markdown("---")
