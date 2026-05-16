@@ -137,7 +137,6 @@ with tab1:
 
                 all_habitats = ["Woodland", "Coastal", "Hedgerow", "Urban", "Meadow"]
                 wrong_habitats = [h for h in all_habitats if h != correct_habitat]
-                # FIXED LINE: Added closing parenthesis
                 options = [correct_habitat] + random.sample(wrong_habitats, min(3, len(wrong_habitats)))
                 random.shuffle(options)
                 st.session_state.current_question = {"plant": plant, "correct": correct_habitat, "options": options}
@@ -473,10 +472,12 @@ with tab4:
 
     game = st.session_state.village
 
+    # --- WIN CONDITION ---
     if game['stats']['Money'] >= 2000:
         st.balloons()
         st.success("🏆 **VILLAGE MASTER!** You have accumulated £2000! You win!")
 
+    # --- DEFINITIONS ---
     ITEMS_DATA = {
         "Dandelion": {"icon": "🌼", "rarity": 0.8, "value": 2, "type": "Plant"},
         "Nettle": {"icon": "🌿", "rarity": 0.8, "value": 1, "type": "Plant"},
@@ -498,13 +499,14 @@ with tab4:
         "Nature Reserve": {"cost": 150, "icon": "🌳", "desc": "Restores Nature"}
     }
 
+    # --- RENDER STATS ---
     s = game['stats']
-    m1, m2, m3, m4, m5 = st.columns(5)
-    m1.metric("🍖 Food", s['Food'])
-    m2.metric("💧 Water", s['Water'])
-    m3.metric("⚡ Power", f"{s['Power']}/{s['Max_Power']}")
-    m4.metric("💪 Stamina", s['Stamina'])
-    m5.metric("💰 Money", f"£{s['Money']}")
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.metric("🍖 Food", s['Food'])
+    c2.metric("💧 Water", s['Water'])
+    c3.metric("⚡ Power", f"{s['Power']}/{s['Max_Power']}")
+    c4.metric("💪 Stamina", s['Stamina'])
+    c5.metric("💰 Money", f"£{s['Money']}")
     
     nature = game['nature_health']
     nature_icon = "🟢" if nature > 50 else "🟡" if nature > 20 else "🔴"
@@ -518,6 +520,7 @@ with tab4:
     map_tab, forage_tab = st.tabs(["🗺️ Village Map", "🌲 Gather & Market"])
     
     with map_tab:
+        # --- PLACING MODE LOGIC ---
         if game['placing_mode']:
             st.info(f"📍 **Placing Mode:** Click an empty forest tile (🌲) to place your **{game['placing_mode']}**.")
             if st.button("❌ Cancel Placement (Refund Money)"):
@@ -529,20 +532,13 @@ with tab4:
 
         st.markdown("#### 🗺️ Your Land")
         
+        # --- CSS FOR SQUARE GRID ---
         st.markdown("""
         <style>
-        div.stButton > button {
-            width: 100%;
-            height: 3em;
-            background-color: #3A2416;
-            color: white;
-            border: 1px solid #B87333;
-            font-size: 24px;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        div.grid-cell div.stButton > button {
+            width: 100% !important; aspect-ratio: 1 / 1 !important; height: auto !important;
+            padding: 0 !important; font-size: 1.5em !important; border: 1px solid #555 !important;
+            background-color: #2b2b2b !important; color: white !important;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -552,27 +548,42 @@ with tab4:
             for col_idx, icon in enumerate(row):
                 current_tile = game['grid'][row_idx][col_idx]
                 
-                if game['placing_mode'] and current_tile == '🌲':
-                    b_name = game['placing_mode']
-                    b_icon = BUILDINGS[b_name]['icon']
-                    if cols[col_idx].button(f"📍\n{b_icon}", key=f"place_{row_idx}_{col_idx}"):
-                        game['grid'][row_idx][col_idx] = b_icon
-                        if b_name not in game['owned_buildings']: game['owned_buildings'][b_name] = 0
-                        game['owned_buildings'][b_name] += 1
-                        game['placing_mode'] = None
-                        st.success(f"{b_name} built!")
-                        st.rerun()
-                elif current_tile == '🌊':
-                    if cols[col_idx].button("🎣", key=f"fish_{row_idx}_{col_idx}", help="Fish here (-5 Stamina)"):
-                        if game['stats']['Stamina'] >= 5:
-                            game['stats']['Stamina'] -= 5
-                            game['inventory']['Fish'] = game['inventory'].get('Fish', 0) + 1
-                            st.success("Caught a Fish! 🐟")
+                with cols[col_idx]:
+                    st.markdown('<div class="grid-cell">', unsafe_allow_html=True)
+                    
+                    # 1. PLACING A BUILDING
+                    if game['placing_mode'] and current_tile == '🌲':
+                        b_name = game['placing_mode']
+                        b_icon = BUILDINGS[b_name]['icon']
+                        # Key uses 'eco_' prefix to avoid conflicts
+                        if st.button(f"📍{b_icon}", key=f"eco_place_{row_idx}_{col_idx}"):
+                            game['grid'][row_idx][col_idx] = b_icon
+                            if b_name not in game['owned_buildings']: game['owned_buildings'][b_name] = 0
+                            game['owned_buildings'][b_name] += 1
+                            game['placing_mode'] = None
+                            st.success(f"{b_name} built!")
                             st.rerun()
-                        else:
-                            st.error("Need 5 Stamina to fish.")
-                else:
-                    cols[col_idx].button(icon, key=f"view_{row_idx}_{col_idx}", disabled=True)
+
+                    # 2. STREAM (FISHING)
+                    elif current_tile == '🌊':
+                        # Key uses 'eco_' prefix
+                        if st.button("🎣", key=f"eco_fish_{row_idx}_{col_idx}"):
+                            if game['stats']['Stamina'] >= 5:
+                                game['stats']['Stamina'] -= 5
+                                game['inventory']['Fish'] = game['inventory'].get('Fish', 0) + 1
+                                st.success("Caught a Fish! 🐟")
+                                st.rerun()
+                            else:
+                                st.error("Need 5 Stamina.")
+
+                    # 3. EXISTING BUILDINGS / FOREST
+                    else:
+                        # Key uses 'eco_' prefix
+                        st.button(icon, key=f"eco_view_{row_idx}_{col_idx}", disabled=True)
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown("<style>div.grid-cell div.stButton > button { aspect-ratio: auto; } </style>", unsafe_allow_html=True)
 
         st.markdown("---")
         st.markdown("#### 🛠️ Build")
@@ -580,7 +591,9 @@ with tab4:
         if not game['placing_mode']:
             build_cols = st.columns(len(BUILDINGS))
             for i, (name, data) in enumerate(BUILDINGS.items()):
-                if build_cols[i].button(f"{data['icon']} {name}\n£{data['cost']}"):
+                # Fixed syntax: removed nested parens in string, added unique key
+                label = f"{data['icon']} {name} - £{data['cost']}"
+                if build_cols[i].button(label, key=f"buy_{name}"):
                     if game['stats']['Money'] >= data['cost']:
                         game['stats']['Money'] -= data['cost']
                         game['placing_mode'] = name
@@ -701,12 +714,7 @@ with tab5:
     t2.selectbox("Animals", ["Chicken", "Cow"], key="animal_tool")
     if t3.button("🏠 Barn (£300)"): game['tool'] = "Barn"
     if t4.button("🐝 Beehive (£200)"): game['tool'] = "Beehive"
-    if t5.button("🛒 Sell All"):
-        for item, count in game['inventory'].items():
-            price = game['market_prices'].get(item, 10)
-            game['money'] += price * count
-        game['inventory'] = {}
-        st.success("Sold everything!"); st.rerun()
+    if t5.button("🧹 Clear Invasive"): game['tool'] = "Clear"
 
     st.markdown("---")
     st.markdown("### 🎒 Inventory & Market")
@@ -725,21 +733,78 @@ with tab5:
     st.markdown("---")
     st.markdown("### 🗺️ Your Farm")
     st.info(f"Current Tool: **{game['tool']}**")
+    
+    # --- CSS FOR SQUARE GRID ---
+    st.markdown("""
+    <style>
+    div.farm-grid div.stButton > button {
+        width: 100% !important; aspect-ratio: 1 / 1 !important; height: auto !important;
+        padding: 0 !important; font-size: 1.5em !important; border: 1px solid #555 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     for r in range(5):
         cols = st.columns(6)
         for c in range(6):
             tile_val = game['grid'][r][c]
             icon = ICONS.get(tile_val, "❓")
-            if tile_val == 0 and game['tool'] in CROPS:
-                if cols[c].button(f"Plant", key=f"p_{r}_{c}"):
-                    if game['money'] >= CROPS[game['tool']]: game['money'] -= CROPS[game['tool']]; game['grid'][r][c] = 2; st.rerun()
-            elif tile_val == 4:
-                if cols[c].button(f"🌾 Harvest", key=f"h_{r}_{c}"):
-                    game['inventory']['Wheat'] = game['inventory'].get('Wheat', 0) + 1; game['grid'][r][c] = 0; st.rerun()
-            elif tile_val == 7 and game['tool'] == "Clear":
-                if cols[c].button("🧹 Clear", key=f"cl_{r}_{c}"): game['grid'][r][c] = 0; st.rerun()
-            else:
-                cols[c].markdown(f"<div style='text-align:center; font-size:24px;'>{icon}</div>", unsafe_allow_html=True)
+            
+            # Wrap in div for CSS targeting
+            with cols[c]:
+                st.markdown('<div class="farm-grid">', unsafe_allow_html=True)
+                
+                # Determine Button Logic
+                is_interactive = False
+                btn_label = icon
+                
+                if tile_val == 0: # Empty Dirt
+                    if game['tool'] in CROPS:
+                        is_interactive = True
+                        btn_label = "🌱" # Show planting icon
+                elif tile_val == 4: # Ready Crop
+                    is_interactive = True
+                    btn_label = "🌾" # Harvest icon
+                elif tile_val == 7: # Invasive
+                    if game['tool'] == "Clear":
+                        is_interactive = True
+                        btn_label = "🧹"
+                
+                # Use unique keys with 'farm_' prefix
+                if is_interactive:
+                    if st.button(btn_label, key=f"farm_{r}_{c}"):
+                        # EXECUTE ACTIONS
+                        cost = 0
+                        if tile_val == 0 and game['tool'] in CROPS: 
+                            cost = CROPS[game['tool']]
+                        
+                        if game['money'] >= cost:
+                            if tile_val == 0:
+                                game['grid'][r][c] = 2 # Seed
+                                game['money'] -= cost
+                                st.rerun()
+                            elif tile_val == 4:
+                                # Check Beehive Bonus
+                                bonus = 0
+                                for nr, nc in get_adjacent(r, c):
+                                    if game['grid'][nr][nc] == 9: bonus = 1
+                                game['inventory']['Wheat'] = game['inventory'].get('Wheat', 0) + 1 + bonus
+                                game['grid'][r][c] = 0
+                                st.rerun()
+                            elif tile_val == 7:
+                                game['grid'][r][c] = 0
+                                game['invasives_cleared'] += 1
+                                st.rerun()
+                        else:
+                            st.error("Not enough money!")
+                else:
+                    # Show Icon Only (Disabled)
+                    st.button(icon, key=f"farm_view_{r}_{c}", disabled=True)
+                
+                st.markdown('</div>', unsafe_allow_html=True)
+
+    # Reset CSS style after grid
+    st.markdown("<style>div.farm-grid div.stButton > button { aspect-ratio: auto; } </style>", unsafe_allow_html=True)
 
     if st.button("⏭️ Next Day"):
         for item in game['market_prices']: game['market_prices'][item] = max(1, int(game['market_prices'][item] * random.uniform(0.7, 1.3)))
@@ -749,7 +814,7 @@ with tab5:
                 if tile in [2, 3] and get_season(game['day']) != "Winter": game['grid'][r][c] = tile + 1
                 if tile == 7 and random.random() < 0.3:
                     for nr, nc in get_adjacent(r, c):
-                        if game['grid'][nr][nc] in [2,3,4]: game['grid'][nr][nc] = 7
+                        if game['grid'][nr][nc] in [2, 3, 4]: game['grid'][nr][nc] = 7
         if random.random() < 0.2: st.toast("📉 Market News: Prices shifted!")
         game['day'] += 1; st.rerun()
 
@@ -771,20 +836,18 @@ with tab6:
 
     # --- RECIPE DATABASE ---
     RECIPES = [
-        # Beginner
         {"name": "Nettle Soup", "ingredients": {"Nettle": 5, "Water": 1}, "prep_questions": [{"q": "Why must nettles be cooked?", "opts": ["To remove the sting", "To make them sweet", "To change color"], "a": "To remove the sting"}], "icon": "🥣", "desc": "A rich, green soup.", "diff": 1},
         {"name": "Wild Garlic Pesto", "ingredients": {"Wild Garlic": 10, "Oil": 1}, "prep_questions": [{"q": "Which part of Wild Garlic is edible?", "opts": ["Only the flowers", "Leaves, flowers, and bulbs", "Only the roots"], "a": "Leaves, flowers, and bulbs"}], "icon": "🥗", "desc": "A fragrant pesto.", "diff": 1},
         {"name": "Dandelion Salad", "ingredients": {"Dandelion": 5}, "prep_questions": [{"q": "When is best to harvest Dandelion leaves?", "opts": ["When the flower is yellow", "Before the flower opens (young)", "In winter"], "a": "Before the flower opens (young)"}], "icon": "🥗", "desc": "Young leaves are less bitter.", "diff": 1},
         {"name": "Three-Cornered Leek Omelette", "ingredients": {"Three-Cornered Leek": 5, "Eggs": 2}, "prep_questions": [{"q": "How to ID Three-Cornered Leek?", "opts": ["Smells of garlic, triangular stem", "Blue flowers, round stem", "Yellow flowers, spiky"], "a": "Smells of garlic, triangular stem"}], "icon": "🍳", "desc": "A forager's breakfast.", "diff": 1},
         {"name": "Pine Needle Tea", "ingredients": {"Pine Needles": 10, "Water": 1}, "prep_questions": [{"q": "How do you identify SAFE Pine needles?", "opts": ["Flat needles (Yew)", "Round needles in bundles", "Blue needles"], "a": "Round needles in bundles"}], "icon": "🍵", "desc": "High in Vitamin C.", "diff": 1},
         {"name": "Beech Leaf Liqueur", "ingredients": {"Beech Leaves": 20, "Sugar": 1, "Alcohol": 1}, "prep_questions": [{"q": "When should you pick Beech leaves?", "opts": ["Autumn (Brown)", "Spring (Young/Transparent)", "Winter"], "a": "Spring (Young/Transparent)"}], "icon": "🥃", "desc": "A sweet, gin-based liquor.", "diff": 1},
-        {"name": "Lime Leaf Salad", "ingredients": {"Lime (Leaves)": 10}, "prep_questions": [{"q": "What do Lime leaves taste like?", "opts": ["Bitter", "Mild and slightly sweet", "Spicy"], "a": "Mild and slightly sweet"}], "icon": "🥗", "desc": "Excellent fresh salad green.", "diff": 1},
+        {"name": "Lime Leaf Salad", "ingredients": {"Lime (Leaves)": 10}, "prep_questions": [{"q": "What do Lime (Basswood) leaves taste like?", "opts": ["Bitter", "Mild and slightly sweet", "Spicy"], "a": "Mild and slightly sweet"}], "icon": "🥗", "desc": "Excellent fresh salad green.", "diff": 1},
         {"name": "Chickweed Salad", "ingredients": {"Chickweed": 10}, "prep_questions": [{"q": "How do you identify Chickweed?", "opts": ["Line of hairs on stem", "Purple spots on stem", "Blue flowers"], "a": "Line of hairs on stem"}], "icon": "🥗", "desc": "A mild, nutritious weed.", "diff": 1},
         {"name": "Wild Strawberry Jam", "ingredients": {"Wild Strawberry": 20, "Sugar": 1}, "prep_questions": [{"q": "How do wild strawberries differ from barren strawberry?", "opts": ["Barren has petals with gaps", "Wild has blue flowers", "Barren has hairy leaves"], "a": "Barren has petals with gaps"}], "icon": "🍯", "desc": "Tiny but intense flavor.", "diff": 1},
         {"name": "Roasted Hazelnuts", "ingredients": {"Hazelnut": 10}, "prep_questions": [{"q": "What indicates a ripe Hazelnut?", "opts": ["Green husk", "Brown shell and leafy husk", "No leaves"], "a": "Brown shell and leafy husk"}], "icon": "🌰", "desc": "Autumn treat.", "diff": 1},
         {"name": "Sea Purslane Salad", "ingredients": {"Sea Purslane": 10}, "prep_questions": [{"q": "What is the main precaution with Sea Purslane?", "opts": ["It is very salty", "It is poisonous raw", "It has thorns"], "a": "It is very salty"}], "icon": "🥗", "desc": "Salty coastal green.", "diff": 1},
-
-        # Intermediate
+        
         {"name": "Dandelion Coffee", "ingredients": {"Dandelion": 20}, "prep_questions": [{"q": "Which part is used for coffee?", "opts": ["Leaves", "Flowers", "Roots"], "a": "Roots"}, {"q": "How must the roots be prepared?", "opts": ["Eaten raw", "Roasted and ground", "Boiled whole"], "a": "Roasted and ground"}], "icon": "☕", "desc": "A caffeine-free coffee substitute.", "diff": 2},
         {"name": "Elderflower Cordial", "ingredients": {"Elderflower": 10, "Sugar": 1}, "prep_questions": [{"q": "Why should you not wash Elderflowers?", "opts": ["Loses pollen (flavor)", "Becomes poisonous", "Petals fall off"], "a": "Loses pollen (flavor)"}, {"q": "What must you check for before cooking?", "opts": ["Spiders", "Bugs/Maggots", "Birds"], "a": "Bugs/Maggots"}], "icon": "🥤", "desc": "A sweet summery drink.", "diff": 2},
         {"name": "Blackberry Jam", "ingredients": {"Blackberries": 20, "Sugar": 1}, "prep_questions": [{"q": "What must you check for when picking?", "opts": ["Check for bugs", "Check if they are red", "Check for thorns"], "a": "Check for bugs"}, {"q": "What helps the jam set (thicken)?", "opts": ["Water", "Pectin (naturally in fruit)", "Oil"], "a": "Pectin (naturally in fruit)"}], "icon": "🍯", "desc": "Preserved summer in a jar.", "diff": 2},
@@ -800,7 +863,6 @@ with tab6:
         {"name": "Pignut Roast", "ingredients": {"Pignut": 15, "Oil": 1}, "prep_questions": [{"q": "Where do Pignuts grow?", "opts": ["Wet ditches", "Dry meadows", "Trees"], "a": "Dry meadows"}, {"q": "What is the deadly lookalike?", "opts": ["Hemlock Water Dropwort", "Potato", "Parsnip"], "a": "Hemlock Water Dropwort"}], "icon": "🥔", "desc": "Nutty tuber.", "diff": 2},
         {"name": "Alexanders Stew", "ingredients": {"Alexanders": 15, "Water": 1}, "prep_questions": [{"q": "What part is eaten?", "opts": ["Roots", "Stems", "Flowers"], "a": "Stems"}, {"q": "What is the lookalike danger?", "opts": ["Hemlock (Purple spots)", "Wild Carrot", "Celery"], "a": "Hemlock (Purple spots)"}], "icon": "🍲", "desc": "Coastal celery.", "diff": 2},
 
-        # Advanced
         {"name": "Acorn Coffee", "ingredients": {"Acorn": 20}, "prep_questions": [{"q": "Why not eat raw?", "opts": ["Too hard", "Contain tannins (bitter)", "Protected"], "a": "Contain tannins (bitter)"}, {"q": "How to remove tannins?", "opts": ["Leaching (soaking)", "Freezing", "Burning"], "a": "Leaching (soaking)"}, {"q": "When to harvest?", "opts": ["Green", "Brown (ripe)", "White"], "a": "Brown (ripe)"}], "icon": "☕", "desc": "Must be leached first.", "diff": 3},
         {"name": "Chanterelle Risotto", "ingredients": {"Chanterelle": 10, "Rice": 1}, "prep_questions": [{"q": "How to ID Chanterelle?", "opts": ["True gills (sheets)", "False gills (ridges)", "Sponge"], "a": "False gills (ridges)"}, {"q": "What does it smell like?", "opts": ["Aniseed/Apricot", "Mud", "Nothing"], "a": "Aniseed/Apricot"}, {"q": "Danger lookalike?", "opts": ["False Chanterelle", "Death Cap", "Field Mushroom"], "a": "False Chanterelle"}], "icon": "🍚", "desc": "A gourmet wild meal.", "diff": 3},
         {"name": "Crab Apple Jelly", "ingredients": {"Crab Apple": 25, "Sugar": 1}, "prep_questions": [{"q": "Why not eat raw?", "opts": ["Poisonous", "Too tart/sour", "Too hard"], "a": "Too tart/sour"}, {"q": "Why is it good for jelly?", "opts": ["High Pectin", "Red Color", "Soft skin"], "a": "High Pectin"}, {"q": "What to remove?", "opts": ["Skin", "Seeds and stems", "Nothing"], "a": "Seeds and stems"}], "icon": "🍯", "desc": "High pectin, good for setting.", "diff": 3},
