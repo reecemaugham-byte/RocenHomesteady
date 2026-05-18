@@ -58,7 +58,7 @@ with right_col:
     Based in Cardiff, we provide educational tools for families, schools, and nature enthusiasts across the UK.
     """)
     
-    st.markdown("📧 [Contact Us](mailto:Maughamijelekhai@gmail.com)")
+    st.markdown("📧 [Contact Us](mailto:Support@RocenHomesteady.co.uk)")
 
 st.markdown("---")
 st.caption("© 2026 Rocen Homesteady LTD. All Rights Reserved. Educational Use Only.")
