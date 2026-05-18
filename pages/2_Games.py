@@ -1,8 +1,9 @@
 import streamlit as st
 import random
 import time
+import re
 from datetime import datetime
-from utils import init_session_state, apply_brand_theme, render_sidebar, UK_PLANTS, generate_voice, EDGE_TTS_AVAILABLE
+from utils import init_session_state, apply_brand_theme, render_sidebar, UK_PLANTS, LESSON_CONTENT, generate_voice, EDGE_TTS_AVAILABLE, ACHIEVEMENTS
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -12,10 +13,107 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# --- CUSTOM CSS ---
+st.markdown("""
+<style>
+    div.grid-game div.stButton > button {
+        width: 100% !important; height: auto !important; aspect-ratio: 1 / 1 !important;
+        padding: 0 !important; font-size: 1.5em !important; border: 1px solid #444 !important;
+        background-color: #2b2b2b !important; color: white !important; border-radius: 8px !important;
+    }
+    div.grid-game div.stButton > button:hover { border-color: #fff !important; transform: scale(1.05); }
+    .plant-card {
+        border-radius: 20px; padding: 20px; text-align: center;
+        background: linear-gradient(145deg, #2b2b2b, #1a1a1a);
+        box-shadow: 10px 10px 20px #1a1a1a; margin-bottom: 20px; border: 1px solid #444;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- HELPER FUNCTION: AUDIO SANITIZER ---
+def clean_text_for_audio(text):
+    if not text: return ""
+    text = text.replace("**", "").replace("##", "").replace("*", "")
+    icon_map = {"🌿": "Plant", "🌲": "Woodland", "☠️": "Poison", "✅": "Correct", "❌": "Wrong"}
+    for icon, word in icon_map.items(): text = text.replace(icon, word)
+    return text.strip()
+
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
-render_sidebar()
+
+# --- Initialize Game-Specific Session States ---
+# 1. Achievements (Fix for previous KeyError)
+if 'achievements' not in st.session_state or not st.session_state.achievements:
+    st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
+
+# 2. Kitchen & Inventory (Fix for current AttributeError)
+if 'unlocked_recipes' not in st.session_state:
+    st.session_state.unlocked_recipes = []
+
+if 'kitchen_score' not in st.session_state:
+    st.session_state.kitchen_score = 0
+
+if 'master_inventory' not in st.session_state:
+    st.session_state.master_inventory = {}
+
+# --- SIDEBAR (CUSTOM FOR GAMES) ---
+with st.sidebar:
+    st.title("Rocen Homesteady")
+    try:
+        st.image("logo.png", use_container_width=True)
+    except:
+        st.markdown("🌿 **Rocen Homesteady**")
+    st.markdown("---")
+    
+    # Hall of Fame
+    unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
+    total_count = len(ACHIEVEMENTS)
+    st.metric("🏆 Achievements", f"{unlocked_count} / {total_count}")
+    
+    unlocked_keys = [k for k, v in st.session_state.achievements.items() if v]
+    if unlocked_keys:
+        st.caption("Recently Unlocked:")
+        for key in unlocked_keys[-3:]:
+            st.write(f"✅ {ACHIEVEMENTS[key]['name']}")
+    
+    # Unified Inventory Display
+    st.markdown("---")
+    st.markdown("### 🎒 Inventory")
+    inv = st.session_state.master_inventory
+    if not inv:
+        st.info("Empty - Forage items in Tab 1!")
+    else:
+        # Show top 5 items
+        for item, count in list(inv.items())[:5]:
+            st.write(f"- **{item}:** {count}")
+        if len(inv) > 5:
+            st.write(f"...and {len(inv)-5} more.")
+    
+    # Reset Button
+    st.markdown("---")
+    if st.button("🔄 Reset All Games"):
+        # Reset Game Stats
+        st.session_state.game_score = 0
+        st.session_state.game_lives = 3
+        st.session_state.game_streak = 0
+        st.session_state.survival_lives = 3
+        st.session_state.survival_score = 0
+        st.session_state.survival_correct_count = 0
+        st.session_state.total_plants_identified = 0
+        st.session_state.player_title = "Novice Gatherer"
+        st.session_state.season_badge_progress = []
+        
+        # Reset Inventories
+        st.session_state.master_inventory = {}
+        st.session_state.village = None
+        st.session_state.farm_game = None
+        
+        # Reset Achievements
+        st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
+        
+        st.success("All Games Reset!")
+        st.rerun()
 
 st.title("🎮 Games & Practice")
 
@@ -35,11 +133,12 @@ with tab1:
     st.header("🌿 The Seasonal Quest")
     st.caption("📚 Curriculum Link: Science (Seasonal Changes, Plants)")
 
+    # --- HOW TO PLAY ---
     with st.expander("📖 How to Play"):
         st.markdown("""
         1. **Select a Season** using the buttons at the top.
-        2. A plant will appear. Read its name.
-        3. Choose the **Habitat** where it grows.
+        2. A plant will appear. Read the clue and look at the card.
+        3. Choose the correct **Habitat** (Where it grows).
         4. **Collect Plants:** Find unique plants to fill your Herbarium.
         5. **Bonus:** Get 5 right in a row to unlock a Bonus Question!
         """)
@@ -51,7 +150,6 @@ with tab1:
     seasons = ["Spring", "Summer", "Autumn", "Winter"]
     season_icons = {"Spring": "🌸", "Summer": "☀️", "Autumn": "🍂", "Winter": "❄️"}
 
-    # Default Season Logic
     current_month = datetime.now().strftime("%B")
     default_season = "Summer"
     if current_month in ["March", "April", "May"]: default_season = "Spring"
@@ -71,8 +169,8 @@ with tab1:
 
     st.info(f"**Current Season:** {st.session_state.active_season} {season_icons[st.session_state.active_season]}")
 
-    # --- SIDEBAR: COLLECTION TRACKER ---
-    collection_list = st.session_state.get('collection_edible', [])
+    # --- COLLECTION TRACKER ---
+    collection_list = list(st.session_state.master_inventory.keys()) # Use master inventory
     total_found = len(collection_list)
     
     st.sidebar.metric("🌿 Species Found", f"{total_found}/50")
@@ -115,8 +213,9 @@ with tab1:
                 if ans in parts_list:
                     st.session_state.game_score += 20
                     st.success("🎉 Correct! +20 XP!")
-                    if bonus_plant['name'] not in st.session_state.collection_edible:
-                        st.session_state.collection_edible.append(bonus_plant['name'])
+                    # Add to inventory
+                    current_count = st.session_state.master_inventory.get(bonus_plant['name'], 0)
+                    st.session_state.master_inventory[bonus_plant['name']] = current_count + 1
                 else:
                     st.error("Incorrect!")
                 st.session_state.bonus_round = False
@@ -129,60 +228,94 @@ with tab1:
                 plant = random.choice(available_plants)
                 raw_habitat = plant['habitat'].split(',')[0].strip()
                 
-                if raw_habitat in ["Woodlands", "Woods", "Wood"]: correct_habitat = "Woodland"
-                elif raw_habitat in ["Hedgerows", "Hedgerow", "Roadsides"]: correct_habitat = "Hedgerow"
-                elif raw_habitat in ["Meadows", "Grassland", "Fields", "Fields, Gardens"]: correct_habitat = "Meadow"
-                elif raw_habitat in ["Coastal", "Coastal Shingle", "Rocky Coasts", "Sandy/Muddy Beaches", "Estuaries"]: correct_habitat = "Coastal"
-                else: correct_habitat = "Urban"
+                habitat_map = {
+                    "Woodlands": "Woodland", "Woods": "Woodland", "Wood": "Woodland",
+                    "Hedgerows": "Hedgerow", "Hedgerow": "Hedgerow", "Roadsides": "Hedgerow",
+                    "Meadows": "Meadow", "Grassland": "Meadow", "Fields": "Meadow",
+                    "Coastal": "Coastal", "Shingle": "Coastal", "Rocky": "Coastal", "Saltmarsh": "Coastal",
+                    "Urban": "Urban", "Gardens": "Urban"
+                }
+                correct_habitat = habitat_map.get(raw_habitat, "Urban")
 
                 all_habitats = ["Woodland", "Coastal", "Hedgerow", "Urban", "Meadow"]
                 wrong_habitats = [h for h in all_habitats if h != correct_habitat]
                 options = [correct_habitat] + random.sample(wrong_habitats, min(3, len(wrong_habitats)))
                 random.shuffle(options)
+                
                 st.session_state.current_question = {"plant": plant, "correct": correct_habitat, "options": options}
 
             q = st.session_state.current_question
+            
+            # Visual Card Layout
+            col_vis, col_quiz = st.columns([1, 1.5])
+            
+            with col_vis:
+                st.markdown(f"""
+                <div class='plant-card'>
+                    <h1 style='font-size: 4em; margin-bottom: 0px;'>🌿</h1>
+                    <h3>{q['plant']['name']}</h3>
+                    <p style='color: #aaa;'>Found in {active_season}</p>
+                    <hr>
+                    <p><i>"{q['plant'].get('description', 'A useful wild plant.')[:100]}..."</i></p>
+                </div>
+                """, unsafe_allow_html=True)
 
-            st.markdown(f"<h1 style='text-align: center; font-size: 60px;'>🌿</h1>", unsafe_allow_html=True)
-            st.markdown(f"<h3 style='text-align: center;'>You found a <b>{q['plant']['name']}</b>!</h3>", unsafe_allow_html=True)
-            st.markdown(f"<p style='text-align: center; color: gray;'>It is {active_season}. Where should you look for it?</p>", unsafe_allow_html=True)
+            with col_quiz:
+                clues = {"Woodland": "The ground is shady and covered in leaf litter.", "Hedgerow": "You are standing by a tangled, bushy border.", "Coastal": "You can smell the salt in the wind.", "Meadow": "You are standing in a wide, open, grassy field.", "Urban": "You are in a park or near buildings."}
+                
+                st.info(f"🕵️ **Clue:** {clues.get(q['correct'], 'Look around...')}")
+                
+                if EDGE_TTS_AVAILABLE:
+                    clean_clue = clean_text_for_audio(clues.get(q['correct'], ''))
+                    if st.button("🔊 Listen to Clue", key=f"audio_{q['plant']['name']}"):
+                        audio_bytes = generate_voice(clean_clue)
+                        if audio_bytes:
+                            st.audio(audio_bytes, format='audio/mp3')
 
-            btn_cols = st.columns(2)
-            for i, option in enumerate(q['options']):
-                col = btn_cols[i % 2]
-                icon = habitat_icons.get(option, "❓")
-                if col.button(f"{icon} {option}", key=f"opt_{i}", use_container_width=True):
-                    if option == q['correct']:
-                        st.session_state.game_score += 10 + (st.session_state.game_streak * 2)
-                        st.session_state.game_streak += 1
-                        st.session_state.total_plants_identified += 1
-                        
-                        if q['plant']['name'] not in st.session_state.collection_edible:
-                            st.session_state.collection_edible.append(q['plant']['name'])
-                        
-                        st.success(f"✅ Correct! {q['plant']['name']} loves the {option}!")
-                        
-                        with st.expander("🔎 Foraging Tip", expanded=True):
-                            tips = q['plant'].get('foraging_tips', {})
-                            if tips:
-                                st.write(f"**Where:** {tips.get('where', 'N/A')}")
-                                st.write(f"**When:** {tips.get('when', 'N/A')}")
-                                st.write(f"**Sustainable:** {tips.get('sustainable', 'N/A')}")
-                            else:
-                                st.write(q['plant'].get('description', 'No info.'))
-                        
-                        if active_season not in st.session_state.season_badge_progress:
-                            st.session_state.season_badge_progress.append(active_season)
-                    else:
-                        st.session_state.game_lives -= 1
-                        st.session_state.game_streak = 0
-                        st.error(f"❌ Not quite! It actually prefers {q['correct']}.")
-                    st.session_state.current_question = None
-                    time.sleep(1)
-                    st.rerun()
+                st.markdown("### Where does it grow?")
+                
+                btn_cols = st.columns(len(q['options']))
+                for i, option in enumerate(q['options']):
+                    icon = habitat_icons.get(option, "❓")
+                    if btn_cols[i].button(f"{icon} {option}", key=f"opt_{i}", use_container_width=True):
+                        if option == q['correct']:
+                            st.session_state.game_score += 10 + (st.session_state.game_streak * 2)
+                            st.session_state.game_streak += 1
+                            st.session_state.total_plants_identified += 1
+                            
+                            # --- UNIFIED INVENTORY UPDATE ---
+                            plant_name = q['plant']['name']
+                            current_count = st.session_state.master_inventory.get(plant_name, 0)
+                            st.session_state.master_inventory[plant_name] = current_count + 1
+                            
+                            st.success(f"✅ Correct! {q['plant']['name']} grows in the {option}!")
+                            
+                            # --- ACHIEVEMENT CHECKS (TAB 1) ---
+                            # Novice
+                            if len(st.session_state.master_inventory) >= 1 and not st.session_state.achievements['foraging_novice']:
+                                st.session_state.achievements['foraging_novice'] = True
+                                st.toast("🏅 Achievement Unlocked: Novice Forager!")
+                            # Botanist
+                            if len(st.session_state.master_inventory) >= 25 and not st.session_state.achievements['foraging_botanist']:
+                                st.session_state.achievements['foraging_botanist'] = True
+                                st.toast("🏅 Achievement Unlocked: Botanist!")
+                            # Seasonal Master
+                            if len(st.session_state.season_badge_progress) == 4 and not st.session_state.achievements['foraging_master']:
+                                st.session_state.achievements['foraging_master'] = True
+                                st.toast("🏅 Achievement Unlocked: Seasonal Master!")
+
+                            if active_season not in st.session_state.season_badge_progress:
+                                st.session_state.season_badge_progress.append(active_season)
+                        else:
+                            st.session_state.game_lives -= 1
+                            st.session_state.game_streak = 0
+                            st.error(f"❌ Not quite! It actually prefers {q['correct']}.")
+                        st.session_state.current_question = None
+                        time.sleep(1)
+                        st.rerun()
 
     if st.session_state.game_lives <= 0:
-        st.markdown("### 🤕 Oh no! Adventure Over")
+        st.markdown("### 🤕 Adventure Over")
         st.markdown("Even the best explorers need a rest. Try again to learn more!")
         if st.button("🔄 Restart Adventure", key="restart_quest"):
             st.session_state.game_lives = 3
@@ -190,6 +323,22 @@ with tab1:
             st.session_state.current_question = None
             st.session_state.game_streak = 0
             st.rerun()
+
+    # --- ACHIEVEMENT DISPLAY (TAB 1) ---
+    st.markdown("---")
+    with st.expander("🏅 Foraging Achievements"):
+        for key in ["foraging_novice", "foraging_botanist", "foraging_master"]:
+            ach = ACHIEVEMENTS[key]
+            status = "✅" if st.session_state.achievements[key] else "🔒"
+            progress = ""
+            if key == "foraging_novice":
+                progress = f"({len(st.session_state.master_inventory)}/1)" if not st.session_state.achievements[key] else "(Done)"
+            elif key == "foraging_botanist":
+                progress = f"({len(st.session_state.master_inventory)}/25)" if not st.session_state.achievements[key] else "(Done)"
+            elif key == "foraging_master":
+                prog = len(st.session_state.season_badge_progress)
+                progress = f"({prog}/4)" if not st.session_state.achievements[key] else "(Done)"
+            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
 
 # ==========================================
 # GAME TAB 2: SURVIVAL SCHOOL
@@ -200,13 +349,12 @@ with tab2:
 
     with st.expander("📖 How to Play"):
         st.markdown("""
-        1. **Read the Case File** carefully.
-        2. You have two suspects: One is **Safe**, one is **Poisonous**.
-        3. Click the **Safe** plant to solve the case.
-        4. **Unlock Levels:** Solve 3 cases in a row to unlock the next difficulty level.
+        1. **Read the Case File** carefully. You are looking for a Safe plant.
+        2. **Identify the Danger:** Use the rules provided to spot the Poisonous plant.
+        3. **Verdict:** Click the button for the **Safe** plant.
+        4. **Progress:** Solve 5 cases in a row to unlock **Level 2 (Fungi & Roots)**.
         """)
 
-    # --- LEVEL SYSTEM ---
     if 'survival_level' not in st.session_state:
         st.session_state.survival_level = 1
     
@@ -218,14 +366,9 @@ with tab2:
     st.markdown("---")
 
     CASE_FILES = [
-        {"level": 1, "clue": "You find a tall plant with white umbrella-shaped flowers ☂️. You check the stem. It is **smooth** (no hairs) and has **purple spots** on it.", "rule": "🚨 **Rule:** In the Carrot family, purple spots usually mean POISON.", "safe_plant": "Wild Carrot", "danger_plant": "Hemlock", "safe_icon": "🥕", "danger_icon": "☠️", "fact": "🕵️ **Inspector's Report:**\n- **Hemlock (POISON):** Smooth stem with purple spots. Smells like mouse urine.\n- **Wild Carrot (Safe):** Hairy stem. Smells like carrots. **Hairy is Happy, Smooth is Suspicious!**", "safe_habitat": "Meadows"},
-        {"level": 1, "clue": "You find a plant with broad green leaves in a damp woodland. You crush a leaf and it smells strongly of **garlic** 🧄.", "rule": "✅ **Rule:** Strong onion/garlic smell is usually a good sign.", "safe_plant": "Wild Garlic", "danger_plant": "Lily of the Valley", "safe_icon": "🌿", "danger_icon": "☠️", "fact": "🕵️ **Inspector's Report:**\n- **Lily of the Valley (POISON):** Has no garlic smell. Has bell-shaped flowers.\n- **Wild Garlic (Safe):** Smells strongly of garlic. **No smell = Leave it be.**", "safe_habitat": "Woodland"},
-        {"level": 1, "clue": "A plant with strap-like leaves grows in the woods. You roll the stem between your fingers—it feels **triangular** (like a keel ⛵).", "rule": "✅ **Rule:** A triangular stem is a unique ID feature.", "safe_plant": "Three-Cornered Leek", "danger_plant": "Bluebell", "safe_icon": "🌸", "danger_icon": "☠️", "fact": "🕵️ **Inspector's Report:**\n- **Bluebell (POISON):** Round stem. Blue bells. All parts toxic.\n- **Three-Cornered Leek (Safe):** Triangular stem. White flowers. Smells like onion/garlic. **Triangle = Tasty.**", "safe_habitat": "Woodland"},
-        {"level": 1, "clue": "You find a bush with dark berries. The leaves are arranged in **pairs** opposite each other on the stem.", "rule": "✅ **Rule:** 'Opposite' leaves (pairs) are safe for Elder. 'Alternate' leaves are dangerous.", "safe_plant": "Elderflower", "danger_plant": "Dwarf Elder", "safe_icon": "🌸", "danger_icon": "☠️", "fact": "🕵️ **Inspector's Report:**\n- **Dwarf Elder (POISON):** Leaves are alternate (one by one). Flowers stand upright.\n- **Elderflower (Safe):** Leaves are opposite (in pairs). Flowers droop down.", "safe_habitat": "Hedgerow"},
-        {"level": 2, "clue": "A bright orange mushroom grows under an oak tree. Under the cap, it has **ridges** (like false gills) that run down the stem. It smells like **apricots** 🍑.", "rule": "✅ **Rule:** True gills are thin sheets. Ridges are blunt and thick.", "safe_plant": "Chanterelle", "danger_plant": "False Chanterelle", "safe_icon": "🍄", "danger_icon": "🚫", "fact": "🕵️ **Inspector's Report:**\n- **False Chanterelle (Inedible):** Has true gills (thin sheets). No apricot smell.\n- **Chanterelle (Safe):** Has 'false gills' (ridges) and smells fruity. **Ridges = Rewarding.**", "safe_habitat": "Woodland"},
-        {"level": 2, "clue": "You find a mushroom with a honeycomb cap (pitted like a sponge). You cut it open and it is **completely hollow** inside.", "rule": "✅ **Rule:** If it's hollow like a balloon, it might be a Morel.", "safe_plant": "Morel", "danger_plant": "False Morel", "safe_icon": "🍄", "danger_icon": "☠️", "fact": "🕵️ **Inspector's Report:**\n- **False Morel (POISON):** Looks brain-like (wrinkled). Inside is chambered/solid (NOT hollow).\n- **Morel (Safe):** Honeycomb cap. Completely hollow inside. **Hollow = Happy.**", "safe_habitat": "Woodland"},
-        {"level": 2, "clue": "You are in a dry meadow. You dig up a small tuber. The stem is fine and feathery (like a carrot). The area is **dry and grassy**.", "rule": "✅ **Rule:** Habitat is key. Pignut likes dry ground.", "safe_plant": "Pignut", "danger_plant": "Hemlock Water Dropwort", "safe_icon": "🥔", "danger_icon": "☠️", "fact": "🕵️ **Inspector's Report:**\n- **Hemlock Water Dropwort (DEADLY):** Grows in WET ground (ditches/rivers). Roots look like fingers.\n- **Pignut (Safe):** Grows in DRY meadows. Single small tuber. **Wet = Worry. Dry = Dig.**", "safe_habitat": "Meadow"},
-        {"level": 2, "clue": "You see an evergreen tree. You pick a needle and roll it in your fingers. It feels **round** and comes in a **bundle of two**.", "rule": "✅ **Rule:** Round needles in bundles are Pine. Flat needles are Yew.", "safe_plant": "Pine Needles", "danger_plant": "Yew", "safe_icon": "🌲", "danger_icon": "☠️", "fact": "🕵️ **Inspector's Report:**\n- **Yew (POISON):** Flat needles. Single, not in bundles. No smell.\n- **Pine (Safe):** Round needles in bundles (2-5). Smells of resin. **Round & Bundles = Safe.**", "safe_habitat": "Woodland"}
+        {"level": 1, "clue": "You find a tall plant with white umbrella-shaped flowers. You check the stem. It is smooth (no hairs) and has purple spots on it.", "rule": "🚨 Rule: In the Carrot family, purple spots usually mean POISON.", "safe_plant": "Wild Carrot", "danger_plant": "Hemlock", "safe_icon": "🥕", "danger_icon": "☠️", "fact": "🕵️ Inspector's Report: Hemlock (POISON) has a smooth stem with purple spots. Wild Carrot (Safe) has a hairy stem.", "safe_habitat": "Meadows"},
+        {"level": 1, "clue": "You find a plant with broad green leaves in a damp woodland. You crush a leaf and it smells strongly of garlic.", "rule": "✅ Rule: Strong onion/garlic smell is usually a good sign.", "safe_plant": "Wild Garlic", "danger_plant": "Lily of the Valley", "safe_icon": "🌿", "danger_icon": "☠️", "fact": "🕵️ Inspector's Report: Lily of the Valley (POISON) has no garlic smell. Wild Garlic (Safe) smells strongly of garlic.", "safe_habitat": "Woodland"},
+        {"level": 2, "clue": "A bright orange mushroom grows under an oak tree. Under the cap, it has ridges (like false gills) that run down the stem. It smells like apricots.", "rule": "✅ Rule: True gills are thin sheets. Ridges are blunt and thick.", "safe_plant": "Chanterelle", "danger_plant": "False Chanterelle", "safe_icon": "🍄", "danger_icon": "🚫", "fact": "🕵️ Inspector's Report: False Chanterelle has true gills. Chanterelle (Safe) has ridges and smells fruity.", "safe_habitat": "Woodland"}
     ]
 
     available_cases = [c for c in CASE_FILES if c['level'] <= st.session_state.survival_level]
@@ -243,10 +386,10 @@ with tab2:
     st.markdown(f"**Your Observation:** {case['clue']}")
     
     if EDGE_TTS_AVAILABLE:
+        clean_clue = clean_text_for_audio(case['clue'])
         if st.button("🔊 Listen to Clue", key="audio_clue_btn"):
-            audio_bytes = generate_voice(case['clue'])
-            if audio_bytes:
-                st.audio(audio_bytes, format='audio/mp3')
+            audio_bytes = generate_voice(clean_clue)
+            if audio_bytes: st.audio(audio_bytes, format='audio/mp3')
 
     st.markdown("#### ⚠️ VERDICT: Is this plant SAFE to touch/harvest?")
 
@@ -261,6 +404,10 @@ with tab2:
                 st.session_state.survival_score += 20
                 st.session_state.survival_correct_count += 1
                 st.session_state.total_plants_identified += 1
+                # Achievement Check
+                if not st.session_state.achievements['survival_scout']:
+                    st.session_state.achievements['survival_scout'] = True
+                    st.toast("🏅 Achievement Unlocked: Scout!")
             else:
                 st.session_state.survival_result = "wrong"
                 st.session_state.survival_lives -= 1
@@ -272,6 +419,9 @@ with tab2:
                 st.session_state.survival_score += 20
                 st.session_state.survival_correct_count += 1
                 st.session_state.total_plants_identified += 1
+                if not st.session_state.achievements['survival_scout']:
+                    st.session_state.achievements['survival_scout'] = True
+                    st.toast("🏅 Achievement Unlocked: Scout!")
             else:
                 st.session_state.survival_result = "wrong"
                 st.session_state.survival_lives -= 1
@@ -285,31 +435,16 @@ with tab2:
                 st.session_state.survival_correct_count = 0
                 st.markdown("# 🏆 LEVEL UP!")
                 st.write("You have unlocked **Level 2: Fungi & Roots**!")
+                # Achievement Check
+                if not st.session_state.achievements['survival_expert']:
+                    st.session_state.achievements['survival_expert'] = True
+                    st.toast("🏅 Achievement Unlocked: Graduate!")
         else:
             st.error("☠️ DANGER! That was the wrong choice.")
 
         st.markdown("### 📝 Case File Analysis")
         st.markdown(case['fact'])
         
-        if EDGE_TTS_AVAILABLE:
-            if st.button("🔊 Listen to Report", key="audio_report_btn"):
-                clean_fact = case['fact'].replace('**', '')
-                audio_bytes = generate_voice(clean_fact)
-                if audio_bytes:
-                    st.audio(audio_bytes, format='audio/mp3')
-
-        plant_name = case['safe_plant'] if st.session_state.survival_result == "correct" else case['danger_plant']
-        plant_data = next((p for p in UK_PLANTS['edible'] if p['name'] == plant_name), None)
-        if not plant_data:
-            plant_data = next((p for p in UK_PLANTS['poisonous'] if p['name'] == plant_name), None)
-
-        if plant_data:
-            st.markdown("#### 🔎 Identification Keys")
-            id_keys = plant_data.get('id_keys', {})
-            if id_keys:
-                for key, value in id_keys.items():
-                    st.markdown(f"- **{key}:** {value}")
-
         if st.button("📋 Next Case", key="next_case_btn"):
             st.session_state.survival_current_case = None
             st.session_state.survival_result = None
@@ -326,6 +461,14 @@ with tab2:
             st.session_state.survival_level = 1
             st.rerun()
 
+    # --- ACHIEVEMENT DISPLAY (TAB 2) ---
+    st.markdown("---")
+    with st.expander("🏅 Survival Achievements"):
+        for key in ["survival_scout", "survival_expert"]:
+            ach = ACHIEVEMENTS[key]
+            status = "✅" if st.session_state.achievements[key] else "🔒"
+            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}*")
+
 # ==========================================
 # GAME TAB 3: DAILY QUIZ
 # ==========================================
@@ -335,10 +478,10 @@ with tab3:
     
     with st.expander("📖 How to Play"):
         st.markdown("""
-        - **Categories:** Choose a topic (e.g., Coastal, Trees) to study.
-        - **Difficulty:** Beginner gives 3 options. Expert gives 4.
-        - **Learn:** Correct answers show the Plant Card!
-        - **Streak:** Build a streak for bonus points!
+        1. **Categories:** Choose a topic (e.g., Coastal, Trees) to study.
+        2. **Difficulty:** Beginner gives 3 options. Expert gives 4.
+        3. **Learn:** Correct answers show the Plant Card!
+        4. **Streak:** Build a streak for bonus points!
         """)
 
     col1, col2, col3 = st.columns(3)
@@ -418,16 +561,14 @@ with tab3:
                         st.session_state.daily_streak += 1
                         st.toast("✅ Correct!")
                         
-                        with st.expander("🔎 Fact Check", expanded=True):
-                            st.markdown(f"**{q['fact']}**")
-                            if 'id_keys' in q['plant']:
-                                st.markdown("Identification Keys:")
-                                for k, v in q['plant']['id_keys'].items():
-                                    st.markdown(f"- **{k}:** {v}")
+                        # Achievement Check
+                        if st.session_state.daily_streak >= 5 and not st.session_state.achievements['quiz_streak']:
+                            st.session_state.achievements['quiz_streak'] = True
+                            st.toast("🏅 Achievement Unlocked: Quick Wit!")
+
                     else:
                         st.session_state.daily_streak = 0
                         st.toast("❌ Oops!")
-                    
                     st.session_state.quiz_q_num += 1
                     st.session_state.q_data = None
                     time.sleep(0.5)
@@ -435,155 +576,203 @@ with tab3:
         else:
             st.balloons()
             st.markdown("## 🎉 Challenge Complete!")
-            if st.session_state.quiz_score == st.session_state.quiz_max:
-                st.success("PERFECT SCORE!")
-            elif st.session_state.quiz_score >= st.session_state.quiz_max / 2:
-                st.info("Good job!")
-            else:
-                st.warning("Keep practicing!")
             if st.button("🔄 Try Again", key="restart_quiz"):
                 st.session_state.quiz_score = 0
                 st.session_state.quiz_q_num = 0
                 st.session_state.q_data = None
                 st.rerun()
 
+    # --- ACHIEVEMENT DISPLAY (TAB 3) ---
+    st.markdown("---")
+    with st.expander("🏅 Quiz Achievements"):
+        for key in ["quiz_streak"]:
+            ach = ACHIEVEMENTS[key]
+            status = "✅" if st.session_state.achievements[key] else "🔒"
+            progress = f"({st.session_state.daily_streak}/5)" if not st.session_state.achievements[key] else "(Done)"
+            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
+
 # ==========================================
-# GAME TAB 4: ECO-VILLAGE
+# GAME TAB 4: ECO-VILLAGE (With Achievements)
 # ==========================================
 with tab4:
     st.header("🏘️ Eco-Village Builder")
     
+    # --- HOW TO PLAY ---
+    with st.expander("📖 How to Play"):
+        st.markdown("""
+        1. **Orchard:** A high-cost building (£200) that produces stable food daily.
+        2. **Winter:** Solar panels stop. Nature stops. Stockpile food!
+        3. **Storage:** Build a Barn to increase your inventory limit.
+        4. **Market:** Sell items you found in **Tab 1 (Foraging)** or produced here.
+        """)
+
     # --- GAME STATE INIT ---
     if st.session_state.get('village') is None:
         grid = [['🌲' for _ in range(6)] for _ in range(4)]
-        grid[1][2] = '🌊'
-        grid[1][3] = '🌊'
+        stream_col = random.randint(1, 4)
+        for r in range(4): grid[r][stream_col] = '🌊'
+        
         st.session_state.village = {
             'grid': grid,
-            'stats': {'Food': 50, 'Water': 50, 'Power': 0, 'Stamina': 100, 'Money': 100, 'Max_Power': 20},
-            'inventory': {},
-            'buildings': [],
-            'owned_buildings': {},
-            'placing_mode': None,
-            'day': 1,
-            'season': 'Spring',
-            'nature_health': 100
+            'stats': {'Food': 50, 'Water': 50, 'Power': 0, 'Stamina': 100, 'Money': 100, 'Max_Power': 20, 'Storage_Limit': 10},
+            'inventory': {}, 'owned_buildings': {}, 'placing_mode': None,
+            'day': 1, 'season': 'Spring', 'nature_health': 100,
+            'damaged_buildings': [] 
         }
+    else:
+        # Ensure keys exist for older sessions
+        if 'Storage_Limit' not in st.session_state.village['stats']: st.session_state.village['stats']['Storage_Limit'] = 10
+        if 'season' not in st.session_state.village: st.session_state.village['season'] = 'Spring'
+        if 'damaged_buildings' not in st.session_state.village: st.session_state.village['damaged_buildings'] = []
 
     game = st.session_state.village
 
-    # --- WIN CONDITION ---
-    if game['stats']['Money'] >= 2000:
-        st.balloons()
-        st.success("🏆 **VILLAGE MASTER!** You have accumulated £2000! You win!")
-
-    # --- DEFINITIONS ---
+    # --- DEFINITIONS (Items specific to Village) ---
     ITEMS_DATA = {
-        "Dandelion": {"icon": "🌼", "rarity": 0.8, "value": 2, "type": "Plant"},
-        "Nettle": {"icon": "🌿", "rarity": 0.8, "value": 1, "type": "Plant"},
-        "Wild Garlic": {"icon": "🌱", "rarity": 0.5, "value": 3, "type": "Plant"},
-        "Wood": {"icon": "🪵", "rarity": 0.6, "value": 5, "type": "Material"},
-        "Stone": {"icon": "🪨", "rarity": 0.4, "value": 5, "type": "Material"},
-        "Elderflower": {"icon": "🌸", "rarity": 0.3, "value": 8, "type": "Plant"},
-        "Eggs": {"icon": "🥚", "rarity": 0.0, "value": 10, "type": "Produce"},
-        "Fish": {"icon": "🐟", "rarity": 0.0, "value": 12, "type": "Food"},
-        "Dandelion Tea": {"icon": "🍵", "rarity": 0.0, "value": 15, "type": "Artisan"}
+        "Dandelion": {"icon": "🌼", "rarity": 0.8, "value": 2, "food": 2},
+        "Nettle": {"icon": "🌿", "rarity": 0.8, "value": 1, "food": 3},
+        "Wild Garlic": {"icon": "🌱", "rarity": 0.5, "value": 3, "food": 4},
+        "Wood": {"icon": "🪵", "rarity": 0.6, "value": 5, "food": 0},
+        "Stone": {"icon": "🪨", "rarity": 0.4, "value": 5, "food": 0},
+        "Elderflower": {"icon": "🌸", "rarity": 0.3, "value": 8, "food": 1},
+        "Eggs": {"icon": "🥚", "rarity": 0.0, "value": 10, "food": 12},
+        "Fish": {"icon": "🐟", "rarity": 0.0, "value": 12, "food": 25},
+        "Apple": {"icon": "🍎", "rarity": 0.0, "value": 5, "food": 3},
+        "Pear": {"icon": "🍐", "rarity": 0.0, "value": 5, "food": 3},
+        "Orange": {"icon": "🍊", "rarity": 0.0, "value": 5, "food": 3},
+        "Dandelion Tea": {"icon": "🍵", "rarity": 0.0, "value": 15, "food": 0, "stamina": 15},
+        "Nettle Soup": {"icon": "🥣", "rarity": 0.0, "value": 20, "food": 18},
+        "Smoked Fish": {"icon": "🍣", "rarity": 0.0, "value": 35, "food": 45},
+        "Cordial": {"icon": "🍶", "rarity": 0.0, "value": 50, "food": 5, "stamina": 30},
+        "Jerky": {"icon": "🥩", "rarity": 0.0, "value": 40, "food": 50},
+        "Apple Juice": {"icon": "🧃", "rarity": 0.0, "value": 75, "food": 10},
+        "Pear Juice": {"icon": "🧃", "rarity": 0.0, "value": 75, "food": 10},
+        "Orange Juice": {"icon": "🧃", "rarity": 0.0, "value": 75, "food": 10}
     }
     
+    # Add Foraged Items from Master Inventory to Market Data if not present
+    # (This allows selling them in the Market)
+    for plant in UK_PLANTS['edible']:
+        name = plant['name']
+        if name not in ITEMS_DATA:
+            ITEMS_DATA[name] = {"icon": "🌿", "rarity": 0.0, "value": 5, "food": 2} # Default value for foraged items
+
     BUILDINGS = {
-        "House": {"cost": 50, "icon": "🏠", "desc": "+20 Stamina/day"},
-        "Well": {"cost": 30, "icon": "🪨", "desc": "+5 Water/day"},
-        "Coop": {"cost": 40, "icon": "🐔", "desc": "1 Egg/day"},
-        "DIY Solar": {"cost": 50, "icon": "🔋", "desc": "+2 Power/day"},
-        "Solar Array": {"cost": 300, "icon": "☀️", "desc": "+10 Power/day"},
-        "Nature Reserve": {"cost": 150, "icon": "🌳", "desc": "Restores Nature"}
+        "House": {"cost": 50, "icon": "🏠", "desc": "+20 Stamina", "repair": 10},
+        "Well": {"cost": 30, "icon": "🪨", "desc": "+5 Water", "repair": 5},
+        "Coop": {"cost": 40, "icon": "🐔", "desc": "1 Egg/day", "repair": 8},
+        "DIY Solar": {"cost": 50, "icon": "🔋", "desc": "+2 Power", "repair": 10},
+        "Solar Array": {"cost": 300, "icon": "☀️", "desc": "+10 Power", "repair": 50},
+        "Reserve": {"cost": 150, "icon": "🌳", "desc": "Restores Nature", "repair": 20},
+        "Barn": {"cost": 200, "icon": "🏚️", "desc": "+20 Storage", "repair": 20},
+        "Orchard": {"cost": 200, "icon": "🌴", "desc": "Fruits Daily", "repair": 15}
     }
+
+    PRODUCTION_RECIPES = {
+        "Dandelion Tea": {"ingredients": {"Dandelion": 5}, "power": 2, "output": "Dandelion Tea", "qty": 1},
+        "Nettle Soup": {"ingredients": {"Nettle": 5, "Water": 1}, "power": 0, "output": "Nettle Soup", "qty": 1},
+        "Smoked Fish": {"ingredients": {"Fish": 1, "Wood": 1}, "power": 5, "output": "Smoked Fish", "qty": 1},
+        "Elderflower Cordial": {"ingredients": {"Elderflower": 10}, "power": 5, "output": "Cordial", "qty": 1},
+        "Jerky": {"ingredients": {"Eggs": 3, "Wood": 1}, "power": 3, "output": "Jerky", "qty": 1},
+        "Apple Juice": {"ingredients": {"Apple": 10}, "power": 5, "output": "Apple Juice", "qty": 1},
+        "Pear Juice": {"ingredients": {"Pear": 10}, "power": 5, "output": "Pear Juice", "qty": 1},
+        "Orange Juice": {"ingredients": {"Orange": 10}, "power": 5, "output": "Orange Juice", "qty": 1}
+    }
+
+    # --- WIN/LOSE STATE ---
+    if game['stats']['Money'] >= 5000:
+        st.balloons()
+        st.success("🏆 **VILLAGE TYCOON!**")
+    
+    if game['stats']['Food'] <= 0 or game['stats']['Water'] <= 0:
+        st.error("💀 **GAME OVER:** Your village starved. Try again!")
+        if st.button("Restart Village"):
+            st.session_state.village = None
+            st.rerun()
 
     # --- RENDER STATS ---
     s = game['stats']
-    c1, c2, c3, c4, c5 = st.columns(5)
-    c1.metric("🍖 Food", s['Food'])
-    c2.metric("💧 Water", s['Water'])
-    c3.metric("⚡ Power", f"{s['Power']}/{s['Max_Power']}")
-    c4.metric("💪 Stamina", s['Stamina'])
-    c5.metric("💰 Money", f"£{s['Money']}")
+    
+    season_icons = {"Spring": "🌸", "Summer": "☀️", "Autumn": "🍂", "Winter": "❄️"}
+    current_season = game['season']
+    st.markdown(f"### {season_icons.get(current_season, '🌸')} {current_season} - Day {game['day']}")
+    
+    cols = st.columns(6)
+    cols[0].metric("🍖 Food", s['Food'])
+    cols[1].metric("💧 Water", s['Water'])
+    cols[2].metric("⚡ Power", f"{s['Power']}/{s['Max_Power']}")
+    cols[3].metric("💰 Money", f"£{s['Money']}")
     
     nature = game['nature_health']
-    nature_icon = "🟢" if nature > 50 else "🟡" if nature > 20 else "🔴"
-    st.metric(f"{nature_icon} Nature Health", nature)
+    cols[4].progress(nature / 100, text=f"🌿 Nature: {nature}%")
     
-    if s['Food'] <= 10 or s['Water'] <= 10:
-        st.warning("⚠️ Low Resources! Forage or Fish soon.")
-    
+    current_storage = sum(game['inventory'].values())
+    max_storage = s['Storage_Limit']
+    cols[5].metric("📦 Storage", f"{current_storage}/{max_storage}")
+
+    if current_season == "Winter":
+        st.warning("❄️ **WINTER WARNING:** Solar panels offline. Nature is dormant.")
+
     st.markdown("---")
 
-    map_tab, forage_tab = st.tabs(["🗺️ Village Map", "🌲 Gather & Market"])
+    map_tab, forage_tab = st.tabs(["🗺️ Village Map", "🎒 Market & Pantry"])
     
     with map_tab:
-        # --- PLACING MODE LOGIC ---
         if game['placing_mode']:
-            st.info(f"📍 **Placing Mode:** Click an empty forest tile (🌲) to place your **{game['placing_mode']}**.")
-            if st.button("❌ Cancel Placement (Refund Money)"):
+            st.info(f"📍 **Placing Mode:** Click a 🌲 tile to build **{game['placing_mode']}**.")
+            if st.button("❌ Cancel"):
                 cost = BUILDINGS[game['placing_mode']]['cost']
                 game['stats']['Money'] += cost
                 game['placing_mode'] = None
-                st.success(f"Placement cancelled. Refunded £{cost}.")
                 st.rerun()
 
         st.markdown("#### 🗺️ Your Land")
         
-        # --- CSS FOR SQUARE GRID ---
-        st.markdown("""
-        <style>
-        div.grid-cell div.stButton > button {
-            width: 100% !important; aspect-ratio: 1 / 1 !important; height: auto !important;
-            padding: 0 !important; font-size: 1.5em !important; border: 1px solid #555 !important;
-            background-color: #2b2b2b !important; color: white !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
         for row_idx, row in enumerate(game['grid']):
             cols = st.columns(6)
-            for col_idx, icon in enumerate(row):
+            for col_idx, tile in enumerate(row):
                 current_tile = game['grid'][row_idx][col_idx]
                 
                 with cols[col_idx]:
-                    st.markdown('<div class="grid-cell">', unsafe_allow_html=True)
+                    st.markdown('<div class="grid-game">', unsafe_allow_html=True)
                     
-                    # 1. PLACING A BUILDING
+                    is_damaged = (row_idx, col_idx) in game['damaged_buildings']
+                    
                     if game['placing_mode'] and current_tile == '🌲':
                         b_name = game['placing_mode']
                         b_icon = BUILDINGS[b_name]['icon']
-                        # Key uses 'eco_' prefix to avoid conflicts
-                        if st.button(f"📍{b_icon}", key=f"eco_place_{row_idx}_{col_idx}"):
+                        if st.button(f"📍{b_icon}", key=f"v_place_{row_idx}_{col_idx}"):
                             game['grid'][row_idx][col_idx] = b_icon
                             if b_name not in game['owned_buildings']: game['owned_buildings'][b_name] = 0
                             game['owned_buildings'][b_name] += 1
+                            if b_name == "Barn": game['stats']['Storage_Limit'] += 20
                             game['placing_mode'] = None
-                            st.success(f"{b_name} built!")
                             st.rerun()
 
-                    # 2. STREAM (FISHING)
                     elif current_tile == '🌊':
-                        # Key uses 'eco_' prefix
-                        if st.button("🎣", key=f"eco_fish_{row_idx}_{col_idx}"):
+                        disable_fishing = (current_season == "Winter")
+                        if st.button("🎣", key=f"v_fish_{row_idx}_{col_idx}", disabled=disable_fishing):
                             if game['stats']['Stamina'] >= 5:
                                 game['stats']['Stamina'] -= 5
                                 game['inventory']['Fish'] = game['inventory'].get('Fish', 0) + 1
-                                st.success("Caught a Fish! 🐟")
+                                st.success("Caught Fish!")
                                 st.rerun()
-                            else:
-                                st.error("Need 5 Stamina.")
+                            else: st.error("Need Stamina")
 
-                    # 3. EXISTING BUILDINGS / FOREST
+                    elif is_damaged:
+                        b_data = next((v for k,v in BUILDINGS.items() if v['icon'] == current_tile), None)
+                        repair_cost = b_data['repair'] if b_data else 10
+                        if st.button(f"🛠️ {repair_cost}", key=f"v_rep_{row_idx}_{col_idx}"):
+                            if game['stats']['Money'] >= repair_cost:
+                                game['stats']['Money'] -= repair_cost
+                                game['damaged_buildings'].remove((row_idx, col_idx))
+                                st.success("Repaired!")
+                                st.rerun()
+
                     else:
-                        # Key uses 'eco_' prefix
-                        st.button(icon, key=f"eco_view_{row_idx}_{col_idx}", disabled=True)
+                        st.button(tile, key=f"v_view_{row_idx}_{col_idx}", disabled=True)
                     
                     st.markdown('</div>', unsafe_allow_html=True)
-
-        st.markdown("<style>div.grid-cell div.stButton > button { aspect-ratio: auto; } </style>", unsafe_allow_html=True)
 
         st.markdown("---")
         st.markdown("#### 🛠️ Build")
@@ -591,326 +780,653 @@ with tab4:
         if not game['placing_mode']:
             build_cols = st.columns(len(BUILDINGS))
             for i, (name, data) in enumerate(BUILDINGS.items()):
-                # Fixed syntax: removed nested parens in string, added unique key
-                label = f"{data['icon']} {name} - £{data['cost']}"
-                if build_cols[i].button(label, key=f"buy_{name}"):
+                btn_label = f"{data['icon']} {name}"
+                if name == "Reserve": btn_label = f"{data['icon']} Reserve (Nature)"
+                if name == "Barn": btn_label = f"{data['icon']} Barn (+Storage)"
+                
+                if build_cols[i].button(f"{btn_label} - £{data['cost']}", key=f"buy_{name}"):
                     if game['stats']['Money'] >= data['cost']:
                         game['stats']['Money'] -= data['cost']
                         game['placing_mode'] = name
-                        st.success(f"Bought {name}! Click map to place.")
                         st.rerun()
-                    else:
-                        st.error("Not enough money!")
-        else:
-            st.warning("Finish placing your current building or cancel before buying another.")
+                    else: st.error("Poor")
 
-        if st.button("⏭️ Next Day (Rest & Collect)", key="next_day_village", use_container_width=True):
+        # --- END DAY LOGIC (TAB 4) ---
+        if st.button("⏭️ End Day (Survive)", use_container_width=True, key="end_day_village"):
             game['day'] += 1
+            
+            # Season Logic
+            day_in_cycle = game['day'] % 40
+            if day_in_cycle < 10: game['season'] = "Spring"
+            elif day_in_cycle < 20: game['season'] = "Summer"
+            elif day_in_cycle < 30: game['season'] = "Autumn"
+            else: game['season'] = "Winter"
+            
+            # Resource Drain
             game['stats']['Food'] = max(0, game['stats']['Food'] - 1)
             game['stats']['Water'] = max(0, game['stats']['Water'] - 1)
             game['stats']['Stamina'] = min(100, game['stats']['Stamina'] + 20)
             
-            for row in game['grid']:
-                for tile in row:
+            # Building Logic
+            for r in range(4):
+                for c in range(6):
+                    tile = game['grid'][r][c]
+                    if (r, c) in game['damaged_buildings']: continue
+                    
+                    if game['season'] == "Winter":
+                        if tile in ['🔋', '☀️']: continue
+                        if tile == '🌳': continue
+                    
                     if tile == '🏠': game['stats']['Stamina'] = min(100, game['stats']['Stamina'] + 20)
                     elif tile == '🪨': game['stats']['Water'] += 5
                     elif tile == '🐔': game['inventory']['Eggs'] = game['inventory'].get('Eggs', 0) + 1
-                    elif tile == '🔋': game['stats']['Power'] = min(game['stats']['Max_Power'], game['stats']['Power'] + 2)
-                    elif tile == '☀️': game['stats']['Power'] = min(game['stats']['Max_Power'], game['stats']['Power'] + 10)
+                    elif tile == '🔋': game['stats']['Power'] = min(20, game['stats']['Power'] + 2)
+                    elif tile == '☀️': game['stats']['Power'] = min(50, game['stats']['Power'] + 10)
                     elif tile == '🌳': game['nature_health'] = min(100, game['nature_health'] + 10)
+                    elif tile == '🌴': 
+                        game['inventory']['Apple'] = game['inventory'].get('Apple', 0) + 2
+                        game['inventory']['Pear'] = game['inventory'].get('Pear', 0) + 2
+                        game['inventory']['Orange'] = game['inventory'].get('Orange', 0) + 2
+            
+            # Damage Logic
+            if random.random() < 0.15:
+                buildings = [(r, c, game['grid'][r][c]) for r in range(4) for c in range(6) if game['grid'][r][c] not in ['🌲', '🌊']]
+                if buildings:
+                    r, c, icon = random.choice(buildings)
+                    game['damaged_buildings'].append((r, c))
+                    st.toast(f"⚠️ Building {icon} damaged!")
 
-            if game['nature_health'] < 100:
-                game['nature_health'] = min(100, game['nature_health'] + 5)
+            # --- ACHIEVEMENT CHECKS (TAB 4) ---
+            # Survivor (30 Days)
+            if game['day'] >= 30 and not st.session_state.achievements['eco_survivor']:
+                st.session_state.achievements['eco_survivor'] = True
+                st.toast("🏅 Achievement Unlocked: Settler!")
+            # Eco-Tycoon (£2000)
+            if game['stats']['Money'] >= 2000 and not st.session_state.achievements['eco_wealth']:
+                st.session_state.achievements['eco_wealth'] = True
+                st.toast("🏅 Achievement Unlocked: Eco-Tycoon!")
+
             st.rerun()
 
     with forage_tab:
         st.markdown("### 🌲 Gather & Market")
-        col1, col2 = st.columns(2)
+        
+        col1, col2 = st.columns([1, 1])
+        
         with col1:
             st.markdown("#### 🌿 Actions")
-            st.markdown("##### 🌲 Woods")
-            if st.button("Forage in Woods", key="forage_woods"):
+            disable_forage = (game['season'] == "Winter")
+            
+            if game['nature_health'] < 20:
+                st.error("⚠️ Nature depleted!")
+            
+            if st.button("Forage in Woods", key="forage_woods", disabled=disable_forage):
                 if game['stats']['Stamina'] >= 10:
                     if game['nature_health'] >= 5:
                         game['stats']['Stamina'] -= 10
                         game['nature_health'] = max(0, game['nature_health'] - 5)
-                        found = [name for name, data in ITEMS_DATA.items() if random.random() < data['rarity'] and name != "Fish"]
+                        # Generates Wood/Stone mainly, but also connects to master inventory if needed
+                        found = [name for name, data in ITEMS_DATA.items() if random.random() < data.get('rarity', 0) and name in ["Wood", "Stone"]]
                         for f in found:
-                            game['inventory'][f] = game['inventory'].get(f, 0) + 1
-                        st.success(f"Found: {', '.join(found[:3])}...")
+                             if sum(game['inventory'].values()) < max_storage:
+                                game['inventory'][f] = game['inventory'].get(f, 0) + 1
+                        st.success(f"Found: {', '.join(found)}")
                         st.rerun()
-                    else:
-                        st.error("Nature Health is too low!")
-                else:
-                    st.error("Need 10 Stamina!")
+                    else: st.error("Nature exhausted!")
+                else: st.error("Need Stamina")
             
             st.markdown("##### 🏭 Production")
-            has_power = game['stats']['Power'] >= 2
-            if st.button("Make Dandelion Tea (5 🌼 + 2 ⚡)", disabled=not has_power):
-                if game['inventory'].get('Dandelion', 0) >= 5:
-                    game['inventory']['Dandelion'] -= 5
-                    game['stats']['Power'] -= 2
-                    game['inventory']['Dandelion Tea'] = game['inventory'].get('Dandelion Tea', 0) + 1
-                    st.success("Brewed Tea!")
+            
+            for recipe_name, recipe in PRODUCTION_RECIPES.items():
+                has_power = game['stats']['Power'] >= recipe['power']
+                has_ingredients = all(game['inventory'].get(ing, 0) >= qty for ing, qty in recipe['ingredients'].items())
+                has_space = (sum(game['inventory'].values()) + recipe['qty']) <= max_storage
+                
+                ing_str = ", ".join([f"{i}x{q}" for i,q in recipe['ingredients'].items()])
+                pwr_str = f"⚡{recipe['power']}" if recipe['power'] > 0 else ""
+                
+                if st.button(f"Make {recipe_name} ({ing_str} {pwr_str})", disabled=not (has_power and has_ingredients and has_space), key=f"make_{recipe_name}"):
+                    for ing, qty in recipe['ingredients'].items():
+                        game['inventory'][ing] -= qty
+                    game['stats']['Power'] -= recipe['power']
+                    out = recipe['output']
+                    game['inventory'][out] = game['inventory'].get(out, 0) + recipe['qty']
+                    st.success(f"Made {recipe_name}!")
                     st.rerun()
-                else:
-                    st.error("Not enough Dandelions.")
 
         with col2:
-            st.markdown("#### 💰 Market")
-            if not game['inventory']:
-                st.info("No items to sell.")
+            st.markdown("#### 💰 Market & Pantry")
+            st.caption(f"Storage: {current_storage}/{max_storage}")
+            
+            # Combine Village Inventory with Master Inventory (Foraged items)
+            # We create a merged view for selling
+            combined_inventory = {}
+            # Add village specific items
+            for item_name, count in game['inventory'].items():
+                combined_inventory[item_name] = combined_inventory.get(item_name, 0) + count
+            
+            # Add foraged items from Master Inventory (Tab 1)
+            for item_name, count in st.session_state.master_inventory.items():
+                combined_inventory[item_name] = combined_inventory.get(item_name, 0) + count
+
+            if not combined_inventory: 
+                st.info("Empty - Forage in Tab 1 or produce in Tab 4")
             else:
-                for item_name, count in game['inventory'].items():
-                    val = ITEMS_DATA.get(item_name, {'value': 5})['value']
-                    if st.button(f"Sell {item_name} ({count}) - £{val} each", key=f"sell_{item_name}"):
-                        game['stats']['Money'] += (val * count)
-                        del game['inventory'][item_name]
-                        st.success(f"Sold {count} {item_name}!")
+                cols = st.columns([2, 1, 1, 1])
+                cols[0].write("**Item**")
+                cols[1].write("**Qty**")
+                cols[2].write("**Eat**")
+                cols[3].write("**Sell**")
+                
+                for item_name, count in list(combined_inventory.items()):
+                    if count <= 0: continue
+                    
+                    data = ITEMS_DATA.get(item_name, {'value': 5, 'food': 0, 'icon': '❓'})
+                    val = data['value']
+                    food_val = data.get('food', 0)
+                    
+                    cols = st.columns([2, 1, 1, 1])
+                    cols[0].write(f"{data['icon']} {item_name}")
+                    cols[1].write(f"{count}")
+                    
+                    if food_val > 0:
+                        if cols[2].button("🍽️", key=f"eat_{item_name}", help=f"Restores {food_val} Food"):
+                            game['stats']['Food'] += food_val
+                            # Deduct from the correct inventory
+                            if item_name in game['inventory'] and game['inventory'][item_name] > 0:
+                                game['inventory'][item_name] -= 1
+                            elif item_name in st.session_state.master_inventory and st.session_state.master_inventory[item_name] > 0:
+                                st.session_state.master_inventory[item_name] -= 1
+                            st.toast(f"+{food_val} Food")
+                            st.rerun()
+                    else:
+                        cols[2].write("—")
+                    
+                    # Selling Logic
+                    if cols[3].button(f"£{val}", key=f"sell_btn_{item_name}"):
+                        # Deduct from correct inventory
+                        if item_name in game['inventory'] and game['inventory'][item_name] > 0:
+                            game['inventory'][item_name] -= 1
+                        elif item_name in st.session_state.master_inventory and st.session_state.master_inventory[item_name] > 0:
+                            st.session_state.master_inventory[item_name] -= 1
+                        
+                        game['stats']['Money'] += val
+                        st.toast(f"Sold {item_name} for £{val}")
+                        
+                        # Achievement Check (Money)
+                        if game['stats']['Money'] >= 2000 and not st.session_state.achievements['eco_wealth']:
+                            st.session_state.achievements['eco_wealth'] = True
+                            st.toast("🏅 Achievement Unlocked: Eco-Tycoon!")
                         st.rerun()
 
+    # --- ACHIEVEMENT DISPLAY (TAB 4) ---
+    st.markdown("---")
+    with st.expander("🏅 Eco-Village Achievements"):
+        for key in ["eco_survivor", "eco_wealth"]:
+            ach = ACHIEVEMENTS[key]
+            status = "✅" if st.session_state.achievements[key] else "🔒"
+            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}*")
+
 # ==========================================
-# GAME TAB 5: FARM TYCOON
+# GAME TAB 5: FARM TYCOON (With Achievements)
 # ==========================================
 with tab5:
-    st.header("🚜 Farm Tycoon: Diamond Edition")
-    st.caption("📚 Build, Automate, and Master the Market!")
-
-    if st.session_state.get('farm_game') is None:
-        grid = [[0 for _ in range(6)] for _ in range(5)]
-        stream_col = random.randint(1, 4)
-        for r in range(5):
-            grid[r][stream_col] = 1
-            if random.random() > 0.5:
-                stream_col = max(0, min(5, stream_col + random.choice([-1, 1])))
-                grid[r][stream_col] = 1
-        st.session_state.farm_game = {
-            'grid': grid, 'money': 150, 'day': 1, 'season': 'Spring', 'weather': '☀️ Sunny',
-            'tool': 'Carrot', 'inventory': {}, 'market_prices': {"Carrot": 10, "Wheat": 15, "Corn": 20, "Egg": 25, "Milk": 40, "Honey": 50},
-            'game_over': False, 'invasives_cleared': 0
-        }
-
-    game = st.session_state.farm_game
-    ICONS = {0: "🟤", 1: "🌊", 2: "🌱", 3: "🌿", 4: "🌾", 5: "🐔", 6: "🐄", 7: "🥀", 8: "🏠", 9: "🐝"}
-    CROPS = {"Carrot": 10, "Wheat": 15, "Corn": 20}
-    ANIMALS = {"Chicken": 50, "Cow": 100}
-
-    def get_season(day): return ["Spring", "Summer", "Autumn", "Winter"][(day // 10) % 4]
-    def get_adjacent(r, c):
-        n = []
-        for dr, dc in [(-1,0), (1,0), (0,-1), (0,1)]: 
-            if 0 <= r+dr < 5 and 0 <= c+dc < 6: n.append((r+dr, c+dc))
-        return n
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric("📅 Day", game['day'])
-    col2.metric("🌍 Season", get_season(game['day']))
-    col3.metric("💰 Money", f"£{game['money']}")
-    st.markdown("---")
-
-    st.markdown("### 🛠️ Toolbox")
-    t1, t2, t3, t4, t5 = st.columns(5)
-    t1.selectbox("Crops", ["Carrot", "Wheat", "Corn"], key="crop_tool"); game['tool'] = st.session_state.crop_tool
-    t2.selectbox("Animals", ["Chicken", "Cow"], key="animal_tool")
-    if t3.button("🏠 Barn (£300)"): game['tool'] = "Barn"
-    if t4.button("🐝 Beehive (£200)"): game['tool'] = "Beehive"
-    if t5.button("🧹 Clear Invasive"): game['tool'] = "Clear"
-
-    st.markdown("---")
-    st.markdown("### 🎒 Inventory & Market")
-    inv_cols = st.columns(len(game['market_prices']))
-    for i, (item, price) in enumerate(game['market_prices'].items()):
-        count = game['inventory'].get(item, 0)
-        base = CROPS.get(item, ANIMALS.get(item, 20))
-        ind = "📈" if price > base else ("📉" if price < base else "➡️")
-        with inv_cols[i]:
-            st.metric(f"{item}", f"{count} pcs", f"£{price} {ind}")
-            if st.button(f"Sell {item}", key=f"sell_{item}"):
-                if count > 0:
-                    game['money'] += price * count; game['inventory'][item] = 0
-                    st.success(f"Sold {count} {item}!"); st.rerun()
-
-    st.markdown("---")
-    st.markdown("### 🗺️ Your Farm")
-    st.info(f"Current Tool: **{game['tool']}**")
+    st.header("🚜 Farm Tycoon")
     
-    # --- CSS FOR SQUARE GRID ---
+    # --- CSS ---
     st.markdown("""
     <style>
-    div.farm-grid div.stButton > button {
-        width: 100% !important; aspect-ratio: 1 / 1 !important; height: auto !important;
-        padding: 0 !important; font-size: 1.5em !important; border: 1px solid #555 !important;
-    }
+    .market-box div.stButton > button { font-size: 14px !important; white-space: normal !important; height: auto !important; padding: 5px !important; }
     </style>
     """, unsafe_allow_html=True)
 
+    # --- HOW TO PLAY ---
+    with st.expander("📖 Guide & Progression"):
+        st.markdown("""
+        **📅 Timeline:**
+        - Seasons last **30 Days**.
+        - **Year 1:** Focus on crops and bees. Animals are locked.
+        - **Year 2+:** Animals (Chickens, Cows) are unlocked.
+        
+        **🌱 Farming:**
+        - Crops take 3 days to grow.
+        - **Soil:** Depletes on harvest. Empty plots **regenerate +5 health** per day.
+        
+        **📦 Feed & Animals:**
+        - Animals eat **Feed Bags** (best) or Wheat (fallback).
+        - **Recipe:** 1 Wheat + 1 Carrot + 1 Corn = 5 Feed Bags.
+        
+        **📉 Market:**
+        - Random **Shortages** double the price of a crop!
+        - Selling large amounts (>10) crashes the price.
+        """)
+
+    # --- INIT ---
+    if st.session_state.get('farm_game') is None:
+        grid = [[0 for _ in range(6)] for _ in range(5)]
+        stream_col = random.randint(1, 4)
+        for r in range(5): grid[r][stream_col] = 1
+        
+        st.session_state.farm_game = {
+            'grid': grid, 'money': 200, 'day': 1, 
+            'inventory': {'Feed': 0}, 
+            'market_prices': {"Carrot": 12, "Wheat": 18, "Corn": 25, "Egg": 30, "Milk": 50, "Honey": 60, "Feed": 5},
+            'soil_health': [[100 for _ in range(6)] for _ in range(5)],
+            'manor_bought': False,
+            'fallow_days': [[0 for _ in range(6)] for _ in range(5)],
+            'sales_log': {},
+            'crop_map': {},
+            'last_event': "",
+            'market_event': None,
+            'total_harvests': 0 
+        }
+
+    game = st.session_state.farm_game
+    
+    # Migration for existing saves
+    for k in ["Carrot", "Wheat", "Corn", "Egg", "Milk", "Honey", "Feed"]:
+        if k not in game['market_prices']: game['market_prices'][k] = 10
+    if 'Feed' not in game['inventory']: game['inventory']['Feed'] = 0
+    if 'market_event' not in game: game['market_event'] = None
+    if 'last_event' not in game: game['last_event'] = ""
+    if 'total_harvests' not in game: game['total_harvests'] = 0
+
+    # --- DEFINITIONS ---
+    ICONS = {
+        0: "🟤", 1: "🌊", 2: "🌱", 3: "🌿", 4: "🌾", 7: "🥀", 
+        8: "🏠", 9: "🐝", 10: "🎃", 11: "💦", 
+        12: "🐔", 13: "🐄", 14: "🐐"
+    }
+    SEED_COST = {"Carrot": 6, "Wheat": 9, "Corn": 12}
+    
+    BUILDINGS_FARM = {
+        "Manor": {"cost": 5000, "icon": "🏛️", "id": 8},
+        "Barn": {"cost": 300, "icon": "🏠", "id": 8},
+        "Beehive": {"cost": 200, "icon": "🐝", "id": 9},
+        "Scarecrow": {"cost": 100, "icon": "🎃", "id": 10},
+        "Sprinkler": {"cost": 250, "icon": "💦", "id": 11},
+        "Chicken": {"cost": 50, "icon": "🐔", "id": 12},
+        "Cow": {"cost": 100, "icon": "🐄", "id": 13},
+        "Goat": {"cost": 80, "icon": "🐐", "id": 14}
+    }
+
+    def get_year(day): return (day // 120) + 1
+    def get_season(day):
+        day_in_year = day % 120
+        if day_in_year < 30: return "Spring"
+        elif day_in_year < 60: return "Summer"
+        elif day_in_year < 90: return "Autumn"
+        else: return "Winter"
+
+    # --- WIN STATE ---
+    if game['manor_bought']:
+        st.success("🏆 **FARMING DYNASTY COMPLETE!**")
+
+    # --- EVENT WARNING ---
+    if game['last_event']:
+        st.warning(f"**Report:** {game['last_event']}")
+
+    if game['market_event']:
+        st.info(f"📈 **Market Surge:** {game['market_event']} prices have doubled!")
+
+    # --- STATS ---
+    current_year = get_year(game['day'])
+    current_season = get_season(game['day'])
+
+    chickens = sum(row.count(12) for row in game['grid'])
+    cows = sum(row.count(13) for row in game['grid'])
+    goats = sum(row.count(14) for row in game['grid'])
+    total_animals = chickens + cows + goats
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("📅 Year", f"{current_year} - {current_season}")
+    c2.metric("💰 Money", f"£{game['money']}")
+    c3.metric("🐔 Chickens", chickens if current_year >= 2 else "🔒 Y2")
+    c4.metric("🐄 Cows / 🐐 Goats", f"{cows}/{goats}" if current_year >= 2 else "🔒 Y2")
+
+    # Inventory
+    st.markdown("---")
+    inv_str = " | ".join([f"**{k}:** {v}" for k,v in game['inventory'].items() if v > 0])
+    st.markdown(f"**🎒 Stock:** {inv_str if inv_str else 'Empty'}")
+    
+    # Toolbox
+    t1, t2, t3, t4 = st.columns(4)
+    with t1:
+        game['tool'] = st.selectbox("🌱 Plant", ["Carrot", "Wheat", "Corn"], key="farm_tool_crops")
+    with t2:
+        available_buildings = {k: v for k, v in BUILDINGS_FARM.items() if k in ["Manor", "Barn", "Beehive", "Scarecrow", "Sprinkler"] or current_year >= 2}
+        build_opts = [f"{name} (£{data['cost']})" for name, data in available_buildings.items()]
+        game['build_sel_raw'] = st.selectbox("🏗️ Build", ["None"] + build_opts, key="farm_tool_build")
+        if game['build_sel_raw'] != "None":
+            game['build_sel'] = game['build_sel_raw'].split(" (")[0]
+        else:
+            game['build_sel'] = "None"
+    with t3:
+        if st.button("🧹 Clear Weeds", key="farm_clear_btn"):
+            removed = sum(1 for r in range(5) for c in range(6) if game['grid'][r][c] == 7)
+            if removed > 0:
+                for r in range(5):
+                    for c in range(6):
+                        if game['grid'][r][c] == 7: game['grid'][r][c] = 0
+                st.success(f"Cleared {removed}!"); st.rerun()
+    with t4:
+        feed_needed = chickens + (cows * 2) + goats
+        st.caption(f"Feed Needed: {feed_needed}")
+
+    # --- FEED PRODUCTION ---
+    st.markdown("#### 🏭 Feed Production")
+    f1, f2 = st.columns(2)
+    with f1:
+        st.write("**Recipe:** 1 Wheat + 1 Carrot + 1 Corn = 5 Feed")
+    with f2:
+        has_ing = (game['inventory'].get('Wheat', 0) >= 1 and 
+                   game['inventory'].get('Carrot', 0) >= 1 and 
+                   game['inventory'].get('Corn', 0) >= 1)
+        if st.button("Make Feed Bag", disabled=not has_ing):
+            game['inventory']['Wheat'] -= 1
+            game['inventory']['Carrot'] -= 1
+            game['inventory']['Corn'] -= 1
+            game['inventory']['Feed'] = game['inventory'].get('Feed', 0) + 5
+            st.success("+5 Feed Bags"); st.rerun()
+
+    # --- END DAY LOGIC (TAB 5) ---
+    if st.button("⏭️ End Day", use_container_width=True, key="end_day_farm"):
+        game['last_event'] = ""
+        
+        # Market Logic
+        base_prices = {"Carrot": 12, "Wheat": 18, "Corn": 25, "Egg": 30, "Milk": 50, "Honey": 60}
+        for item, qty in game['sales_log'].items():
+            if qty > 10: game['market_prices'][item] = max(1, int(base_prices[item] * 0.8))
+            else: game['market_prices'][item] = min(base_prices[item] + 5, int(base_prices[item] * 1.05))
+        game['sales_log'] = {}
+        game['market_event'] = None
+        
+        # Random Market Surge
+        if random.random() < 0.2:
+            surge_crop = random.choice(["Carrot", "Wheat", "Corn"])
+            game['market_event'] = surge_crop
+            game['last_event'] += f"📈 {surge_crop} SURGE! "
+
+        # Weather
+        is_drought = (current_season == "Summer" and random.random() < 0.3 and not any(11 in row for row in game['grid']))
+        is_pest_event = (current_season != "Winter" and random.random() < 0.2 and not any(10 in row for row in game['grid']))
+        
+        if is_drought: game['last_event'] += "☀️ DROUGHT! "
+        if is_pest_event: game['last_event'] += "🐛 PESTS! "
+
+        # Grid Process
+        for r in range(5):
+            for c in range(6):
+                tile = game['grid'][r][c]
+                
+                # Weeds & Fallow (Soil Regen)
+                if tile == 0:
+                    game['fallow_days'][r][c] += 1
+                    game['soil_health'][r][c] = min(100, game['soil_health'][r][c] + 5)
+                    if game['fallow_days'][r][c] > 3 and random.random() < 0.2:
+                        game['grid'][r][c] = 7; game['fallow_days'][r][c] = 0
+                
+                # Crops
+                elif tile in [2, 3]:
+                    game['fallow_days'][r][c] = 0
+                    if current_season == "Winter":
+                        game['grid'][r][c] = 0
+                        game['crop_map'].pop((r,c), None)
+                        game['last_event'] += "❄️ Winter Kill. "
+                    elif not is_drought:
+                        game['grid'][r][c] = tile + 1
+                    
+                    if is_pest_event and random.random() < 0.4:
+                        game['grid'][r][c] = 0
+                        game['crop_map'].pop((r,c), None)
+
+                # Production
+                elif tile == 9: # Beehive
+                    game['inventory']['Honey'] = game['inventory'].get('Honey', 0) + 1
+                
+                # Animals
+                elif tile == 12: # Chicken
+                    if game['inventory'].get('Feed', 0) >= 1:
+                        game['inventory']['Feed'] -= 1
+                        game['inventory']['Egg'] = game['inventory'].get('Egg', 0) + 1
+                    elif game['inventory'].get('Wheat', 0) >= 1:
+                        game['inventory']['Wheat'] -= 1
+                        game['inventory']['Egg'] = game['inventory'].get('Egg', 0) + 1
+                    else: game['last_event'] += "🐔 Hungry! "
+
+                elif tile == 13: # Cow
+                    if game['inventory'].get('Feed', 0) >= 2:
+                        game['inventory']['Feed'] -= 2
+                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
+                    elif game['inventory'].get('Wheat', 0) >= 2:
+                        game['inventory']['Wheat'] -= 2
+                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
+                    else: game['last_event'] += "🐄 Hungry! "
+
+                elif tile == 14: # Goat
+                    if game['inventory'].get('Feed', 0) >= 1:
+                        game['inventory']['Feed'] -= 1
+                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
+                    elif game['inventory'].get('Wheat', 0) >= 1:
+                        game['inventory']['Wheat'] -= 1
+                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
+                    else: game['last_event'] += "🐐 Hungry! "
+
+        # --- ACHIEVEMENT CHECKS (TAB 5) ---
+        if total_animals >= 5 and not st.session_state.achievements['farm_rancher']:
+            st.session_state.achievements['farm_rancher'] = True
+            st.toast("🏅 Achievement Unlocked: Rancher!")
+
+        game['day'] += 1
+        st.rerun()
+
+    # --- GRID ---
+    st.markdown("#### 🗺️ Farm")
+    
     for r in range(5):
         cols = st.columns(6)
         for c in range(6):
             tile_val = game['grid'][r][c]
             icon = ICONS.get(tile_val, "❓")
             
-            # Wrap in div for CSS targeting
             with cols[c]:
-                st.markdown('<div class="farm-grid">', unsafe_allow_html=True)
-                
-                # Determine Button Logic
-                is_interactive = False
-                btn_label = icon
-                
-                if tile_val == 0: # Empty Dirt
-                    if game['tool'] in CROPS:
-                        is_interactive = True
-                        btn_label = "🌱" # Show planting icon
-                elif tile_val == 4: # Ready Crop
-                    is_interactive = True
-                    btn_label = "🌾" # Harvest icon
-                elif tile_val == 7: # Invasive
-                    if game['tool'] == "Clear":
-                        is_interactive = True
-                        btn_label = "🧹"
-                
-                # Use unique keys with 'farm_' prefix
-                if is_interactive:
-                    if st.button(btn_label, key=f"farm_{r}_{c}"):
-                        # EXECUTE ACTIONS
-                        cost = 0
-                        if tile_val == 0 and game['tool'] in CROPS: 
-                            cost = CROPS[game['tool']]
-                        
-                        if game['money'] >= cost:
-                            if tile_val == 0:
-                                game['grid'][r][c] = 2 # Seed
-                                game['money'] -= cost
-                                st.rerun()
-                            elif tile_val == 4:
-                                # Check Beehive Bonus
-                                bonus = 0
-                                for nr, nc in get_adjacent(r, c):
-                                    if game['grid'][nr][nc] == 9: bonus = 1
-                                game['inventory']['Wheat'] = game['inventory'].get('Wheat', 0) + 1 + bonus
-                                game['grid'][r][c] = 0
-                                st.rerun()
-                            elif tile_val == 7:
-                                game['grid'][r][c] = 0
-                                game['invasives_cleared'] += 1
-                                st.rerun()
+                if tile_val == 7: # Weeds
+                    if st.button("🧹", key=f"fm_w_{r}_{c}"):
+                        game['grid'][r][c] = 0; st.rerun()
+                elif tile_val == 0: # Empty
+                    if game['build_sel'] != "None":
+                        b_name = game['build_sel']
+                        b_data = BUILDINGS_FARM[b_name]
+                        if b_name in ["Chicken", "Cow", "Goat"] and current_year < 2:
+                            st.warning("Unlock Y2")
                         else:
-                            st.error("Not enough money!")
+                            if st.button("🏗️", key=f"fm_b_{r}_{c}"):
+                                if game['money'] >= b_data['cost']:
+                                    game['money'] -= b_data['cost']
+                                    game['grid'][r][c] = b_data['id']
+                                    game['build_sel'] = "None"
+                                    st.rerun()
+                    else:
+                        if st.button("🌱", key=f"fm_p_{r}_{c}"):
+                            crop = game['tool']
+                            cost = SEED_COST[crop]
+                            if game['money'] >= cost:
+                                game['money'] -= cost
+                                game['grid'][r][c] = 2
+                                game['crop_map'][(r,c)] = crop
+                                st.rerun()
+                elif tile_val == 4: # Ready
+                    if st.button("🌾", key=f"fm_h_{r}_{c}"):
+                        crop = game['crop_map'].get((r,c), "Carrot")
+                        yield_count = 1
+                        for dr, dc in [(-1,0), (1,0), (0,-1), (0,1)]:
+                            if 0 <= r+dr < 5 and 0 <= c+dc < 6:
+                                if game['grid'][r+dr][c+dc] == 9: yield_count += 1
+                        
+                        harvested = int(yield_count * (game['soil_health'][r][c] / 100))
+                        if harvested == 0: harvested = 1
+                        
+                        game['inventory'][crop] = game['inventory'].get(crop, 0) + harvested
+                        game['grid'][r][c] = 0
+                        game['soil_health'][r][c] = max(0, game['soil_health'][r][c] - 10)
+                        game['crop_map'].pop((r,c), None)
+                        game['total_harvests'] += 1
+                        
+                        if game['total_harvests'] >= 1 and not st.session_state.achievements['farm_harvest']:
+                            st.session_state.achievements['farm_harvest'] = True
+                            st.toast("🏅 Achievement Unlocked: Green Thumb!")
+
+                        st.toast(f"+{harvested} {crop}")
+                        st.rerun()
                 else:
-                    # Show Icon Only (Disabled)
-                    st.button(icon, key=f"farm_view_{r}_{c}", disabled=True)
+                    st.button(icon, key=f"fm_v_{r}_{c}", disabled=True)
                 
-                st.markdown('</div>', unsafe_allow_html=True)
+                soil = game['soil_health'][r][c]
+                st.progress(soil/100)
 
-    # Reset CSS style after grid
-    st.markdown("<style>div.farm-grid div.stButton > button { aspect-ratio: auto; } </style>", unsafe_allow_html=True)
+    st.markdown("---")
+    
+    # --- MARKET ---
+    st.markdown("#### 💰 Market")
+    
+    st.markdown('<div class="market-box">', unsafe_allow_html=True)
+    cols = st.columns(len(game['market_prices']))
+    for i, (item, price) in enumerate(game['market_prices'].items()):
+        count = game['inventory'].get(item, 0)
+        
+        current_price = price
+        if game['market_event'] == item:
+            current_price = price * 2 
+        
+        crash_msg = ""
+        if game['sales_log'].get(item, 0) > 10: 
+            crash_msg = "📉"
+            current_price = int(current_price * 0.8)
+            
+        with cols[i]:
+            st.markdown(f"**{item}** {crash_msg}")
+            st.caption(f"Have: {count}")
+            if st.button(f"Sell\n£{current_price}", key=f"sell_{item}_f", disabled=count<=0):
+                game['money'] += current_price
+                game['inventory'][item] -= 1
+                game['sales_log'][item] = game['sales_log'].get(item, 0) + 1
+                
+                if game['money'] >= 5000:
+                     game['manor_bought'] = True # Win condition check
 
-    if st.button("⏭️ Next Day"):
-        for item in game['market_prices']: game['market_prices'][item] = max(1, int(game['market_prices'][item] * random.uniform(0.7, 1.3)))
-        for r in range(5):
-            for c in range(6):
-                tile = game['grid'][r][c]
-                if tile in [2, 3] and get_season(game['day']) != "Winter": game['grid'][r][c] = tile + 1
-                if tile == 7 and random.random() < 0.3:
-                    for nr, nc in get_adjacent(r, c):
-                        if game['grid'][nr][nc] in [2, 3, 4]: game['grid'][nr][nc] = 7
-        if random.random() < 0.2: st.toast("📉 Market News: Prices shifted!")
-        game['day'] += 1; st.rerun()
+                st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # --- ACHIEVEMENT DISPLAY (TAB 5) ---
+    st.markdown("---")
+    with st.expander("🏅 Farm Achievements"):
+        for key in ["farm_harvest", "farm_rancher", "farm_winner"]:
+            ach = ACHIEVEMENTS[key]
+            status = "✅" if st.session_state.achievements[key] else "🔒"
+            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}*")
 
 # ==========================================
-# GAME TAB 6: THE WILD KITCHEN
+# GAME TAB 6: THE WILD KITCHEN (With Achievements)
 # ==========================================
 with tab6:
     st.header("🍳 The Wild Kitchen")
-    st.caption("📚 Process your harvest. Master the prep. Unlock 30+ recipes!")
+    st.caption("📚 Process your harvest. Master the prep. Unlock new difficulties!")
     
-    if 'kitchen_inventory' not in st.session_state:
-        if 'collection_edible' in st.session_state and st.session_state.collection_edible:
-            inv = {p: st.session_state.collection_edible.count(p) for p in set(st.session_state.collection_edible)}
-            st.session_state.kitchen_inventory = inv
-        else:
-            st.session_state.kitchen_inventory = {"Nettle": 10, "Dandelion": 10, "Wild Garlic": 5, "Blackberries": 5, "Pine Needles": 10, "Hazelnut": 5, "Sorrel": 5, "Chickweed": 5}
-        st.session_state.kitchen_score = 0
-        st.session_state.unlocked_recipes = [] 
+    with st.expander("📖 How to Play"):
+        st.markdown("""
+        1. **Inventory:** Your pantry is filled by **Tab 1 (Foraging)**.
+        2. **Progression:** Unlock **3 Beginner** recipes to access Intermediate.
+        3. **Unlocking:** Click a recipe, answer the safety questions, and click "Submit".
+        4. **Cooking:** Once unlocked, cook the recipe using ingredients from your Pantry.
+        """)
 
-    # --- RECIPE DATABASE ---
+    # --- PANTRY SETUP (UNIFIED INVENTORY) ---
+    # The kitchen now reads directly from the Master Inventory (Tab 1)
+    inv = st.session_state.master_inventory
+    # Add some default basics if empty for new players?
+    if not inv:
+        st.info("Your Pantry is empty. Go Foraging in Tab 1 to find ingredients!")
+
+    # --- FULL RECIPE DATABASE ---
     RECIPES = [
-        {"name": "Nettle Soup", "ingredients": {"Nettle": 5, "Water": 1}, "prep_questions": [{"q": "Why must nettles be cooked?", "opts": ["To remove the sting", "To make them sweet", "To change color"], "a": "To remove the sting"}], "icon": "🥣", "desc": "A rich, green soup.", "diff": 1},
-        {"name": "Wild Garlic Pesto", "ingredients": {"Wild Garlic": 10, "Oil": 1}, "prep_questions": [{"q": "Which part of Wild Garlic is edible?", "opts": ["Only the flowers", "Leaves, flowers, and bulbs", "Only the roots"], "a": "Leaves, flowers, and bulbs"}], "icon": "🥗", "desc": "A fragrant pesto.", "diff": 1},
-        {"name": "Dandelion Salad", "ingredients": {"Dandelion": 5}, "prep_questions": [{"q": "When is best to harvest Dandelion leaves?", "opts": ["When the flower is yellow", "Before the flower opens (young)", "In winter"], "a": "Before the flower opens (young)"}], "icon": "🥗", "desc": "Young leaves are less bitter.", "diff": 1},
-        {"name": "Three-Cornered Leek Omelette", "ingredients": {"Three-Cornered Leek": 5, "Eggs": 2}, "prep_questions": [{"q": "How to ID Three-Cornered Leek?", "opts": ["Smells of garlic, triangular stem", "Blue flowers, round stem", "Yellow flowers, spiky"], "a": "Smells of garlic, triangular stem"}], "icon": "🍳", "desc": "A forager's breakfast.", "diff": 1},
-        {"name": "Pine Needle Tea", "ingredients": {"Pine Needles": 10, "Water": 1}, "prep_questions": [{"q": "How do you identify SAFE Pine needles?", "opts": ["Flat needles (Yew)", "Round needles in bundles", "Blue needles"], "a": "Round needles in bundles"}], "icon": "🍵", "desc": "High in Vitamin C.", "diff": 1},
-        {"name": "Beech Leaf Liqueur", "ingredients": {"Beech Leaves": 20, "Sugar": 1, "Alcohol": 1}, "prep_questions": [{"q": "When should you pick Beech leaves?", "opts": ["Autumn (Brown)", "Spring (Young/Transparent)", "Winter"], "a": "Spring (Young/Transparent)"}], "icon": "🥃", "desc": "A sweet, gin-based liquor.", "diff": 1},
-        {"name": "Lime Leaf Salad", "ingredients": {"Lime (Leaves)": 10}, "prep_questions": [{"q": "What do Lime (Basswood) leaves taste like?", "opts": ["Bitter", "Mild and slightly sweet", "Spicy"], "a": "Mild and slightly sweet"}], "icon": "🥗", "desc": "Excellent fresh salad green.", "diff": 1},
-        {"name": "Chickweed Salad", "ingredients": {"Chickweed": 10}, "prep_questions": [{"q": "How do you identify Chickweed?", "opts": ["Line of hairs on stem", "Purple spots on stem", "Blue flowers"], "a": "Line of hairs on stem"}], "icon": "🥗", "desc": "A mild, nutritious weed.", "diff": 1},
-        {"name": "Wild Strawberry Jam", "ingredients": {"Wild Strawberry": 20, "Sugar": 1}, "prep_questions": [{"q": "How do wild strawberries differ from barren strawberry?", "opts": ["Barren has petals with gaps", "Wild has blue flowers", "Barren has hairy leaves"], "a": "Barren has petals with gaps"}], "icon": "🍯", "desc": "Tiny but intense flavor.", "diff": 1},
-        {"name": "Roasted Hazelnuts", "ingredients": {"Hazelnut": 10}, "prep_questions": [{"q": "What indicates a ripe Hazelnut?", "opts": ["Green husk", "Brown shell and leafy husk", "No leaves"], "a": "Brown shell and leafy husk"}], "icon": "🌰", "desc": "Autumn treat.", "diff": 1},
-        {"name": "Sea Purslane Salad", "ingredients": {"Sea Purslane": 10}, "prep_questions": [{"q": "What is the main precaution with Sea Purslane?", "opts": ["It is very salty", "It is poisonous raw", "It has thorns"], "a": "It is very salty"}], "icon": "🥗", "desc": "Salty coastal green.", "diff": 1},
+        # --- BEGINNER ---
+        {"name": "Nettle Soup", "ingredients": {"Nettles": 5, "Water": 1}, "prep_questions": [{"q": "Why must nettles be cooked?", "opts": ["To remove the sting", "To make them sweet", "To change color"], "a": "To remove the sting"}], "icon": "🥣", "desc": "A rich, green soup.", "diff": 1, "benefits": "High in Iron."},
+        {"name": "Wild Garlic Pesto", "ingredients": {"Wild Garlic": 10, "Oil": 1}, "prep_questions": [{"q": "Which part of Wild Garlic is edible?", "opts": ["Only the flowers", "Leaves, flowers, and bulbs", "Only the roots"], "a": "Leaves, flowers, and bulbs"}], "icon": "🥗", "desc": "A fragrant pesto.", "diff": 1, "benefits": "Antibacterial."},
+        {"name": "Dandelion Salad", "ingredients": {"Dandelion": 5}, "prep_questions": [{"q": "When is best to harvest Dandelion leaves?", "opts": ["When the flower is yellow", "Before the flower opens (young)", "In winter"], "a": "Before the flower opens (young)"}], "icon": "🥗", "desc": "Young leaves are less bitter.", "diff": 1, "benefits": "Liver health."},
+        {"name": "Three-Cornered Leek Omelette", "ingredients": {"Three-Cornered Leek": 5, "Eggs": 2}, "prep_questions": [{"q": "How to ID Three-Cornered Leek?", "opts": ["Smells of garlic, triangular stem", "Blue flowers, round stem", "Yellow flowers, spiky"], "a": "Smells of garlic, triangular stem"}], "icon": "🍳", "desc": "A forager's breakfast.", "diff": 1, "benefits": "High protein."},
+        {"name": "Pine Needle Tea", "ingredients": {"Pine Needles": 10, "Water": 1}, "prep_questions": [{"q": "How do you identify SAFE Pine needles?", "opts": ["Flat needles (Yew)", "Round needles in bundles", "Blue needles"], "a": "Round needles in bundles"}], "icon": "🍵", "desc": "High in Vitamin C.", "diff": 1, "benefits": "Vitamin C boost."},
+        {"name": "Beech Leaf Liqueur", "ingredients": {"Beech Leaves": 20, "Sugar": 1, "Alcohol": 1}, "prep_questions": [{"q": "When should you pick Beech leaves?", "opts": ["Autumn (Brown)", "Spring (Young/Transparent)", "Winter"], "a": "Spring (Young/Transparent)"}], "icon": "🥃", "desc": "A sweet, gin-based liquor.", "diff": 1, "benefits": "Traditional tonic."},
+        {"name": "Chickweed Salad", "ingredients": {"Chickweed": 10}, "prep_questions": [{"q": "How do you identify Chickweed?", "opts": ["Line of hairs on stem", "Purple spots on stem", "Blue flowers"], "a": "Line of hairs on stem"}], "icon": "🥗", "desc": "A mild, nutritious weed.", "diff": 1, "benefits": "Vitamins."},
+        {"name": "Wild Strawberry Jam", "ingredients": {"Wild Strawberry": 20, "Sugar": 1}, "prep_questions": [{"q": "How do wild strawberries differ from barren strawberry?", "opts": ["Barren has petals with gaps", "Wild has blue flowers", "Barren has hairy leaves"], "a": "Barren has petals with gaps"}], "icon": "🍯", "desc": "Tiny but intense flavor.", "diff": 1, "benefits": "Antioxidants."},
+        {"name": "Roasted Hazelnuts", "ingredients": {"Hazelnut": 10}, "prep_questions": [{"q": "What indicates a ripe Hazelnut?", "opts": ["Green husk", "Brown shell and leafy husk", "No leaves"], "a": "Brown shell and leafy husk"}], "icon": "🌰", "desc": "Autumn treat.", "diff": 1, "benefits": "Heart health."},
+        {"name": "Sea Purslane Salad", "ingredients": {"Sea Purslane": 10}, "prep_questions": [{"q": "What is the main precaution with Sea Purslane?", "opts": ["It is very salty", "It is poisonous raw", "It has thorns"], "a": "It is very salty"}], "icon": "🥗", "desc": "Salty coastal green.", "diff": 1, "benefits": "Minerals."},
         
-        {"name": "Dandelion Coffee", "ingredients": {"Dandelion": 20}, "prep_questions": [{"q": "Which part is used for coffee?", "opts": ["Leaves", "Flowers", "Roots"], "a": "Roots"}, {"q": "How must the roots be prepared?", "opts": ["Eaten raw", "Roasted and ground", "Boiled whole"], "a": "Roasted and ground"}], "icon": "☕", "desc": "A caffeine-free coffee substitute.", "diff": 2},
-        {"name": "Elderflower Cordial", "ingredients": {"Elderflower": 10, "Sugar": 1}, "prep_questions": [{"q": "Why should you not wash Elderflowers?", "opts": ["Loses pollen (flavor)", "Becomes poisonous", "Petals fall off"], "a": "Loses pollen (flavor)"}, {"q": "What must you check for before cooking?", "opts": ["Spiders", "Bugs/Maggots", "Birds"], "a": "Bugs/Maggots"}], "icon": "🥤", "desc": "A sweet summery drink.", "diff": 2},
-        {"name": "Blackberry Jam", "ingredients": {"Blackberries": 20, "Sugar": 1}, "prep_questions": [{"q": "What must you check for when picking?", "opts": ["Check for bugs", "Check if they are red", "Check for thorns"], "a": "Check for bugs"}, {"q": "What helps the jam set (thicken)?", "opts": ["Water", "Pectin (naturally in fruit)", "Oil"], "a": "Pectin (naturally in fruit)"}], "icon": "🍯", "desc": "Preserved summer in a jar.", "diff": 2},
-        {"name": "Rosehip Syrup", "ingredients": {"Rosehips": 15, "Sugar": 1}, "prep_questions": [{"q": "Why remove the seeds?", "opts": ["Bitter", "Itchy irritation", "Poisonous"], "a": "Itchy irritation"}, {"q": "What vitamin are Rosehips famous for?", "opts": ["Vitamin A", "Vitamin C", "Vitamin D"], "a": "Vitamin C"}], "icon": "🧴", "desc": "Rich in Vitamin C.", "diff": 2},
-        {"name": "Sorrel Soup", "ingredients": {"Sorrel": 15, "Water": 1}, "prep_questions": [{"q": "What gives Sorrel its sour taste?", "opts": ["Sugar", "Oxalic Acid", "Citrus"], "a": "Oxalic Acid"}, {"q": "Who should avoid large amounts?", "opts": ["Children", "People with kidney issues", "Elderly"], "a": "People with kidney issues"}], "icon": "🥣", "desc": "Tangy and refreshing.", "diff": 2},
-        {"name": "Hawthorn Ketchup", "ingredients": {"Hawthorn": 30, "Sugar": 1}, "prep_questions": [{"q": "What do Hawthorn berries look like?", "opts": ["Blue pods", "Small red berries", "Blackberries"], "a": "Small red berries"}, {"q": "What should you avoid when eating?", "opts": ["The skin", "The seeds (pips)", "The stem"], "a": "The seeds (pips)"}], "icon": "🍅", "desc": "A tomato ketchup alternative.", "diff": 2},
-        {"name": "Sweet Chestnut Roast", "ingredients": {"Sweet Chestnut": 20}, "prep_questions": [{"q": "How does the case differ from Horse Chestnut?", "opts": ["Smooth/Warty", "Very spiky", "Green"], "a": "Very spiky"}, {"q": "What must you do before roasting?", "opts": ["Peel them", "Score the shell", "Boil for 1 hour"], "a": "Score the shell"}], "icon": "🌰", "desc": "Roasting over an open fire.", "diff": 2},
-        {"name": "Marsh Samphire Sauté", "ingredients": {"Marsh Samphire": 15, "Butter": 1}, "prep_questions": [{"q": "Where does Samphire grow?", "opts": ["Dry Meadows", "Saltmarshes/Mud", "Trees"], "a": "Saltmarshes/Mud"}, {"q": "How do you harvest sustainably?", "opts": ["Pull up roots", "Cut top 2 inches", "Dig with trowel"], "a": "Cut top 2 inches"}], "icon": "🥦", "desc": "Sea asparagus.", "diff": 2},
-        {"name": "Sea Kale Steam", "ingredients": {"Sea Kale": 10, "Butter": 1}, "prep_questions": [{"q": "Why is Sea Kale rare in some areas?", "opts": ["Over-harvested", "Poisonous", "Invasive"], "a": "Over-harvested"}, {"q": "What does it taste like?", "opts": ["Cabbage/Asparagus", "Fish", "Sweet"], "a": "Cabbage/Asparagus"}], "icon": "🥬", "desc": "Pick sparingly.", "diff": 2},
-        {"name": "Dulse Crisps", "ingredients": {"Dulse": 10, "Oil": 1}, "prep_questions": [{"q": "What is Dulse?", "opts": ["A mushroom", "A seaweed", "A berry"], "a": "A seaweed"}, {"q": "How do you eat it?", "opts": ["Raw", "Fried or dried", "Boiled only"], "a": "Fried or dried"}], "icon": "🥢", "desc": "Salty snack.", "diff": 2},
-        {"name": "Bilberry Pie", "ingredients": {"Bilberry": 25, "Sugar": 1}, "prep_questions": [{"q": "Where do Bilberries grow?", "opts": ["Low shrubs on moors", "High trees", "Gardens"], "a": "Low shrubs on moors"}, {"q": "What is the lookalike danger?", "opts": ["Blueberries", "Deadly Nightshade", "Cherries"], "a": "Deadly Nightshade"}], "icon": "🥧", "desc": "Wild blueberry pie.", "diff": 2},
-        {"name": "Meadowsweet Cordial", "ingredients": {"Meadowsweet": 15, "Sugar": 1}, "prep_questions": [{"q": "What does Meadowsweet smell like?", "opts": ["Garlic", "Almond/Honey", "Mint"], "a": "Almond/Honey"}, {"q": "Who should avoid Meadowsweet?", "opts": ["Children", "People with Aspirin allergy", "Diabetics"], "a": "People with Aspirin allergy"}], "icon": "🥤", "desc": "Floral and sweet.", "diff": 2},
-        {"name": "Pignut Roast", "ingredients": {"Pignut": 15, "Oil": 1}, "prep_questions": [{"q": "Where do Pignuts grow?", "opts": ["Wet ditches", "Dry meadows", "Trees"], "a": "Dry meadows"}, {"q": "What is the deadly lookalike?", "opts": ["Hemlock Water Dropwort", "Potato", "Parsnip"], "a": "Hemlock Water Dropwort"}], "icon": "🥔", "desc": "Nutty tuber.", "diff": 2},
-        {"name": "Alexanders Stew", "ingredients": {"Alexanders": 15, "Water": 1}, "prep_questions": [{"q": "What part is eaten?", "opts": ["Roots", "Stems", "Flowers"], "a": "Stems"}, {"q": "What is the lookalike danger?", "opts": ["Hemlock (Purple spots)", "Wild Carrot", "Celery"], "a": "Hemlock (Purple spots)"}], "icon": "🍲", "desc": "Coastal celery.", "diff": 2},
-
-        {"name": "Acorn Coffee", "ingredients": {"Acorn": 20}, "prep_questions": [{"q": "Why not eat raw?", "opts": ["Too hard", "Contain tannins (bitter)", "Protected"], "a": "Contain tannins (bitter)"}, {"q": "How to remove tannins?", "opts": ["Leaching (soaking)", "Freezing", "Burning"], "a": "Leaching (soaking)"}, {"q": "When to harvest?", "opts": ["Green", "Brown (ripe)", "White"], "a": "Brown (ripe)"}], "icon": "☕", "desc": "Must be leached first.", "diff": 3},
-        {"name": "Chanterelle Risotto", "ingredients": {"Chanterelle": 10, "Rice": 1}, "prep_questions": [{"q": "How to ID Chanterelle?", "opts": ["True gills (sheets)", "False gills (ridges)", "Sponge"], "a": "False gills (ridges)"}, {"q": "What does it smell like?", "opts": ["Aniseed/Apricot", "Mud", "Nothing"], "a": "Aniseed/Apricot"}, {"q": "Danger lookalike?", "opts": ["False Chanterelle", "Death Cap", "Field Mushroom"], "a": "False Chanterelle"}], "icon": "🍚", "desc": "A gourmet wild meal.", "diff": 3},
-        {"name": "Crab Apple Jelly", "ingredients": {"Crab Apple": 25, "Sugar": 1}, "prep_questions": [{"q": "Why not eat raw?", "opts": ["Poisonous", "Too tart/sour", "Too hard"], "a": "Too tart/sour"}, {"q": "Why is it good for jelly?", "opts": ["High Pectin", "Red Color", "Soft skin"], "a": "High Pectin"}, {"q": "What to remove?", "opts": ["Skin", "Seeds and stems", "Nothing"], "a": "Seeds and stems"}], "icon": "🍯", "desc": "High pectin, good for setting.", "diff": 3},
-        {"name": "Wood Ear Stir-fry", "ingredients": {"Wood Ear": 10, "Oil": 1}, "prep_questions": [{"q": "Where does it grow?", "opts": ["Ground", "Elder trees", "Pine trees"], "a": "Elder trees"}, {"q": "Texture?", "opts": ["Soft", "Jelly/Rubbery", "Crunchy"], "a": "Jelly/Rubbery"}, {"q": "Must be cooked?", "opts": ["Yes", "No", "Only if old"], "a": "Yes"}], "icon": "🥡", "desc": "Jelly fungus.", "diff": 3},
-        {"name": "Morel Risotto", "ingredients": {"Morel": 10, "Rice": 1}, "prep_questions": [{"q": "Cap texture?", "opts": ["Smooth", "Honeycomb pits", "Wrinkled brain"], "a": "Honeycomb pits"}, {"q": "Inside?", "opts": ["Solid", "Chambered", "Hollow"], "a": "Hollow"}, {"q": "Danger lookalike?", "opts": ["True Morel", "False Morel", "Chanterelle"], "a": "False Morel"}], "icon": "🍚", "desc": "Spring delicacy.", "diff": 3},
-        {"name": "Burdock Root Stew", "ingredients": {"Burdock (Root)": 10, "Water": 1}, "prep_questions": [{"q": "Which root to dig?", "opts": ["Flowering plant", "First year plant", "Any"], "a": "First year plant"}, {"q": "Legal issue?", "opts": ["None", "Uprooting illegal without permission", "Poisonous"], "a": "Uprooting illegal without permission"}, {"q": "Taste?", "opts": ["Sweet", "Earthy/Artichoke", "Bitter"], "a": "Earthy/Artichoke"}], "icon": "🍲", "desc": "Requires digging.", "diff": 3},
-        {"name": "Wood Blewit Stew", "ingredients": {"Wood Blewit": 10, "Butter": 1}, "prep_questions": [{"q": "Color?", "opts": ["White", "Lilac/Purple", "Yellow"], "a": "Lilac/Purple"}, {"q": "Habitat?", "opts": ["Grass", "Wood/Leaves", "Sand"], "a": "Wood/Leaves"}, {"q": "Danger lookalike?", "opts": ["Lilac Fibrecap", "Amethyst Deceiver", "Field Mushroom"], "a": "Lilac Fibrecap"}], "icon": "🍄", "desc": "Late autumn mushroom.", "diff": 3},
-        {"name": "Cockles in Vinegar", "ingredients": {"Cockles": 20, "Vinegar": 1}, "prep_questions": [{"q": "Shell shape?", "opts": ["Smooth", "Ribbed/Ridged", "Spiral"], "a": "Ribbed/Ridged"}, {"q": "Safety check?", "opts": ["Red tide/Pollution", "Size", "Color"], "a": "Red tide/Pollution"}, {"q": "Cooking?", "opts": ["Eat raw", "Steam until open", "Fry"], "a": "Steam until open"}], "icon": "🥣", "desc": "Coastal shellfish.", "diff": 3},
-        {"name": "Silver Birch Sap Wine", "ingredients": {"Silver Birch": 10, "Sugar": 1}, "prep_questions": [{"q": "How to get sap?", "opts": ["Cut leaves", "Tap tree", "Dig roots"], "a": "Tap tree"}, {"q": "When to tap?", "opts": ["Autumn", "Spring", "Winter"], "a": "Spring"}, {"q": "After tapping?", "opts": ["Leave open", "Plug hole", "Cut tree down"], "a": "Plug hole"}], "icon": "🍷", "desc": "Spring sap wine.", "diff": 3}
+        # --- INTERMEDIATE ---
+        {"name": "Dandelion Coffee", "ingredients": {"Dandelion": 20}, "prep_questions": [{"q": "Which part is used for coffee?", "opts": ["Leaves", "Flowers", "Roots"], "a": "Roots"}, {"q": "How must the roots be prepared?", "opts": ["Eaten raw", "Roasted and ground", "Boiled whole"], "a": "Roasted and ground"}], "icon": "☕", "desc": "Caffeine-free coffee substitute.", "diff": 2, "benefits": "Liver detox."},
+        {"name": "Elderflower Cordial", "ingredients": {"Elderflower": 10, "Sugar": 1}, "prep_questions": [{"q": "Why should you not wash Elderflowers?", "opts": ["Loses pollen (flavor)", "Becomes poisonous", "Petals fall off"], "a": "Loses pollen (flavor)"}, {"q": "What must you check for before cooking?", "opts": ["Spiders", "Bugs/Maggots", "Birds"], "a": "Bugs/Maggots"}], "icon": "🥤", "desc": "A sweet summery drink.", "diff": 2, "benefits": "Vitamin C."},
+        {"name": "Blackberry Jam", "ingredients": {"Blackberries": 20, "Sugar": 1}, "prep_questions": [{"q": "What must you check for when picking?", "opts": ["Check for bugs", "Check if they are red", "Check for thorns"], "a": "Check for bugs"}, {"q": "What helps the jam set (thicken)?", "opts": ["Water", "Pectin (naturally in fruit)", "Oil"], "a": "Pectin (naturally in fruit)"}], "icon": "🍯", "desc": "Preserved summer in a jar.", "diff": 2, "benefits": "Fiber."},
+        {"name": "Rosehip Syrup", "ingredients": {"Rosehips": 15, "Sugar": 1}, "prep_questions": [{"q": "Why remove the seeds?", "opts": ["Bitter", "Itchy irritation", "Poisonous"], "a": "Itchy irritation"}, {"q": "What vitamin are Rosehips famous for?", "opts": ["Vitamin A", "Vitamin C", "Vitamin D"], "a": "Vitamin C"}], "icon": "🧴", "desc": "Rich in Vitamin C.", "diff": 2, "benefits": "Immune boost."},
+        {"name": "Sorrel Soup", "ingredients": {"Sorrel": 15, "Water": 1}, "prep_questions": [{"q": "What gives Sorrel its sour taste?", "opts": ["Sugar", "Oxalic Acid", "Citrus"], "a": "Oxalic Acid"}, {"q": "Who should avoid large amounts?", "opts": ["Children", "People with kidney issues", "Elderly"], "a": "People with kidney issues"}], "icon": "🥣", "desc": "Tangy and refreshing.", "diff": 2, "benefits": "Vitamin C."},
+        {"name": "Hawthorn Ketchup", "ingredients": {"Hawthorn": 30, "Sugar": 1}, "prep_questions": [{"q": "What do Hawthorn berries look like?", "opts": ["Blue pods", "Small red berries", "Blackberries"], "a": "Small red berries"}, {"q": "What should you avoid when eating?", "opts": ["The skin", "The seeds (pips)", "The stem"], "a": "The seeds (pips)"}], "icon": "🍅", "desc": "Tomato ketchup alternative.", "diff": 2, "benefits": "Heart health."},
+        {"name": "Sweet Chestnut Roast", "ingredients": {"Sweet Chestnut": 20}, "prep_questions": [{"q": "How does the case differ from Horse Chestnut?", "opts": ["Smooth/Warty", "Very spiky", "Green"], "a": "Very spiky"}, {"q": "What must you do before roasting?", "opts": ["Peel them", "Score the shell", "Boil for 1 hour"], "a": "Score the shell"}], "icon": "🌰", "desc": "Roasting over an open fire.", "diff": 2, "benefits": "Starch source."},
+        {"name": "Marsh Samphire Sauté", "ingredients": {"Marsh Samphire": 15, "Butter": 1}, "prep_questions": [{"q": "Where does Samphire grow?", "opts": ["Dry Meadows", "Saltmarshes/Mud", "Trees"], "a": "Saltmarshes/Mud"}, {"q": "How do you harvest sustainably?", "opts": ["Pull up roots", "Cut top 2 inches", "Dig with trowel"], "a": "Cut top 2 inches"}], "icon": "🥦", "desc": "Sea asparagus.", "diff": 2, "benefits": "Iodine."},
+        
+        # --- ADVANCED ---
+        {"name": "Acorn Coffee", "ingredients": {"Oak (Acorns)": 20}, "prep_questions": [{"q": "Why not eat raw?", "opts": ["Too hard", "Contain tannins (bitter)", "Protected"], "a": "Contain tannins (bitter)"}, {"q": "How to remove tannins?", "opts": ["Leaching (soaking)", "Freezing", "Burning"], "a": "Leaching (soaking)"}, {"q": "When to harvest?", "opts": ["Green", "Brown (ripe)", "White"], "a": "Brown (ripe)"}], "icon": "☕", "desc": "Must be leached first.", "diff": 3, "benefits": "Gluten-free."},
+        {"name": "Chanterelle Risotto", "ingredients": {"Chanterelle": 10, "Rice": 1}, "prep_questions": [{"q": "How to ID Chanterelle?", "opts": ["True gills (sheets)", "False gills (ridges)", "Sponge"], "a": "False gills (ridges)"}, {"q": "What does it smell like?", "opts": ["Aniseed/Apricot", "Mud", "Nothing"], "a": "Aniseed/Apricot"}, {"q": "Danger lookalike?", "opts": ["False Chanterelle", "Death Cap", "Field Mushroom"], "a": "False Chanterelle"}], "icon": "🍚", "desc": "A gourmet wild meal.", "diff": 3, "benefits": "Vitamin D."},
+        {"name": "Crab Apple Jelly", "ingredients": {"Crab Apple": 25, "Sugar": 1}, "prep_questions": [{"q": "Why not eat raw?", "opts": ["Poisonous", "Too tart/sour", "Too hard"], "a": "Too tart/sour"}, {"q": "Why is it good for jelly?", "opts": ["High Pectin", "Red Color", "Soft skin"], "a": "High Pectin"}, {"q": "What to remove?", "opts": ["Skin", "Seeds and stems", "Nothing"], "a": "Seeds and stems"}], "icon": "🍯", "desc": "High pectin.", "diff": 3, "benefits": "Pectin source."},
+        {"name": "Wood Ear Stir-fry", "ingredients": {"Wood Ear (Jelly Ear)": 10, "Oil": 1}, "prep_questions": [{"q": "Where does it grow?", "opts": ["Ground", "Elder trees", "Pine trees"], "a": "Elder trees"}, {"q": "Texture?", "opts": ["Soft", "Jelly/Rubbery", "Crunchy"], "a": "Jelly/Rubbery"}, {"q": "Must be cooked?", "opts": ["Yes", "No", "Only if old"], "a": "Yes"}], "icon": "🥡", "desc": "Jelly fungus.", "diff": 3, "benefits": "Blood circulation."},
+        {"name": "Morel Risotto", "ingredients": {"Morel": 10, "Rice": 1}, "prep_questions": [{"q": "Cap texture?", "opts": ["Smooth", "Honeycomb pits", "Wrinkled brain"], "a": "Honeycomb pits"}, {"q": "Inside?", "opts": ["Solid", "Chambered", "Hollow"], "a": "Hollow"}, {"q": "Danger lookalike?", "opts": ["True Morel", "False Morel", "Chanterelle"], "a": "False Morel"}], "icon": "🍚", "desc": "Spring delicacy.", "diff": 3, "benefits": "Vitamin D."},
+        {"name": "Burdock Root Stew", "ingredients": {"Burdock (Root)": 10, "Water": 1}, "prep_questions": [{"q": "Which root to dig?", "opts": ["Flowering plant", "First year plant", "Any"], "a": "First year plant"}, {"q": "Legal issue?", "opts": ["None", "Uprooting illegal without permission", "Poisonous"], "a": "Uprooting illegal without permission"}, {"q": "Taste?", "opts": ["Sweet", "Earthy/Artichoke", "Bitter"], "a": "Earthy/Artichoke"}], "icon": "🍲", "desc": "Requires digging.", "diff": 3, "benefits": "Blood purifier."},
+        {"name": "Cockles in Vinegar", "ingredients": {"Cockles": 20, "Vinegar": 1}, "prep_questions": [{"q": "Shell shape?", "opts": ["Smooth", "Ribbed/Ridged", "Spiral"], "a": "Ribbed/Ridged"}, {"q": "Safety check?", "opts": ["Red tide/Pollution", "Size", "Color"], "a": "Red tide/Pollution"}, {"q": "Cooking?", "opts": ["Eat raw", "Steam until open", "Fry"], "a": "Steam until open"}], "icon": "🥣", "desc": "Coastal shellfish.", "diff": 3, "benefits": "Protein."}
     ]
 
     def get_difficulty_stars(diff): return "⭐" * diff + "☆" * (3 - diff)
 
+    # --- PROGRESSION LOGIC ---
+    beginner_unlocked = len([r for r in st.session_state.unlocked_recipes if any(x['name'] == r and x['diff']==1 for x in RECIPES)])
+    inter_unlocked = len([r for r in st.session_state.unlocked_recipes if any(x['name'] == r and x['diff']==2 for x in RECIPES)])
+
+    # --- LAYOUT ---
     col_main, col_side = st.columns([2, 1])
+    
     with col_side:
         st.markdown("### 🎒 Pantry")
-        inv = st.session_state.kitchen_inventory
-        if not inv: st.info("Pantry empty!")
+        if not inv: st.info("Empty - Forage items in Tab 1")
         else:
-            p1, p2 = st.columns(2)
-            count = 0
+            st.markdown("**Your Ingredients:**")
             for item, qty in sorted(inv.items()):
-                if qty <= 0: continue
-                line = f"**{item}**: {qty}"
-                if count % 2 == 0: p1.markdown(line)
-                else: p2.markdown(line)
-                count += 1
+                if qty > 0:
+                    st.write(f"- **{item}:** {qty}")
+            
             st.markdown("---")
-            st.markdown("### 🔧 Basics")
-            st.markdown("_Water, Sugar, Oil, Rice, Butter, Eggs, Vinegar, Alcohol are unlimited._")
+            st.markdown("**🔧 Basics**")
+            st.caption("Water, Sugar, Oil, Rice, Butter, Eggs, Vinegar, and Alcohol are considered unlimited basics.")
 
     with col_main:
         st.markdown("### 📖 Recipe Book")
         r1, r2, r3 = st.tabs(["⭐ Beginner", "⭐⭐ Intermediate", "⭐⭐⭐ Advanced"])
         
-        def render_recipe_tab(recipe_list, container):
+        def render_recipe_tab(recipe_list, container, locked=False, req_count=0):
+            if locked:
+                container.warning(f"🔒 Unlock {req_count} recipes in the previous tier to access this tab.")
+                return
+
             for recipe in recipe_list:
                 with container:
                     is_unlocked = recipe['name'] in st.session_state.unlocked_recipes
-                    has_ingredients = all(st.session_state.kitchen_inventory.get(ing, 0) >= qty for ing, qty in recipe['ingredients'].items() if ing not in ["Water", "Sugar", "Oil", "Rice", "Butter", "Eggs", "Vinegar", "Alcohol"])
+                    has_ingredients = all(inv.get(ing, 0) >= qty for ing, qty in recipe['ingredients'].items() if ing not in ["Water", "Sugar", "Oil", "Rice", "Butter", "Eggs", "Vinegar", "Alcohol"])
                     
                     with st.expander(f"{recipe['icon']} {recipe['name']} - {get_difficulty_stars(recipe['diff'])}"):
                         st.markdown(f"**{recipe['desc']}**")
+                        st.info(f"**Health Benefits:** {recipe.get('benefits', 'Nutritious wild food.')}")
                         st.markdown("---")
+                        
                         st.markdown(f"**Ingredients Needed:**")
                         ing_cols = st.columns(len(recipe['ingredients']))
                         for i, (ing, qty) in enumerate(recipe['ingredients'].items()):
-                            current_qty = st.session_state.kitchen_inventory.get(ing, 0)
+                            current_qty = inv.get(ing, 0)
                             status = "✅" if current_qty >= qty or ing in ["Water", "Sugar", "Oil", "Rice", "Butter", "Eggs", "Vinegar", "Alcohol"] else "❌"
                             ing_cols[i].metric(f"{ing}", f"{current_qty}/{qty}")
                         
@@ -932,7 +1448,22 @@ with tab6:
                                 if passed:
                                     st.session_state.unlocked_recipes.append(recipe['name'])
                                     st.success(f"✅ Correct! {recipe['name']} Unlocked!")
-                                    st.balloons()
+                                    
+                                    # Achievement Check (Unlock 3 Beginner)
+                                    if recipe['diff'] == 1:
+                                        count = len([r for r in st.session_state.unlocked_recipes if any(x['name'] == r and x['diff']==1 for x in RECIPES)])
+                                        if count >= 3 and not st.session_state.achievements['kitchen_apprentice']:
+                                            st.session_state.achievements['kitchen_apprentice'] = True
+                                            st.toast("🏅 Achievement Unlocked: Apprentice!")
+                                    
+                                    # Achievement Check (Unlock all Intermediate)
+                                    if recipe['diff'] == 2:
+                                        total_inter = len([r for r in RECIPES if r['diff'] == 2])
+                                        unlocked_inter = len([r for r in st.session_state.unlocked_recipes if any(x['name'] == r and x['diff']==2 for x in RECIPES)])
+                                        if unlocked_inter == total_inter and not st.session_state.achievements['kitchen_master']:
+                                            st.session_state.achievements['kitchen_master'] = True
+                                            st.toast("🏅 Achievement Unlocked: Master Chef!")
+
                                     st.rerun()
                                 else:
                                     st.error("Incorrect. Try again!")
@@ -943,7 +1474,11 @@ with tab6:
                                 if st.button(f"🍳 Cook {recipe['name']}", key=f"cook_{recipe['name']}"):
                                     for ing, qty in recipe['ingredients'].items():
                                         if ing not in ["Water", "Sugar", "Oil", "Rice", "Butter", "Eggs", "Vinegar", "Alcohol"]:
-                                            st.session_state.kitchen_inventory[ing] -= qty
+                                            st.session_state.master_inventory[ing] -= qty
+                                    # Add result to inventory (Tab 4 Market can sell it)
+                                    result_dish = recipe['name']
+                                    st.session_state.master_inventory[result_dish] = st.session_state.master_inventory.get(result_dish, 0) + 1
+                                    
                                     points = recipe['diff'] * 15
                                     st.session_state.kitchen_score += points
                                     st.toast(f"Made {recipe['name']}! +{points} XP")
@@ -955,9 +1490,23 @@ with tab6:
         inter_recipes = [r for r in RECIPES if r['diff'] == 2]
         adv_recipes = [r for r in RECIPES if r['diff'] == 3]
 
-        render_recipe_tab(beginner_recipes, r1)
-        render_recipe_tab(inter_recipes, r2)
-        render_recipe_tab(adv_recipes, r3)
+        render_recipe_tab(beginner_recipes, r1, locked=False)
+        
+        inter_locked = False
+        if beginner_unlocked < 3: inter_locked = True
+        render_recipe_tab(inter_recipes, r2, locked=inter_locked, req_count=3)
+        
+        adv_locked = False
+        if inter_unlocked < 3: adv_locked = True
+        render_recipe_tab(adv_recipes, r3, locked=adv_locked, req_count=3)
 
         st.markdown("---")
         st.metric("🏆 Kitchen Score", st.session_state.kitchen_score)
+
+    # --- ACHIEVEMENT DISPLAY (TAB 6) ---
+    st.markdown("---")
+    with st.expander("🏅 Kitchen Achievements"):
+        for key in ["kitchen_apprentice", "kitchen_master"]:
+            ach = ACHIEVEMENTS[key]
+            status = "✅" if st.session_state.achievements[key] else "🔒"
+            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}*")
