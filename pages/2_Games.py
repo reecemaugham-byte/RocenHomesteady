@@ -42,20 +42,9 @@ def clean_text_for_audio(text):
 init_session_state()
 apply_brand_theme()
 
-# --- Initialize Game-Specific Session States ---
-# 1. Achievements (Fix for previous KeyError)
+# Initialize Achievements if not exists or empty
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
-
-# 2. Kitchen & Inventory (Fix for current AttributeError)
-if 'unlocked_recipes' not in st.session_state:
-    st.session_state.unlocked_recipes = []
-
-if 'kitchen_score' not in st.session_state:
-    st.session_state.kitchen_score = 0
-
-if 'master_inventory' not in st.session_state:
-    st.session_state.master_inventory = {}
 
 # --- SIDEBAR (CUSTOM FOR GAMES) ---
 with st.sidebar:
@@ -76,19 +65,6 @@ with st.sidebar:
         st.caption("Recently Unlocked:")
         for key in unlocked_keys[-3:]:
             st.write(f"✅ {ACHIEVEMENTS[key]['name']}")
-    
-    # Unified Inventory Display
-    st.markdown("---")
-    st.markdown("### 🎒 Inventory")
-    inv = st.session_state.master_inventory
-    if not inv:
-        st.info("Empty - Forage items in Tab 1!")
-    else:
-        # Show top 5 items
-        for item, count in list(inv.items())[:5]:
-            st.write(f"- **{item}:** {count}")
-        if len(inv) > 5:
-            st.write(f"...and {len(inv)-5} more.")
     
     # Reset Button
     st.markdown("---")
@@ -137,8 +113,8 @@ with tab1:
     with st.expander("📖 How to Play"):
         st.markdown("""
         1. **Select a Season** using the buttons at the top.
-        2. A plant will appear. Read the clue and look at the card.
-        3. Choose the correct **Habitat** (Where it grows).
+        2. A plant will appear. Read the **Botanical Clue** carefully.
+        3. Identify the plant based on the clue, then choose where it grows.
         4. **Collect Plants:** Find unique plants to fill your Herbarium.
         5. **Bonus:** Get 5 right in a row to unlock a Bonus Question!
         """)
@@ -170,7 +146,7 @@ with tab1:
     st.info(f"**Current Season:** {st.session_state.active_season} {season_icons[st.session_state.active_season]}")
 
     # --- COLLECTION TRACKER ---
-    collection_list = list(st.session_state.master_inventory.keys()) # Use master inventory
+    collection_list = list(st.session_state.master_inventory.keys())
     total_found = len(collection_list)
     
     st.sidebar.metric("🌿 Species Found", f"{total_found}/50")
@@ -213,7 +189,6 @@ with tab1:
                 if ans in parts_list:
                     st.session_state.game_score += 20
                     st.success("🎉 Correct! +20 XP!")
-                    # Add to inventory
                     current_count = st.session_state.master_inventory.get(bonus_plant['name'], 0)
                     st.session_state.master_inventory[bonus_plant['name']] = current_count + 1
                 else:
@@ -250,23 +225,42 @@ with tab1:
             col_vis, col_quiz = st.columns([1, 1.5])
             
             with col_vis:
+                # --- CARD FIX: SHOW FULL DESCRIPTION OR ID KEYS ---
+                plant_desc = q['plant'].get('description', 'No description available.')
+                
+                # If ID keys exist, format them nicely
+                id_keys = q['plant'].get('id_keys', {})
+                if id_keys:
+                    keys_html = "<br>".join([f"<b>{k}:</b> {v}" for k, v in list(id_keys.items())[:3]])
+                    desc_html = f"<p style='font-size: 0.9em; text-align: left;'>{keys_html}</p>"
+                else:
+                    desc_html = f"<p><i>{plant_desc}</i></p>"
+
                 st.markdown(f"""
                 <div class='plant-card'>
                     <h1 style='font-size: 4em; margin-bottom: 0px;'>🌿</h1>
                     <h3>{q['plant']['name']}</h3>
-                    <p style='color: #aaa;'>Found in {active_season}</p>
+                    <p style='color: #aaa;'>Latin: <i>{q['plant'].get('latin_name', 'N/A')}</i></p>
                     <hr>
-                    <p><i>"{q['plant'].get('description', 'A useful wild plant.')[:100]}..."</i></p>
+                    {desc_html}
                 </div>
                 """, unsafe_allow_html=True)
 
             with col_quiz:
-                clues = {"Woodland": "The ground is shady and covered in leaf litter.", "Hedgerow": "You are standing by a tangled, bushy border.", "Coastal": "You can smell the salt in the wind.", "Meadow": "You are standing in a wide, open, grassy field.", "Urban": "You are in a park or near buildings."}
+                # --- CLUE FIX: DESCRIBE THE PLANT, NOT THE HABITAT ---
+                # We generate a clue from the plant's ID keys or description
+                if id_keys:
+                    # Pick 2 random features to hint at
+                    features = random.sample(list(id_keys.items()), min(2, len(id_keys)))
+                    clue_text = "Botanical Clue: " + "; ".join([f"{k} is {v}" for k, v in features])
+                else:
+                    # Fallback to first 80 chars of description
+                    clue_text = f"Clue: {plant_desc[:80]}..."
                 
-                st.info(f"🕵️ **Clue:** {clues.get(q['correct'], 'Look around...')}")
+                st.info(f"🕵️ **{clue_text}**")
                 
                 if EDGE_TTS_AVAILABLE:
-                    clean_clue = clean_text_for_audio(clues.get(q['correct'], ''))
+                    clean_clue = clean_text_for_audio(clue_text)
                     if st.button("🔊 Listen to Clue", key=f"audio_{q['plant']['name']}"):
                         audio_bytes = generate_voice(clean_clue)
                         if audio_bytes:
@@ -283,7 +277,7 @@ with tab1:
                             st.session_state.game_streak += 1
                             st.session_state.total_plants_identified += 1
                             
-                            # --- UNIFIED INVENTORY UPDATE ---
+                            # Update Unified Inventory
                             plant_name = q['plant']['name']
                             current_count = st.session_state.master_inventory.get(plant_name, 0)
                             st.session_state.master_inventory[plant_name] = current_count + 1
@@ -291,15 +285,12 @@ with tab1:
                             st.success(f"✅ Correct! {q['plant']['name']} grows in the {option}!")
                             
                             # --- ACHIEVEMENT CHECKS (TAB 1) ---
-                            # Novice
                             if len(st.session_state.master_inventory) >= 1 and not st.session_state.achievements['foraging_novice']:
                                 st.session_state.achievements['foraging_novice'] = True
                                 st.toast("🏅 Achievement Unlocked: Novice Forager!")
-                            # Botanist
                             if len(st.session_state.master_inventory) >= 25 and not st.session_state.achievements['foraging_botanist']:
                                 st.session_state.achievements['foraging_botanist'] = True
                                 st.toast("🏅 Achievement Unlocked: Botanist!")
-                            # Seasonal Master
                             if len(st.session_state.season_badge_progress) == 4 and not st.session_state.achievements['foraging_master']:
                                 st.session_state.achievements['foraging_master'] = True
                                 st.toast("🏅 Achievement Unlocked: Seasonal Master!")
@@ -341,7 +332,7 @@ with tab1:
             st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
 
 # ==========================================
-# GAME TAB 2: SURVIVAL SCHOOL
+# GAME TAB 2: SURVIVAL SCHOOL (Unchanged)
 # ==========================================
 with tab2:
     st.header("☠️ Survival School")
@@ -404,7 +395,6 @@ with tab2:
                 st.session_state.survival_score += 20
                 st.session_state.survival_correct_count += 1
                 st.session_state.total_plants_identified += 1
-                # Achievement Check
                 if not st.session_state.achievements['survival_scout']:
                     st.session_state.achievements['survival_scout'] = True
                     st.toast("🏅 Achievement Unlocked: Scout!")
@@ -435,7 +425,6 @@ with tab2:
                 st.session_state.survival_correct_count = 0
                 st.markdown("# 🏆 LEVEL UP!")
                 st.write("You have unlocked **Level 2: Fungi & Roots**!")
-                # Achievement Check
                 if not st.session_state.achievements['survival_expert']:
                     st.session_state.achievements['survival_expert'] = True
                     st.toast("🏅 Achievement Unlocked: Graduate!")
@@ -470,7 +459,7 @@ with tab2:
             st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}*")
 
 # ==========================================
-# GAME TAB 3: DAILY QUIZ
+# GAME TAB 3: DAILY QUIZ (Unchanged)
 # ==========================================
 with tab3:
     st.header("🎯 The Daily Challenge")
@@ -561,7 +550,6 @@ with tab3:
                         st.session_state.daily_streak += 1
                         st.toast("✅ Correct!")
                         
-                        # Achievement Check
                         if st.session_state.daily_streak >= 5 and not st.session_state.achievements['quiz_streak']:
                             st.session_state.achievements['quiz_streak'] = True
                             st.toast("🏅 Achievement Unlocked: Quick Wit!")
