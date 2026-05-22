@@ -3,10 +3,7 @@ import random
 import time
 from datetime import datetime
 
-from utils import (init_session_state, apply_brand_theme, render_sidebar,
-                   generate_voice, EDGE_TTS_AVAILABLE, clean_text_for_audio,
-                   generate_survival_cases, generate_foraging_question,
-                   save_game, get_save_data)
+from utils import init_session_state, apply_brand_theme
 from game_config import (ACHIEVEMENTS, HABITAT_ICONS, SEASON_ICONS, SEASON_MONTHS,
                          SURVIVAL_DIFFICULTY)
 from plants_data import UK_PLANTS
