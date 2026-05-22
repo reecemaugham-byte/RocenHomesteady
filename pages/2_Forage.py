@@ -781,11 +781,13 @@ with tab1:
                     st.info(f"🕵️ **{clue_text}**")
 
                 if EDGE_TTS_AVAILABLE:
-                    clean_clue = clean_text_for_audio(clue_text)
                     if st.button("🔊 Listen to Clue", key=f"audio_{q['plant']['name']}"):
-                        audio_bytes = generate_voice(clean_clue)
-                        if audio_bytes:
-                            st.audio(audio_bytes, format='audio/mp3')
+                        with st.spinner("Generating audio..."):
+                            audio_file = generate_voice(clue_text)
+                            if audio_file:
+                                st.audio(audio_file, format='audio/mp3')
+                            else:
+                                st.warning("Could not generate audio.")
 
                 st.markdown(f"### {q['question']}")
 
@@ -938,11 +940,13 @@ with tab2:
         st.markdown(f"**📋 Rule:** {case['rule']}")
 
     if EDGE_TTS_AVAILABLE:
-        clean_clue = clean_text_for_audio(case['clue'])
         if st.button("🔊 Listen to Clue", key="audio_clue_btn"):
-            audio_bytes = generate_voice(clean_clue)
-            if audio_bytes:
-                st.audio(audio_bytes, format='audio/mp3')
+            with st.spinner("Generating audio..."):
+                audio_file = generate_voice(case['clue'])
+                if audio_file:
+                    st.audio(audio_file, format='audio/mp3')
+                else:
+                    st.warning("Could not generate audio.")
 
     # --- VERDICT ---
     st.markdown("#### ⚠️ VERDICT: Which is the **SAFE** plant?")
