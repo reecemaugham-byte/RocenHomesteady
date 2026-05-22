@@ -74,18 +74,30 @@ GAME_LINKS = {
         "age": "9-11",
         "tab": "🏘️ Eco-Village"
     },
-    "🚜 Farm Tycoon": {
-        "desc": "Grow crops, raise animals, manage a farm economy",
-        "curriculum": ["Ma2/1a", "Sc2/3b", "PSHE/H18"],
-        "age": "9-11",
-        "tab": "🚜 Farm Tycoon"
-    },
     "🍳 The Wild Kitchen": {
         "desc": "Learn to prepare and cook wild food safely",
         "curriculum": ["Sc2/1a", "PSHE/H18", "D&T/2a"],
         "age": "9-11",
         "tab": "🍳 The Wild Kitchen"
-    }
+    },
+    "🚜 Farm Games": {
+        "desc": "Grow crops, raise animals, and master companion planting",
+        "curriculum": ["Ma2/1a", "Sc2/3b", "Sc2/3a"],
+        "age": "9-11",
+        "tab": "🚜 Farm Tycoon"
+    },
+    "🐝 Apiary Manager": {
+        "desc": "Manage beehives through the seasons, harvest honey, treat for varroa",
+        "curriculum": ["Sc2/1a", "Sc2/3b", "PSHE/H18"],
+        "age": "9-11",
+        "tab": "🐝 Apiary Manager"
+    },
+    "🌱 Market Garden": {
+        "desc": "Companion planting, crop rotation, and soil health",
+        "curriculum": ["Sc2/3b", "Ma2/1a", "Sc2/1a"],
+        "age": "9-11",
+        "tab": "🌱 Market Garden"
+    },
 }
 
 # ==========================================
@@ -180,14 +192,15 @@ with hero_col2:
         st.error(f"☠️ **{danger2['name']}** — also dangerous this month")
 
 if st.button("🛡️ Test Your Safety Knowledge — Go to Survival School", use_container_width=True):
-    st.switch_page("pages/2_Games.py")
+        st.switch_page("pages/2_Forage.py")
+if st.button("🐝 Manage Your Own Beehive — Go to Apiary Manager", use_container_width=True):
+    st.switch_page("pages/5_Apiary.py")
 
 # --- 3 FOOD GROUPS ---
-st.markdown("---")
-st.markdown("## 🌿🏘️🚜 The 3 Food Groups")
-st.markdown("*Foragers, Off-Grid Dwellers, and Farmers — three paths, one goal: sustainable food.*")
+st.markdown("## 🌿🏘️🚜🐝 The Food Groups")
+st.markdown("*Foragers, Off-Grid Dwellers, Farmers, and Beekeepers — four paths, one goal: sustainable food.*")
 
-group1, group2, group3 = st.columns(3)
+group1, group2, group3, group4 = st.columns(4)
 
 with group1:
     st.markdown("### 🌿 Foragers")
@@ -221,21 +234,34 @@ with group3:
     **Grow** food on the land.
     
     - Plan crops for all seasons
+    - Companion planting & rotation
     - Manage resources wisely
-    - Build sustainable systems
     - Work with nature, not against it
     
     *Farmers grow the food that sustains communities.*
     """)
 
-st.info("🌿➡️🏘️➡️🚜 **Foragers find it. Off-Grid Dwellers preserve it. Farmers grow it.** All three groups need each other.")
+with group4:
+    st.markdown("### 🐝 Beekeepers")
+    st.markdown("""
+    **Steward** the pollinators.
+    
+    - Inspect hives weekly
+    - Treat for varroa mites
+    - Harvest honey sustainably
+    - Support biodiversity
+    
+    *Beekeepers protect the creatures that make it all possible.*
+    """)
+
+st.info("🌿➡️🏘️➡️🚜➡️🐝 **Foragers find it. Off-Grid Dwellers preserve it. Farmers grow it. Beekeepers protect the pollinators.**")
 
 # --- KEY STATS ---
 st.markdown("---")
 stat1, stat2, stat3 = st.columns(3)
 stat1.metric("🌱 Plants Database", f"{len(UK_PLANTS['edible'])}+")
 stat2.metric("⚠️ Safety Warnings", f"{len(UK_PLANTS['poisonous'])}+")
-stat3.metric("🎮 Interactive Games", "6")
+stat3.metric("🎮 Interactive Games", "8")
 
 # --- GAMES WITH CURRICULUM ---
 st.markdown("---")
@@ -282,4 +308,4 @@ with right_col:
     st.markdown("📧 [Contact Us](mailto:Support@RocenHomesteady.co.uk)")
 
 st.markdown("---")
-st.caption("© 2026 Rocen Homesteady LTD. All Rights Rese
+st.caption("© 2026 Rocen Homesteady LTD. All Rights Reserved. Educational Use Only. UK-specific information — check local laws for other countries.")
