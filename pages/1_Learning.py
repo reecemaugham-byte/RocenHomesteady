@@ -5,25 +5,10 @@ from utils import init_session_state, apply_brand_theme, render_sidebar
 from plants_data import UK_PLANTS
 from game_config import ACHIEVEMENTS
 from lessons_data import LESSON_CONTENT
+from audio_utils import generate_voice, clean_text_for_audio, is_tts_available
 
-# --- TTS AVAILABILITY ---
-try:
-    import edge_tts
-    EDGE_TTS_AVAILABLE = True
-except ImportError:
-    EDGE_TTS_AVAILABLE = False
-
-# --- TTS HELPER FUNCTIONS ---
-try:
-    from audio_utils import generate_voice, clean_text_for_audio
-except ImportError:
-    EDGE_TTS_AVAILABLE = False
-
-    def clean_text_for_audio(text):
-        return text
-
-    def generate_voice(text):
-        return None
+# --- TTS CHECK ---
+EDGE_TTS_AVAILABLE = is_tts_available()
 
 # --- PAGE CONFIG ---
 st.set_page_config(
