@@ -136,7 +136,7 @@ with learn_tab1:
             latin_name = plant.get('latin_name', 'Unknown')
             st.markdown(f"**Latin Name:** *{latin_name}*")
 
-             if EDGE_TTS_AVAILABLE:
+            if EDGE_TTS_AVAILABLE:
                 if st.button(f"🔊 Pronounce {latin_name}", key=f"latin_btn_{plant['name']}"):
                     with st.spinner("Generating pronunciation..."):
                         audio_file = generate_voice(latin_name)
