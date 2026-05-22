@@ -1,7 +1,7 @@
-# lessons_data.py
-
 LESSON_CONTENT = {
     "Introduction to Foraging": {
+        "curriculum": ["Sc2/1a", "PSHE/H18"],
+        "ks2_age": "7-11",
         "steps": [
             {
                 "type": "text",
@@ -58,6 +58,8 @@ We never take more than we need.
         ]
     },
     "Easy Plants to Identify": {
+        "curriculum": ["Sc2/1a", "Sc2/3a", "PSHE/H18"],
+        "ks2_age": "7-9",
         "steps": [
             {
                 "type": "text",
@@ -100,6 +102,8 @@ We never take more than we need.
         ]
     },
     "The Carrot Family": {
+        "curriculum": ["Sc2/1a", "PSHE/H18", "PSHE/R11"],
+        "ks2_age": "9-11",
         "steps": [
             {
                 "type": "text",
@@ -145,6 +149,8 @@ We never take more than we need.
         ]
     },
     "Mushroom Foraging": {
+        "curriculum": ["Sc2/1a", "PSHE/H18", "PSHE/R11"],
+        "ks2_age": "9-11",
         "steps": [
             {
                 "type": "text",
@@ -179,10 +185,15 @@ We never take more than we need.
         ]
     },
     "The Law of the Land": {
+        "curriculum": ["PSHE/H18", "PSHE/L11", "GEO/6a"],
+        "ks2_age": "9-11",
         "steps": [
             {
                 "type": "text",
-                "content": "## Foraging and the Law ⚖️\nKnowing the law protects you and nature."
+                "content": """
+## Foraging and the Law ⚖️
+Knowing the law protects you and nature.
+"""
             },
             {
                 "type": "text",
@@ -208,8 +219,9 @@ We never take more than we need.
             }
         ]
     },
-    # --- NEW MODULES ---
     "The Coastal Code": {
+        "curriculum": ["Sc2/1a", "PSHE/H18", "GEO/6a"],
+        "ks2_age": "7-11",
         "steps": [
             {
                 "type": "text",
@@ -248,6 +260,8 @@ We never take more than we need.
         ]
     },
     "Winter Foraging": {
+        "curriculum": ["Sc2/3b", "PSHE/H18"],
+        "ks2_age": "9-11",
         "steps": [
             {
                 "type": "text",
@@ -286,6 +300,8 @@ We never take more than we need.
         ]
     },
     "The Cabbage Family": {
+        "curriculum": ["Sc2/1a", "Sc2/3a", "PSHE/H18"],
+        "ks2_age": "7-9",
         "steps": [
             {
                 "type": "text",
@@ -320,6 +336,208 @@ We never take more than we need.
                 "options": ["5 petals", "4 petals in a cross", "Umbrella flowers"],
                 "answer": "4 petals in a cross",
                 "reward": 20
+            }
+        ]
+    },
+    "UK Foraging Law: The Complete Guide": {
+        "curriculum": ["Sc2/1a", "PSHE/H18", "PSHE/L11", "GEO/6a"],
+        "ks2_age": "7-11",
+        "steps": [
+            {
+                "type": "text",
+                "content": """
+## 🏛️ The Law and You 🏛️
+
+Foraging in the UK is legal — but there are **important rules** you must follow.
+These rules exist to protect plants, wildlife, and the land.
+
+**The most important rule:** 
+> *If in doubt, leave it out.*
+
+You are **allowed** to pick the **Four Fs** for your own use:
+- **F**ruit
+- **F**oliage (leaves)
+- **F**lowers
+- **F**ungi
+
+But you are **NOT** allowed to **uproot** (dig up) any wild plant without the landowner's permission.
+"""
+            },
+            {
+                "type": "quiz",
+                "question": "What are the 'Four Fs' you can legally pick for personal use?",
+                "options": ["Food, Fuel, Furniture, Fences", "Fruit, Foliage, Flowers, Fungi", "Fish, Fowl, Foxes, Ferns"],
+                "answer": "Fruit, Foliage, Flowers, Fungi",
+                "feedback": "Correct! The Four Fs are what you can pick from the wild for personal use."
+            },
+            {
+                "type": "text",
+                "content": """
+### 🚫 The Theft Act 1968
+
+This is the main law about foraging in England and Wales.
+
+**What it says:**
+- You can pick the Four Fs (Fruit, Foliage, Flowers, Fungi) for **personal use**
+- You **cannot** uproot any wild plant without permission
+- You **cannot** sell what you pick without permission
+- You **cannot** pick from someone's garden without asking
+
+**Important:** Even if a plant is growing on public land (like a park or roadside), the plants belong to the landowner or the council. You can pick the Four Fs, but not for selling.
+
+**Scotland is different!** Scotland has much stronger rights to roam (see the section below).
+"""
+            },
+            {
+                "type": "quiz",
+                "question": "Is it legal to dig up a wild carrot root from a public field?",
+                "options": ["Yes, if I only take one", "Yes, if it is for dinner", "No, uprooting is illegal without permission"],
+                "answer": "No, uprooting is illegal without permission",
+                "feedback": "Correct! You can pick the leaves and flowers, but digging up the root is uprooting — that's illegal without permission."
+            },
+            {
+                "type": "text",
+                "content": """
+### 🦉 The Wildlife and Countryside Act 1981
+
+This law protects **rare and endangered plants**.
+
+**What it says:**
+- Some plants are **Schedule 8** — these are the rarest and most endangered
+- It is **illegal to pick, uproot, or destroy** any Schedule 8 plant
+- Examples include: **Wild Gladiolus, Creeping Ladies-tresses, Killarney Fern**
+
+**What this means for you:**
+- If you find a very rare plant, **leave it alone** and report it to a local wildlife trust
+- Never pick a plant if you're not 100% sure what it is
+- Rare plants need our protection, not our picking!
+
+**How to check:** The Wildlife Trusts website has a full list of protected plants.
+"""
+            },
+            {
+                "type": "plant_card",
+                "plant_name": "Yew"
+            },
+            {
+                "type": "text",
+                "content": """
+### 🏞️ SSSIs: Sites of Special Scientific Interest
+
+An **SSSI** (Site of Special Scientific Interest) is a protected area of land.
+
+**The rule:** On SSSIs, you often **cannot pick ANYTHING** — even the Four Fs.
+
+**Why?** These sites have rare habitats and species that need complete protection.
+
+**How to know if you're on an SSSI:**
+- Look for signs at nature reserves
+- Check the Natural England website (they have a map of all SSSIs)
+- National Nature Reserves and many country parks are SSSIs
+
+**What to do:** Stick to public footpaths and commons. Don't pick from nature reserves.
+"""
+            },
+            {
+                "type": "text",
+                "content": """
+### 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland: Different Rules!
+
+Scotland has its own laws that are **more friendly** to foragers.
+
+**The Land Reform (Scotland) Act 2003** gives everyone:
+- **Right to roam** — you can walk on most land and water
+- **Right to forage** — you can pick wild plants for personal use
+
+**But there are still rules:**
+- You must not cause damage
+- You must not pick protected species
+- You must not pick for commercial use without permission
+- Be considerate of other people and wildlife
+
+**The Scottish Outdoor Access Code** says:
+- Take responsibility for your own actions
+- Respect the interests of other people
+- Care for the environment
+
+So if you're foraging in Scotland, you have more freedom — but still be respectful!
+"""
+            },
+            {
+                "type": "quiz",
+                "question": "Which country has stronger rights to roam and forage?",
+                "options": ["England", "Wales", "Scotland"],
+                "answer": "Scotland",
+                "feedback": "Correct! Scotland's Land Reform Act gives everyone the right to roam and forage responsibly."
+            },
+            {
+                "type": "text",
+                "content": """
+### 📋 The Countryside Code
+
+Whether you're in England, Wales, Scotland, or Northern Ireland, always follow the **Countryside Code**:
+
+1. **Respect** — Keep to paths, leave gates as you find them, don't drop litter
+2. **Protect** — Don't start fires, don't damage plants, keep dogs under control
+3. **Enjoy** — Know your route, be prepared, check the weather
+
+**For foragers specifically:**
+- Only pick what you need (the 10% rule — never take more than 10% of a patch)
+- Leave enough for wildlife (the 1-in-3 rule — only pick from groups of 3+)
+- Don't pick from roadside verges (pollution from cars)
+- Don't pick from parks where dogs foul (health risk)
+- Always get the landowner's permission if you're on private land
+- Never pick near fields that have been sprayed with chemicals
+"""
+            },
+            {
+                "type": "text",
+                "content": """
+### 🏠 One Planet Development (Wales)
+
+**OPD** is a special Welsh planning policy that allows people to live on and work the land in a sustainable way.
+
+**What it means:**
+- You can build a home on agricultural land IF you meet strict sustainability criteria
+- You must produce a significant portion of your own food and energy
+- You must demonstrate that you're living lightly on the land
+
+**How foraging connects to OPD:**
+- If you're applying for OPD, you need to show you can provide food from the land
+- Foraging skills are a key part of low-impact living
+- Knowing which wild plants are edible can supplement your diet and reduce your ecological footprint
+
+**The 3 Food Groups:**
+- 🌿 **Foragers** — Find wild food in hedgerows, woodlands, and coastlines
+- 🏘️ **Off-Grid Dwellers** — Preserve, store, and cook wild and homegrown food
+- 🚜 **Farmers** — Grow food on the land sustainably
+
+All three groups need each other. Foragers find the food, off-grid dwellers preserve it, and farmers grow it. Together, they create a complete food system.
+
+**Want to learn more?** Search "One Planet Development Wales" or "OPD planning policy" to find the latest guidance.
+"""
+            },
+            {
+                "type": "text",
+                "content": """
+### 🚨 Summary: The Golden Rules
+
+1. **Only pick the Four Fs** — Fruit, Foliage, Flowers, Fungi
+2. **Never uproot** without permission — it's illegal
+3. **Never pick rare plants** — check the Schedule 8 list
+4. **Never pick from SSSIs** — nature reserves are protected
+5. **Only take what you need** — leave 90% for wildlife
+6. **Be safe** — if you're not 100% sure, leave it out
+7. **Respect the land** — follow the Countryside Code
+8. **Check your country** — Scotland has different rules to England and Wales
+"""
+            },
+            {
+                "type": "final_quiz",
+                "question": "What is the most important rule of foraging?",
+                "options": ["Pick everything you find", "If in doubt, leave it out", "Only pick pretty flowers"],
+                "answer": "If in doubt, leave it out",
+                "reward": 25
             }
         ]
     }
