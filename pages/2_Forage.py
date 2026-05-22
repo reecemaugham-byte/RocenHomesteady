@@ -66,19 +66,19 @@ with st.sidebar:
     st.markdown("#### 🌿 Foraging Achievements")
     for key in ["foraging_novice", "foraging_botanist", "foraging_master"]:
         ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements[key] else "🔒"
+        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
         st.caption(f"{status} {ach['name']}")
 
     st.markdown("#### ☠️ Survival Achievements")
     for key in ["survival_scout", "survival_expert", "survival_detective"]:
         ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements[key] else "🔒"
+        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
         st.caption(f"{status} {ach['name']}")
 
     st.markdown("#### 🎲 Quiz Achievements")
     for key in ["quiz_streak", "quiz_challenger"]:
         ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements[key] else "🔒"
+        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
         st.caption(f"{status} {ach['name']}")
 
     st.markdown("---")
@@ -382,7 +382,7 @@ with tab1:
     with st.expander("🏅 Foraging Achievements"):
         for key in ["foraging_novice", "foraging_botanist", "foraging_master"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements[key] else "🔒"
+            status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
             progress = ""
             if key == "foraging_novice":
                 progress = f"({len(st.session_state.master_inventory)}/1)" if not st.session_state.achievements[key] else "(Done)"
@@ -607,7 +607,7 @@ with tab2:
     with st.expander("🏅 Survival Achievements"):
         for key in ["survival_scout", "survival_expert", "survival_detective"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements[key] else "🔒"
+            status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
             progress = ""
             if key == "survival_scout":
                 progress = "(1 case)" if st.session_state.achievements[key] else "(0/1)"
@@ -930,11 +930,10 @@ with tab3:
     with st.expander("🏅 Quiz Achievements"):
         for key in ["quiz_streak", "quiz_challenger"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements[key] else "🔒"
+            status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
             progress = ""
             if key == "quiz_streak":
                 progress = f"({st.session_state.daily_streak}/5)" if not st.session_state.achievements[key] else "(Done)"
             elif key == "quiz_challenger":
                 progress = "(Done)" if st.session_state.achievements[key] else "(Complete Challenge Mode)"
             st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
-
