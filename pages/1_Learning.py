@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from utils import (init_session_state, apply_brand_theme, render_sidebar,
-                   generate_voice, EDGE_TTS_AVAILABLE, clean_text_for_audio)
-from game_config import ACHIEVEMENTS
+from utils import init_session_state, apply_brand_theme
 from plants_data import UK_PLANTS
+from game_config import ACHIEVEMENTS
 from lessons_data import LESSON_CONTENT
 
 # --- PAGE CONFIG ---
