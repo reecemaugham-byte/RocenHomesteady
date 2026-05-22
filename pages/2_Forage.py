@@ -8,6 +8,444 @@ from game_config import (ACHIEVEMENTS, HABITAT_ICONS, SEASON_ICONS, SEASON_MONTH
                          SURVIVAL_DIFFICULTY)
 from plants_data import UK_PLANTS
 
+# --- TTS AVAILABILITY ---
+try:
+    import edge_tts
+    EDGE_TTS_AVAILABLE = True
+except ImportError:
+    EDGE_TTS_AVAILABLE = False
+
+try:
+    from audio_utils import generate_voice, clean_text_for_audio
+except ImportError:
+    EDGE_TTS_AVAILABLE = False
+
+    def clean_text_for_audio(text):
+        return text
+
+    def generate_voice(text):
+        return None
+
+# --- HELPER: GENERATE FORAGING QUESTION ---
+def generate_foraging_question(plant):
+    """Generate one of 6 question types from a plant dict."""
+    question_types = ['habitat', 'identification', 'lookalike', 'parts', 'season', 'warning']
+
+    # Fallback if plant lacks data for certain types
+    if not plant.get('lookalikes'):
+        question_types = [t for t in question_types if t != 'lookalike']
+    if not plant.get('parts'):
+        question_types = [t for t in question_types if t != 'parts']
+    if not plant.get('warnings'):
+        question_types = [t for t in question_types if t != 'warning']
+
+    if not question_types:
+        question_types = ['habitat', 'identification']
+
+    q_type = random.choice(question_types)
+    all_plant_names = [p['name'] for p in UK_PLANTS['edible'] + UK_PLANTS['poisonous']]
+    id_keys = plant.get('id_keys', {})
+
+    if q_type == 'habitat':
+        correct = plant.get('habitat', 'Various')
+        wrong_habitats = ["Woodlands", "Meadows", "Coastal cliffs", "Riverbanks",
+                          "Hedgerows", "Marshes", "Moors", "Gardens", "Wasteland"]
+        wrong_options = [h for h in wrong_habitats if h != correct]
+        options = [correct] + random.sample(wrong_options, min(3, len(wrong_options)))
+        random.shuffle(options)
+        clue = ""
+        if id_keys:
+            features = random.sample(list(id_keys.items()), min(2, len(id_keys)))
+            clue = "; ".join([f"{k} is {v}" for k, v in features])
+        elif plant.get('description'):
+            clue = plant['description'][:120]
+        return {
+            'type': 'habitat',
+            'question': f"Where would you most likely find **{plant['name']}**?",
+            'options': options,
+            'correct': correct,
+            'explanation': f"{plant['name']} typically grows in {correct}.",
+            'points': 10
+        }
+
+    elif q_type == 'identification':
+        if id_keys:
+            key_feature = random.choice(list(id_keys.items()))
+            feature_key, feature_val = key_feature
+            correct = feature_val
+            wrong_options = [v for k, v in id_keys.items() if v != correct]
+            other_vals = [v for p in UK_PLANTS['edible'] + UK_PLANTS['poisonous']
+                         for k, v in p.get('id_keys', {}).items() if v != correct]
+            wrong_options += random.sample(other_vals, min(3 - len(wrong_options), len(other_vals)))
+            wrong_options = list(set(wrong_options))[:3]
+            options = [correct] + wrong_options
+            while len(options) < 4:
+                options.append("None of these")
+            random.shuffle(options)
+            return {
+                'type': 'identification',
+                'question': f"What is the **{feature_key}** of **{plant['name']}**?",
+                'options': options,
+                'correct': correct,
+                'explanation': f"The {feature_key} of {plant['name']} is {feature_val}.",
+                'points': 10
+            }
+        else:
+            correct = plant.get('category', 'Plant')
+            categories = ["Plant", "Tree", "Shrub", "Fungi", "Coastal", "Seaweed", "Shellfish"]
+            wrong = [c for c in categories if c != correct]
+            options = [correct] + random.sample(wrong, min(3, len(wrong)))
+            random.shuffle(options)
+            return {
+                'type': 'identification',
+                'question': f"What type of organism is **{plant['name']}**?",
+                'options': options,
+                'correct': correct,
+                'explanation': f"{plant['name']} is a {correct}.",
+                'points': 10
+            }
+
+    elif q_type == 'lookalike':
+        lookalikes = plant.get('lookalikes', [])
+        dangerous = [la for la in lookalikes if la.get('danger', '') in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']]
+        if dangerous:
+            chosen = random.choice(dangerous)
+            correct = chosen['name']
+            other_names = [n for n in all_plant_names if n != plant['name'] and n != correct]
+            wrong = random.sample(other_names, min(3, len(other_names)))
+            options = [correct] + wrong
+            while len(options) < 4:
+                options.append("None of these")
+            random.shuffle(options)
+            confusion = plant.get('confusion_notes', chosen.get('diff', 'Check carefully!'))
+            return {
+                'type': 'lookalike',
+                'question': f"Which is the DANGEROUS lookalike of **{plant['name']}**?",
+                'options': options,
+                'correct': correct,
+                'explanation': f"{chosen['name']} is dangerous ({chosen.get('danger', 'Unknown')}): {chosen.get('diff', confusion)}",
+                'points': 15
+            }
+        else:
+            # Fallback to identification
+            return generate_foraging_question_fallback(plant)
+
+    elif q_type == 'parts':
+        raw_parts = plant.get('parts', 'Leaves')
+        if isinstance(raw_parts, str):
+            parts_list = [p.strip() for p in raw_parts.split(',')]
+        else:
+            parts_list = raw_parts
+        if not parts_list:
+            parts_list = ['Leaves']
+        correct = parts_list[0]
+        wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark", "Stem", "Tubers"]
+        wrong = [p for p in wrong_parts if p not in parts_list]
+        options = [correct] + random.sample(wrong, min(3, len(wrong)))
+        while len(options) < 4:
+            options.append("None of these")
+        random.shuffle(options)
+        return {
+            'type': 'parts',
+            'question': f"Which part of **{plant['name']}** can you eat?",
+            'options': options,
+            'correct': correct,
+            'explanation': f"You can eat the {', '.join(parts_list)} of {plant['name']}.",
+            'points': 10
+        }
+
+    elif q_type == 'season':
+        correct_months = plant.get('months', ['Summer'])
+        if isinstance(correct_months, str):
+            correct_months = [correct_months]
+        correct = random.choice(correct_months)
+        all_months = ["January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"]
+        wrong = [m for m in all_months if m not in correct_months]
+        options = [correct] + random.sample(wrong, min(3, len(wrong)))
+        random.shuffle(options)
+        return {
+            'type': 'season',
+            'question': f"When is **{plant['name']}** best foraged?",
+            'options': options,
+            'correct': correct,
+            'explanation': f"{plant['name']} is best in {', '.join(correct_months)}.",
+            'points': 10
+        }
+
+    elif q_type == 'warning':
+        warning = plant.get('warnings', '')
+        if warning:
+            if random.random() < 0.5:
+                return {
+                    'type': 'warning',
+                    'question': f"True or False: {warning}",
+                    'options': ["True", "False"],
+                    'correct': "True",
+                    'explanation': f"This is a real warning about {plant['name']}.",
+                    'points': 10
+                }
+            else:
+                false_warning = warning
+                swaps = [("cook", "eat raw"), ("edible", "poisonous"),
+                         ("safe", "dangerous"), ("must", "don't need to"),
+                         ("hairy", "smooth"), ("never", "always")]
+                for orig, swap in swaps:
+                    if orig.lower() in false_warning.lower():
+                        false_warning = false_warning.lower().replace(orig.lower(), swap.lower())
+                        false_warning = false_warning[0].upper() + false_warning[1:]
+                        break
+                if false_warning != warning:
+                    return {
+                        'type': 'warning',
+                        'question': f"True or False: {false_warning}",
+                        'options': ["True", "False"],
+                        'correct': "False",
+                        'explanation': f"That's FALSE. The real warning is: {warning}",
+                        'points': 15
+                    }
+        # Fallback
+        return generate_foraging_question_fallback(plant)
+
+    # Default fallback
+    return generate_foraging_question_fallback(plant)
+
+
+def generate_foraging_question_fallback(plant):
+    """Fallback question when specific type can't be generated."""
+    correct = plant.get('habitat', 'Various')
+    wrong_habitats = ["Woodlands", "Meadows", "Coastal cliffs", "Riverbanks",
+                      "Hedgerows", "Marshes", "Moors"]
+    wrong = [h for h in wrong_habitats if h != correct]
+    options = [correct] + random.sample(wrong, min(3, len(wrong)))
+    random.shuffle(options)
+    return {
+        'type': 'habitat',
+        'question': f"Where would you most likely find **{plant['name']}**?",
+        'options': options,
+        'correct': correct,
+        'explanation': f"{plant['name']} typically grows in {correct}.",
+        'points': 10
+    }
+
+
+# --- HELPER: GENERATE SURVIVAL CASES ---
+def generate_survival_cases():
+    """Generate survival cases from real plant data, pairing edibles with poisonous lookalikes."""
+    cases = []
+
+    for edible in UK_PLANTS['edible']:
+        lookalikes = edible.get('lookalikes', [])
+        for la in lookalikes:
+            if not isinstance(la, dict):
+                continue
+            danger = la.get('danger', '')
+            if danger not in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']:
+                continue
+
+            # Find the poisonous plant data
+            danger_plant = None
+            for p in UK_PLANTS['poisonous']:
+                if p['name'] == la['name']:
+                    danger_plant = p
+                    break
+
+            if not danger_plant:
+                continue
+
+            # Build clue from edible plant's id_keys
+            id_keys = edible.get('id_keys', {})
+            if id_keys:
+                clue_parts = [f"{k}: {v}" for k, v in list(id_keys.items())[:3]]
+                clue = "You notice: " + "; ".join(clue_parts) + "."
+            else:
+                clue = f"You notice a plant growing in {edible.get('habitat', 'the countryside')}."
+
+            # Build rule from confusion notes or lookalike diff
+            confusion = edible.get('confusion_notes', '')
+            diff = la.get('diff', '')
+            if confusion:
+                rule = confusion
+            elif diff:
+                rule = f"Key difference: {diff}"
+            else:
+                rule = f"Check carefully — {la['name']} is dangerous!"
+
+            # Build fact
+            fact_parts = [f"**{edible['name']}** is edible."]
+            if diff:
+                fact_parts.append(f"The dangerous lookalike **{la['name']}** differs: {diff}")
+            if confusion:
+                fact_parts.append(f"Key ID note: {confusion}")
+            fact = " ".join(fact_parts)
+
+            # Determine level
+            if danger in ['DEADLY', 'EXTREME']:
+                level = 2
+            else:
+                level = 1
+
+            cases.append({
+                'safe_plant': edible['name'],
+                'safe_icon': '🌿',
+                'danger_plant': la['name'],
+                'danger_icon': '☠️',
+                'safe_habitat': edible.get('habitat', 'Various'),
+                'clue': clue,
+                'rule': rule,
+                'fact': fact,
+                'level': level
+            })
+
+    # If we have very few cases, add some from poisonous plants with their confusion notes
+    if len(cases) < 10:
+        for poison in UK_PLANTS['poisonous']:
+            confusion = poison.get('confusion_notes', '')
+            if not confusion:
+                continue
+
+            # Find a corresponding edible plant mentioned in confusion notes
+            for edible in UK_PLANTS['edible']:
+                if edible['name'].lower() in confusion.lower():
+                    id_keys = edible.get('id_keys', {})
+                    if id_keys:
+                        clue_parts = [f"{k}: {v}" for k, v in list(id_keys.items())[:3]]
+                        clue = "You notice: " + "; ".join(clue_parts) + "."
+                    else:
+                        clue = f"You notice a plant growing in {edible.get('habitat', 'the countryside')}."
+
+                    diff = ""
+                    for la in edible.get('lookalikes', []):
+                        if isinstance(la, dict) and la.get('name') == poison['name']:
+                            diff = la.get('diff', '')
+                            break
+
+                    rule = confusion if confusion else f"Beware: {poison['name']} looks similar!"
+
+                    fact = f"**{edible['name']}** is safe, but **{poison['name']}** is {poison.get('danger_tips', {}).get('danger_zone', 'dangerous')}."
+                    if diff:
+                        fact += f" Difference: {diff}"
+
+                    danger_level = poison.get('danger_tips', {}).get('danger_zone', '')
+                    level = 2 if danger_level in ['DEADLY', 'EXTREME'] else 1
+
+                    # Check if this pair already exists
+                    existing = [c for c in cases if c['safe_plant'] == edible['name'] and c['danger_plant'] == poison['name']]
+                    if not existing:
+                        cases.append({
+                            'safe_plant': edible['name'],
+                            'safe_icon': '🌿',
+                            'danger_plant': poison['name'],
+                            'danger_icon': '☠️',
+                            'safe_habitat': edible.get('habitat', 'Various'),
+                            'clue': clue,
+                            'rule': rule,
+                            'fact': fact,
+                            'level': level
+                        })
+                    break
+
+    # Final fallback: generate generic cases if still too few
+    if len(cases) < 5:
+        for edible in UK_PLANTS['edible'][:10]:
+            for poison in UK_PLANTS['poisonous'][:3]:
+                existing = [c for c in cases if c['safe_plant'] == edible['name'] and c['danger_plant'] == poison['name']]
+                if not existing:
+                    id_keys = edible.get('id_keys', {})
+                    if id_keys:
+                        clue_parts = [f"{k}: {v}" for k, v in list(id_keys.items())[:2]]
+                        clue = "You notice: " + "; ".join(clue_parts) + "."
+                    else:
+                        clue = f"A plant found in {edible.get('habitat', 'the countryside')}."
+
+                    danger_zone = poison.get('danger_tips', {}).get('danger_zone', 'POISONOUS')
+                    rule = f"Always double-check: {poison['name']} is {danger_zone}!"
+                    fact = f"**{edible['name']}** is edible. **{poison['name']}** is {danger_zone}."
+                    level = 2 if danger_zone in ['DEADLY', 'EXTREME'] else 1
+
+                    cases.append({
+                        'safe_plant': edible['name'],
+                        'safe_icon': '🌿',
+                        'danger_plant': poison['name'],
+                        'danger_icon': '☠️',
+                        'safe_habitat': edible.get('habitat', 'Various'),
+                        'clue': clue,
+                        'rule': rule,
+                        'fact': fact,
+                        'level': level
+                    })
+
+    # Add some level 3 cases by combining harder plants
+    hard_edibles = [p for p in UK_PLANTS['edible'] if p.get('difficulty', 1) >= 3]
+    for edible in hard_edibles:
+        lookalikes = edible.get('lookalikes', [])
+        for la in lookalikes:
+            if not isinstance(la, dict):
+                continue
+            if la.get('danger', '') in ['DEADLY', 'EXTREME']:
+                danger_plant = None
+                for p in UK_PLANTS['poisonous']:
+                    if p['name'] == la['name']:
+                        danger_plant = p
+                        break
+
+                existing = [c for c in cases if c['safe_plant'] == edible['name'] and c['danger_plant'] == la['name']]
+                if existing:
+                    existing[0]['level'] = 3
+                    continue
+
+                id_keys = edible.get('id_keys', {})
+                if id_keys:
+                    clue_parts = [f"{k}: {v}" for k, v in list(id_keys.items())[:3]]
+                    clue = "You notice: " + "; ".join(clue_parts) + ". Be very careful."
+                else:
+                    clue = f"A tricky plant in {edible.get('habitat', 'the countryside')}."
+
+                confusion = edible.get('confusion_notes', la.get('diff', 'Check very carefully!'))
+                rule = f"EXPERT LEVEL: {confusion}"
+                diff = la.get('diff', '')
+                fact = f"**{edible['name']}** is edible but easily confused with **{la['name']}** ({la.get('danger', 'DANGER')})."
+                if diff:
+                    fact += f" Key difference: {diff}"
+
+                cases.append({
+                    'safe_plant': edible['name'],
+                    'safe_icon': '🌿',
+                    'danger_plant': la['name'],
+                    'danger_icon': '☠️',
+                    'safe_habitat': edible.get('habitat', 'Various'),
+                    'clue': clue,
+                    'rule': rule,
+                    'fact': fact,
+                    'level': 3
+                })
+
+    # Deduplicate
+    seen = set()
+    unique_cases = []
+    for c in cases:
+        key = (c['safe_plant'], c['danger_plant'])
+        if key not in seen:
+            seen.add(key)
+            unique_cases.append(c)
+
+    # Ensure at least some cases exist
+    if not unique_cases:
+        unique_cases.append({
+            'safe_plant': 'Nettle',
+            'safe_icon': '🌿',
+            'danger_plant': 'Deadly Nightshade',
+            'danger_icon': '☠️',
+            'safe_habitat': 'Hedgerows and wasteland',
+            'clue': 'You notice: a tall plant with jagged leaves and stinging hairs.',
+            'rule': 'Always check for stinging hairs — Nettle has them, Deadly Nightshade does not.',
+            'fact': '**Nettle** is edible when cooked. **Deadly Nightshade** is extremely poisonous.',
+            'level': 1
+        })
+
+    return unique_cases
+
+
 # --- PAGE CONFIG ---
 st.set_page_config(
     page_title="Games - Rocen Homesteady",
@@ -50,6 +488,56 @@ if 'achievements' not in st.session_state or not st.session_state.achievements:
 # Initialize cases_solved for survival
 if 'survival_cases_solved' not in st.session_state:
     st.session_state.survival_cases_solved = 0
+
+# Initialize game state keys if missing
+if 'game_score' not in st.session_state:
+    st.session_state.game_score = 0
+if 'game_lives' not in st.session_state:
+    st.session_state.game_lives = 3
+if 'game_streak' not in st.session_state:
+    st.session_state.game_streak = 0
+if 'bonus_round' not in st.session_state:
+    st.session_state.bonus_round = False
+if 'current_question' not in st.session_state:
+    st.session_state.current_question = None
+if 'survival_lives' not in st.session_state:
+    st.session_state.survival_lives = 3
+if 'survival_score' not in st.session_state:
+    st.session_state.survival_score = 0
+if 'survival_correct_count' not in st.session_state:
+    st.session_state.survival_correct_count = 0
+if 'survival_level' not in st.session_state:
+    st.session_state.survival_level = 1
+if 'survival_current_case' not in st.session_state:
+    st.session_state.survival_current_case = None
+if 'survival_result' not in st.session_state:
+    st.session_state.survival_result = None
+if 'survival_seen' not in st.session_state:
+    st.session_state.survival_seen = []
+if 'quiz_score' not in st.session_state:
+    st.session_state.quiz_score = 0
+if 'quiz_q_num' not in st.session_state:
+    st.session_state.quiz_q_num = 0
+if 'q_data' not in st.session_state:
+    st.session_state.q_data = None
+if 'daily_streak' not in st.session_state:
+    st.session_state.daily_streak = 0
+if 'quiz_lives_remaining' not in st.session_state:
+    st.session_state.quiz_lives_remaining = 3
+if 'quiz_plants_seen' not in st.session_state:
+    st.session_state.quiz_plants_seen = []
+if 'challenge_completed' not in st.session_state:
+    st.session_state.challenge_completed = False
+if 'total_plants_identified' not in st.session_state:
+    st.session_state.total_plants_identified = 0
+if 'player_title' not in st.session_state:
+    st.session_state.player_title = "Novice Gatherer"
+if 'season_badge_progress' not in st.session_state:
+    st.session_state.season_badge_progress = []
+if 'master_inventory' not in st.session_state:
+    st.session_state.master_inventory = {}
+if 'quiz_max' not in st.session_state:
+    st.session_state.quiz_max = 10
 
 # --- SIDEBAR ---
 with st.sidebar:
@@ -111,13 +599,7 @@ with st.sidebar:
         st.session_state.player_title = "Novice Gatherer"
         st.session_state.season_badge_progress = []
         st.session_state.master_inventory = {}
-        st.session_state.kitchen_inventory = {}
-        st.session_state.village = None
-        st.session_state.farm_game = None
         st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
-        st.session_state.unlocked_recipes = []
-        st.session_state.kitchen_score = 0
-        st.session_state.apiary_game = None
         st.success("All Games Reset!")
         st.rerun()
 
@@ -158,13 +640,13 @@ with tab1:
 
     current_month = datetime.now().strftime("%B")
     default_season = "Summer"
-    if current_month in SEASON_MONTHS["Spring"]:
+    if current_month in SEASON_MONTHS.get("Spring", []):
         default_season = "Spring"
-    elif current_month in SEASON_MONTHS["Summer"]:
+    elif current_month in SEASON_MONTHS.get("Summer", []):
         default_season = "Summer"
-    elif current_month in SEASON_MONTHS["Autumn"]:
+    elif current_month in SEASON_MONTHS.get("Autumn", []):
         default_season = "Autumn"
-    else:
+    elif current_month in SEASON_MONTHS.get("Winter", []):
         default_season = "Winter"
 
     if 'active_season' not in st.session_state:
@@ -192,9 +674,9 @@ with tab1:
                 st.write(f"✅ {p}")
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("🌟 Score", st.session_state.get('game_score', 0))
-    col2.metric("❤️ Lives", "❤️" * max(0, st.session_state.get('game_lives', 3)))
-    col3.metric("🔥 Streak", st.session_state.get('game_streak', 0))
+    col1.metric("🌟 Score", st.session_state.game_score)
+    col2.metric("❤️ Lives", "❤️" * max(0, st.session_state.game_lives))
+    col3.metric("🔥 Streak", st.session_state.game_streak)
     st.markdown("---")
 
     active_season = st.session_state.active_season
@@ -207,10 +689,10 @@ with tab1:
         # --- BONUS ROUND LOGIC ---
         if (st.session_state.game_streak > 0
                 and st.session_state.game_streak % 5 == 0
-                and not st.session_state.get('bonus_round')):
+                and not st.session_state.bonus_round):
             st.session_state.bonus_round = True
 
-        if st.session_state.get('bonus_round'):
+        if st.session_state.bonus_round:
             st.markdown("## ⚡ BONUS ROUND!")
             st.markdown("You've identified 5 plants in a row! Answer for **Double Points**.")
 
@@ -246,7 +728,7 @@ with tab1:
 
         else:
             # --- STANDARD QUESTION (6 TYPES) ---
-            if st.session_state.get('current_question') is None:
+            if st.session_state.current_question is None:
                 plant = random.choice(available_plants)
                 question_data = generate_foraging_question(plant)
                 question_data['plant'] = plant
@@ -412,11 +894,6 @@ with tab2:
         Cases are generated from real plant data — there are dozens of unique scenarios!
         """)
 
-    if 'survival_level' not in st.session_state:
-        st.session_state.survival_level = 1
-    if 'survival_cases_solved' not in st.session_state:
-        st.session_state.survival_cases_solved = 0
-
     # --- GENERATE CASES FROM PLANT DATA ---
     all_cases = generate_survival_cases()
 
@@ -431,10 +908,6 @@ with tab2:
     # Fallback if no cases at current level
     if not available_cases:
         available_cases = all_cases
-
-    # Track which cases we've seen to avoid immediate repeats
-    if 'survival_seen' not in st.session_state:
-        st.session_state.survival_seen = []
 
     # Pick a case we haven't seen recently
     unseen_cases = [c for c in available_cases
@@ -734,7 +1207,7 @@ with tab3:
                 st.metric("❤️ Lives", "❤️" * max(0, st.session_state.quiz_lives_remaining))
 
             # Generate question if needed
-            if st.session_state.get('q_data') is None:
+            if st.session_state.q_data is None:
                 plant = random.choice(pool)
 
                 # Choose question type
