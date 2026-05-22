@@ -2,7 +2,7 @@ import streamlit as st
 import random
 from datetime import datetime
 
-from utils import (init_session_state, apply_brand_theme)
+from utils import init_session_state, apply_brand_theme
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, FARM_ICONS, FARM_BUILDINGS,
                          SEED_COST, BASE_PRICES, BASICS, MG_CROPS, MG_COMPANIONS,
                          MG_ANTAGONISTS, MG_SEASONS, MG_MARKET_BASE)
