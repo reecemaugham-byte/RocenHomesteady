@@ -1,29 +1,25 @@
 import streamlit as st
 import random
 import time
-import pandas as pd
-from datetime import datetime
-from openai import OpenAI
-import os
 import json
-import asyncio
+import os
+import sqlite3
+from datetime import datetime
+from pathlib import Path
 
 # --- DATA IMPORTS ---
-# Importing data from the separate files we created
 from plants_data import UK_PLANTS
 from lessons_data import LESSON_CONTENT
-from game_config import ACHIEVEMENTS
+from game_config import (ACHIEVEMENTS, HABITAT_ICONS, SEASON_ICONS, SEASON_MONTHS,
+                         SURVIVAL_DIFFICULTY, VILLAGE_ITEMS, VILLAGE_BUILDINGS,
+                         VILLAGE_PRODUCTION, BASE_PRICES, KITCHEN_RECIPES, BASICS)
 
 # --- SAFE IMPORTS ---
 try:
-    import yfinance as yf
+    import edge_tts
+    EDGE_TTS_AVAILABLE = True
 except ImportError:
-    yf = None
-
-try:
-    import alpaca_trade_api as tradeapi
-except ImportError:
-    tradeapi = None
+    EDGE_TTS_AVAILABLE = False
 
 try:
     from PIL import Image
@@ -32,173 +28,185 @@ try:
 except ImportError:
     Image = None
 
-try:
-    import edge_tts
-    EDGE_TTS_AVAILABLE = True
-except ImportError:
-    EDGE_TTS_AVAILABLE = False
+# ==========================================
+# DATABASE (SQLite for persistence)
+# ==========================================
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rocen_save.db')
 
-# --- CONFIGURATION & API ---
-try:
-    api_key = st.secrets["OPENAI_API_KEY"]
-except:
-    api_key = "sk-proj--" # Placeholder
-
-if not api_key:
-    client = None
-else:
+def init_db():
+    """Create the saves table if it doesn't exist."""
     try:
-        client = OpenAI(api_key=api_key)
-    except:
-        client = None
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS saves
+                     (username TEXT PRIMARY KEY, data TEXT, last_saved TEXT)''')
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"DB Init Error: {e}")
 
-# --- SESSION STATE INIT ---
+def save_game(username, data):
+    """Save game data to SQLite."""
+    if not username:
+        return False
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("INSERT OR REPLACE INTO saves (username, data, last_saved) VALUES (?, ?, ?)",
+                  (username, json.dumps(data), datetime.now().isoformat()))
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Save Error: {e}")
+        return False
+
+def load_game(username):
+    """Load game data from SQLite."""
+    if not username:
+        return None
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT data FROM saves WHERE username=?", (username,))
+        row = c.fetchone()
+        conn.close()
+        if row:
+            return json.loads(row[0])
+        return None
+    except Exception as e:
+        print(f"Load Error: {e}")
+        return None
+
+def get_save_data():
+    """Collect all saveable session state data."""
+    keys_to_save = [
+        'game_score', 'game_lives', 'game_streak', 'total_plants_identified',
+        'player_title', 'total_xp', 'master_inventory', 'achievements',
+        'unlocked_recipes', 'kitchen_score', 'kitchen_inventory',
+        'season_badge_progress', 'survival_lives', 'survival_score',
+        'survival_correct_count', 'survival_level', 'survival_cases_solved',
+        'quiz_score', 'daily_streak', 'village', 'farm_game',
+        'challenge_completed', 'completed_modules',
+    ]
+    data = {}
+    for key in keys_to_save:
+        if key in st.session_state:
+            val = st.session_state[key]
+            if isinstance(val, set):
+                val = list(val)
+            data[key] = val
+
+    # Save module progress (dynamic keys)
+    for title in LESSON_CONTENT.keys():
+        progress_key = f"module_progress_{title}"
+        if progress_key in st.session_state:
+            data[progress_key] = st.session_state[progress_key]
+
+    return data
+
+def apply_save_data(data):
+    """Apply loaded data to session state."""
+    if data:
+        for key, val in data.items():
+            if isinstance(val, list) and key in ['season_badge_progress']:
+                val = list(val)
+            st.session_state[key] = val
+
+# ==========================================
+# SESSION STATE
+# ==========================================
 def init_session_state():
     defaults = {
-        'game_score': 0, 
-        'game_lives': 3, 
-        'game_streak': 0, 
-        'current_question': None,
-        'village': None, 
-        'farm_game': None, 
-        'survival_lives': 3, 
-        'survival_score': 0,
-        'current_survival_pair': None, 
-        'quiz_score': 0, 
-        'quiz_q_num': 0, 
-        'quiz_max': 5,
-        'q_data': None, 
-        'chat_language': 'English', 
-        'messages': [], 
-        'selected_page': "Home",
-        'book_content': {}, 
-        'book_outline': "", 
-        'active_season': "Summer",
-        'season_badge_progress': [], 
-        'survival_correct_count': 0, 
-        'survival_current_case': None,
-        'survival_result': None, 
-        'daily_streak': 0, 
-        'quiz_active': False, 
-        'module_questions': None,
+        'game_score': 0, 'game_lives': 3, 'game_streak': 0,
+        'current_question': None, 'bonus_round': False,
+        'village': None, 'farm_game': None,
+        'survival_lives': 3, 'survival_score': 0,
+        'survival_correct_count': 0, 'survival_level': 1,
+        'survival_current_case': None, 'survival_result': None,
+        'survival_cases_solved': 0,
+        'quiz_score': 0, 'quiz_q_num': 0, 'quiz_max': 5,
+        'q_data': None, 'daily_streak': 0,
+        'challenge_completed': False,
+        'chat_language': 'English', 'messages': [],
+        'selected_page': "Home", 'book_content': {}, 'book_outline': "",
+        'active_season': "Summer", 'season_badge_progress': [],
         'player_title': "Novice Gatherer",
-        'total_plants_identified': 0,
-        'total_xp': 0,
-        'completed_modules': [],
-        # --- UNIFIED INVENTORY ---
-        'master_inventory': {}, # Replaces separate lists
-        'kitchen_inventory': {}, # Deprecated but kept for safety
-        'collection_edible': [], # Deprecated but kept for safety
-        
-        'game_streak_bonus': False,
-        'achievements': {k: False for k in ACHIEVEMENTS.keys()}, # Initialize achievements
-        'unlocked_recipes': [], # For Kitchen game
-        'kitchen_score': 0 # For Kitchen game
+        'total_plants_identified': 0, 'total_xp': 0,
+        'master_inventory': {}, 'kitchen_inventory': {},
+        'achievements': {k: False for k in ACHIEVEMENTS.keys()},
+        'unlocked_recipes': [], 'kitchen_score': 0,
+        'username': '', 'game_loaded': False,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
 
-# --- THEME FUNCTION ---
+    # Initialize DB on first run
+    init_db()
+
+# ==========================================
+# THEME
+# ==========================================
 def apply_brand_theme():
     st.markdown("""
     <style>
-    /* --- Main Background - Dark Earth --- */
-    .stApp, section.main > div {
-        background-color: #3A2416; /* Dark Coffee */
-    }
-
-    /* --- Text Color - White for contrast --- */
-    .stMarkdown, .stHeader, p, label, .stTextInput > div > div > input, .stTextArea > div > div > textarea {
-        color: #FFFFFF !important; 
-    }
-
-    /* --- Headings - Copper --- */
-    h1, h2, h3 {
-        color: #B87333 !important; /* COPPER */
-        font-family: 'Georgia', serif !important;
-        border-bottom: 2px solid #6B4226; /* Saddle Brown underline */
-        padding-bottom: 10px;
-    }
-
-    /* --- Buttons - Saddle Brown --- */
-    .stButton > button {
-        background-color: #6B4226; /* Saddle Brown */
-        color: white !important;
-        border-radius: 20px;
-        border: 1px solid #B87333; /* COPPER border */
-        padding: 10px 24px;
-        font-weight: bold;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    }
-    .stButton > button:hover {
-        background-color: #B87333; /* COPPER Hover */
-        color: #FFFFFF !important; 
-        transform: scale(1.02);
-    }
-
-    /* --- Sidebar - Deep Evergreen --- */
-    [data-testid="stSidebar"] {
-        background-color: #1B3A28; /* DARKER GREEN */
-    }
-    [data-testid="stSidebar"] * {
-        color: #FFFFFF !important; /* White text on green */
-    }
-    
-    /* Sidebar specific adjustments */
-    [data-testid="stSidebar"] .stMarkdown hr {
-        border-color: #B87333; /* Copper divider */
-    }
-
-    /* --- Metric Boxes - Wood Brown --- */
-    [data-testid="stMetric"] {
-        background-color: #6B4226; /* Saddle Brown */
-        border-radius: 10px;
-        padding: 15px;
-        box-shadow: 0 0 0 1px #B87333; /* COPPER outline */
-        border-left: 5px solid #B87333; /* COPPER left bar */
-        color: white;
-    }
-    [data-testid="stMetric"] label {
-        color: #B87333 !important; /* COPPER Label */
-    }
-    [data-testid="stMetric"] [data-testid="stMetricValue"] {
-        color: white !important; /* Value Color */
-    }
-
-    /* --- Tabs --- */
-    .stTabs [data-badges="badge"] {
-        background-color: #3F5F2A;
-        color: #FFFFFF;
-    }
-    button[aria-selected="true"] {
-        background-color: #B87333 !important; /* COPPER active tab */
-        color: #FFFFFF !important;
-        border-bottom: 2px solid #6B4226;
-    }
-
-    /* --- Expander --- */
-    .streamlit-expanderHeader {
-        background-color: #6B4226 !important; /* Saddle Brown */
-        border-radius: 10px;
-        border-left: 5px solid #B87333; /* COPPER left bar */
-        color: #FFFFFF !important;
-        font-weight: bold;
-    }
-    
-    /* --- Input Fields --- */
-    .stTextInput > div > div > input, .stTextArea > div > div > textarea, .stSelectbox > div > div {
-        background-color: #3F5F2A !important; /* Green input bg */
-        color: #FFFFFF !important;
-        border: 1px solid #B87333; /* COPPER border */
+    .stApp, section.main > div { background-color: #3A2416; }
+    .stMarkdown, .stHeader, p, label,
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea { color: #FFFFFF !important; }
+    h1, h2, h3 { color: #B87333 !important; font-family: 'Georgia', serif !important;
+                 border-bottom: 2px solid #6B4226; padding-bottom: 10px; }
+    .stButton > button { background-color: #6B4226; color: white !important;
+                         border-radius: 20px; border: 1px solid #B87333;
+                         padding: 10px 24px; font-weight: bold;
+                         box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+    .stButton > button:hover { background-color: #B87333; color: #FFFFFF !important;
+                               transform: scale(1.02); }
+    [data-testid="stSidebar"] { background-color: #1B3A28; }
+    [data-testid="stSidebar"] * { color: #FFFFFF !important; }
+    [data-testid="stSidebar"] .stMarkdown hr { border-color: #B87333; }
+    [data-testid="stMetric"] { background-color: #6B4226; border-radius: 10px;
+                               padding: 15px; box-shadow: 0 0 0 1px #B87333;
+                               border-left: 5px solid #B87333; color: white; }
+    [data-testid="stMetric"] label { color: #B87333 !important; }
+    [data-testid="stMetric"] [data-testid="stMetricValue"] { color: white !important; }
+    .stTabs [data-badges="badge"] { background-color: #3F5F2A; color: #FFFFFF; }
+    button[aria-selected="true"] { background-color: #B87333 !important;
+                                   color: #FFFFFF !important;
+                                   border-bottom: 2px solid #6B4226; }
+    .streamlit-expanderHeader { background-color: #6B4226 !important;
+                                border-radius: 10px; border-left: 5px solid #B87333;
+                                color: #FFFFFF !important; font-weight: bold; }
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea,
+    .stSelectbox > div > div { background-color: #3F5F2A !important;
+                               color: #FFFFFF !important; border: 1px solid #B87333; }
+    @media (max-width: 768px) {
+        .plant-card { padding: 10px !important; }
+        div.grid-game div.stButton > button { font-size: 1em !important; }
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- HELPER FOR AUDIO ---
+# ==========================================
+# AUDIO
+# ==========================================
+def clean_text_for_audio(text):
+    if not text: return ""
+    text = text.replace("**", "").replace("##", "").replace("*", "")
+    icon_map = {"🌿": "Plant", "🌲": "Woodland", "☠️": "Poison", "✅": "Correct",
+                "❌": "Wrong", "🕵️": "Inspector", "⚡": "Bonus", "🎓": "Graduate",
+                "🌱": "Seedling", "🍄": "Mushroom", "🏖️": "Coastal", "🏡": "Urban",
+                "🌾": "Meadow", "💧": "Water", "🪨": "Rock"}
+    for icon, word in icon_map.items():
+        text = text.replace(icon, word)
+    return text.strip()
+
 def generate_voice(text, filename="temp_audio.mp3"):
     if not EDGE_TTS_AVAILABLE:
         return None
+    import asyncio
     try:
         communicate = edge_tts.Communicate(text, "en-GB-SoniaNeural")
         loop = asyncio.new_event_loop()
@@ -210,85 +218,436 @@ def generate_voice(text, filename="temp_audio.mp3"):
         print(f"Audio Error: {e}")
         return None
 
-# --- SIDEBAR FUNCTION ---
+# ==========================================
+# DYNAMIC SURVIVAL CASE GENERATION
+# ==========================================
+def generate_survival_cases():
+    """Generate survival school cases from plant data. Uses KS2-friendly language."""
+    cases = []
+
+    # Fallback hardcoded cases (always available)
+    fallback_cases = [
+        {"level": 1, "clue": "You find a tall plant with white umbrella-shaped flowers. The stem is smooth with purple spots on it. There are no hairs on the stem at all.",
+         "rule": "🚨 Rule: In the Carrot family, purple spots usually mean POISON. Hairy stems are usually safe.",
+         "safe_plant": "Wild Carrot", "danger_plant": "Hemlock",
+         "safe_icon": "🥕", "danger_icon": "☠️",
+         "fact": "🕵️ Remember: Hemlock (POISON) has a smooth stem with purple spots and smells like mouse wee. Wild Carrot (Safe) has a hairy stem and smells like carrots.",
+         "safe_habitat": "Meadows"},
+        {"level": 1, "clue": "You find a plant with big green leaves in a damp woodland. You squash a leaf and it smells really strongly of garlic!",
+         "rule": "✅ Rule: A strong garlic or onion smell is usually a good sign — it means the plant is safe to eat.",
+         "safe_plant": "Wild Garlic", "danger_plant": "Lily of the Valley",
+         "safe_icon": "🌿", "danger_icon": "☠️",
+         "fact": "🕵️ Remember: Wild Garlic (Safe) smells of garlic. Lily of the Valley (POISON) has no garlic smell at all. Always use your nose!",
+         "safe_habitat": "Woodland"},
+        {"level": 2, "clue": "You find an orange mushroom under an oak tree. Under the cap, it has ridges (like blunt, thick lines) instead of thin gills. It smells fruity, like apricots.",
+         "rule": "✅ Rule: True gills are thin sheets like paper. Ridges are blunt and thick, like corrugated cardboard.",
+         "safe_plant": "Chanterelle", "danger_plant": "False Chanterelle",
+         "safe_icon": "🍄", "danger_icon": "🚫",
+         "fact": "🕵️ Remember: Chanterelle (Safe) has ridges, not gills, and smells like apricots. False Chanterelle (Not Safe) has thin gills like paper and no apricot smell.",
+         "safe_habitat": "Woodland"}
+    ]
+
+    # Generate cases from plant data
+    for plant in UK_PLANTS['edible']:
+        lookalikes = plant.get('lookalikes', [])
+        plant_difficulty = plant.get('difficulty', 2)
+        id_keys = plant.get('id_keys', {})
+        confusion_notes = plant.get('confusion_notes', '')
+
+        for la in lookalikes:
+            danger_level = la.get('danger', '')
+            if danger_level not in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']:
+                continue
+
+            danger_name = la.get('name', 'Unknown')
+            danger_diff = la.get('diff', '')
+            safe_name = plant['name']
+
+            # Determine level
+            if plant.get('category') == 'Fungi' or plant_difficulty >= 3:
+                level = 2 if plant_difficulty == 2 else 3
+            else:
+                level = 1
+
+            # Generate KS2-friendly clue
+            if id_keys:
+                features = list(id_keys.items())[:3]
+                clue_parts = []
+                for k, v in features:
+                    # Simplify technical terms for KS2
+                    k_simple = k
+                    v_simple = v
+                    if k == "Gills":
+                        k_simple = "Gills (the lines under the cap)"
+                    if k == "Stem":
+                        k_simple = "Stem (the stalk)"
+                    if k == "Flowers":
+                        k_simple = "Flowers"
+                    if k == "Smell":
+                        k_simple = "Smell"
+                    if k == "Fruit":
+                        k_simple = "Fruit"
+                    clue_parts.append(f"{k_simple}: {v_simple}")
+                clue = "You find a plant. " + ". ".join(clue_parts) + "."
+            else:
+                desc = plant.get('description', 'No description available.')
+                # Simplify the description for KS2
+                clue = f"You find {safe_name}. {desc[:100]}..."
+
+            # Generate KS2-friendly rule from the lookalike difference
+            rule = f"⚠️ Key Difference: {danger_diff}" if danger_diff else f"🚨 Rule: {safe_name} has special identifying features. Check carefully!"
+
+            # Generate KS2-friendly fact from confusion notes
+            if confusion_notes:
+                # Simplify the confusion notes for KS2
+                fact_text = confusion_notes
+                # Replace technical terms
+                fact_text = fact_text.replace("Key Diff:", "Remember:")
+                fact_text = fact_text.replace("CRITICAL:", "⚠️ IMPORTANT:")
+                fact = f"🕵️ {fact_text}"
+            else:
+                fact = f"🕵️ {safe_name} is SAFE. {danger_name} is {danger_level}."
+
+            # Find the safe plant's habitat
+            raw_habitat = plant.get('habitat', 'Various').split(',')[0].strip()
+            habitat_map = {
+                "Woodlands": "Woodland", "Woods": "Woodland", "Wood": "Woodland",
+                "Hedgerows": "Hedgerow", "Hedgerow": "Hedgerow", "Roadsides": "Hedgerow",
+                "Meadows": "Meadow", "Grassland": "Meadow", "Fields": "Meadow",
+                "Coastal": "Coastal", "Shingle": "Coastal", "Rocky": "Coastal",
+                "Saltmarsh": "Coastal", "Sandy": "Coastal",
+                "Urban": "Urban", "Gardens": "Urban", "Lawns": "Urban",
+                "Damp": "Woodland", "Riverbanks": "Woodland", "Wet": "Woodland"
+            }
+            safe_habitat = habitat_map.get(raw_habitat, "Woodland")
+
+            # Determine icons
+            safe_icon = "🌿"
+            danger_icon = "☠️" if danger_level in ['DEADLY', 'EXTREME'] else "⚠️"
+
+            # Category-specific icons
+            cat = plant.get('category', '')
+            if cat == 'Fungi':
+                safe_icon = "🍄"
+            elif cat == 'Tree':
+                safe_icon = "🌲"
+            elif cat == 'Coastal':
+                safe_icon = "🏖️"
+            elif cat == 'Shrub':
+                safe_icon = "🌿"
+
+            cases.append({
+                "level": level,
+                "clue": clue,
+                "rule": rule,
+                "safe_plant": safe_name,
+                "danger_plant": danger_name,
+                "safe_icon": safe_icon,
+                "danger_icon": danger_icon,
+                "fact": fact,
+                "safe_habitat": safe_habitat
+            })
+
+    # If no cases generated, use fallbacks
+    if not cases:
+        cases = fallback_cases
+
+    return cases
+
+# ==========================================
+# DYNAMIC FORAGING QUESTION GENERATION
+# ==========================================
+def generate_foraging_question(plant, question_type=None):
+    """Generate a foraging question of a random or specified type."""
+    all_plants = UK_PLANTS['edible'] + UK_PLANTS['poisonous']
+
+    # Determine question type
+    if question_type is None:
+        # Check if plant has dangerous lookalikes for lookalike type
+        has_danger = any(
+            la.get('danger', '') in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']
+            for la in plant.get('lookalikes', [])
+        )
+        if has_danger:
+            question_type = random.choices(
+                ['habitat', 'identification', 'lookalike', 'parts', 'season', 'warning'],
+                weights=[3, 3, 3, 2, 2, 1], k=1
+            )[0]
+        else:
+            question_type = random.choices(
+                ['habitat', 'identification', 'parts', 'season', 'warning'],
+                weights=[3, 3, 2, 2, 1], k=1
+            )[0]
+
+    # --- HABITAT QUESTION ---
+    if question_type == 'habitat':
+        raw_habitat = plant['habitat'].split(',')[0].strip()
+        habitat_map = {
+            "Woodlands": "Woodland", "Woods": "Woodland", "Wood": "Woodland",
+            "Hedgerows": "Hedgerow", "Hedgerow": "Hedgerow", "Roadsides": "Hedgerow",
+            "Meadows": "Meadow", "Grassland": "Meadow", "Fields": "Meadow",
+            "Coastal": "Coastal", "Shingle": "Coastal", "Rocky": "Coastal",
+            "Saltmarsh": "Coastal", "Sandy": "Coastal",
+            "Urban": "Urban", "Gardens": "Urban", "Lawns": "Urban",
+            "Damp": "Woodland", "Riverbanks": "Woodland", "Wet": "Woodland"
+        }
+        correct = habitat_map.get(raw_habitat, "Woodland")
+        all_habitats = ["Woodland", "Coastal", "Hedgerow", "Urban", "Meadow"]
+        wrong = [h for h in all_habitats if h != correct]
+        options = [correct] + random.sample(wrong, min(3, len(wrong)))
+        random.shuffle(options)
+
+        return {
+            'type': 'habitat', 'plant': plant,
+            'question': f"Where does {plant['name']} typically grow?",
+            'correct': correct, 'options': options,
+            'explanation': f"{plant['name']} grows in {plant['habitat']}.",
+            'points': 10
+        }
+
+    # --- IDENTIFICATION QUESTION ---
+    elif question_type == 'identification':
+        id_keys = plant.get('id_keys', {})
+        if not id_keys:
+            return generate_foraging_question(plant, 'habitat')
+
+        correct_key, correct_value = random.choice(list(id_keys.items()))
+        wrong_options = []
+        used_values = {correct_value}
+        for other_plant in random.sample(all_plants, min(len(all_plants), 8)):
+            if other_plant['name'] == plant['name']:
+                continue
+            other_keys = other_plant.get('id_keys', {})
+            for k, v in other_keys.items():
+                if v not in used_values and len(wrong_options) < 3:
+                    wrong_options.append(v)
+                    used_values.add(v)
+                    break
+
+        while len(wrong_options) < 3:
+            wrong_options.append("Unknown feature")
+
+        options = [correct_value] + wrong_options[:3]
+        random.shuffle(options)
+
+        return {
+            'type': 'identification', 'plant': plant,
+            'question': f"Which is a key identifier for {plant['name']}?",
+            'correct': correct_value, 'options': options,
+            'explanation': f"{plant['name']}: {correct_key} - {correct_value}",
+            'points': 12
+        }
+
+    # --- LOOKALIKE QUESTION ---
+    elif question_type == 'lookalike':
+        dangerous_lookalikes = [
+            la for la in plant.get('lookalikes', [])
+            if la.get('danger', '') in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']
+        ]
+        if not dangerous_lookalikes:
+            return generate_foraging_question(plant, 'identification')
+
+        chosen = random.choice(dangerous_lookalikes)
+        correct = chosen['name']
+        wrong_options = []
+        used_names = {correct, plant['name']}
+        for other_plant in random.sample(all_plants, min(len(all_plants), 10)):
+            if other_plant['name'] not in used_names and len(wrong_options) < 2:
+                wrong_options.append(other_plant['name'])
+                used_names.add(other_plant['name'])
+
+        while len(wrong_options) < 2:
+            wrong_options.append("Unknown plant")
+
+        options = [correct] + wrong_options[:2]
+        random.shuffle(options)
+
+        return {
+            'type': 'lookalike', 'plant': plant,
+            'question': f"Which plant is a DANGEROUS lookalike of {plant['name']}?",
+            'correct': correct, 'options': options,
+            'explanation': f"{plant.get('confusion_notes', chosen.get('diff', 'Check carefully!'))}",
+            'points': 15
+        }
+
+    # --- PARTS QUESTION ---
+    elif question_type == 'parts':
+        raw_parts = plant.get('parts', 'Leaves')
+        if isinstance(raw_parts, str):
+            parts = [p.strip() for p in raw_parts.split(',')]
+        else:
+            parts = raw_parts
+        if not parts:
+            parts = ['Leaves']
+
+        correct = parts[0]
+        wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark", "Stem"]
+        wrong = [p for p in wrong_parts if p not in parts]
+        options = [correct] + random.sample(wrong, min(2, len(wrong)))
+        random.shuffle(options)
+
+        return {
+            'type': 'parts', 'plant': plant,
+            'question': f"Which part of {plant['name']} can you eat?",
+            'correct': correct, 'options': options,
+            'explanation': f"{plant['name']}: Edible parts are {', '.join(parts)}.",
+            'points': 10
+        }
+
+    # --- SEASON QUESTION ---
+    elif question_type == 'season':
+        correct_months = plant.get('months', ['Summer'])
+        correct = random.choice(correct_months)
+        all_months = ["January", "March", "June", "August", "October", "December"]
+        wrong_months = [m for m in all_months if m not in correct_months]
+        if not wrong_months:
+            wrong_months = ["January", "March"]
+        options = [correct] + random.sample(wrong_months, min(2, len(wrong_months)))
+        random.shuffle(options)
+
+        return {
+            'type': 'season', 'plant': plant,
+            'question': f"When is {plant['name']} best harvested?",
+            'correct': correct, 'options': options,
+            'explanation': f"{plant['name']} is best in {', '.join(correct_months)}.",
+            'points': 10
+        }
+
+    # --- WARNING QUESTION ---
+    elif question_type == 'warning':
+        warning = plant.get('warnings', plant.get('description', ''))
+        if not warning:
+            return generate_foraging_question(plant, 'habitat')
+
+        # Generate a True/False question
+        # 50% chance of true statement, 50% chance of modified false statement
+        if random.random() < 0.5:
+            # True statement
+            return {
+                'type': 'warning', 'plant': plant,
+                'question': f"True or False: {warning}",
+                'correct': "True", 'options': ["True", "False"],
+                'explanation': f"This is correct: {warning}",
+                'points': 12
+            }
+        else:
+            # Modified false statement - swap a key word
+            false_warning = warning
+            swaps = [
+                ("edible", "poisonous"), ("safe", "dangerous"),
+                ("cook", "eat raw"), ("hairy", "smooth"),
+                ("round", "flat"), ("garlic", "onion"),
+                ("must", "can skip")
+            ]
+            for orig, swap in swaps:
+                if orig.lower() in warning.lower():
+                    false_warning = warning.lower().replace(orig.lower(), swap.lower())
+                    false_warning = false_warning[0].upper() + false_warning[1:]
+                    break
+
+            if false_warning == warning:
+                # Couldn't modify, just ask the true version
+                return {
+                    'type': 'warning', 'plant': plant,
+                    'question': f"True or False: {warning}",
+                    'correct': "True", 'options': ["True", "False"],
+                    'explanation': f"This is correct: {warning}",
+                    'points': 12
+                }
+
+            return {
+                'type': 'warning', 'plant': plant,
+                'question': f"True or False: {false_warning}",
+                'correct': "False", 'options': ["True", "False"],
+                'explanation': f"The correct warning is: {warning}",
+                'points': 12
+            }
+
+    # Fallback
+    return generate_foraging_question(plant, 'habitat')
+
+# ==========================================
+# SIDEBAR
+# ==========================================
 def render_sidebar():
-    # --- LOGO SECTION ---
+    # --- LOGO ---
     try:
         st.sidebar.image("logo.png", width=150)
     except:
         st.sidebar.title("🌿 Rocen Homesteady")
 
-    # --- PLAYER STATS ---
-    st.sidebar.markdown(f"**🎓 Rank:** {st.session_state.player_title}")
-    st.sidebar.markdown(f"**🌱 Plants ID'd:** {st.session_state.total_plants_identified}")
-    
-    # Show Unified Inventory Count
-    inv_count = sum(st.session_state.master_inventory.values()) if 'master_inventory' in st.session_state else 0
-    st.sidebar.markdown(f"**🎒 Inventory:** {inv_count} items")
-    
+    # --- SAVE/LOAD ---
+    st.sidebar.markdown("### 💾 Save Progress")
+    username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
+                                      key='username_input')
+
+    if username != st.session_state.get('username', ''):
+        st.session_state['username'] = username
+
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        if st.button("💾 Save", key='save_btn_sidebar'):
+            if st.session_state.get('username'):
+                data = get_save_data()
+                if save_game(st.session_state['username'], data):
+                    st.sidebar.success("Game saved!")
+                else:
+                    st.sidebar.error("Save failed!")
+            else:
+                st.sidebar.warning("Enter a name to save.")
+    with col2:
+        if st.button("📂 Load", key='load_btn_sidebar'):
+            if st.session_state.get('username'):
+                data = load_game(st.session_state['username'])
+                if data:
+                    apply_save_data(data)
+                    st.session_state['game_loaded'] = True
+                    st.sidebar.success("Game loaded!")
+                    st.rerun()
+                else:
+                    st.sidebar.warning("No save found for this name.")
+            else:
+                st.sidebar.warning("Enter a name to load.")
+
     st.sidebar.markdown("---")
 
-    # --- SAFETY INFO ---
+    # --- PLAYER STATS ---
+    total_edible = len(UK_PLANTS['edible'])
+    collected = len(st.session_state.master_inventory)
+    st.sidebar.metric("🌱 Species Found", f"{collected}/{total_edible}")
+
+    unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
+    total_ach = len(ACHIEVEMENTS)
+    st.sidebar.metric("🏆 Achievements", f"{unlocked_count}/{total_ach}")
+
+    unlocked_keys = [k for k, v in st.session_state.achievements.items() if v]
+    if unlocked_keys:
+        st.sidebar.caption("Recently Unlocked:")
+        for key in unlocked_keys[-3:]:
+            st.sidebar.write(f"✅ {ACHIEVEMENTS[key]['name']}")
+
+    # --- SAFETY ---
+    st.sidebar.markdown("---")
     st.sidebar.warning("⚠️ **Safety First**")
     st.sidebar.markdown("""
-    - Never eat a plant based solely on app ID.
+    - Never eat a plant based solely on an app.
     - Always cross-reference with a field guide.
     - **UK Law:** Only pick for personal use.
     - It is illegal to uproot plants without permission.
     """)
 
-    # --- RESET BUTTON ---
+    # --- RESET ---
     if st.sidebar.button("🔄 Reset All Progress"):
-        # Reset Game Stats
-        st.session_state.game_score = 0
-        st.session_state.game_lives = 3
-        st.session_state.game_streak = 0
-        st.session_state.survival_lives = 3
-        st.session_state.survival_score = 0
-        st.session_state.survival_correct_count = 0
-        st.session_state.total_plants_identified = 0
-        st.session_state.player_title = "Novice Gatherer"
-        st.session_state.season_badge_progress = []
-        
-        # Reset Inventories
-        st.session_state.master_inventory = {}
-        st.session_state.village = None
-        st.session_state.farm_game = None
-        st.session_state.kitchen_inventory = {}
-        
-        # Reset Achievements
-        st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
-        st.session_state.unlocked_recipes = []
-        st.session_state.kitchen_score = 0
-        
-        st.sidebar.success("Progress Reset! Refreshing...")
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
         st.rerun()
 
-    # --- BUSINESS DETAILS ---
+    # --- BUSINESS ---
     st.sidebar.markdown("---")
     st.sidebar.markdown("""
     <div style="text-align: center; font-size: 12px; line-height: 1.4;">
         <b>Rocen Homesteady LTD</b><br>
-        4th Floor<br>
-        14 Museum Place, City Centre<br>
-        Cardiff<br>
-        CF10 3BH
+        4th Floor, 14 Museum Place<br>
+        Cardiff, CF10 3BH
     </div>
     """, unsafe_allow_html=True)
-
-# --- MAIN EXECUTION BLOCK ---
-if __name__ == "__main__":
-    init_session_state()
-    apply_brand_theme()
-    render_sidebar()
-    
-    st.title("🌿 Foraging Learning Platform")
-    st.write("Welcome! Use the sidebar to navigate or start a lesson below.")
-    
-    # Basic Example Usage (Placeholder)
-    lesson_names = list(LESSON_CONTENT.keys())
-    selected_lesson = st.selectbox("Choose a Lesson:", lesson_names)
-    
-    if st.button("Start Lesson"):
-        st.session_state['selected_page'] = selected_lesson
-        st.write(f"Loading {selected_lesson}...") # In a full app, this would switch pages/modes
