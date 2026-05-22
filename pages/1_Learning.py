@@ -1,10 +1,29 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from utils import init_session_state, apply_brand_theme
+from utils import init_session_state, apply_brand_theme, render_sidebar
 from plants_data import UK_PLANTS
 from game_config import ACHIEVEMENTS
 from lessons_data import LESSON_CONTENT
+
+# --- TTS AVAILABILITY ---
+try:
+    import edge_tts
+    EDGE_TTS_AVAILABLE = True
+except ImportError:
+    EDGE_TTS_AVAILABLE = False
+
+# --- TTS HELPER FUNCTIONS ---
+try:
+    from audio_utils import generate_voice, clean_text_for_audio
+except ImportError:
+    EDGE_TTS_AVAILABLE = False
+
+    def clean_text_for_audio(text):
+        return text
+
+    def generate_voice(text):
+        return None
 
 # --- PAGE CONFIG ---
 st.set_page_config(
