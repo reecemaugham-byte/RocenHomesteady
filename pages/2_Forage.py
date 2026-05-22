@@ -7,24 +7,10 @@ from utils import init_session_state, apply_brand_theme
 from game_config import (ACHIEVEMENTS, HABITAT_ICONS, SEASON_ICONS, SEASON_MONTHS,
                          SURVIVAL_DIFFICULTY)
 from plants_data import UK_PLANTS
+from audio_utils import generate_voice, clean_text_for_audio, is_tts_available
 
-# --- TTS AVAILABILITY ---
-try:
-    import edge_tts
-    EDGE_TTS_AVAILABLE = True
-except ImportError:
-    EDGE_TTS_AVAILABLE = False
-
-try:
-    from audio_utils import generate_voice, clean_text_for_audio
-except ImportError:
-    EDGE_TTS_AVAILABLE = False
-
-    def clean_text_for_audio(text):
-        return text
-
-    def generate_voice(text):
-        return None
+# --- TTS CHECK ---
+EDGE_TTS_AVAILABLE = is_tts_available()
 
 # --- HELPER: GENERATE FORAGING QUESTION ---
 def generate_foraging_question(plant):
