@@ -1,4 +1,5 @@
 import streamlit as st
+import base64  # Added for logo CSS injection
 from datetime import datetime
 from utils import init_session_state, apply_brand_theme, render_sidebar
 from plants_data import UK_PLANTS
@@ -7,7 +8,7 @@ from game_config import ACHIEVEMENTS
 # --- PAGE CONFIG ---
 st.set_page_config(
     page_title="Rocen Homesteady",
-    page_icon="🌿",
+    page_icon="Blogo.png",  # 1. LOGO IN BROWSER TAB
     layout="wide",
     initial_sidebar_state="auto"
 )
@@ -15,6 +16,38 @@ st.set_page_config(
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
+
+# --- 2. LOGO ABOVE SIDEBAR NAVIGATION ---
+try:
+    with open("Blogo.png", "rb") as f:
+        logo_data = base64.b64encode(f.read()).decode("utf-8")
+    
+    # Build the CSS string without using f-strings to avoid curly brace errors
+    css_logo = """
+    <style>
+        /* Hide the default 'Rocen Homesteady' text title */
+        [data-testid="stSidebarNav"] > span {
+            display: none !important;
+        }
+        
+        /* Add the logo image above the page links */
+        [data-testid="stSidebarNav"]::before {
+            content: "";
+            display: block;
+            margin: 20px auto 10px auto;
+            width: 80%; 
+            height: 120px; 
+            background-image: url("data:image/png;base64,""" + logo_data + """");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+    """
+    st.markdown(css_logo, unsafe_allow_html=True)
+except FileNotFoundError:
+    st.sidebar.warning("Blogo.png not found. Make sure it's in the same folder as this script.")
+
 render_sidebar()
 
 # --- DYNAMIC SEASONAL DATA ---
@@ -103,7 +136,9 @@ GAME_LINKS = {
 # ==========================================
 # PAGE CONTENT
 # ==========================================
-st.title("🌿 Rocen Homesteady")
+
+# --- 3. LOGO AT TOP OF MAIN PAGE ---
+st.image("Blogo.png", width=250) # You can change 250 to make it bigger/smaller
 st.markdown("### The UK's Ultimate Foraging Companion")
 
 # --- DYNAMIC SEASONAL HOOK ---
