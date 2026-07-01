@@ -2,7 +2,8 @@ import streamlit as st
 import random
 import math
 
-from utils import init_session_state, apply_brand_theme
+from utils import init_session_state, apply_brand_theme, render_save_load   # <<< CHANGED
+from auth import render_auth, render_logout_sidebar                           # <<< ADD
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, NECTAR_FLOW, HONEY_TYPES,
                          APIARY_PRODUCTS, BEEKEEPING_SEASONS, WEATHER_CHANCES, TEMP_RANGE)
 
@@ -44,6 +45,8 @@ st.markdown("""
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
+user = render_auth()
+render_logout_sidebar()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
@@ -157,6 +160,9 @@ with st.sidebar:
         st.markdown("🌿 **Rocen Homesteady**")
     st.markdown("---")
 
+    render_save_load()          # <<< ADD THIS LINE
+    st.markdown("---")          # <<< ADD THIS LINE
+
     unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
     total_count = len(ACHIEVEMENTS)
     st.metric("🏆 Achievements", f"{unlocked_count} / {total_count}")
@@ -169,7 +175,7 @@ with st.sidebar:
 
     st.markdown("---")
     st.caption("📚 Curriculum: Science (Life Cycles, Ecosystems, Pollination), PSHE (Responsibility)")
-
+  
 # --- MAIN DISPLAY ---
 st.title("🐝 Apiary Manager")
 st.caption("Manage your hives through the seasons. Inspect regularly, treat for varroa, and harvest liquid gold!")
