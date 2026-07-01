@@ -3,7 +3,8 @@ import random
 import time
 from datetime import datetime
 
-from utils import init_session_state, apply_brand_theme
+from utils import init_session_state, apply_brand_theme, render_save_load
+from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, HABITAT_ICONS, SEASON_ICONS, SEASON_MONTHS,
                          SURVIVAL_DIFFICULTY)
 from plants_data import UK_PLANTS
@@ -113,7 +114,6 @@ def generate_foraging_question(plant):
                 'points': 15
             }
         else:
-            # Fallback to identification
             return generate_foraging_question_fallback(plant)
 
     elif q_type == 'parts':
@@ -190,10 +190,8 @@ def generate_foraging_question(plant):
                         'explanation': f"That's FALSE. The real warning is: {warning}",
                         'points': 15
                     }
-        # Fallback
         return generate_foraging_question_fallback(plant)
 
-    # Default fallback
     return generate_foraging_question_fallback(plant)
 
 
@@ -229,7 +227,6 @@ def generate_survival_cases():
             if danger not in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']:
                 continue
 
-            # Find the poisonous plant data
             danger_plant = None
             for p in UK_PLANTS['poisonous']:
                 if p['name'] == la['name']:
@@ -239,7 +236,6 @@ def generate_survival_cases():
             if not danger_plant:
                 continue
 
-            # Build clue from edible plant's id_keys
             id_keys = edible.get('id_keys', {})
             if id_keys:
                 clue_parts = [f"{k}: {v}" for k, v in list(id_keys.items())[:3]]
@@ -247,7 +243,6 @@ def generate_survival_cases():
             else:
                 clue = f"You notice a plant growing in {edible.get('habitat', 'the countryside')}."
 
-            # Build rule from confusion notes or lookalike diff
             confusion = edible.get('confusion_notes', '')
             diff = la.get('diff', '')
             if confusion:
@@ -257,7 +252,6 @@ def generate_survival_cases():
             else:
                 rule = f"Check carefully — {la['name']} is dangerous!"
 
-            # Build fact
             fact_parts = [f"**{edible['name']}** is edible."]
             if diff:
                 fact_parts.append(f"The dangerous lookalike **{la['name']}** differs: {diff}")
@@ -265,7 +259,6 @@ def generate_survival_cases():
                 fact_parts.append(f"Key ID note: {confusion}")
             fact = " ".join(fact_parts)
 
-            # Determine level
             if danger in ['DEADLY', 'EXTREME']:
                 level = 2
             else:
@@ -283,14 +276,12 @@ def generate_survival_cases():
                 'level': level
             })
 
-    # If we have very few cases, add some from poisonous plants with their confusion notes
     if len(cases) < 10:
         for poison in UK_PLANTS['poisonous']:
             confusion = poison.get('confusion_notes', '')
             if not confusion:
                 continue
 
-            # Find a corresponding edible plant mentioned in confusion notes
             for edible in UK_PLANTS['edible']:
                 if edible['name'].lower() in confusion.lower():
                     id_keys = edible.get('id_keys', {})
@@ -315,7 +306,6 @@ def generate_survival_cases():
                     danger_level = poison.get('danger_tips', {}).get('danger_zone', '')
                     level = 2 if danger_level in ['DEADLY', 'EXTREME'] else 1
 
-                    # Check if this pair already exists
                     existing = [c for c in cases if c['safe_plant'] == edible['name'] and c['danger_plant'] == poison['name']]
                     if not existing:
                         cases.append({
@@ -331,7 +321,6 @@ def generate_survival_cases():
                         })
                     break
 
-    # Final fallback: generate generic cases if still too few
     if len(cases) < 5:
         for edible in UK_PLANTS['edible'][:10]:
             for poison in UK_PLANTS['poisonous'][:3]:
@@ -361,7 +350,6 @@ def generate_survival_cases():
                         'level': level
                     })
 
-    # Add some level 3 cases by combining harder plants
     hard_edibles = [p for p in UK_PLANTS['edible'] if p.get('difficulty', 1) >= 3]
     for edible in hard_edibles:
         lookalikes = edible.get('lookalikes', [])
@@ -369,12 +357,6 @@ def generate_survival_cases():
             if not isinstance(la, dict):
                 continue
             if la.get('danger', '') in ['DEADLY', 'EXTREME']:
-                danger_plant = None
-                for p in UK_PLANTS['poisonous']:
-                    if p['name'] == la['name']:
-                        danger_plant = p
-                        break
-
                 existing = [c for c in cases if c['safe_plant'] == edible['name'] and c['danger_plant'] == la['name']]
                 if existing:
                     existing[0]['level'] = 3
@@ -406,7 +388,6 @@ def generate_survival_cases():
                     'level': 3
                 })
 
-    # Deduplicate
     seen = set()
     unique_cases = []
     for c in cases:
@@ -415,7 +396,6 @@ def generate_survival_cases():
             seen.add(key)
             unique_cases.append(c)
 
-    # Ensure at least some cases exist
     if not unique_cases:
         unique_cases.append({
             'safe_plant': 'Nettle',
@@ -466,6 +446,8 @@ st.markdown("""
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
+user = render_auth()
+render_logout_sidebar()
 
 # Initialize Achievements if not exists or empty
 if 'achievements' not in st.session_state or not st.session_state.achievements:
@@ -531,6 +513,9 @@ with st.sidebar:
         st.image("logo.png", use_container_width=True)
     except:
         st.markdown("🌿 **Rocen Homesteady**")
+    st.markdown("---")
+
+    render_save_load()
     st.markdown("---")
 
     unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
