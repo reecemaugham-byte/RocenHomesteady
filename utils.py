@@ -50,7 +50,6 @@ def save_game(username, data):
     try:
         supabase = get_supabase()
         json_data = json.dumps(data)
-        # Try to update first, then insert if not found
         existing = supabase.table("game_saves").select("username").eq("username", username).execute()
         if existing.data:
             supabase.table("game_saves").update({
@@ -226,7 +225,6 @@ def generate_survival_cases():
     """Generate survival school cases from plant data. Uses KS2-friendly language."""
     cases = []
 
-    # Fallback hardcoded cases (always available)
     fallback_cases = [
         {"level": 1, "clue": "You find a tall plant with white umbrella-shaped flowers. The stem is smooth with purple spots on it. There are no hairs on the stem at all.",
          "rule": "🚨 Rule: In the Carrot family, purple spots usually mean POISON. Hairy stems are usually safe.",
@@ -248,7 +246,6 @@ def generate_survival_cases():
          "safe_habitat": "Woodland"}
     ]
 
-    # Generate cases from plant data
     for plant in UK_PLANTS['edible']:
         lookalikes = plant.get('lookalikes', [])
         plant_difficulty = plant.get('difficulty', 2)
@@ -264,13 +261,11 @@ def generate_survival_cases():
             danger_diff = la.get('diff', '')
             safe_name = plant['name']
 
-            # Determine level
             if plant.get('category') == 'Fungi' or plant_difficulty >= 3:
                 level = 2 if plant_difficulty == 2 else 3
             else:
                 level = 1
 
-            # Generate KS2-friendly clue
             if id_keys:
                 features = list(id_keys.items())[:3]
                 clue_parts = []
@@ -368,7 +363,6 @@ def generate_foraging_question(plant, question_type=None):
                 weights=[3, 3, 2, 2, 1], k=1
             )[0]
 
-    # --- HABITAT QUESTION ---
     if question_type == 'habitat':
         raw_habitat = plant['habitat'].split(',')[0].strip()
         habitat_map = {
@@ -385,7 +379,6 @@ def generate_foraging_question(plant, question_type=None):
         wrong = [h for h in all_habitats if h != correct]
         options = [correct] + random.sample(wrong, min(3, len(wrong)))
         random.shuffle(options)
-
         return {
             'type': 'habitat', 'plant': plant,
             'question': f"Where does {plant['name']} typically grow?",
@@ -394,12 +387,10 @@ def generate_foraging_question(plant, question_type=None):
             'points': 10
         }
 
-    # --- IDENTIFICATION QUESTION ---
     elif question_type == 'identification':
         id_keys = plant.get('id_keys', {})
         if not id_keys:
             return generate_foraging_question(plant, 'habitat')
-
         correct_key, correct_value = random.choice(list(id_keys.items()))
         wrong_options = []
         used_values = {correct_value}
@@ -412,13 +403,10 @@ def generate_foraging_question(plant, question_type=None):
                     wrong_options.append(v)
                     used_values.add(v)
                     break
-
         while len(wrong_options) < 3:
             wrong_options.append("Unknown feature")
-
         options = [correct_value] + wrong_options[:3]
         random.shuffle(options)
-
         return {
             'type': 'identification', 'plant': plant,
             'question': f"Which is a key identifier for {plant['name']}?",
@@ -427,7 +415,6 @@ def generate_foraging_question(plant, question_type=None):
             'points': 12
         }
 
-    # --- LOOKALIKE QUESTION ---
     elif question_type == 'lookalike':
         dangerous_lookalikes = [
             la for la in plant.get('lookalikes', [])
@@ -435,7 +422,6 @@ def generate_foraging_question(plant, question_type=None):
         ]
         if not dangerous_lookalikes:
             return generate_foraging_question(plant, 'identification')
-
         chosen = random.choice(dangerous_lookalikes)
         correct = chosen['name']
         wrong_options = []
@@ -444,13 +430,10 @@ def generate_foraging_question(plant, question_type=None):
             if other_plant['name'] not in used_names and len(wrong_options) < 2:
                 wrong_options.append(other_plant['name'])
                 used_names.add(other_plant['name'])
-
         while len(wrong_options) < 2:
             wrong_options.append("Unknown plant")
-
         options = [correct] + wrong_options[:2]
         random.shuffle(options)
-
         return {
             'type': 'lookalike', 'plant': plant,
             'question': f"Which plant is a DANGEROUS lookalike of {plant['name']}?",
@@ -459,7 +442,6 @@ def generate_foraging_question(plant, question_type=None):
             'points': 15
         }
 
-    # --- PARTS QUESTION ---
     elif question_type == 'parts':
         raw_parts = plant.get('parts', 'Leaves')
         if isinstance(raw_parts, str):
@@ -468,13 +450,11 @@ def generate_foraging_question(plant, question_type=None):
             parts = raw_parts
         if not parts:
             parts = ['Leaves']
-
         correct = parts[0]
         wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark", "Stem"]
         wrong = [p for p in wrong_parts if p not in parts]
         options = [correct] + random.sample(wrong, min(2, len(wrong)))
         random.shuffle(options)
-
         return {
             'type': 'parts', 'plant': plant,
             'question': f"Which part of {plant['name']} can you eat?",
@@ -483,7 +463,6 @@ def generate_foraging_question(plant, question_type=None):
             'points': 10
         }
 
-    # --- SEASON QUESTION ---
     elif question_type == 'season':
         correct_months = plant.get('months', ['Summer'])
         correct = random.choice(correct_months)
@@ -493,7 +472,6 @@ def generate_foraging_question(plant, question_type=None):
             wrong_months = ["January", "March"]
         options = [correct] + random.sample(wrong_months, min(2, len(wrong_months)))
         random.shuffle(options)
-
         return {
             'type': 'season', 'plant': plant,
             'question': f"When is {plant['name']} best harvested?",
@@ -502,12 +480,10 @@ def generate_foraging_question(plant, question_type=None):
             'points': 10
         }
 
-    # --- WARNING QUESTION ---
     elif question_type == 'warning':
         warning = plant.get('warnings', plant.get('description', ''))
         if not warning:
             return generate_foraging_question(plant, 'habitat')
-
         if random.random() < 0.5:
             return {
                 'type': 'warning', 'plant': plant,
@@ -529,7 +505,6 @@ def generate_foraging_question(plant, question_type=None):
                     false_warning = warning.lower().replace(orig.lower(), swap.lower())
                     false_warning = false_warning[0].upper() + false_warning[1:]
                     break
-
             if false_warning == warning:
                 return {
                     'type': 'warning', 'plant': plant,
@@ -538,7 +513,6 @@ def generate_foraging_question(plant, question_type=None):
                     'explanation': f"This is correct: {warning}",
                     'points': 12
                 }
-
             return {
                 'type': 'warning', 'plant': plant,
                 'question': f"True or False: {false_warning}",
@@ -553,7 +527,6 @@ def generate_foraging_question(plant, question_type=None):
 # SIDEBAR
 # ==========================================
 def render_sidebar():
-    # --- LOGO ---
     try:
         st.sidebar.image("logo.png", width=150)
     except:
@@ -562,7 +535,6 @@ def render_sidebar():
     # --- SAVE/LOAD (uses logged-in username) ---
     st.sidebar.markdown("### 💾 Save Progress")
 
-    # Get username from auth (logged in) or manual input (fallback)
     if st.session_state.get('user'):
         username = st.session_state['user']['username']
         st.sidebar.success(f"Logged in as: **{username}**")
@@ -639,3 +611,37 @@ def render_sidebar():
         Cardiff, CF10 3BH
     </div>
     """, unsafe_allow_html=True)
+
+# ==========================================
+# COMPACT SAVE/LOAD FOR GAME PAGES
+# ==========================================
+def render_save_load():
+    """Compact save/load widget for game pages."""
+    username = ""
+    if st.session_state.get('user'):
+        username = st.session_state['user']['username']
+    elif st.session_state.get('username'):
+        username = st.session_state['username']
+
+    if username:
+        st.sidebar.success(f"💾 Saving as: **{username}**")
+        c1, c2 = st.sidebar.columns(2)
+        with c1:
+            if st.button("💾 Save", key=f'save_game_page'):
+                data = get_save_data()
+                if save_game(username, data):
+                    st.sidebar.success("Saved! ✅")
+                else:
+                    st.sidebar.error("Save failed!")
+        with c2:
+            if st.button("📂 Load", key=f'load_game_page'):
+                data = load_game(username)
+                if data:
+                    apply_save_data(data)
+                    st.session_state['game_loaded'] = True
+                    st.sidebar.success("Loaded! ✅")
+                    st.rerun()
+                else:
+                    st.sidebar.warning("No save found.")
+    else:
+        st.sidebar.warning("Log in to save progress")
