@@ -2,7 +2,8 @@ import streamlit as st
 import random
 from datetime import datetime
 
-from utils import init_session_state, apply_brand_theme
+from utils import init_session_state, apply_brand_theme, render_save_load
+from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, SEASON_MONTHS,
                          VILLAGE_ITEMS, VILLAGE_BUILDINGS, VILLAGE_PRODUCTION,
                          KITCHEN_RECIPES, BASICS)
@@ -42,6 +43,8 @@ st.markdown("""
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
+user = render_auth()
+render_logout_sidebar()
 
 # Initialize Achievements if not exists
 if 'achievements' not in st.session_state or not st.session_state.achievements:
@@ -53,6 +56,9 @@ with st.sidebar:
         st.image("logo.png", use_container_width=True)
     except:
         st.markdown("🌿 **Rocen Homesteady**")
+    st.markdown("---")
+
+    render_save_load()
     st.markdown("---")
 
     unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
