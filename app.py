@@ -4,6 +4,7 @@ from datetime import datetime
 from utils import init_session_state, apply_brand_theme, render_sidebar
 from plants_data import UK_PLANTS
 from game_config import ACHIEVEMENTS
+from auth import render_auth, render_logout_sidebar
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -49,6 +50,10 @@ except FileNotFoundError:
     st.sidebar.warning("Blogo.png not found. Make sure it's in the same folder as this script.")
 
 render_sidebar()
+
+# --- AUTHENTICATE USER ---
+user = render_auth()
+render_logout_sidebar()
 
 # --- DYNAMIC SEASONAL DATA ---
 current_month = datetime.now().strftime("%B")
