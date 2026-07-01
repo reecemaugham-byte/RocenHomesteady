@@ -6,3 +6,4 @@ Pillow
 plotly
 streamlit-extras
 nest-asyncio
+supabase
