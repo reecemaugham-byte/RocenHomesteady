@@ -3,9 +3,9 @@ import random
 import time
 import json
 import os
-import sqlite3
 from datetime import datetime
 from pathlib import Path
+from supabase import create_client, Client
 
 # --- DATA IMPORTS ---
 from plants_data import UK_PLANTS
@@ -29,50 +29,54 @@ except ImportError:
     Image = None
 
 # ==========================================
-# DATABASE (SQLite for persistence)
+# DATABASE (Supabase — permanent cloud storage)
 # ==========================================
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rocen_save.db')
-
-def init_db():
-    """Create the saves table if it doesn't exist."""
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS saves
-                     (username TEXT PRIMARY KEY, data TEXT, last_saved TEXT)''')
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"DB Init Error: {e}")
+def get_supabase():
+    url = os.environ.get("SUPABASE_URL", "")
+    key = os.environ.get("SUPABASE_KEY", "")
+    if not url or not key:
+        try:
+            url = st.secrets["SUPABASE_URL"]
+            key = st.secrets["SUPABASE_KEY"]
+        except:
+            st.error("Supabase not configured. Set environment variables or secrets.")
+            st.stop()
+    return create_client(url, key)
 
 def save_game(username, data):
-    """Save game data to SQLite."""
+    """Save game data to Supabase."""
     if not username:
         return False
     try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute("INSERT OR REPLACE INTO saves (username, data, last_saved) VALUES (?, ?, ?)",
-                  (username, json.dumps(data), datetime.now().isoformat()))
-        conn.commit()
-        conn.close()
+        supabase = get_supabase()
+        json_data = json.dumps(data)
+        # Try to update first, then insert if not found
+        existing = supabase.table("game_saves").select("username").eq("username", username).execute()
+        if existing.data:
+            supabase.table("game_saves").update({
+                "data": json_data,
+                "last_saved": datetime.utcnow().isoformat()
+            }).eq("username", username).execute()
+        else:
+            supabase.table("game_saves").insert({
+                "username": username,
+                "data": json_data,
+                "last_saved": datetime.utcnow().isoformat()
+            }).execute()
         return True
     except Exception as e:
         print(f"Save Error: {e}")
         return False
 
 def load_game(username):
-    """Load game data from SQLite."""
+    """Load game data from Supabase."""
     if not username:
         return None
     try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute("SELECT data FROM saves WHERE username=?", (username,))
-        row = c.fetchone()
-        conn.close()
-        if row:
-            return json.loads(row[0])
+        supabase = get_supabase()
+        result = supabase.table("game_saves").select("data").eq("username", username).execute()
+        if result.data:
+            return json.loads(result.data[0]["data"])
         return None
     except Exception as e:
         print(f"Load Error: {e}")
@@ -141,9 +145,6 @@ def init_session_state():
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
-
-    # Initialize DB on first run
-    init_db()
 
 # ==========================================
 # THEME
@@ -274,7 +275,6 @@ def generate_survival_cases():
                 features = list(id_keys.items())[:3]
                 clue_parts = []
                 for k, v in features:
-                    # Simplify technical terms for KS2
                     k_simple = k
                     v_simple = v
                     if k == "Gills":
@@ -291,24 +291,18 @@ def generate_survival_cases():
                 clue = "You find a plant. " + ". ".join(clue_parts) + "."
             else:
                 desc = plant.get('description', 'No description available.')
-                # Simplify the description for KS2
                 clue = f"You find {safe_name}. {desc[:100]}..."
 
-            # Generate KS2-friendly rule from the lookalike difference
             rule = f"⚠️ Key Difference: {danger_diff}" if danger_diff else f"🚨 Rule: {safe_name} has special identifying features. Check carefully!"
 
-            # Generate KS2-friendly fact from confusion notes
             if confusion_notes:
-                # Simplify the confusion notes for KS2
                 fact_text = confusion_notes
-                # Replace technical terms
                 fact_text = fact_text.replace("Key Diff:", "Remember:")
                 fact_text = fact_text.replace("CRITICAL:", "⚠️ IMPORTANT:")
                 fact = f"🕵️ {fact_text}"
             else:
                 fact = f"🕵️ {safe_name} is SAFE. {danger_name} is {danger_level}."
 
-            # Find the safe plant's habitat
             raw_habitat = plant.get('habitat', 'Various').split(',')[0].strip()
             habitat_map = {
                 "Woodlands": "Woodland", "Woods": "Woodland", "Wood": "Woodland",
@@ -321,11 +315,9 @@ def generate_survival_cases():
             }
             safe_habitat = habitat_map.get(raw_habitat, "Woodland")
 
-            # Determine icons
             safe_icon = "🌿"
             danger_icon = "☠️" if danger_level in ['DEADLY', 'EXTREME'] else "⚠️"
 
-            # Category-specific icons
             cat = plant.get('category', '')
             if cat == 'Fungi':
                 safe_icon = "🍄"
@@ -348,7 +340,6 @@ def generate_survival_cases():
                 "safe_habitat": safe_habitat
             })
 
-    # If no cases generated, use fallbacks
     if not cases:
         cases = fallback_cases
 
@@ -361,9 +352,7 @@ def generate_foraging_question(plant, question_type=None):
     """Generate a foraging question of a random or specified type."""
     all_plants = UK_PLANTS['edible'] + UK_PLANTS['poisonous']
 
-    # Determine question type
     if question_type is None:
-        # Check if plant has dangerous lookalikes for lookalike type
         has_danger = any(
             la.get('danger', '') in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']
             for la in plant.get('lookalikes', [])
@@ -519,10 +508,7 @@ def generate_foraging_question(plant, question_type=None):
         if not warning:
             return generate_foraging_question(plant, 'habitat')
 
-        # Generate a True/False question
-        # 50% chance of true statement, 50% chance of modified false statement
         if random.random() < 0.5:
-            # True statement
             return {
                 'type': 'warning', 'plant': plant,
                 'question': f"True or False: {warning}",
@@ -531,7 +517,6 @@ def generate_foraging_question(plant, question_type=None):
                 'points': 12
             }
         else:
-            # Modified false statement - swap a key word
             false_warning = warning
             swaps = [
                 ("edible", "poisonous"), ("safe", "dangerous"),
@@ -546,7 +531,6 @@ def generate_foraging_question(plant, question_type=None):
                     break
 
             if false_warning == warning:
-                # Couldn't modify, just ask the true version
                 return {
                     'type': 'warning', 'plant': plant,
                     'question': f"True or False: {warning}",
@@ -563,7 +547,6 @@ def generate_foraging_question(plant, question_type=None):
                 'points': 12
             }
 
-    # Fallback
     return generate_foraging_question(plant, 'habitat')
 
 # ==========================================
@@ -576,42 +559,43 @@ def render_sidebar():
     except:
         st.sidebar.title("🌿 Rocen Homesteady")
 
-    # --- SAVE/LOAD ---
+    # --- SAVE/LOAD (uses logged-in username) ---
     st.sidebar.markdown("### 💾 Save Progress")
-    username = st.session_state.get('user', {}).get('username', '') if st.session_state.get('user') else st.session_state.get('username', '')
-    if username:
-        st.sidebar.success(f"Saving as: **{username}**")
+
+    # Get username from auth (logged in) or manual input (fallback)
+    if st.session_state.get('user'):
+        username = st.session_state['user']['username']
+        st.sidebar.success(f"Logged in as: **{username}**")
     else:
         username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
                                           key='username_input')
-
-    if username != st.session_state.get('username', ''):
-        st.session_state['username'] = username
+        if username != st.session_state.get('username', ''):
+            st.session_state['username'] = username
 
     col1, col2 = st.sidebar.columns(2)
     with col1:
         if st.button("💾 Save", key='save_btn_sidebar'):
-            if st.session_state.get('username'):
+            if username:
                 data = get_save_data()
-                if save_game(st.session_state['username'], data):
-                    st.sidebar.success("Game saved!")
+                if save_game(username, data):
+                    st.sidebar.success("Game saved! ✅")
                 else:
                     st.sidebar.error("Save failed!")
             else:
-                st.sidebar.warning("Enter a name to save.")
+                st.sidebar.warning("Log in or enter a name to save.")
     with col2:
         if st.button("📂 Load", key='load_btn_sidebar'):
-            if st.session_state.get('username'):
-                data = load_game(st.session_state['username'])
+            if username:
+                data = load_game(username)
                 if data:
                     apply_save_data(data)
                     st.session_state['game_loaded'] = True
-                    st.sidebar.success("Game loaded!")
+                    st.sidebar.success("Game loaded! ✅")
                     st.rerun()
                 else:
-                    st.sidebar.warning("No save found for this name.")
+                    st.sidebar.warning("No save found for this user.")
             else:
-                st.sidebar.warning("Enter a name to load.")
+                st.sidebar.warning("Log in or enter a name to load.")
 
     st.sidebar.markdown("---")
 
