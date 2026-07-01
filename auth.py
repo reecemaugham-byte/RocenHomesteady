@@ -26,12 +26,10 @@ def hash_password(password: str) -> str:
 def sign_up(username: str, password: str) -> tuple:
     supabase = get_supabase()
     try:
-        # Check if username exists
         existing_user = supabase.table("users").select("username").eq("username", username).execute()
         if existing_user.data:
             return False, "That username is already taken. Try a different one!"
 
-        # Insert new user
         hashed_pw = hash_password(password)
         result = supabase.table("users").insert({
             "username": username,
@@ -51,7 +49,6 @@ def log_in(username: str, password: str) -> tuple:
 
         if result.data:
             user = result.data[0]
-            # Update last login
             try:
                 supabase.table("users").update({
                     "last_login": datetime.utcnow().isoformat()
@@ -95,6 +92,12 @@ def render_auth():
                     success, result = log_in(username, password)
                     if success:
                         st.session_state.user = result
+                        # Auto-load saved progress on login
+                        from utils import load_game, apply_save_data
+                        saved_data = load_game(username)
+                        if saved_data:
+                            apply_save_data(saved_data)
+                            st.session_state['game_loaded'] = True
                         st.success(f"Welcome back, {result['username']}!")
                         st.rerun()
                     else:
