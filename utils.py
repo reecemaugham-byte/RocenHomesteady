@@ -578,8 +578,12 @@ def render_sidebar():
 
     # --- SAVE/LOAD ---
     st.sidebar.markdown("### 💾 Save Progress")
-    username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
-                                      key='username_input')
+    username = st.session_state.get('user', {}).get('username', '') if st.session_state.get('user') else st.session_state.get('username', '')
+    if username:
+        st.sidebar.success(f"Saving as: **{username}**")
+    else:
+        username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
+                                          key='username_input')
 
     if username != st.session_state.get('username', ''):
         st.session_state['username'] = username
