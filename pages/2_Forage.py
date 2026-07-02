@@ -13,6 +13,14 @@ from audio_utils import generate_voice, clean_text_for_audio, is_tts_available
 # --- TTS CHECK ---
 EDGE_TTS_AVAILABLE = is_tts_available()
 
+# --- SAFE RANDOM SAMPLE HELPER ---
+def safe_sample(population, k):
+    """Safely sample k items from population. Never crashes on empty lists or negative k."""
+    if not population or k <= 0:
+        return []
+    k = min(k, len(population))
+    return random.sample(population, k)
+
 # --- HELPER: GENERATE FORAGING QUESTION ---
 def generate_foraging_question(plant):
     """Generate one of 6 question types from a plant dict."""
@@ -38,7 +46,7 @@ def generate_foraging_question(plant):
         wrong_habitats = ["Woodlands", "Meadows", "Coastal cliffs", "Riverbanks",
                           "Hedgerows", "Marshes", "Moors", "Gardens", "Wasteland"]
         wrong_options = [h for h in wrong_habitats if h != correct]
-        options = [correct] + random.sample(wrong_options, min(3, len(wrong_options)))
+        options = [correct] + safe_sample(wrong_options, 3)
         random.shuffle(options)
         clue = ""
         if id_keys:
@@ -63,7 +71,8 @@ def generate_foraging_question(plant):
             wrong_options = [v for k, v in id_keys.items() if v != correct]
             other_vals = [v for p in UK_PLANTS['edible'] + UK_PLANTS['poisonous']
                          for k, v in p.get('id_keys', {}).items() if v != correct]
-            wrong_options += random.sample(other_vals, min(3 - len(wrong_options), len(other_vals)))
+            sample_size = max(0, 3 - len(wrong_options))
+wrong_options += safe_sample(other_vals, sample_size)
             wrong_options = list(set(wrong_options))[:3]
             options = [correct] + wrong_options
             while len(options) < 4:
@@ -81,7 +90,7 @@ def generate_foraging_question(plant):
             correct = plant.get('category', 'Plant')
             categories = ["Plant", "Tree", "Shrub", "Fungi", "Coastal", "Seaweed", "Shellfish"]
             wrong = [c for c in categories if c != correct]
-            options = [correct] + random.sample(wrong, min(3, len(wrong)))
+            options = [correct] + safe_sample(wrong, 3)
             random.shuffle(options)
             return {
                 'type': 'identification',
@@ -99,7 +108,7 @@ def generate_foraging_question(plant):
             chosen = random.choice(dangerous)
             correct = chosen['name']
             other_names = [n for n in all_plant_names if n != plant['name'] and n != correct]
-            wrong = random.sample(other_names, min(3, len(other_names)))
+            wrong = safe_sample(other_names, 3)
             options = [correct] + wrong
             while len(options) < 4:
                 options.append("None of these")
@@ -127,7 +136,7 @@ def generate_foraging_question(plant):
         correct = parts_list[0]
         wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark", "Stem", "Tubers"]
         wrong = [p for p in wrong_parts if p not in parts_list]
-        options = [correct] + random.sample(wrong, min(3, len(wrong)))
+        options = [correct] + safe_sample(wrong, 3)
         while len(options) < 4:
             options.append("None of these")
         random.shuffle(options)
@@ -148,7 +157,7 @@ def generate_foraging_question(plant):
         all_months = ["January", "February", "March", "April", "May", "June",
                       "July", "August", "September", "October", "November", "December"]
         wrong = [m for m in all_months if m not in correct_months]
-        options = [correct] + random.sample(wrong, min(3, len(wrong)))
+        options = [correct] + safe_sample(wrong, 3)
         random.shuffle(options)
         return {
             'type': 'season',
@@ -201,7 +210,7 @@ def generate_foraging_question_fallback(plant):
     wrong_habitats = ["Woodlands", "Meadows", "Coastal cliffs", "Riverbanks",
                       "Hedgerows", "Marshes", "Moors"]
     wrong = [h for h in wrong_habitats if h != correct]
-    options = [correct] + random.sample(wrong, min(3, len(wrong)))
+    options = [correct] + safe_sample(wrong, 3)
     random.shuffle(options)
     return {
         'type': 'habitat',
@@ -676,7 +685,7 @@ with tab1:
 
             wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark"]
             wrong_options = [p for p in wrong_parts if p not in parts_list]
-            bonus_options = parts_list + random.sample(wrong_options, min(2, len(wrong_options)))
+            bonus_options = parts_list + safe_sample(wrong_options, 2)
             random.shuffle(bonus_options)
 
             q_text = f"**Bonus:** Which part of **{bonus_plant['name']}** do we usually eat?"
@@ -1233,7 +1242,7 @@ with tab3:
                     wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark", "Stem"]
                     wrong_options = [p for p in wrong_parts if p not in parts]
                     question_text = f"Which part of **{edible_plant['name']}** do we usually eat?"
-                    options = [correct_answer] + random.sample(wrong_options, min(num_options - 1, len(wrong_options)))
+                    options = [correct_answer] + safe_sample(wrong_options, num_options - 1)
                     fun_fact = f"🍃 **{edible_plant['name']}:** Edible parts are {', '.join(parts)}. {edible_plant.get('warnings', '')}"
 
                 # --- TYPE 3: WHEN TO HARVEST? ---
@@ -1246,7 +1255,7 @@ with tab3:
                     if not wrong_months:
                         wrong_months = ["January", "March", "November"]
                     question_text = f"When is **{edible_plant['name']}** best harvested?"
-                    options = [correct_answer] + random.sample(wrong_months, min(num_options - 1, len(wrong_months)))
+                    options = [correct_answer] + safe_sample(wrong_months, num_options - 1)
                     fun_fact = f"📅 **{edible_plant['name']}** is best in {', '.join(correct_months)}. Habitat: {edible_plant.get('habitat', 'Various')}."
 
                 # --- TYPE 4: DANGEROUS LOOKALIKE ---
@@ -1262,7 +1271,7 @@ with tab3:
 
                         other_names = [p['name'] for p in UK_PLANTS['edible'] + UK_PLANTS['poisonous']
                                       if p['name'] != plant['name'] and p['name'] != correct_answer]
-                        wrong_options = random.sample(other_names, min(num_options - 1, len(other_names)))
+                        wrong_options = safe_sample(other_names, num_options - 1)
                         options = [correct_answer] + wrong_options
 
                         confusion = plant.get('confusion_notes', chosen.get('diff', 'Check carefully!'))
