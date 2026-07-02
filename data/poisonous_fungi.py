@@ -178,7 +178,7 @@ POISONOUS_FUNGI = [
         ],
         "confusion_notes": "☠️ DEADLY: Brown Rollrim has true gills that bruise BROWN and an inrolled rim on the cap. Chanterelles are golden yellow with blunt FORKING ridges. If it has an inrolled rim, do NOT eat it.",
     },
-        {
+    {
         "name": "Destroying Angel",
         "latin_name": "Amanita virosa",
         "category": "Fungi",
