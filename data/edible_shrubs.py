@@ -194,7 +194,7 @@ EDIBLE_SHRUBS = [
         ],
         "confusion_notes": "Safe. All raspberry-like fruits in the UK are edible.",
     },
-        {
+    {
         "name": "Bullace",
         "latin_name": "Prunus insititia",
         "category": "Shrub",
@@ -488,8 +488,8 @@ EDIBLE_SHRUBS = [
             }
         ],
         "confusion_notes": "⚠️ CRITICAL: Juniper (blue-black berries, sharp needles in 3s) vs Yew (red berries, flat soft needles) — YEW IS DEADLY. The white band on juniper needles and blue-black berries are key distinguishing features. When in doubt, do NOT consume."
-    }
-        {
+    },
+    {
         "name": "Wild Gooseberry",
         "latin_name": "Ribes uva-crispa",
         "category": "Shrub",
