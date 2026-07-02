@@ -277,4 +277,216 @@ EDIBLE_SHRUBS = [
         ],
         "confusion_notes": "CRITICAL: Guelder Rose berries MUST be cooked. Raw they are bitter and mildly toxic. The maple-like leaves and red translucent berries are distinctive."
     },
+        {
+        "name": "Blackberry",
+        "latin_name": "Rubus fruticosus agg.",
+        "category": "Shrub",
+        "months": ["August", "September", "October"],
+        "habitat": "Hedgerows, woodland edges, waste ground, roadsides, fields",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Ripe fruit (blackberries) and young leaves (for tea)",
+        "warnings": "Very thorny — wear gloves and long sleeves when picking. Fruit can harbour insects — soak in salt water briefly before eating. Avoid picking from roadsides with heavy traffic (pollution).",
+        "description": "**Identification:** Arching, thorny shrub with compound leaves of 3-5 leaflets. Stems are ridged with sharp thorns. White or pinkish 5-petalled flowers in summer. Fruit starts green, turns red, then black and glossy when ripe. Extremely common in hedges and waste ground. **Uses:** Ripe blackberries eaten raw, in crumbles, pies, jams, jellies, and wine. Young leaves can be dried for a pleasant tea. Fruit freezes well. High in vitamin C and antioxidants.",
+        "id_keys": {
+            "Fruit": "Aggregate fruit of small drupelets, starting green→red→black and glossy when ripe",
+            "Thorns": "Sharp, curved thorns on stems — the defining feature of brambles",
+            "Leaves": "Compound, 3-5 leaflets, toothed edges, green with pale underside",
+            "Flowers": "White to pink, 5 petals, 2-3cm across, in clusters"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, woodland edges, wasteland, scrub — virtually everywhere in the UK",
+            "when": "August to October — pick when fully black and slightly soft to the touch",
+            "sustainable": "Leave plenty for wildlife. Only pick what you will use. Berries further along the cane ripen over weeks",
+            "danger_zone": "⚠️ Wear gloves — thorns can cause nasty scratches. Soak berries in salt water to remove insects before eating"
+        },
+        "lookalikes": [
+            {
+                "name": "Dewberry (Rubus caesius)",
+                "danger": "EDIBLE",
+                "diff": "Dewberry has fewer, larger drupelets per fruit, a more trailing habit, and fewer thorns. Both are edible"
+            }
+        ],
+        "confusion_notes": "Blackberries are one of the easiest and safest wild fruits to identify. There are no dangerous lookalikes. The main hazard is the thorns!"
+    },
+    {
+        "name": "Dog Rose",
+        "latin_name": "Rosa canina",
+        "category": "Shrub",
+        "months": ["May", "June", "September", "October", "November"],
+        "habitat": "Hedgerows, woodland edges, scrub, roadsides",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Flower petals (spring) and rose hips (autumn)",
+        "warnings": "The tiny hairs inside rose hips are an irritant — they must be removed before eating. They were traditionally used as itching powder! Only eat the outer flesh of hips. Do not eat the seeds with their hairy coating.",
+        "description": "**Identification:** Climbing shrub with hooked thorns and compound leaves of 5-7 leaflets. Large, pale pink to white flowers with 5 petals in June. Hips are oval, bright red, 1-2cm long, containing seeds with irritating hairs. **Uses:** Flower petals are edible — use in salads, jellies, or to flavour sugar and syrup. Rose hips are extremely rich in Vitamin C — use for syrup, jelly, wine, and tea. Must strain out the irritating hairs.",
+        "id_keys": {
+            "Thorns": "Hooked, curved thorns along the stems — not straight like blackthorn",
+            "Flowers": "Large, pale pink to white, 5 petals, 4-6cm across, sweetly scented",
+            "Hips": "Oval, bright red, 1-2cm, smooth surface, containing seeds with irritating hairs",
+            "Leaves": "Compound, 5-7 leaflets, toothed edges"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, woodland edges, scrub — one of the most common hedgerow shrubs",
+            "when": "Flowers in May-June; hips in September-November (after first frost for sweetness)",
+            "sustainable": "Take a few petals per flower. For hips, take from abundant plants and leave plenty for birds",
+            "danger_zone": "⚠️ Remove ALL hairs from inside hips before eating — they are a serious irritant. Strain through a sieve or jelly bag"
+        },
+        "lookalikes": [
+            {
+                "name": "Sweet Briar (Rosa rubiginosa)",
+                "danger": "EDIBLE",
+                "diff": "Sweet Briar has apple-scented leaves and stouter prickles. Also edible with same cautions about hip hairs"
+            },
+            {
+                "name": "Burnet Rose (Rosa spinosissima)",
+                "danger": "EDIBLE",
+                "diff": "Burnet Rose has smaller, more rounded (globe-shaped) black-purple hips and finer leaves. Also edible"
+            }
+        ],
+        "confusion_notes": "All UK wild roses produce edible petals and hips (with irritating hairs removed). There are no dangerous rose lookalikes. The key safety point is removing the hairs from inside the hips."
+    },
+    {
+        "name": "Bilberry",
+        "latin_name": "Vaccinium myrtillus",
+        "category": "Shrub",
+        "months": ["July", "August", "September"],
+        "habitat": "Acidic moorland, heathland, upland woods, conifer forests",
+        "regions": ["Northern", "All"],
+        "difficulty": 2,
+        "parts": "Ripe berries and leaves (for tea)",
+        "warnings": "Do not confuse with Bog Bilberry (Vaccinium uliginosum) which is also edible but less common. The berries stain fingers and mouths blue — completely normal and harmless.",
+        "description": "**Identification:** Low, deciduous shrub (15-50cm) with angular, green, ridged stems. Leaves are small, oval, finely toothed, turning red in autumn. Flowers are pinkish-green, urn-shaped. Berries are small (5-10mm), blue-black with a flat top, and red-purple flesh inside. **Uses:** Berries eaten raw — sweet and tart. Excellent in pies, crumbles, jams, and muffins. Can be dried. Leaves dried for herbal tea. Very high in antioxidants.",
+        "id_keys": {
+            "Stems": "Angular, green, ridged (winged) — key distinguishing feature from other berries",
+            "Berries": "Small (5-10mm), blue-black, with flat top. Red-purple flesh inside that stains everything blue",
+            "Leaves": "Small, oval, finely toothed, bright green turning red in autumn",
+            "Size": "Low shrub, 15-50cm — much smaller than a blueberry bush"
+        },
+        "foraging_tips": {
+            "where": "Acidic moorland, heathland, and upland woods — common in northern England, Scotland, Wales",
+            "when": "July to September — pick when fully blue-black and slightly soft",
+            "sustainable": "Pick only what you need. Leave unripe green berries to mature. Bilberries are vital wildlife food",
+            "danger_zone": "Fingers and mouths will stain blue — this is normal and harmless, but don't wear nice clothes!"
+        },
+        "lookalikes": [
+            {
+                "name": "Bog Bilberry (Vaccinium uliginosum)",
+                "danger": "EDIBLE",
+                "diff": "Bog Bilberry has rounder stems (not angular), white flesh inside berries, and grows in wetter bogs. Both are edible"
+            },
+            {
+                "name": "Crowberry (Empetrum nigrum)",
+                "danger": "EDIBLE",
+                "diff": "Crowberry has needle-like leaves (not broad leaves), round black berries, and white flesh. Also edible but less flavourful"
+            }
+        ],
+        "confusion_notes": "Bilberries are easy to identify by their angular green stems and blue-black berries with red-purple flesh. All common lookalikes on UK moorland are also edible."
+    },
+    {
+        "name": "Gorse",
+        "latin_name": "Ulex europaeus",
+        "category": "Shrub",
+        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        "habitat": "Heathland, moorland, coastal cliffs, hedgebanks, waste ground",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Flower petals only",
+        "warnings": "EXTREMELY spiny — wear thick gloves. Do NOT eat the seeds or green parts — they contain toxic alkaloids. Only the flower petals are edible. The flowers have a slight coconut aroma.",
+        "description": "**Identification:** Large, dense, evergreen shrub covered in vicious spines. Bright yellow, coconut-scented pea flowers virtually year-round (peak spring). Seed pods are hairy, dark brown, 2-3cm. Extremely common on heathland and moors. **Uses:** Flower petals are edible with a coconut/almond flavour. Use to flavour tea, cordial, wine, and ice cream. Can crystallise petals. Only use the petals — remove from the green base. DO NOT eat seeds or green parts.",
+        "id_keys": {
+            "Spines": "Every stem is covered in vicious, sharp spines — impossible to mistake",
+            "Flowers": "Bright yellow, pea-like, 1-2cm, with a distinct coconut/almond scent",
+            "Shape": "Dense, tall shrub (1-3m), virtually impenetrable",
+            "Evergreen": "Green all year round (spines are modified leaves)"
+        },
+        "foraging_tips": {
+            "where": "Heathland, moorland, coastal cliffs, hedgebanks — extremely common throughout the UK",
+            "when": "Flowers nearly year-round, but best and most abundant in spring (March-May)",
+            "sustainable": "Pick only flower petals from a few flowers per bush. Never uproot or damage the plant",
+            "danger_zone": "⚠️ WEAR THICK GLOVES — spines are very sharp. ONLY eat flower petals — seeds and green parts are TOXIC"
+        },
+        "lookalikes": [
+            {
+                "name": "Western Gorse (Ulex gallii)",
+                "danger": "EDIBLE",
+                "diff": "Western Gorse is smaller and flowers mainly in autumn. Flower petals are equally edible"
+            },
+            {
+                "name": "Broom (Cytisus scoparius)",
+                "danger": "EDIBLE",
+                "diff": "Broom has green stems (not spiny), larger flowers, and flowers only in spring. Flower petals also edible in moderation"
+            }
+        ],
+        "confusion_notes": "Gorse is impossible to mistake — the spiny, evergreen, yellow-flowered shrub is unique. The key safety point: ONLY eat the flower petals. Seeds and green parts contain toxic alkaloids."
+    },
+    {
+        "name": "Crowberry",
+        "latin_name": "Empetrum nigrum",
+        "category": "Shrub",
+        "months": ["August", "September", "October"],
+        "habitat": "Heathland, moorland, mountain tops, coastal cliffs",
+        "regions": ["Northern", "Coastal", "All"],
+        "difficulty": 2,
+        "parts": "Ripe berries",
+        "warnings": "Berries are edible but bland and slightly acidic — best cooked with sugar. Do not confuse with deadly berries on moorland — always confirm ID before eating any moorland berry.",
+        "description": "**Identification:** Low, creeping, evergreen shrub (10-30cm). Tiny, needle-like leaves in whorls of 3-4, dark green. Stems are woody and trailing. Small pink/purple flowers in spring. Black, shiny, round berries (4-6mm) in late summer/autumn. **Uses:** Berries are edible but bland — best cooked with sugar in pies, crumbles, and jams. High in vitamin C. Traditionally used in Scotland and Scandinavia. Can be dried. Flavour improves after frost.",
+        "id_keys": {
+            "Leaves": "Tiny, needle-like, dark green, in whorls of 3-4 — resemble heather but softer",
+            "Berries": "Black, shiny, round, 4-6mm, with a small dimple at the tip",
+            "Growth": "Low, creeping, mat-forming shrub, 10-30cm tall",
+            "Habitat": "Heathland and moorland, often mixed with heather and bilberry"
+        },
+        "foraging_tips": {
+            "where": "Heathland, moorland, and mountain tops — especially common in northern England, Scotland, and Wales",
+            "when": "August to October — flavour improves after first frost",
+            "sustainable": "Berries are vital for moorland birds. Take only what you need and leave plenty",
+            "danger_zone": "⚠️ Moorland has few dangerous berries, but always confirm ID. If in doubt, leave it out"
+        },
+        "lookalikes": [
+            {
+                "name": "Bilberry (Vaccinium myrtillus)",
+                "danger": "EDIBLE",
+                "diff": "Bilberry has broad, deciduous leaves and angular stems; Crowberry has needle-like evergreen leaves and round stems"
+            },
+            {
+                "name": "Heather (Calluna vulgaris)",
+                "danger": "SAFE",
+                "diff": "Heather has tiny scale-like leaves pressed to the stem and produces dry seed capsules, not fleshy berries"
+            }
+        ],
+        "confusion_notes": "Crowberry's needle-like leaves distinguish it from bilberry (broad leaves) and other moorland berries. There are no deadly lookalikes with this combination of features."
+    },
+    {
+        "name": "Juniper",
+        "latin_name": "Juniperus communis",
+        "category": "Shrub",
+        "months": ["October", "November", "December", "January", "February", "March"],
+        "habitat": "Heathland, moorland, rocky hillsides, chalk downland, pine woodland",
+        "regions": ["Northern", "All"],
+        "difficulty": 2,
+        "parts": "Ripe berries (actually fleshy cones)",
+        "warnings": "⚠️ Juniper is a CONIFER — do not confuse with yew (TAXUS BACCATA - DEADLY). Yew berries are red; Juniper berries are blue-black. Do not consume large quantities — juniper can cause kidney irritation. Pregnant women should avoid medicinal doses.",
+        "description": "**Identification:** Evergreen shrub, variable in height (30cm-3m). Needle-like leaves in whorls of 3, sharp-pointed, dark green with a white band on the upper surface. Berries are actually fleshy cones — green in first year, blue-black and glaucous (with white bloom) when ripe in second/third year. Strong, piney, gin-like aroma. **Uses:** Ripe blue-black berries used as a spice — flavour gin, game dishes, sauerkraut, and marinades. Crush and add sparingly. Sweet-tart, piney, resinous flavour. Can be dried for storage.",
+        "id_keys": {
+            "Leaves": "Needle-like, in whorls of 3, with a distinctive WHITE BAND on the upper surface",
+            "Berries": "Green when young, BLUE-BLACK with white bloom when ripe (second/third year). NOT red",
+            "Aroma": "Strong, piney, gin-like scent when berries are crushed",
+            "Size": "Variable shrub, 30cm-3m, often spreading and low on moors"
+        },
+        "foraging_tips": {
+            "where": "Heathland, moorland, rocky hillsides — common in Scotland, rare in southern England",
+            "when": "Ripe blue-black berries from October to March. Berries take 2-3 years to ripen on the plant",
+            "sustainable": "⚠️ Juniper is declining in the UK. Only take a small handful from large, healthy populations. NEVER uproot. Protected in some areas",
+            "danger_zone": "⚠️ CRITICAL: Do NOT confuse with YEW (red berries = DEADLY). Juniper berries are BLUE-BLACK. Yew berries are RED. When in doubt, leave it out"
+        },
+        "lookalikes": [
+            {
+                "name": "Yew (Taxus baccata)",
+                "danger": "DEADLY",
+                "diff": "Yew has FLAT, soft needles (not sharp, not in whorls) and RED berries with a single seed. Juniper has SHARP needles in whorls of 3 and BLUE-BLACK berries. ALL parts of yew are DEADLY except the red flesh of the berry (but the seed inside is deadly)"
+            }
+        ],
+        "confusion_notes": "⚠️ CRITICAL: Juniper (blue-black berries, sharp needles in 3s) vs Yew (red berries, flat soft needles) — YEW IS DEADLY. The white band on juniper needles and blue-black berries are key distinguishing features. When in doubt, do NOT consume."
+    }
 ]
