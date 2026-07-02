@@ -874,7 +874,7 @@ POISONOUS_PLANTS = [
         ],
         "confusion_notes": "☠️ DANGER: If a plant exudes MILKY WHITE SAP when cut, it is likely Spurge and highly toxic. Do NOT touch the sap, it can cause BLINDNESS.",
     },
-        {
+    {
         "name": "Laburnum",
         "latin_name": "Laburnum anagyroides",
         "category": "Tree",
@@ -1093,7 +1093,7 @@ POISONOUS_PLANTS = [
         ],
         "confusion_notes": "☠️ DANGER: Common garden hedge with small, glossy, oval leaves in OPPOSITE pairs. Do NOT eat the leaves."
     },
-        {
+    {
         "name": "Dropwort",
         "latin_name": "Filipendula vulgaris",
         "category": "Plant",
@@ -1423,7 +1423,7 @@ POISONOUS_PLANTS = [
         ],
         "confusion_notes": "☠️ DEADLY: Deadly Fibrecap has a FIBROUS cap surface and STAINS RED when bruised. If a small mushroom stains red when cut, do NOT eat it."
     },
-        {
+    {
         "name": "Cherry Laurel",
         "latin_name": "Prunus laurocerasus",
         "category": "Shrub",
@@ -1601,5 +1601,6 @@ POISONOUS_PLANTS = [
                 "diff": "ALL Daphne species are poisonous. Treat the entire genus as deadly"
             }
         ],
-        "confusion_notes": "☠️ Mezereon is one of the most dangerous plants in the UK. Its bright pink-purple flowers on bare stems in late winter and bright red berries make it attractive — and especially dangerous for children. ALL parts are deadly. The sap
+        "confusion_notes": "☠️ Mezereon is one of the most dangerous plants in the UK. Its bright pink-purple flowers on bare stems in late winter and bright red berries make it attractive — and especially dangerous for children. ALL parts are deadly. The sap causes severe skin blistering. Do NOT handle without gloves."
+    }
 ]
