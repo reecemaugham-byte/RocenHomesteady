@@ -355,7 +355,7 @@ EDIBLE_FUNGI = [
         ],
         "confusion_notes": "CRITICAL: True Parasol has a SNAKESKIN pattern on the stem and a moveable ring. If the stem is smooth or white, do NOT eat it.",
     },
-        {
+    {
         "name": "Chicken of the Woods",
         "latin_name": "Laetiporus sulphureus",
         "category": "Fungi",
@@ -492,7 +492,7 @@ EDIBLE_FUNGI = [
         ],
         "confusion_notes": "Safe when clearly purple. Amethyst Deceiver grows in WOODLAND, has a smooth cap, and widely spaced gills. If faded to brown, do NOT eat."
     },
-        {
+    {
         "name": "Porcini (Penny Bun)",
         "latin_name": "Boletus edulis",
         "category": "Fungi",
@@ -630,7 +630,7 @@ EDIBLE_FUNGI = [
         ],
         "confusion_notes": "CRITICAL: Common Inkcap is EDIBLE but causes SEVERE illness if consumed with ALCOHOL. Do NOT drink alcohol for 48 hours before or after eating. Shaggy Inkcap is safe with alcohol."
     },
-        {
+    {
         "name": "Beefsteak Fungus",
         "latin_name": "Fistulina hepatica",
         "category": "Fungi",
