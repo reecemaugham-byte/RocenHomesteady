@@ -1093,4 +1093,334 @@ POISONOUS_PLANTS = [
         ],
         "confusion_notes": "☠️ DANGER: Common garden hedge with small, glossy, oval leaves in OPPOSITE pairs. Do NOT eat the leaves."
     },
+        {
+        "name": "Dropwort",
+        "latin_name": "Filipendula vulgaris",
+        "category": "Plant",
+        "months": ["May", "June", "July"],
+        "habitat": "Dry Grassland, Meadows",
+        "regions": ["Southern", "Central"],
+        "difficulty": 3,
+        "parts": "All parts (especially roots)",
+        "warnings": "HIGH. Confused with Meadowsweet. Grows on DRY ground.",
+        "description": "**Identification:** Very similar to Meadowsweet but grows on DRY ground. White flower clusters. Finely divided leaves. Smells different (less sweet).",
+        "id_keys": {
+            "Habitat": "DRY grassland and meadows (key difference from Meadowsweet)",
+            "Leaves": "Finely divided, more fern-like than Meadowsweet",
+            "Flowers": "White, in clusters (similar to Meadowsweet)"
+        },
+        "danger_tips": {
+            "where": "Dry grassland, chalk downs.",
+            "when": "Late Spring/Summer.",
+            "sustainable": "Do not pick. Admire from a distance.",
+            "danger_zone": "☠️ HIGH. Can cause stomach upset and other symptoms. Do NOT eat."
+        },
+        "lookalikes": [
+            {"name": "Meadowsweet", "danger": "EDIBLE", "diff": "Meadowsweet grows in DAMP places and smells of almond/honey. Dropwort grows in DRY places and smells less sweet."}
+        ],
+        "confusion_notes": "☠️ DANGER: Dropwort grows on DRY ground. Meadowsweet grows on DAMP ground and smells of almond/honey. If you are on dry ground and see a Meadowsweet-like plant, it may be Dropwort."
+    },
+    {
+        "name": "Herb Paris",
+        "latin_name": "Paris quadrifolia",
+        "category": "Plant",
+        "months": ["May", "June", "July"],
+        "habitat": "Woodlands, Damp shaded areas",
+        "regions": ["Southern", "Central"],
+        "difficulty": 2,
+        "parts": "All parts (especially berries)",
+        "warnings": "HIGH. Causes nausea, vomiting, and diarrhoea.",
+        "description": "**Identification:** Single whorl of 4 (sometimes 5-8) leaves. Single green/yellow flower with 4 narrow petals. One dark berry in autumn.",
+        "id_keys": {
+            "Leaves": "4 (sometimes 5-8) leaves in a single whorl",
+            "Flower": "Single, greenish-yellow, 4 narrow petals",
+            "Berry": "Single, dark blue/black berry in autumn"
+        },
+        "danger_tips": {
+            "where": "Ancient woodland, damp shady places.",
+            "when": "Flowers May-July, Berry in Autumn.",
+            "sustainable": "Do not pick or eat.",
+            "danger_zone": "☠️ HIGH. Causes nausea, vomiting, and diarrhoea. Do NOT eat the berry."
+        },
+        "lookalikes": [
+            {"name": "Lily of the Valley", "danger": "POISONOUS", "diff": "Lily of the Valley has 2 large leaves and white bell flowers. Herb Paris has 4+ leaves in a whorl."}
+        ],
+        "confusion_notes": "☠️ DANGER: Herb Paris has 4 (or more) leaves in a single whorl and a single green/yellow flower. Nothing else in UK woodlands looks like this."
+    },
+    {
+        "name": "Cowbane (Water Hemlock)",
+        "latin_name": "Cicuta virosa",
+        "category": "Plant",
+        "months": ["June", "July", "August"],
+        "habitat": "Ponds, Ditches, Wet meadows",
+        "regions": ["Southern", "Central"],
+        "difficulty": 3,
+        "parts": "All parts (especially roots)",
+        "warnings": "EXTREME. One of the deadliest plants in the UK. Often confused with edible water plants.",
+        "description": "**Identification:** Tall plant with white umbel flowers. Grows IN or near water. Roots are chambered (hollow). Purple-streaked stems. Smells unpleasant.",
+        "id_keys": {
+            "Habitat": "IN water or very wet ground (CRITICAL)",
+            "Stem": "Purple-streaked, hollow",
+            "Roots": "Chambered (hollow sections)",
+            "Flowers": "White umbels (flat-topped clusters)"
+        },
+        "danger_tips": {
+            "where": "Ponds, ditches, wet meadows.",
+            "when": "Summer.",
+            "sustainable": "Do NOT approach. Do NOT touch.",
+            "danger_zone": "☠️ DEADLY. Even small amounts can be fatal. Do NOT dig roots near water."
+        },
+        "lookalikes": [
+            {"name": "Watercress", "danger": "EDIBLE", "diff": "Watercress grows in CLEAN running water and has peppery leaves. Cowbane grows in still/dirty water and has an unpleasant smell."},
+            {"name": "Water Dropwort", "danger": "DEADLY", "diff": "Both are deadly plants near water. Cowbane has chambered roots and purple-streaked stems."}
+        ],
+        "confusion_notes": "☠️ DEADLY: Do NOT dig up any plant near water unless you are 100% certain of its identity. Cowbane has chambered roots and purple-streaked stems."
+    },
+    {
+        "name": "Green Hellebore",
+        "latin_name": "Helleborus viridis",
+        "category": "Plant",
+        "months": ["February", "March", "April", "May"],
+        "habitat": "Woodlands, Gardens, Limestone",
+        "regions": ["Southern", "Central"],
+        "difficulty": 2,
+        "parts": "All parts",
+        "warnings": "HIGH. Contains cardiac glycosides. Causes vomiting and heart problems.",
+        "description": "**Identification:** Low-growing plant with large, deeply divided, leathery leaves. Green cup-shaped flowers appear very early in spring.",
+        "id_keys": {
+            "Leaves": "Large, deeply divided, leathery, dark green",
+            "Flowers": "Green, cup-shaped, appear in late winter/early spring",
+            "Habitat": "Woodland, gardens, limestone areas"
+        },
+        "danger_tips": {
+            "where": "Woodlands, gardens, limestone areas.",
+            "when": "Very early spring (Feb-May).",
+            "sustainable": "Do not pick. Admire from a distance.",
+            "danger_zone": "☠️ HIGH. Contains cardiac glycosides. Do NOT eat."
+        },
+        "lookalikes": [
+            {"name": "Christmas Rose", "danger": "POISONOUS", "diff": "Christmas Rose (Helleborus niger) has WHITE flowers in winter. Green Hellebore has GREEN flowers in spring."}
+        ],
+        "confusion_notes": "☠️ DANGER: Green Hellebore has GREEN cup-shaped flowers very early in spring. All hellebores are POISONOUS."
+    },
+    {
+        "name": "Henbane",
+        "latin_name": "Hyoscyamus niger",
+        "category": "Plant",
+        "months": ["June", "July", "August"],
+        "habitat": "Waste ground, Sandy soils, Roadsides",
+        "regions": ["Southern", "Eastern"],
+        "difficulty": 2,
+        "parts": "All parts",
+        "warnings": "EXTREME. Contains hyoscyamine and scopolamine. Causes hallucinations, delirium, and can be fatal.",
+        "description": "**Identification:** Hairy, sticky plant with pale yellow flowers veined with purple. Unpleasant smell. Oval, lobed leaves.",
+        "id_keys": {
+            "Flowers": "Pale yellow with purple veins inside",
+            "Leaves": "Hairy, sticky, oval, lobed",
+            "Smell": "Unpleasant, musty"
+        },
+        "danger_tips": {
+            "where": "Waste ground, sandy soils, disturbed areas.",
+            "when": "Summer.",
+            "sustainable": "Do NOT touch or inhale smoke.",
+            "danger_zone": "☠️ DEADLY. Causes hallucinations, delirium, and death. Do NOT touch."
+        },
+        "lookalikes": [
+            {"name": "Thornapple", "danger": "DEADLY", "diff": "Thornapple has large trumpet flowers and spiny seed pods. Henbane has smaller flowers with purple veins."}
+        ],
+        "confusion_notes": "☠️ DEADLY: Henbane has pale yellow flowers with purple veins and is covered in sticky hairs. Unpleasant smell. Do NOT touch."
+    },
+    {
+        "name": "Broom",
+        "latin_name": "Cytisus scoparius",
+        "category": "Shrub",
+        "months": ["May", "June"],
+        "habitat": "Heathland, Roadsides, Sandy soils",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Seeds (All parts toxic)",
+        "warnings": "HIGH. Seeds are toxic. Contains alkaloids that affect the heart.",
+        "description": "**Identification:** Tall shrub with green, ribbed, angled stems (no leaves when mature). Bright yellow pea-like flowers. Flat, hairy seed pods.",
+        "id_keys": {
+            "Flowers": "Bright yellow, pea-like, large and showy",
+            "Stem": "Green, ribbed, angled (5-sided), leafless when mature",
+            "Seeds": "Flat, hairy pods"
+        },
+        "danger_tips": {
+            "where": "Heathland, roadsides, sandy soils.",
+            "when": "Flowers in May-June.",
+            "sustainable": "Do not eat any part.",
+            "danger_zone": "☠️ HIGH. All parts are toxic, especially seeds. Causes nausea, vomiting, and heart problems."
+        },
+        "lookalikes": [
+            {"name": "Gorse", "danger": "EDIBLE (flowers)", "diff": "Gorse has spiny, prickly branches and coconut-smelling flowers. Broom has smooth, green, ribbed stems and no thorns."}
+        ],
+        "confusion_notes": "☠️ DANGER: Broom has smooth green ribbed stems with NO thorns. Gorse has spiny, prickly branches. Broom seeds are TOXIC."
+    },
+    {
+        "name": "Privet",
+        "latin_name": "Ligustrum vulgare",
+        "category": "Shrub",
+        "months": ["June", "July", "August", "September", "October"],
+        "habitat": "Hedgerows, Gardens, Woods",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "All parts (especially berries)",
+        "warnings": "HIGH. Very common hedge plant. Causes severe stomach upset.",
+        "description": "**Identification:** Common hedge plant with small, oval, glossy, dark green leaves in opposite pairs. White flowers in clusters. Black berries in autumn.",
+        "id_keys": {
+            "Leaves": "Small, oval, glossy, dark green, OPPOSITE pairs",
+            "Flowers": "White, small, in pyramidal clusters",
+            "Berries": "Black, small, in clusters",
+            "Habitat": "Hedges, gardens, VERY common"
+        },
+        "danger_tips": {
+            "where": "Gardens, hedgerows (very common hedge plant).",
+            "when": "Flowers in summer, berries in autumn.",
+            "sustainable": "Do not eat. Very common hedge.",
+            "danger_zone": "☠️ HIGH. All parts toxic. Causes severe stomach upset. Do NOT eat the berries."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "Small, glossy, opposite leaves on a common hedge. No edible plant looks exactly like privet."}
+        ],
+        "confusion_notes": "☠️ DANGER: Common garden hedge with small, glossy, OPPOSITE leaves and black berries. Do NOT eat the berries."
+    },
+    {
+        "name": "Cotoneaster",
+        "latin_name": "Cotoneaster species",
+        "category": "Shrub",
+        "months": ["August", "September", "October", "November"],
+        "habitat": "Gardens, Walls, Escaped to wild",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Berries",
+        "warnings": "MEDIUM to HIGH. Causes nausea, vomiting and diarrhoea.",
+        "description": "**Identification:** Garden shrub with small, round, shiny leaves. Bright red or orange berries in autumn. Some are deciduous, some evergreen.",
+        "id_keys": {
+            "Leaves": "Small, round, shiny, often evergreen",
+            "Berries": "Red or orange, small, in clusters",
+            "Habitat": "Gardens, walls, car parks (very common)"
+        },
+        "danger_tips": {
+            "where": "Gardens, walls, car parks, bird-sown in the wild.",
+            "when": "Berries in autumn.",
+            "sustainable": "Do not eat. Very common garden plant.",
+            "danger_zone": "☠️ MEDIUM to HIGH. Causes stomach upset. Keep children away from berries."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "Small, round leaves with red/orange berries on a garden shrub."}
+        ],
+        "confusion_notes": "☠️ DANGER: Common garden shrub with small, round leaves and red/orange berries. Do NOT eat the berries. Very common in gardens and car parks."
+    },
+    {
+        "name": "Dwarf Elder",
+        "latin_name": "Sambucus ebulus",
+        "category": "Plant",
+        "months": ["June", "July", "August", "September"],
+        "habitat": "Waste ground, Damp places, Field edges",
+        "regions": ["Southern", "Eastern"],
+        "difficulty": 2,
+        "parts": "All parts (especially berries)",
+        "warnings": "HIGH. More toxic than Elderberry. Upright berry clusters (different from Elder's flat clusters).",
+        "description": "**Identification:** Tall herbaceous plant (NOT woody like Elder). White flower umbels. Upright clusters of black berries (NOT flat like Elder). Unpleasant smell.",
+        "id_keys": {
+            "Stem": "Herbaceous (green, NOT woody like Elder)",
+            "Berries": "Upright clusters (NOT flat like Elder)",
+            "Smell": "Unpleasant (unlike Elder's sweet smell)",
+            "Leaves": "Similar to Elder but plant is herbaceous"
+        },
+        "danger_tips": {
+            "where": "Waste ground, damp places, field edges.",
+            "when": "Summer/Autumn.",
+            "sustainable": "Do not eat any part.",
+            "danger_zone": "☠️ HIGH. More toxic than Elderberry. Causes severe vomiting and diarrhoea."
+        },
+        "lookalikes": [
+            {"name": "Elderflower/Elderberry", "danger": "EDIBLE (when cooked)", "diff": "Elder has WOODY stems and FLAT berry clusters. Dwarf Elder has HERBACEOUS stems and UPRIGHT berry clusters."}
+        ],
+        "confusion_notes": "☠️ DANGER: Dwarf Elder has HERBACEOUS (green, non-woody) stems and UPRIGHT berry clusters. True Elder has WOODY stems and FLAT berry clusters. Dwarf Elder is MORE toxic."
+    },
+    {
+        "name": "Tutsan",
+        "latin_name": "Hypericum androsaemum",
+        "category": "Shrub",
+        "months": ["June", "July", "August", "September", "October"],
+        "habitat": "Woodlands, Hedgerows, Damp places",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "All parts (especially berries)",
+        "warnings": "HIGH. Berries change from red to black. Causes photosensitivity.",
+        "description": "**Identification:** Shrub with oval, opposite leaves. Yellow flowers with prominent stamens. Berries turn from red to glossy black.",
+        "id_keys": {
+            "Leaves": "Oval, opposite, with translucent dots",
+            "Flowers": "Yellow, 5 petals, prominent stamens",
+            "Berries": "Start red, turn black, in small clusters"
+        },
+        "danger_tips": {
+            "where": "Woodland, hedgerows, damp places.",
+            "when": "Flowers summer, berries autumn.",
+            "sustainable": "Do not eat. Admire the berries.",
+            "danger_zone": "☠️ HIGH. Causes photosensitivity and stomach upset. Do NOT eat."
+        },
+        "lookalikes": [
+            {"name": "St John's Wort", "danger": "MILDLY TOXIC (medicinal)", "diff": "St John's Wort has smaller leaves and is a taller, slimmer plant. Tutsan has broader leaves and is shrubbier."}
+        ],
+        "confusion_notes": "☠️ DANGER: Tutsan has broad, oval opposite leaves and berries that turn from RED to BLACK. Related to St John's Wort but MORE toxic."
+    },
+    {
+        "name": "Angel's Wings",
+        "latin_name": "Pleurocybella porrigens",
+        "category": "Fungi",
+        "months": ["September", "October", "November"],
+        "habitat": "Woodlands (Conifers, Pine)",
+        "regions": ["Southern"],
+        "difficulty": 3,
+        "parts": "Whole mushroom",
+        "warnings": "EXTREME. Grows on conifers. Can cause fatal brain disease.",
+        "description": "**Identification:** White, fan-shaped, thin and fragile. Grows in tiers on dead conifer wood. Looks similar to Oyster Mushroom but grows on CONIFERS.",
+        "id_keys": {
+            "Cap": "White, fan-shaped, very thin and fragile",
+            "Gills": "White, running down (decurrent)",
+            "Habitat": "On DEAD CONIFER wood (pine, spruce)",
+            "Smell": "Mushroomy, not distinctive"
+        },
+        "danger_tips": {
+            "where": "Dead conifer wood.",
+            "when": "Autumn.",
+            "sustainable": "Do NOT pick.",
+            "danger_zone": "☠️ DEADLY. Can cause fatal brain disease. Do NOT eat any white mushroom growing on conifers."
+        },
+        "lookalikes": [
+            {"name": "Oyster Mushroom", "danger": "EDIBLE", "diff": "Oyster Mushroom grows on HARDWOOD (broadleaf trees). Angel's Wings grow on CONIFERS. If a white oyster-like mushroom is on a conifer, do NOT eat it."}
+        ],
+        "confusion_notes": "☠️ DEADLY: Angel's Wings grow on CONIFERS (pine, spruce). Oyster Mushrooms grow on HARDWOOD. If a white, fan-shaped mushroom is growing on a conifer, do NOT eat it."
+    },
+    {
+        "name": "Deadly Fibrecap",
+        "latin_name": "Inocybe erubescens",
+        "category": "Fungi",
+        "months": ["May", "June", "July", "August"],
+        "habitat": "Woodlands, Parks, Gardens",
+        "regions": ["Southern", "Central"],
+        "difficulty": 3,
+        "parts": "Whole mushroom",
+        "warnings": "EXTREME. Contains muscarine. Can be fatal. Stains red when bruised.",
+        "description": "**Identification:** Small to medium mushroom with a white/cream cap that develops reddish staining when bruised. White gills. Fibrous cap surface. Often found in parks and gardens.",
+        "id_keys": {
+            "Cap": "White/cream, fibrous surface, STAINS RED when bruised",
+            "Gills": "White, crowded",
+            "Stem": "White, fibrous",
+            "Bruising": "Turns RED when cut or bruised (KEY ID)"
+        },
+        "danger_tips": {
+            "where": "Woodlands, parks, gardens.",
+            "when": "Spring and Summer.",
+            "sustainable": "Do NOT touch. Do NOT smell spores.",
+            "danger_zone": "☠️ DEADLY. Contains muscarine. Causes sweating, salivation, and can be fatal."
+        },
+        "lookalikes": [
+            {"name": "Field Mushroom", "danger": "EDIBLE", "diff": "Field mushroom has a smooth cap and pink then brown gills. Deadly Fibrecap has a fibrous cap, white gills, and STAINS RED."}
+        ],
+        "confusion_notes": "☠️ DEADLY: Deadly Fibrecap has a FIBROUS cap surface and STAINS RED when bruised. If a small mushroom stains red when cut, do NOT eat it."
+    },
 ]
