@@ -630,4 +630,216 @@ EDIBLE_FUNGI = [
         ],
         "confusion_notes": "CRITICAL: Common Inkcap is EDIBLE but causes SEVERE illness if consumed with ALCOHOL. Do NOT drink alcohol for 48 hours before or after eating. Shaggy Inkcap is safe with alcohol."
     },
+        {
+        "name": "Beefsteak Fungus",
+        "latin_name": "Fistulina hepatica",
+        "category": "Fungi",
+        "months": ["August", "September", "October", "November"],
+        "habitat": "Base and trunk of oak trees, occasionally sweet chestnut",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Fruiting body (slice and cook)",
+        "warnings": "Must be cooked thoroughly — do not eat raw. Can be tough; slice thinly. Young specimens are more tender. Some people are sensitive — try a small amount first. Only collect from healthy-looking trees.",
+        "description": "**Identification:** Large, tongue-shaped or fan-shaped bracket fungus, 10-30cm across. Upper surface is deep red-brown, rough, resembling raw meat. Underside is pale yellow with tiny pores (tubes), not gills. Exudes a red juice when cut. Flesh is thick, reddish, with pale marbling. Found on oak trunks and at the base of living oak trees. **Uses:** Slice thinly and cook long and slow in butter. Tastes slightly acidic, lemony, with a meaty texture. Often used as a meat substitute. Best when young and tender. The red juice can stain clothes.",
+        "id_keys": {
+            "Shape": "Large tongue or fan-shaped bracket, 10-30cm, sticking out horizontally from oak trunks",
+            "Colour": "Deep red-brown upper surface, resembling raw beef — very distinctive",
+            "Pores": "Underside has tiny pale yellow pores (tubes), NOT gills — key distinction from gilled mushrooms",
+            "Juice": "Exudes red juice when cut or broken — unique among UK fungi",
+            "Flesh": "Thick, reddish meat-like flesh with pale marbling, resembling steak"
+        },
+        "foraging_tips": {
+            "where": "On oak trunks and at the base of living oak trees, occasionally on sweet chestnut",
+            "when": "August to November, best in September-October",
+            "sustainable": "Cut slices from the outer edge of young specimens. Leave older, tough specimens",
+            "danger_zone": "⚠️ Must be cooked thoroughly — never eat raw. Slice thinly and cook long and slow"
+        },
+        "lookalikes": [
+            {
+                "name": "Other red bracket fungi (e.g., Ganoderma species)",
+                "danger": "SAFE",
+                "diff": "Ganoderma brackets have a lacquered, shiny upper surface and are woody/hard; Beefsteak Fungus is soft, fleshy, and exudes red juice when cut"
+            }
+        ],
+        "confusion_notes": "Beefsteak Fungus is one of the easiest fungi to identify — its raw-meat appearance, red juice, and pore underside (not gills) make it unmistakable. No dangerous lookalikes."
+    },
+    {
+        "name": "Dryad's Saddle",
+        "latin_name": "Ceriolopsis squamosus",
+        "category": "Fungi",
+        "months": ["May", "June", "July", "August", "September", "October", "November"],
+        "habitat": "Dead and dying hardwood trees, especially elm, beech, and oak",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Young, soft outer edges only",
+        "warnings": "Only the young, soft outer edges are edible — older parts become tough and leathery. Must be cooked thoroughly. Some people find it causes mild stomach upset — try a small amount first. Do not eat raw.",
+        "description": "**Identification:** Large, fan-shaped bracket fungus, 10-50cm across. Upper surface is cream-tan with dark brown overlapping scales, resembling a feather pattern. Underside is white with large, irregular pores. Stalk is thick, lateral, black-brown at the base. Flesh is white, thick, and smells strongly of watermelon rind or cucumber when fresh. **Uses:** Only the young, soft outer margin is worth eating. Slice thinly and cook in butter or add to soups. Has a mild cucumber/watermelon scent. Best when very young — older specimens become tough and inedible.",
+        "id_keys": {
+            "Shape": "Large fan-shaped bracket, 10-50cm, often overlapping in tiers",
+            "Upper surface": "Cream-tan background with dark brown overlapping scales — distinctive feather-like pattern",
+            "Pores": "Large, irregular, white to cream pores on the underside — NOT gills. Pores are 1-3mm wide",
+            "Smell": "Strong, pleasant scent of watermelon rind or cucumber when fresh — key ID feature",
+            "Flesh": "White, thick, fibrous. Young specimens are soft; older ones become tough and leathery"
+        },
+        "foraging_tips": {
+            "where": "On dead and dying hardwood trees and stumps, especially elm, beech, and oak",
+            "when": "May to November — one of the first edible bracket fungi of the year (appears in spring)",
+            "sustainable": "Cut only the soft outer edges of young specimens. Leave older, tough specimens on the tree",
+            "danger_zone": "⚠️ Only eat the young, soft outer margin. Older parts are too tough. Must be cooked thoroughly. Try a small amount first"
+        },
+        "lookalikes": [
+            {
+                "name": "Other large bracket fungi",
+                "danger": "SAFE",
+                "diff": "Most other large brackets are woody/leathery and inedible, but not poisonous. Dryad's Saddle is identified by its feather-like scales, large pores, and watermelon/cucumber smell"
+            }
+        ],
+        "confusion_notes": "Dryad's Saddle is distinctive with its feather-patterned upper surface, large pores, and watermelon/cucumber scent. No dangerous lookalikes. The main issue is palatability — only young, soft specimens are worth eating."
+    },
+    {
+        "name": "Shaggy Parasol",
+        "latin_name": "Chlorophyllum rhacodes",
+        "category": "Fungi",
+        "months": ["August", "September", "October", "November"],
+        "habitat": "Woodland edges, hedgerows, gardens, grassland near trees",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Cap and stem (young specimens best)",
+        "warnings": "⚠️ Must be cooked thoroughly — NEVER eat raw. Some people are sensitive to Shaggy Parasols and get stomach upset even when cooked. Try a small amount first. The cut flesh turns bright orange-red — this is normal and NOT a sign of poisoning. Do NOT confuse with the poisonous Green-spored Parasol (not found in UK) or with immature Amanita species.",
+        "description": "**Identification:** Large mushroom, cap 10-20cm across when expanded. Young caps are egg-shaped and covered in shaggy, upturned brown scales on a white background. Stem is thick, white, with a large, movable ring. Gills are white, turning cream. Flesh turns bright orange-red when cut or bruised — a key ID feature. Smells pleasant, mushroomy. **Uses:** Slice and cook thoroughly in butter. Excellent flavour, meaty texture. Good in risottos, soups, and pasta dishes. Must be cooked — never eat raw.",
+        "id_keys": {
+            "Cap": "Large (10-20cm), covered in shaggy, upturned brown scales on white background. Egg-shaped when young",
+            "Stem": "Thick, white, with a large movable ring. Bulbous base but NO volva (cup at base)",
+            "Gills": "White, turning cream. NOT green or greenish",
+            "Flesh reaction": "Cut flesh turns bright orange-red — distinctive and important for identification",
+            "Smell": "Pleasant, mushroomy smell"
+        },
+        "foraging_tips": {
+            "where": "Woodland edges, hedgerows, gardens, and grassland near trees — likes disturbed ground",
+            "when": "August to November, especially after warm rain in autumn",
+            "sustainable": "Cut at base with a knife. Only take young, firm specimens. Leave some for spore dispersal",
+            "danger_zone": "⚠️ Must cook thoroughly. Some people get stomach upset — try a small amount first. Do NOT confuse with Amanita species (check for volva/bag at base)"
+        },
+        "lookalikes": [
+            {
+                "name": "Parasol Mushroom (Macrolepiota procera)",
+                "danger": "EDIBLE",
+                "diff": "Parasol has a smooth, snakeskin-patterned stem (not shaggy), brown colour pattern on cap (not shaggy scales), and flesh does NOT turn orange-red when cut"
+            },
+            {
+                "name": immature Amanita species (e.g., Amanita citrina)",
+                "danger": "POISONOUS",
+                "diff": "Young Amanitas are egg-shaped but have a VOLVA (bag/cup at the base of the stem) and do NOT have shaggy brown scales. Always dig up the base to check for a volva"
+            }
+        ],
+        "confusion_notes": "⚠️ The bright orange-red flesh reaction is a key identifier. CRITICAL: Always check the base of the stem — Shaggy Parasol has NO volva (bag/cup). If you find a volva, it could be a deadly Amanita. Also, some people are sensitive to Shaggy Parasol even when cooked."
+    },
+    {
+        "name": "Velvet Shank",
+        "latin_name": "Flammulina velutipes",
+        "category": "Fungi",
+        "months": ["October", "November", "December", "January", "February", "March"],
+        "habitat": "Dead and dying deciduous wood, especially elm, ash, and beech",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Caps and upper stems (discard tough lower stem)",
+        "warnings": "Must be cooked — do not eat raw. Only collect from dead wood, never from the ground. Do NOT confuse with poisonous species of Galerina or Tubaria which grow in similar habitats. Always check gill attachment and stem features.",
+        "description": "**Identification:** Small-medium mushroom, cap 2-8cm, orange-brown to dark brown, slimy when wet, smooth when dry. Gills are pale yellow-white, attached to the stem (adnate). Stem is tough, dark brown to black from the base upward, with a velvety texture. No ring. Grows in clusters on dead wood, even through snow and frost — one of the few mushrooms fruiting in midwinter. **Uses:** Cook thoroughly in stir-fries, soups, and stews. Discard the tough lower stems. Mild, pleasant flavour. Related to the cultivated Enoki mushroom.",
+        "id_keys": {
+            "Cap": "Orange-brown to dark brown, 2-8cm, slimy when wet, smooth when dry",
+            "Gills": "Pale yellow-white, broadly attached to stem (adnate), NOT free",
+            "Stem": "Tough, dark brown to black from base upward, velvety texture, NO ring",
+            "Habitat": "Grows in tufted clusters on dead deciduous wood — especially elm, ash, beech",
+            "Season": "One of the few mushrooms fruiting through winter — a key seasonal indicator"
+        },
+        "foraging_tips": {
+            "where": "Dead and dying deciduous wood — stumps, fallen branches, standing dead trees",
+            "when": "October to March — one of the best winter mushrooms. Can fruit through snow and frost",
+            "sustainable": "Cut caps from stems. Leave some clusters to release spores. Discard tough lower stems",
+            "danger_zone": "⚠️ CRITICAL: Do NOT confuse with Galerina species (DEADLY). Check: Velvet Shank has adnate gills, slimy cap, velvety dark stem, and grows on wood in winter"
+        },
+        "lookalikes": [
+            {
+                "name": "Funeral Bell / Deadly Galerina (Galerina marginata)",
+                "danger": "DEADLY",
+                "diff": "Funeral Bell has a RING on the stem, brown gills (not white-yellow), and a brown cap that is NOT slimy. Velvet Shank has NO ring, pale yellow-white gills, and a slimy cap"
+            },
+            {
+                "name": "Sheathed Woodtuft (Kuehneromyces mutabilis)",
+                "danger": "EDIBLE",
+                "diff": "Very similar appearance. Sheathed Woodtuft has a ring on the stem and grows in tufts on wood. Requires expert ID to distinguish from Deadly Galerina — NOT recommended for beginners"
+            }
+        ],
+        "confusion_notes": "⚠️ CRITICAL: Velvet Shank can be confused with DEADLY Galerina species. Key differences: Velvet Shank has NO ring, slimy cap, and pale gills. Galerina has a ring, brown spores/gills, and is not slimy. If in ANY doubt, do not eat."
+    },
+    {
+        "name": "Charcoal Burner",
+        "latin_name": "Russula cyanoxantha",
+        "category": "Fungi",
+        "months": ["June", "July", "August", "September", "October"],
+        "habitat": "Broadleaf woodland, especially under beech and oak",
+        "regions": ["All"],
+        "difficulty": 3,
+        "parts": "Cap and stem",
+        "warnings": "⚠️ Russula identification requires experience. The Charcoal Burner is one of the safest Russulas due to its mild taste, but if you are not confident identifying Russulas, do NOT eat any of them. Some Russula species cause severe stomach upset. Always do a taste test on a tiny piece (spit it out).",
+        "description": "**Identification:** Medium-large mushroom, cap 5-15cm. Cap colour is highly variable — can be grey-green, lilac, purple, brown, olive, or a mix. The key feature: cap surface is greasy/slippery, and the gills are FORKED, soft, and flexible (they bend like wax without breaking). Stem is white, turning greyish with age. Taste is MILD — not peppery or hot. **Uses:** Cook and eat in any mushroom dish. Firm, mild flavour. Must be cooked. Good fried, in risottos, and mixed mushroom dishes.",
+        "id_keys": {
+            "Cap": "Highly variable colour (grey-green, lilac, purple, olive, brown, or mixed), 5-15cm, greasy surface",
+            "Gills": "White, FORKED (branching), soft and flexible — they bend like wax without breaking. This is the KEY feature",
+            "Stem": "White, turning greyish with age, no ring",
+            "Taste": "MILD — not peppery or hot. A tiny piece chewed and spat out should taste completely neutral",
+            "Spore print": "White"
+        },
+        "foraging_tips": {
+            "where": "Broadleaf woodland, especially under beech and oak on light, dry soils",
+            "when": "June to October — one of the first Russulas to appear",
+            "sustainable": "Cut at base with a knife. Only take firm, young specimens",
+            "danger_zone": "⚠️ Russula ID requires experience. If in doubt, do NOT eat. Always do a tiny taste test (chew, spit out) — any peppery or hot taste means REJECT. Only eat if taste is completely mild"
+        },
+        "lookalikes": [
+            {
+                "name": "Sickener (Russula emetica)",
+                "danger": "POISONOUS",
+                "diff": "Sickener has a bright red cap, white brittle gills (not forked, not flexible), and a PEPPERY/ACRID taste. Charcoal Burner has variable cap colour, forked flexible gills, and MILD taste"
+            },
+            {
+                "name": "Other Russula species",
+                "danger": "MEDIUM",
+                "diff": "Many Russulas look similar. The taste test is key: MILD = safe to try, PEPPERY = reject. Charcoal Burner is distinguished by forked, flexible gills and mild taste"
+            }
+        ],
+        "confusion_notes": "⚠️ Russulas are a challenging group. The Charcoal Burner is one of the safest due to its mild taste and flexible, forked gills. If you are NOT confident with Russula identification, leave ALL Russulas alone. Any peppery taste = REJECT."
+    },
+    {
+        "name": "Scarlet Elf Cup",
+        "latin_name": "Sarcoscypha austriaca",
+        "category": "Fungi",
+        "months": ["January", "February", "March", "April", "November", "December"],
+        "habitat": "Dead deciduous wood, especially fallen branches and twigs in damp woodland",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Entire fruiting body (cup)",
+        "warnings": "Rinse thoroughly to remove debris. Cook before eating. Some people eat them raw in salads but cooking is safer. Ensure correct identification — only Sarcoscypha species with bright red cups on dead wood are safe.",
+        "description": "**Identification:** Small to medium cup-shaped fungus, 1-5cm across. Inner surface is bright, vivid scarlet red and smooth. Outer surface is paler, pinkish-white, and slightly felty. Short stem attaches to dead wood. Grows on fallen deciduous branches and twigs in damp woodland, often partially buried in leaf litter. One of the few brightly coloured fungi that is safe. **Uses:** Cook in butter, add to soups, risottos, or stir-fries. Can be used raw as a striking salad garnish. Mild, slightly earthy flavour. Visually stunning on the plate.",
+        "id_keys": {
+            "Cup": "Bright scarlet red inner surface, smooth and shiny, 1-5cm across",
+            "Outer surface": "Paler, pinkish-white, slightly felty or hairy",
+            "Habitat": "On dead deciduous wood — fallen branches, twigs, sticks in damp woodland",
+            "Season": "Winter to early spring — one of very few bright fungi fruiting in January-February"
+        },
+        "foraging_tips": {
+            "where": "Damp woodland, on fallen deciduous branches and twigs partially buried in leaf litter",
+            "when": "November to April — peak in January to March. A winter foraging speciality",
+            "sustainable": "Cut with scissors or a knife. Leave small cups to grow. They regrow from the same wood",
+            "danger_zone": "⚠️ Only collect bright red cups growing on dead wood. Rinse thoroughly — cups often hold debris and tiny insects"
+        },
+        "lookalikes": [
+            {
+                "name": "Sarcoscypha coccinea (Scarlet Elf Cup)",
+                "danger": "EDIBLE",
+                "diff": "Very similar — also edible. Microscopic examination needed to distinguish S. austriaca from S. coccinea. Both are safe to eat"
+            }
+        ],
+        "confusion_notes": "Scarlet Elf Cups are easy to identify — bright scarlet cup-shaped fungi on dead wood in winter. There are no dangerous lookalikes with this combination of features. Both UK Sarcoscypha species are edible."
+    }
 ]
