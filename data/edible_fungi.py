@@ -492,4 +492,142 @@ EDIBLE_FUNGI = [
         ],
         "confusion_notes": "Safe when clearly purple. Amethyst Deceiver grows in WOODLAND, has a smooth cap, and widely spaced gills. If faded to brown, do NOT eat."
     },
+        {
+        "name": "Porcini (Penny Bun)",
+        "latin_name": "Boletus edulis",
+        "category": "Fungi",
+        "months": ["July", "August", "September", "October"],
+        "habitat": "Woodlands (Birch, Oak, Pine)",
+        "regions": ["All"],
+        "difficulty": 3,
+        "parts": "Cap, Tubes, Stem",
+        "warnings": "EXPERT ID. Must be 100% certain. Cook before eating.",
+        "description": "**Identification:** Large, brown cap with white underside (pores, not gills). Thick white/cream stem with a fine net pattern (reticulation). Smells nutty.",
+        "id_keys": {
+            "Cap": "Brown, smooth, convex then flat",
+            "Underside": "White pores when young, turning yellow-green with age (NO gills)",
+            "Stem": "Thick, white/cream, fine net pattern (reticulation)"
+        },
+        "foraging_tips": {
+            "where": "Woodland edges, birch/oak/pine.",
+            "when": "Late Summer/Autumn.",
+            "sustainable": "Cut stem, leave base.",
+            "danger_zone": "CRITICAL: Must have white pores (not gills), thick stem with net pattern, and nutty smell."
+        },
+        "lookalikes": [
+            {"name": "Bitter Bolete", "danger": "INEDIBLE", "diff": "Bitter Bolete has PINK pores when young and tastes extremely bitter. Porcini has WHITE pores when young."},
+            {"name": "Satan's Bolete", "danger": "POISONOUS", "diff": "Satan's Bolete has RED pores and turns blue when cut. Porcini has WHITE/YELLOW pores and does NOT turn blue."}
+        ],
+        "confusion_notes": "EXPERT ID ONLY. Porcini has WHITE pores (not gills), a thick stem with net pattern, and a nutty smell. If pores are RED or the flesh turns BLUE, do NOT eat."
+    },
+    {
+        "name": "Field Blewit",
+        "latin_name": "Lepista personata",
+        "category": "Fungi",
+        "months": ["October", "November", "December"],
+        "habitat": "Grassland, Pastures, Gardens",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Cap, Stem",
+        "warnings": "Must be cooked. Do NOT eat with alcohol.",
+        "description": "**Identification:** Buff/tan cap with a smooth surface. Lilac-blue stem (distinctive). White to pale lilac gills. Appears late in the season.",
+        "id_keys": {
+            "Cap": "Buff/tan, smooth, convex then flat",
+            "Gills": "White to pale lilac, crowded",
+            "Stem": "LILAC-BLUE (distinctive, key feature)"
+        },
+        "foraging_tips": {
+            "where": "Grassland, pastures, gardens.",
+            "when": "Late Autumn to early Winter.",
+            "sustainable": "Cut stem.",
+            "danger_zone": "Must be cooked. Do NOT consume with alcohol."
+        },
+        "lookalikes": [
+            {"name": "Wood Blewit", "danger": "EDIBLE", "diff": "Wood Blewit has a lilac cap AND stem. Field Blewit has a BROWN cap and LILAC stem."},
+            {"name": "Cortinarius species", "danger": "POISONOUS", "diff": "Cortinarius species have a rusty spore print and web-like veil (cortina). Blewits have a pale pinkish spore print and NO cortina."}
+        ],
+        "confusion_notes": "Field Blewit has a BROWN cap and LILAC-BLUE stem. The lilac stem is the key identifier. Must be cooked. Do NOT eat with alcohol."
+    },
+    {
+        "name": "Horn of Plenty",
+        "latin_name": "Craterellus cornucopioides",
+        "category": "Fungi",
+        "months": ["August", "September", "October", "November"],
+        "habitat": "Woodlands (Oak, Beech)",
+        "regions": ["Southern", "Central"],
+        "difficulty": 2,
+        "parts": "Whole fungus",
+        "warnings": "Must be washed thoroughly (traps dirt). Must be cooked.",
+        "description": "**Identification:** Dark brown/black, funnel-shaped or horn-shaped. Smooth inside, wavy edges. Looks like a dark trumpet or horn of plenty.",
+        "id_keys": {
+            "Shape": "Funnel/horn shape, dark brown/black",
+            "Inside": "Smooth, dark grey/brown",
+            "Outside": "Wavy, rougher, dark brown/black"
+        },
+        "foraging_tips": {
+            "where": "Oak and beech woodland floor.",
+            "when": "Autumn.",
+            "sustainable": "Cut at base.",
+            "danger_zone": "Safe. Distinctive shape. Must be washed very thoroughly as it traps dirt."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "The dark horn/trumpet shape is unique. No dangerous lookalikes."}
+        ],
+        "confusion_notes": "Safe. The dark horn/trumpet shape on the woodland floor is distinctive. No dangerous lookalikes. Often called 'Trompette de la Mort' (Trumpet of the Dead)."
+    },
+    {
+        "name": "Deceiver",
+        "latin_name": "Laccaria laccata",
+        "category": "Fungi",
+        "months": ["July", "August", "September", "October", "November"],
+        "habitat": "Woodlands, Heathlands",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Whole mushroom",
+        "warnings": "Variable colour — 'deceives' identification. Must be cooked.",
+        "description": "**Identification:** Small, variable-coloured mushroom (pinkish-brown to dull tan). Widely spaced gills that are often pinkish. Thin, fibrous stem. Very common.",
+        "id_keys": {
+            "Cap": "Small, pinkish-brown to dull tan, variable (hence 'deceiver')",
+            "Gills": "Widely spaced, pinkish, attached to stem",
+            "Stem": "Thin, fibrous, same colour as cap or paler"
+        },
+        "foraging_tips": {
+            "where": "Woodland and heathland, often in large groups.",
+            "when": "Summer to Autumn.",
+            "sustainable": "Cut stem.",
+            "danger_zone": "Safe but variable appearance. Cook before eating."
+        },
+        "lookalikes": [
+            {"name": "Amethyst Deceiver", "danger": "EDIBLE", "diff": "Amethyst Deceiver is clearly PURPLE. Deceiver is pinkish-brown/tan."},
+            {"name": "Funnel Cap", "danger": "VARIES", "diff": "Some Clitocybe species can be toxic. Deceiver has widely spaced pinkish gills and a thin fibrous stem."}
+        ],
+        "confusion_notes": "Safe when confident. Called 'Deceiver' because its colour varies. Look for widely spaced pinkish gills and thin fibrous stem."
+    },
+    {
+        "name": "Common Inkcap",
+        "latin_name": "Coprinopsis atramentaria",
+        "category": "Fungi",
+        "months": ["June", "July", "August", "September", "October"],
+        "habitat": "Grassland, Gardens, Disturbed ground",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Cap only (young)",
+        "warnings": "EDIBLE but POISONOUS WITH ALCOHOL. Do NOT drink alcohol within 48 hours.",
+        "description": "**Identification:** Grey-brown cap, oval when young then expanding. Gills start white, turn pink, then black, then dissolve into ink. Often in large clusters.",
+        "id_keys": {
+            "Cap": "Grey-brown, oval when young, expanding flat",
+            "Gills": "White → Pink → Black → Dissolving into ink",
+            "Habitat": "Disturbed ground, gardens, grass, often in large groups"
+        },
+        "foraging_tips": {
+            "where": "Gardens, disturbed ground, grass.",
+            "when": "Summer to Autumn.",
+            "sustainable": "Cut young caps.",
+            "danger_zone": "CRITICAL: EDIBLE but causes SEVERE illness if consumed with ALCOHOL. Do NOT drink alcohol within 48 hours of eating."
+        },
+        "lookalikes": [
+            {"name": "Shaggy Inkcap", "danger": "EDIBLE", "diff": "Shaggy Inkcap is tall, white, shaggy, and has a moveable ring. Common Inkcap is shorter, grey-brown, smooth, and has NO moveable ring."}
+        ],
+        "confusion_notes": "CRITICAL: Common Inkcap is EDIBLE but causes SEVERE illness if consumed with ALCOHOL. Do NOT drink alcohol for 48 hours before or after eating. Shaggy Inkcap is safe with alcohol."
+    },
 ]
