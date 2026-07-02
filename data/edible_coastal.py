@@ -274,4 +274,58 @@ EDIBLE_COASTAL = [
         ],
         "confusion_notes": "Safe from clean water. Only collect in months with an 'R'. Check for red tide warnings. Cook thoroughly."
     },
+        {
+        "name": "Sea Rocket",
+        "latin_name": "Cakile maritima",
+        "category": "Coastal",
+        "months": ["May", "June", "July", "August", "September"],
+        "habitat": "Coastal Sand dunes, Shingle",
+        "regions": ["Coastal"],
+        "difficulty": 1,
+        "parts": "Leaves, Flowers, Seed pods",
+        "warnings": "Peppery, mustard-like flavour. Eat raw or cooked.",
+        "description": "**Identification:** Low-growing plant on sand dunes. Lilac/white 4-petalled flowers. Thick, fleshy leaves. Seed pods are like small rockets.",
+        "id_keys": {
+            "Leaves": "Fleshy, lobed, thick, blue-green",
+            "Flowers": "Lilac/white, 4 petals (cabbage family)",
+            "Habitat": "Sand dunes, shingle beaches"
+        },
+        "foraging_tips": {
+            "where": "Sand dunes, shingle beaches.",
+            "when": "Spring to Autumn.",
+            "sustainable": "Pick young leaves. Common on dunes.",
+            "danger_zone": "Safe. Peppery flavour like rocket/mustard."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "Distinctive fleshy leaves and 4-petalled flowers on sand dunes."}
+        ],
+        "confusion_notes": "Safe. Distinctive fleshy leaves and lilac/white flowers on sand dunes. Peppery, mustard-like flavour."
+    },
+    {
+        "name": "Sea Holly",
+        "latin_name": "Eryngium maritimum",
+        "category": "Coastal",
+        "months": ["June", "July", "August"],
+        "habitat": "Coastal Sand dunes",
+        "regions": ["Coastal"],
+        "difficulty": 2,
+        "parts": "Young shoots (candied), Roots (coffee substitute)",
+        "warnings": "PROTECTED in the wild. Roots were once candied and used as aphrodisiac. Do NOT pick from wild populations.",
+        "description": "**Identification:** Striking steel-blue plant with spiny, holly-like leaves. Cone-like flower heads surrounded by spiny bracts. Grows on sand dunes.",
+        "id_keys": {
+            "Leaves": "Spiny, holly-like, steel-blue/grey-green",
+            "Flowers": "Cone-like, steel-blue, surrounded by spiny bracts",
+            "Habitat": "Sand dunes (PROTECTED)"
+        },
+        "foraging_tips": {
+            "where": "Sand dunes (PROTECTED).",
+            "when": "Summer.",
+            "sustainable": "PROTECTED. Do NOT pick wild populations. Grow from seed or buy cultivated plants.",
+            "danger_zone": "PROTECTED species. Admire and photograph only."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "The spiny, steel-blue holly-like leaves on sand dunes are distinctive."}
+        ],
+        "confusion_notes": "PROTECTED species. Do NOT pick from wild populations. The spiny steel-blue leaves and cone-like flower heads on sand dunes are distinctive."
+    },
 ]
