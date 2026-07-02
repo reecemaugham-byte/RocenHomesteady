@@ -194,4 +194,87 @@ EDIBLE_SHRUBS = [
         ],
         "confusion_notes": "Safe. All raspberry-like fruits in the UK are edible.",
     },
+        {
+        "name": "Bullace",
+        "latin_name": "Prunus insititia",
+        "category": "Shrub",
+        "months": ["September", "October"],
+        "habitat": "Hedgerows, Woodlands",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Fruit",
+        "warnings": "Tart raw. Best after frost or cooked into jam.",
+        "description": "**Identification:** Small round fruit, larger than sloe, purple-blue with a bloom. Fewer thorns than Blackthorn. Leaves are broader.",
+        "id_keys": {
+            "Fruit": "Purple-blue, larger than sloe, less tart",
+            "Stem": "Fewer thorns than Blackthorn",
+            "Leaves": "Broader than Sloe, slightly folded"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, woodland edges.",
+            "when": "Autumn.",
+            "sustainable": "Leave some for wildlife.",
+            "danger_zone": "Safe. Less tart than Sloe. Good for jam."
+        },
+        "lookalikes": [
+            {"name": "Sloe (Blackthorn)", "danger": "EDIBLE", "diff": "Sloe is smaller, more tart, and has more/larger thorns. Bullace is larger and less thorny."},
+            {"name": "Damson", "danger": "EDIBLE", "diff": "Damson is larger still, with a more distinct neck. All three are edible."}
+        ],
+        "confusion_notes": "Safe. All sloe/bullace/damson fruits are edible. Bullace is larger than Sloe and less thorny."
+    },
+    {
+        "name": "Damson",
+        "latin_name": "Prunus domestica subsp. insititia",
+        "category": "Shrub",
+        "months": ["August", "September", "October"],
+        "habitat": "Hedgerows, Orchards, Gardens",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Fruit",
+        "warnings": "Tart but edible raw when ripe. Excellent for jam and gin.",
+        "description": "**Identification:** Small plum, oval shape, dark purple-blue skin with bloom. Less thorny than Blackthorn. Distinctive neck at the top of the fruit.",
+        "id_keys": {
+            "Fruit": "Oval plum, dark purple, distinct neck",
+            "Stem": "Few or no thorns",
+            "Leaves": "Oval, slightly folded, finely toothed"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, old orchards, gardens.",
+            "when": "Late Summer/Autumn.",
+            "sustainable": "Leave some for wildlife.",
+            "danger_zone": "Safe. Excellent for jam, gin, and baking."
+        },
+        "lookalikes": [
+            {"name": "Sloe", "danger": "EDIBLE", "diff": "Sloe is smaller and much more tart. Damson is larger and sweeter."},
+            {"name": "Bullace", "danger": "EDIBLE", "diff": "Bullace is rounder. Damson has a more oval shape and distinct neck."}
+        ],
+        "confusion_notes": "Safe. All plum-like hedgerow fruits are edible. Damson is larger than Sloe and Bullace, with a distinctive oval shape."
+    },
+    {
+        "name": "Guelder Rose",
+        "latin_name": "Viburnum opulus",
+        "category": "Shrub",
+        "months": ["June", "July", "September", "October"],
+        "habitat": "Hedgerows, Woodlands, Wet areas",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Berries (cooked only)",
+        "warnings": "Raw berries are bitter and mildly toxic. MUST be cooked. Only the red berries, NOT the white flowers.",
+        "description": "**Identification:** Large shrub with maple-like leaves. Flat clusters of white flowers in June (outer flowers large, inner small). Bright red, translucent berries in autumn.",
+        "id_keys": {
+            "Leaves": "Maple-like, 3-5 lobes, turn red in autumn",
+            "Flowers": "Flat white clusters, outer flowers large, inner small",
+            "Berries": "Bright red, translucent, slightly oval"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, damp woods, wet areas.",
+            "when": "Flowers in June, berries in September-October.",
+            "sustainable": "Pick some berry clusters, leave plenty for birds.",
+            "danger_zone": "CRITICAL: Raw berries are bitter and mildly toxic. Must be COOKED."
+        },
+        "lookalikes": [
+            {"name": "Wayfaring Tree", "danger": "MILDLY TOXIC", "diff": "Wayfaring Tree has oval leaves (not maple-like) and red berries that turn black."}
+        ],
+        "confusion_notes": "CRITICAL: Guelder Rose berries MUST be cooked. Raw they are bitter and mildly toxic. The maple-like leaves and red translucent berries are distinctive."
+    },
 ]
