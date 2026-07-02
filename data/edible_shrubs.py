@@ -489,4 +489,137 @@ EDIBLE_SHRUBS = [
         ],
         "confusion_notes": "⚠️ CRITICAL: Juniper (blue-black berries, sharp needles in 3s) vs Yew (red berries, flat soft needles) — YEW IS DEADLY. The white band on juniper needles and blue-black berries are key distinguishing features. When in doubt, do NOT consume."
     }
+        {
+        "name": "Wild Gooseberry",
+        "latin_name": "Ribes uva-crispa",
+        "category": "Shrub",
+        "months": ["June", "July", "August"],
+        "habitat": "Hedgerows, woodland edges, scrub, old gardens, feral from cultivation",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Ripe berries (cooked or raw when fully ripe)",
+        "warnings": "Extremely thorny — wear thick gloves. Unripe green berries are very tart and can cause stomach upset in quantity. Only eat fully ripe berries raw. Cook unripe or tart berries with sugar.",
+        "description": "**Identification:** Straggly, thorny shrub with sharp spines at nodes and along stems. Leaves are 3-5 lobed, toothed, slightly downy. Flowers are small, greenish-pink, hanging in small groups. Berries are green, yellow, or reddish when ripe, 1-2cm, with visible veins and fine hairs. Found in hedges and old gardens gone wild. **Uses:** Ripe berries eaten raw when fully sweet. Unripe/green berries used for cooking — pies, crumbles, jams, chutneys, and gooseberry fool. High in vitamin C.",
+        "id_keys": {
+            "Spines": "Sharp, vicious spines at leaf nodes and along stems — wear gloves",
+            "Berries": "Green, yellow, or red, 1-2cm, with visible veins and often fine hairs",
+            "Leaves": "3-5 lobed, toothed, slightly downy/hairy",
+            "Habitat": "Hedgerows, woodland edges, and feral from old gardens"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, woodland edges, and scrub — often feral from old garden escapees",
+            "when": "June to August — green berries in June for cooking, fully ripe in July-August",
+            "sustainable": "Pick what you need. Leave some for birds. Wear thick gloves!",
+            "danger_zone": "⚠️ Extremely thorny — thick gloves essential. Unripe berries are very tart and best cooked with sugar"
+        },
+        "lookalikes": [
+            {
+                "name": "Red Currant (Ribes rubrum)",
+                "danger": "EDIBLE",
+                "diff": "Red Currant has smooth, round, translucent red berries in hanging strings, and no spines on stems. Gooseberry has veined, hairy berries and thorny stems"
+            }
+        ],
+        "confusion_notes": "Wild Gooseberry is easy to identify by its thorny stems and veined, hairy berries. There are no dangerous lookalikes in the UK with this combination of features."
+    },
+    {
+        "name": "Red Currant",
+        "latin_name": "Ribes rubrum",
+        "category": "Shrub",
+        "months": ["July", "August"],
+        "habitat": "Hedgerows, woodland edges, stream banks, feral from cultivation",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Ripe berries",
+        "warnings": "Very tart — best cooked with sugar. Do not confuse with unripe Black Currant berries. The leaves of some Ribes species can cause mild stomach upset if eaten in quantity.",
+        "description": "**Identification:** Upright shrub, 1-1.5m tall, without thorns (unlike gooseberry). Leaves are 3-5 lobed, toothed, and palmate. Flowers are small, greenish-yellow, in hanging clusters. Berries are bright, translucent red, 6-8mm, hanging in long strings (racemes). Found in hedges and near old gardens. **Uses:** Berries are very tart — best cooked with sugar for jelly, jam, summer pudding, and sauces. Can be eaten raw if fully ripe but very sharp. Rich in vitamin C.",
+        "id_keys": {
+            "Berries": "Bright, translucent red, 6-8mm, hanging in long strings (racemes) — distinctive and unmistakable",
+            "Stems": "No thorns or spines — smooth stems (unlike gooseberry)",
+            "Leaves": "3-5 lobed, palmate, toothed, similar to gooseberry but on thornless stems",
+            "Growth": "Upright shrub, 1-1.5m, often forming small thickets"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, woodland edges, stream banks — often feral from old gardens",
+            "when": "July to August — pick when fully red and slightly soft",
+            "sustainable": "Pick strings of berries with scissors. Leave some for birds",
+            "danger_zone": "Very tart — best cooked with sugar. No dangerous lookalikes with red berries in strings"
+        },
+        "lookalikes": [
+            {
+                "name": "White Currant (Ribes rubrum var. alba)",
+                "danger": "EDIBLE",
+                "diff": "White/pale yellow berries in strings — a colour variant of Red Currant, equally edible and slightly sweeter"
+            },
+            {
+                "name": "Black Currant (Ribes nigrum)",
+                "danger": "EDIBLE",
+                "diff": "Black berries with a strong, characteristic blackcurrant scent when crushed. Leaves have resin glands underneath (appear as yellow dots)"
+            }
+        ],
+        "confusion_notes": "Red Currants are easy to identify by their bright red, translucent berries hanging in long strings on a thornless shrub. There are no dangerous lookalikes with this appearance."
+    },
+    {
+        "name": "Barberry",
+        "latin_name": "Berberis vulgaris",
+        "category": "Shrub",
+        "months": ["September", "October"],
+        "habitat": "Hedgerows, woodland edges, scrub, naturalised on chalk and limestone",
+        "regions": ["Southern", "All"],
+        "difficulty": 2,
+        "parts": "Ripe berries (cooked, with sugar)",
+        "warnings": "Berries are VERY tart and contain seeds — best cooked and strained. Some people are sensitive. Do NOT eat the roots, bark, or leaves — they contain berberine and are medicinal, not food. Avoid during pregnancy without medical advice.",
+        "description": "**Identification:** Deciduous shrub, 1-3m, with grey-brown bark and VERY sharp triple spines at each node. Leaves are small, oval, in clusters. Flowers are small, yellow, hanging in clusters. Berries are bright red, oblong, 8-12mm, very tart, hanging in small clusters. **Uses:** Berries are extremely tart but high in vitamin C. Cook with sugar for jelly, jams, and sauces. Traditional accompaniment to mutton. Can be dried. Strain out seeds. Persian and Middle Eastern cooking uses dried barberries extensively.",
+        "id_keys": {
+            "Spines": "VERY sharp triple spines (3-pronged) at each node — vicious, handle with thick gloves",
+            "Berries": "Bright red, oblong, 8-12mm, hanging in small clusters — very tart/sour",
+            "Leaves": "Small, oval, in clusters on short shoots between the spines",
+            "Flowers": "Small, yellow, hanging in racemes (spring)"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows and scrub on chalk and limestone, especially in southern England. Now uncommon in the wild",
+            "when": "September to October — pick when fully red",
+            "sustainable": "Pick a few clusters per bush. Barberry is now uncommon in the wild — consider growing your own",
+            "danger_zone": "⚠️ Vicious spines — thick gloves essential. Only eat berries. Do NOT eat leaves, bark, or roots"
+        },
+        "lookalikes": [
+            {
+                "name": "Ornamental Berberis species (e.g., Berberis darwinii, B. thunbergii)",
+                "danger": "EDIBLE",
+                "diff": "Ornamental species have similar berries that are also edible when ripe, though varying in palatability. All have the distinctive sharp spines"
+            }
+        ],
+        "confusion_notes": "Barberry is easy to identify by its vicious triple spines and bright red oblong berries. No dangerous lookalikes have this combination. Only eat the ripe berries — leaves, bark, and roots contain berberine."
+    },
+    {
+        "name": "Fuchsia",
+        "latin_name": "Fuchsia magellanica",
+        "category": "Shrub",
+        "months": ["August", "September", "October", "November"],
+        "habitat": "Coastal hedges, gardens, naturalised in mild western areas (Cornwall, Wales, Ireland, Scotland)",
+        "regions": ["Coastal", "Western"],
+        "difficulty": 1,
+        "parts": "Ripe berries (dark purple/black)",
+        "warnings": "Only eat the berries of Fuchsia magellanica and common garden fuchsias. Avoid all other parts of the plant. Some people may have mild stomach upset from eating large quantities. The flowers are also edible in small quantities.",
+        "description": "**Identification:** Deciduous or semi-evergreen shrub, 1-3m, with arching branches. Small, dark green leaves. Iconic pendant flowers with bright red-pink outer petals and purple inner petals. Berries are oblong, dark purple-black when ripe, 8-15mm, with a slightly sweet, mild flavour. Extremely common in western coastal gardens and hedges. **Uses:** Ripe berries eaten raw — mild, slightly sweet, grape-like flavour with a peppery aftertaste. Can be used in jams and jellies. Flowers are also edible — decorative in salads.",
+        "id_keys": {
+            "Flowers": "Iconic pendant flowers — red-pink outer petals, purple inner petals. Impossible to mistake for anything else",
+            "Berries": "Oblong, dark purple-black when ripe, 8-15mm, hanging beneath the flower",
+            "Leaves": "Small, dark green, oval, in pairs along arching stems",
+            "Growth": "Arching shrub, 1-3m, common in western coastal hedges"
+        },
+        "foraging_tips": {
+            "where": "Coastal hedges and gardens in mild western areas — Cornwall, Wales, western Scotland, Ireland",
+            "when": "August to November — pick when berries are dark purple-black and slightly soft",
+            "sustainable": "Pick a few berries per bush. Leave plenty for birds and for the plant to look attractive",
+            "danger_zone": "Only eat ripe berries. Common garden fuchsias are safe. Avoid other parts of the plant"
+        },
+        "lookalikes": [
+            {
+                "name": "Other Fuchsia varieties",
+                "danger": "EDIBLE",
+                "diff": "Most common garden fuchsias produce edible berries, though some have very small or dry fruit. F. magellanica has the best-flavoured berries"
+            }
+        ],
+        "confusion_notes": "Fuchsia is one of the easiest plants to identify — the pendant red-purple flowers are unmistakable. The berries are safe to eat. No dangerous lookalikes have this flower shape."
+    }
 ]
