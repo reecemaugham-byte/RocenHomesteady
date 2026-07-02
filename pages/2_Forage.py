@@ -72,7 +72,7 @@ def generate_foraging_question(plant):
             other_vals = [v for p in UK_PLANTS['edible'] + UK_PLANTS['poisonous']
                          for k, v in p.get('id_keys', {}).items() if v != correct]
             sample_size = max(0, 3 - len(wrong_options))
-wrong_options += safe_sample(other_vals, sample_size)
+            wrong_options += safe_sample(other_vals, sample_size)
             wrong_options = list(set(wrong_options))[:3]
             options = [correct] + wrong_options
             while len(options) < 4:
