@@ -178,4 +178,237 @@ POISONOUS_FUNGI = [
         ],
         "confusion_notes": "☠️ DEADLY: Brown Rollrim has true gills that bruise BROWN and an inrolled rim on the cap. Chanterelles are golden yellow with blunt FORKING ridges. If it has an inrolled rim, do NOT eat it.",
     },
+        {
+        "name": "Destroying Angel",
+        "latin_name": "Amanita virosa",
+        "category": "Fungi",
+        "months": ["July", "August", "September", "October", "November"],
+        "habitat": "Broadleaf and mixed woodland, especially under oak and beech",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "ALL PARTS ARE DEADLY — do not handle carelessly",
+        "warnings": "☠️ EXTREMELY DEADLY. Contains amatoxins which destroy liver cells. A SINGLE CAP CAN KILL AN ADULT. Symptoms delayed 6-24 hours — by the time symptoms appear, liver damage may be irreversible. DO NOT TOUCH unless absolutely necessary for identification. Can be confused with edible species like Field Mushroom, Horse Mushroom, and Agaricus species.",
+        "description": "**Identification:** Pure white, elegant mushroom, cap 5-12cm, smooth, silky, sometimes with a slight yellowish tint at the centre. Gills are white, free from the stem. Stem is white, 8-15cm tall, with a pendant white ring (skirt) and a VOLVA (cup-like sac) at the base buried in the ground. Often appears from a white egg-like sac (universal veil). **Danger:** Contains amatoxins — the same deadly toxin as Death Cap. Delayed symptoms (6-24h): severe vomiting, diarrhoea, then apparent recovery, then liver/kidney failure. FATALITY RATE IS VERY HIGH.",
+        "id_keys": {
+            "Cap": "Pure white, smooth, silky, 5-12cm, sometimes with slight yellowish centre tint",
+            "Gills": "White, free from stem (not attached), crowded",
+            "Ring": "White pendant ring (skirt) on the upper stem — PRESENT",
+            "Volva": "White cup-like sac (volva) at the BASE of the stem, buried in soil — CRITICAL DANGER SIGN",
+            "Spore print": "WHITE — unlike Field Mushroom which has brown spore print"
+        },
+        "danger_tips": {
+            "where": "Broadleaf and mixed woodland, especially under oak and beech. Also in conifer woodland",
+            "when": "July to November — common in late summer and autumn",
+            "sustainable": "Do not pick. If found, note location and warn others. Report to local foraging groups",
+            "danger_zone": "☠️ ONE OF THE DEADLIEST MUSHROOMS IN THE WORLD. White cap + white gills + ring + volva = potentially DEADLY. If you see a volva at the base, DO NOT EAT the mushroom"
+        },
+        "lookalikes": [
+            {
+                "name": "Field Mushroom (Agaricus campestris)",
+                "danger": "EDIBLE",
+                "diff": "Field Mushroom has PINK gills turning brown, a BROWN spore print, and NO volva at the base. Destroying Angel has WHITE gills, WHITE spore print, and a VOLVA at the base"
+            },
+            {
+                "name": "Horse mushroom (Agaricus arvensis)",
+                "danger": "EDIBLE",
+                "diff": "Horse mushroom has PINK gills turning brown, a BROWN spore print, yellow staining when bruised, and NO volva. Destroying Angel has WHITE gills and a VOLVA"
+            },
+            {
+                "name": "St. George's Mushroom (Calocybe gambosa)",
+                "danger": "EDIBLE",
+                "diff": "St. George's has pale pinkish gills, NO ring, NO volva, and appears in spring (April-May). Destroying Angel has WHITE gills, a ring, a volva, and appears summer-autumn"
+            }
+        ],
+        "confusion_notes": "☠️ CRITICAL: Destroying Angel is PURE WHITE and can be confused with edible white mushrooms. THREE RULES TO AVOID DEATH: 1) Always check for a VOLVA (cup at base) — if present, DO NOT EAT. 2) If gills are WHITE and spore print is WHITE — treat as potentially DEADLY. 3) ALWAYS dig up the complete base of any white-gilled mushroom to check for a volva."
+    },
+    {
+        "name": "Funeral Bell",
+        "latin_name": "Galerina marginata",
+        "category": "Fungi",
+        "months": ["September", "October", "November", "December", "January", "February", "March"],
+        "habitat": "Dead and dying wood, especially conifer stumps and fallen branches",
+        "regions": ["All"],
+        "difficulty": 3,
+        "parts": "ALL PARTS ARE DEADLY",
+        "warnings": "☠️ EXTREMELY DEADLY. Contains the same amatoxins as Death Cap. Causes delayed liver failure. Can be confused with edible species like Sheathed Woodtuft and Velvet Shank. Do NOT eat any small brown mushroom growing on wood unless you are an EXPERT.",
+        "description": "**Identification:** Small brown mushroom, cap 1.5-5cm, convex to flat, smooth, hygrophanous (changes colour as it dries — darker when wet, paler when dry). Gills are brown, adnate (broadly attached). Stem is brown, with a faint ring or ring zone. Grows on dead wood, especially conifer stumps and fallen branches. **Danger:** Contains amatoxins — the same deadly toxin as Death Cap and Destroying Angel. Delayed symptoms (6-24h): severe vomiting, diarrhoea, then apparent recovery, then liver/kidney failure. POTENTIALLY FATAL.",
+        "id_keys": {
+            "Cap": "Small (1.5-5cm), brown, smooth, hygrophanous (darker when wet, paler when dry)",
+            "Gills": "Brown, broadly attached to stem (adnate)",
+            "Stem": "Brown, with a faint ring or ring zone visible, fibrous texture",
+            "Habitat": "On dead and dying wood, especially conifer stumps and fallen branches",
+            "Spore print": "Rusty brown"
+        },
+        "danger_tips": {
+            "where": "Dead and dying wood — stumps, fallen branches, and logs, especially conifers",
+            "when": "Can fruit almost year-round, but most common September to November",
+            "sustainable": "Do not pick. If found, note location and warn others",
+            "danger_zone": "☠️ DEADLY — contains same toxins as Death Cap. Do NOT eat any small brown mushroom growing on wood unless you are an EXPERT. When in doubt, leave it out"
+        },
+        "lookalikes": [
+            {
+                "name": "Sheathed Woodtuft (Kuehneromyces mutabilis)",
+                "danger": "EDIBLE",
+                "diff": "Sheathed Woodtuft has a distinct two-tone cap (dark centre, pale edge), grows in dense tufts, and has a scaly stem below the ring. Funeral Bell has a more uniform brown cap and a smoother stem. DISTINGUISHING THEM REQUIRES EXPERT KNOWLEDGE"
+            },
+            {
+                "name": "Velvet Shank (Flammulina velutipes)",
+                "danger": "EDIBLE",
+                "diff": "Velvet Shank has a slimy cap, NO ring on the stem, and pale yellow-white gills. Funeral Bell has a dry cap, a faint ring zone, and brown gills"
+            }
+        ],
+        "confusion_notes": "☠️ EXTREME DANGER: Funeral Bell is easily confused with edible wood-growing mushrooms. The safest approach is to AVOID all small brown mushrooms on wood unless you are an experienced forager. If you cannot positively identify a small brown wood-growing mushroom, DO NOT EAT IT."
+    },
+    {
+        "name": "Ivory Funnel",
+        "latin_name": "Clitocybe rivulosa / Clitocybe dealbata",
+        "category": "Fungi",
+        "months": ["July", "August", "September", "October", "November"],
+        "habitat": "Grassland, lawns, pastures, meadows — often in rings or arcs",
+        "regions": ["All"],
+        "difficulty": 3,
+        "parts": "ALL PARTS ARE POISONOUS",
+        "warnings": "☠️ POISONOUS. Contains muscarine — causes SLUDGE syndrome (Salivation, Lacrimation, Urination, Defecation, Gastrointestinal distress, Emesis). Can be confused with Fairy Ring Champignon and other edible grassland mushrooms. Do NOT eat any small white funnel-shaped mushroom from grassland unless you are certain of ID.",
+        "description": "**Identification:** Small white to cream mushroom, cap 2-5cm, initially convex, becoming flat then funnel-shaped with an inrolled margin. Cap often has a slightly darker, watery spot at the centre (hygrophanous). Gills are white, decurrent (running down the stem). Stem is white, short, and fibrous. Often grows in rings or arcs in short grass. **Danger:** Contains muscarine — causes excessive salivation, sweating, tears, urination, diarrhoea, vomiting, and abdominal cramps. Not usually fatal but very unpleasant and can be serious.",
+        "id_keys": {
+            "Cap": "White to cream, 2-5cm, convex becoming funnel-shaped with inrolled margin. Often has a darker watery spot at centre",
+            "Gills": "White, decurrent (running down the stem) — KEY feature",
+            "Stem": "White, short, fibrous, no ring",
+            "Habitat": "Short grassland, lawns, pastures — often in rings or arcs",
+            "Smell": "Mealy (flour-like) smell"
+        },
+        "danger_tips": {
+            "where": "Short grassland, lawns, pastures, and meadows — often in fairy rings",
+            "when": "July to November, especially after rain in late summer and autumn",
+            "sustainable": "Do not pick. If found in a lawn, mark the area and keep children and pets away",
+            "danger_zone": "☠️ Contains muscarine — causes SLUDGE syndrome (profuse salivation, sweating, tears, vomiting, diarrhoea). Not usually fatal but very unpleasant. Can be serious in large amounts"
+        },
+        "lookalikes": [
+            {
+                "name": "Fairy Ring Champignon (Marasmius oreades)",
+                "danger": "EDIBLE",
+                "diff": "Fairy Ring Champignon has a BROWN tan cap, white gills that are free from the stem, and a tough, thin stem. Ivory Funnel has a WHITE cap and decurrent gills"
+            },
+            {
+                "name": "Milkcap species (Lactarius)",
+                "danger": "MEDIUM",
+                "diff": "Some milkcaps exude white or coloured milk when cut. Ivory Funnel does NOT exude milk"
+            }
+        ],
+        "confusion_notes": "☠️ CRITICAL: Ivory Funnel grows in the same grassland habitat as Fairy Ring Champignon and can appear in similar rings. KEY differences: Ivory Funnel is WHITE/CREAM with DECURRENT gills. Fairy Ring Champignon is BROWN/TAN with FREE gills. When in doubt, do NOT eat any small white mushroom from grassland."
+    },
+    {
+        "name": "Sickener",
+        "latin_name": "Russula emetica",
+        "category": "Fungi",
+        "months": ["July", "August", "September", "October"],
+        "habitat": "Coniferous and mixed woodland, especially under pine and birch on damp ground",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "ALL PARTS ARE POISONOUS",
+        "warnings": "☠️ POISONOUS. Causes severe vomiting, stomach cramps, and diarrhoea. The taste is EXTREMELY PEPPERY and ACRID — even a tiny piece on the tongue will burn. Part of the Russula family where the taste test is key: ANY Russula that tastes peppery or hot should be REJECTED.",
+        "description": "**Identification:** Medium mushroom, cap 5-10cm, bright cherry red to scarlet, initially convex then flat with a slight depression. Cap surface is shiny, smooth, and peels easily. Gills are white, brittle. Stem is white, brittle, and thick. Flesh is white, brittle, and crumbles easily. **Danger:** Causes severe gastrointestinal distress — violent vomiting, stomach cramps, and diarrhoea within 30 minutes to 3 hours. Not usually fatal but very unpleasant. The taste is extremely peppery and acrid.",
+        "id_keys": {
+            "Cap": "Bright cherry red to scarlet, 5-10cm, shiny, smooth, peels easily. Flattens with age",
+            "Gills": "White, brittle, crumble when touched",
+            "Stem": "White, brittle, thick, crumbles easily",
+            "Flesh": "White, brittle — typical Russula 'snap' texture",
+            "Taste": "EXTREMELY PEPPERY AND ACRID — even a tiny piece on the tongue burns (spit it out immediately)"
+        },
+        "danger_tips": {
+            "where": "Damp coniferous and mixed woodland, especially under pine and birch",
+            "when": "July to October, especially after rain",
+            "sustainable": "Do not eat. If sampling for taste test, use a tiny piece and SPIT IT OUT immediately",
+            "danger_zone": "☠️ Causes severe vomiting and diarrhoea. The PEPPERY taste is the warning — any Russula that tastes hot or peppery should be REJECTED"
+        },
+        "lookalikes": [
+            {
+                "name": "Charcoal Burner (Russula cyanoxantha)",
+                "danger": "EDIBLE",
+                "diff": "Charcoal Burner has variable cap colour (grey, lilac, olive, purple), FORKED flexible gills, and a MILD taste. Sickener has a bright red cap, brittle white gills, and an EXTREMELY PEPPERY taste"
+            },
+            {
+                "name": "Beechwood Sickener (Russula nobilis)",
+                "danger": "POISONOUS",
+                "diff": "Very similar — also red-capped and peppery. Found under beech. Both are poisonous and both should be rejected"
+            }
+        ],
+        "confusion_notes": "☠️ The Russula taste test is key: touch a tiny piece to your tongue. If it tastes PEPPERY or HOT, SPIT IT OUT — the mushroom is poisonous. If it tastes MILD, it MAY be safe (but only if you are confident with Russula ID). Bright red Russulas should ALWAYS be treated with extreme caution."
+    },
+    {
+        "name": "Beechwood Sickener",
+        "latin_name": "Russula nobilis",
+        "category": "Fungi",
+        "months": ["August", "September", "October", "November"],
+        "habitat": "Beech woodland, especially under beech on chalk and limestone soils",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "ALL PARTS ARE POISONOUS",
+        "warnings": "☠️ POISONOUS. Causes severe vomiting, stomach cramps, and diarrhoea. Very similar to the Sickener (Russula emetica) — both are red-capped Russulas with extremely peppery taste. Do NOT eat any red-capped Russula.",
+        "description": "**Identification:** Medium mushroom, cap 4-8cm, bright red to cherry red, often with white or pale patches. Cap surface peels easily. Gills are white, brittle, close together. Stem is white, brittle. Found exclusively under beech trees. Flesh is white, brittle, and crumbles easily. **Danger:** Causes severe gastrointestinal distress — vomiting, cramps, and diarrhoea. Not usually fatal but very unpleasant. Extremely peppery taste.",
+        "id_keys": {
+            "Cap": "Bright red to cherry red, 4-8cm, often with pale patches. Peels easily",
+            "Gills": "White, brittle, closely spaced — crumble when touched",
+            "Stem": "White, brittle, crumbles easily",
+            "Habitat": "EXCLUSIVELY under beech trees — key identifier",
+            "Taste": "EXTREMELY PEPPERY AND ACRID — tiny piece on tongue burns (spit it out)"
+        },
+        "danger_tips": {
+            "where": "Under beech trees, especially on chalk and limestone soils",
+            "when": "August to November, especially after rain",
+            "sustainable": "Do not eat. Taste test: tiny piece on tongue, SPIT OUT immediately if hot",
+            "danger_zone": "☠️ Causes severe vomiting and diarrhoea. Any red-capped Russula found under beech should be treated as potentially poisonous"
+        },
+        "lookalikes": [
+            {
+                "name": "Sickener (Russula emetica)",
+                "danger": "POISONOUS",
+                "diff": "Very similar — both are red-capped, peppery, and poisonous. Sickener is found under pine/birch; Beechwood Sickener is found under beech"
+            },
+            {
+                "name": "Charcoal Burner (Russula cyanoxantha)",
+                "danger": "EDIBLE",
+                "diff": "Charcoal Burner has variable cap colour (grey, green, lilac), forked flexible gills, and a MILD taste. Never bright red"
+            }
+        ],
+        "confusion_notes": "☠️ RULE: Do NOT eat any red-capped Russula. The taste test will always reveal an extremely peppery, acrid taste. If in doubt about any Russula, do the taste test (tiny piece, SPIT OUT) and REJECT any that taste hot."
+    },
+    {
+        "name": "Fool's Conecap",
+        "latin_name": "Conocybe filaris",
+        "category": "Fungi",
+        "months": ["June", "July", "August", "September", "October"],
+        "habitat": "Lawns, grassland, compost, disturbed ground, greenhouses",
+        "regions": ["All"],
+        "difficulty": 3,
+        "parts": "ALL PARTS ARE DEADLY",
+        "warnings": "☠️ DEADLY. Contains the same amatoxins as Death Cap and Destroying Angel. Extremely small and insignificant — easily overlooked. Can grow in lawns and gardens where children play. Do NOT eat any small brown cone-shaped mushroom from lawns or compost.",
+        "description": "**Identification:** Very small, inconspicuous mushroom. Cap 1-2.5cm, conical to bell-shaped, rusty brown to ochre, smooth and silky. Gills are brown, close together. Stem is very thin (1-2mm), pale brown, with a delicate ring that often disappears. Found in lawns, compost, and disturbed ground. **Danger:** Contains amatoxins — the same deadly toxin as Death Cap. Causes delayed liver failure. Potentially FATAL. Extremely dangerous because it is small and grows in gardens and lawns where it can be accidentally collected with other mushrooms.",
+        "id_keys": {
+            "Cap": "Very small (1-2.5cm), conical to bell-shaped, rusty brown to ochre, smooth and silky",
+            "Gills": "Brown, closely spaced",
+            "Stem": "Very thin (1-2mm), pale brown, with a delicate ring that often disappears with age",
+            "Size": "Extremely small and inconspicuous — easy to overlook",
+            "Habitat": "Lawns, compost, greenhouses, disturbed ground"
+        },
+        "danger_tips": {
+            "where": "Lawns, grassland, compost heaps, greenhouses, and disturbed ground — even domestic gardens",
+            "when": "June to October, especially after warm rain",
+            "sustainable": "Do not pick. If found in gardens with children, remove carefully and dispose of safely",
+            "danger_zone": "☠️ DEADLY — contains amatoxins. Extremely small and easy to miss or dismiss. Do NOT eat any tiny brown cone-shaped mushroom from lawns or compost"
+        },
+        "lookalikes": [
+            {
+                "name": "Other Conocybe species",
+                "danger": "POISONOUS",
+                "diff": "Most Conocybe species are poisonous or suspect. Do NOT eat any Conocybe — treat the entire genus as unsafe"
+            },
+            {
+                "name": "Liberty Cap (Psilocybe semilanceata)",
+                "danger": "POISONOUS",
+                "diff": "Liberty Cap has a distinctive nipple/papilla on the cap top and is psychoactive. Both are small, brown, and should NOT be eaten"
+            }
+        ],
+        "confusion_notes": "☠️ CRITICAL: Fool's Conecap is tiny, brown, and insignificant — and DEADLY. It contains the same amatoxins as Death Cap. NEVER eat any small brown cone-shaped mushroom from lawns, compost, or disturbed ground. The entire Conocybe genus should be treated as potentially deadly."
+    }
 ]
