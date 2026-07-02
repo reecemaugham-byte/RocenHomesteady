@@ -759,7 +759,7 @@ EDIBLE_PLANTS = [
         ],
         "confusion_notes": "CRITICAL: Sweet Cicely smells of ANISEED and has white blotches on leaves. Hemlock smells of MOUSE URINE and has purple spots.",
     },
-        {
+    {
         "name": "Wild Thyme",
         "latin_name": "Thymus polytrichus",
         "category": "Plant",
@@ -977,7 +977,7 @@ EDIBLE_PLANTS = [
         ],
         "confusion_notes": "Safe when cooked. Arrow-shaped leaves with mealy coating underneath. Often found near old settlements."
     },
-        {
+    {
         "name": "Primrose",
         "latin_name": "Primula vulgaris",
         "category": "Plant",
