@@ -1423,4 +1423,183 @@ POISONOUS_PLANTS = [
         ],
         "confusion_notes": "☠️ DEADLY: Deadly Fibrecap has a FIBROUS cap surface and STAINS RED when bruised. If a small mushroom stains red when cut, do NOT eat it."
     },
+        {
+        "name": "Cherry Laurel",
+        "latin_name": "Prunus laurocerasus",
+        "category": "Shrub",
+        "months": ["March", "April", "May", "June", "July", "August", "September", "October", "November"],
+        "habitat": "Hedges, gardens, parks, woodland edges, naturalised in scrub",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "ALL PARTS ARE POISONOUS — especially leaves and seeds",
+        "warnings": "☠️ POISONOUS. Contains cyanogenic glycosides which release cyanide when crushed or chewed. Wilted leaves are MORE toxic than fresh. Crushed leaves smell of bitter almonds (the cyanide). Do NOT use leaves for flavouring or decoration. Cherry Laurel water was historically used as a poison.",
+        "description": "**Identification:** Large evergreen shrub, 2-8m tall. Thick, leathery, glossy dark green leaves, 5-15cm long, oval with a pointed tip. Leaves give off a bitter almond smell when crushed. White flowers in upright spikes in spring. Berries turn from green to red to black. **Danger:** All parts contain cyanogenic glycosides — leaves, seeds, and berries are poisonous. Crushing or chewing releases hydrogen cyanide. Wilted leaves are more dangerous than fresh. Symptoms: headache, dizziness, nausea, vomiting, difficulty breathing, potentially fatal in large amounts.",
+        "id_keys": {
+            "Leaves": "Thick, leathery, glossy dark green, 5-15cm, oval with pointed tip. EVERGREEN — unlike most UK broadleaf trees",
+            "Smell": "Crushed leaves smell of BITTER ALMONDS — this is the cyanide. KEY warning sign",
+            "Flowers": "White, 5-petalled, in upright cylindrical spikes in spring (March-April)",
+            "Berries": "Oval, green → red → black, 8-12mm, in hanging clusters"
+        },
+        "danger_tips": {
+            "where": "Extremely common in gardens, hedges, parks, and naturalised in woodland edges",
+            "when": "Leaves are poisonous YEAR-ROUND (evergreen). Flowers in spring, berries in autumn",
+            "sustainable": "Do not eat any part. Crushed leaves smell of bitter almonds — a warning sign of cyanide",
+            "danger_zone": "☠️ Contains cyanide. Do NOT use leaves for flavouring or decoration. Wilted leaves are MORE toxic. The bitter almond smell is a warning"
+        },
+        "lookalikes": [
+            {
+                "name": "Bay Laurel (Laurus nobilis)",
+                "danger": "EDIBLE",
+                "diff": "Bay Laurel has aromatic, spicy-scented leaves when crushed (NOT bitter almond). Leaves are lighter green, thinner, and more flexible. Cherry Laurel leaves smell of BITTER ALMONDS when crushed"
+            },
+            {
+                "name": "Portuguese Laurel (Prunus lusitanica)",
+                "danger": "POISONOUS",
+                "diff": "Very similar — also poisonous with cyanide. Leaves are darker, narrower, and have red stems. Smell of bitter almonds when crushed. Both are dangerous"
+            }
+        ],
+        "confusion_notes": "☠️ CRITICAL: Do NOT confuse Cherry Laurel with Bay Laurel. BAY leaves smell spicy and aromatic; CHERRY LAUREL leaves smell of BITTER ALMONDS (cyanide). If crushed leaves smell of bitter almonds, DO NOT EAT any part of the plant."
+    },
+    {
+        "name": "Rhododendron",
+        "latin_name": "Rhododendron ponticum",
+        "category": "Shrub",
+        "months": ["May", "June", "July", "August", "September", "October", "November", "December"],
+        "habitat": "Woodland, moorland, gardens, naturalised on acidic soils, especially in western Britain",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "ALL PARTS ARE POISONOUS — especially leaves and nectar",
+        "warnings": "☠️ POISONOUS. Contains grayanotoxins which affect the heart and nervous system. Even honey made from rhododendron nectar can be poisonous ('mad honey disease'). Do NOT consume any part. Nectar is toxic to bees in some regions. Leaves remain toxic even when dried.",
+        "description": "**Identification:** Large evergreen shrub, 2-8m tall. Thick, leathery, dark green leaves, 10-20cm long, oblong. Flowers are large, showy, purple-pink to white, in large clusters, appearing May-June. Extremely invasive in many areas, forming dense thickets. **Danger:** All parts contain grayanotoxins — leaves, flowers, nectar, and honey made from the nectar. Symptoms: nausea, vomiting, drooling, low blood pressure, slow heart rate, dizziness, weakness. Can be fatal in large amounts. 'Mad honey' made from rhododendron nectar has been used as a poison historically.",
+        "id_keys": {
+            "Leaves": "Thick, leathery, dark green, 10-20cm, oblong with a pointed tip. EVERGREEN",
+            "Flowers": "Large, showy, purple-pink to white, bell-shaped, in big clusters in May-June",
+            "Size": "Large shrub, 2-8m, often forming dense thickets",
+            "Habitat": "Acidic soils, woodland, moorland — extremely invasive in western Britain"
+        },
+        "danger_tips": {
+            "where": "Woodland, moorland, gardens, and acidic soils — invasive and widespread in western Britain",
+            "when": "Flowers in May-June. Leaves are poisonous year-round (evergreen)",
+            "sustainable": "Do not eat any part. Even honey made from rhododendron nectar can be poisonous",
+            "danger_zone": "☠️ Contains grayanotoxins affecting heart and nervous system. 'Mad honey' from rhododendron nectar is also poisonous. Do NOT consume any part"
+        },
+        "lookalikes": [
+            {
+                "name": "Bay Laurel (Laurus nobilis)",
+                "danger": "EDIBLE",
+                "diff": "Bay has aromatic, spicy leaves (crush and smell). Rhododendron leaves are NOT aromatic and are larger, thicker, and darker"
+            },
+            {
+                "name": "Other Rhododendron species",
+                "danger": "POISONOUS",
+                "diff": "ALL Rhododendron species contain grayanotoxins and should be considered poisonous"
+            }
+        ],
+        "confusion_notes": "☠️ Rhododendron is one of the most poisonous common plants in the UK. ALL parts are toxic, including nectar and honey made from it. The large, showy purple-pink flowers and thick evergreen leaves make it easy to identify — and easy to avoid."
+    },
+    {
+        "name": "Honeysuckle",
+        "latin_name": "Lonicera periclymenum",
+        "category": "Shrub",
+        "months": ["May", "June", "July", "August", "September", "October"],
+        "habitat": "Hedgerows, woodland, scrub, gardens",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "BERRIES ARE POISONOUS — flowers are edible in small amounts (used for tea/syrup)",
+        "warnings": "☠️ BERRIES ARE POISONOUS — cause nausea, vomiting, abdominal pain, and diarrhoea. Do NOT eat the berries. The FLOWERS are edible in small amounts and are traditionally used for tea, syrup, and cordial. The LEAVES are also mildly toxic. Only the nectar/flowers should be consumed, and only in moderation.",
+        "description": "**Identification:** Climbing, twining shrub with pale brown shredding bark. Leaves are opposite, oval, blue-green, 4-8cm. Flowers are tubular, creamy-white to yellowish, often pinkish on the outside, with a long tube and protruding stamens. Strong sweet scent, especially in evening. Berries are bright red, orange, or yellow, in small clusters, 5-8mm. **Danger:** Berries contain saponins and are POISONOUS — causing nausea, vomiting, stomach pain, and diarrhoea. The flowers are traditionally used for tea and cordial and are safe in small amounts. Leaves are mildly toxic.",
+        "id_keys": {
+            "Flowers": "Tubular, creamy-white to yellow, often pinkish outside, with a long tube. Strong sweet scent, especially at dusk",
+            "Berries": "Bright red, orange-red, or yellow, 5-8mm, in small clusters — POISONOUS",
+            "Stems": "Twining, climbing, with pale brown shredding bark",
+            "Leaves": "Opposite, oval, blue-green, 4-8cm"
+        },
+        "danger_tips": {
+            "where": "Hedgerows, woodland edges, scrub, and gardens — common climber",
+            "when": "Flowers May-July. Berries July-October",
+            "sustainable": "Flowers can be collected for tea and cordial in small amounts. NEVER eat the berries",
+            "danger_zone": "☠️ BERRIES ARE POISONOUS — do not eat. Flowers are safe in small amounts. Leaves are mildly toxic. Only consume the flowers"
+        },
+        "lookalikes": [
+            {
+                "name": "Fuchsia",
+                "danger": "EDIBLE",
+                "diff": "Fuchsia has pendant flowers with red-pink outer petals and purple inner petals. Fuchsia berries are edible. Honeysuckle has tubular, fragrant, cream-yellow flowers"
+            }
+        ],
+        "confusion_notes": "☠️ IMPORTANT: Honeysuckle flowers are safe and traditional (tea, cordial, syrup), but the BERRIES ARE POISONOUS. This dual nature makes honeysuckle a plant to understand clearly — enjoy the flowers, avoid the berries."
+    },
+    {
+        "name": "Spurge Laurel",
+        "latin_name": "Daphne laureola",
+        "category": "Shrub",
+        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        "habitat": "Woodland, hedgerows, scrub, calcareous soils, gardens",
+        "regions": ["Southern", "All"],
+        "difficulty": 2,
+        "parts": "ALL PARTS ARE HIGHLY POISONOUS — especially berries",
+        "warnings": "☠️ HIGHLY POISONOUS. All parts contain daphnin and other toxins. Berries are the most dangerous — even a few can cause severe burning of the mouth, vomiting, diarrhoea, and potentially kidney damage. SAP causes skin blistering. Do NOT touch the sap. Do NOT eat any part.",
+        "description": "**Identification:** Small evergreen shrub, 30-100cm tall. Thick, dark green, glossy, leathery leaves in a rosette at the top of the stem. Leaves are oblong, 5-12cm. Flowers are small, yellowish-green, fragrant, in clusters at the base of the leaves, appearing January-March. Berries are black, oval, 8-12mm. **Danger:** ALL parts are highly poisonous. Berries are the most toxic — even a few can cause severe burning of mouth and throat, vomiting, diarrhoea, kidney damage, and potentially death. The sap causes skin blistering and contact dermatitis.",
+        "id_keys": {
+            "Leaves": "Thick, dark green, glossy, leathery, in a rosette at the top of the stem. EVERGREEN — like a mini laurel",
+            "Flowers": "Small, yellowish-green, fragrant, in clusters at the base of leaves, January-March",
+            "Berries": "Black, oval, 8-12mm, in small clusters — HIGHLY POISONOUS",
+            "Size": "Small shrub, 30-100cm, with leaves clustered at the top of bare stems"
+        },
+        "danger_tips": {
+            "where": "Woodland, hedgerows, scrub on calcareous soils, especially in southern England",
+            "when": "Flowers in late winter (January-March). Berries in summer. Leaves poisonous year-round (evergreen)",
+            "sustainable": "Do not touch the sap — it causes skin blistering. Do not eat any part. Remove from gardens with children",
+            "danger_zone": "☠️ ALL PARTS POISONOUS. Berries are most dangerous — even a few can be fatal. SAP CAUSES SKIN BLISTERING. Do not handle without gloves"
+        },
+        "lookalikes": [
+            {
+                "name": "Cherry Laurel (Prunus laurocerasus)",
+                "danger": "POISONOUS",
+                "diff": "Cherry Laurel is MUCH larger (2-8m), has white flowers in spikes, and bitter almond smell when crushed. Spurge Laurel is small (30-100cm) with yellow-green flowers and a rosette of leaves on bare stems"
+            },
+            {
+                "name": "Mezereon (Daphne mezereum)",
+                "danger": "DEADLY",
+                "diff": "Mezereon has bright pink-purple flowers before leaves appear, and red berries. Both Daphne species are HIGHLY POISONOUS"
+            }
+        ],
+        "confusion_notes": "☠️ Spurge Laurel is a dangerous plant — all parts are toxic, the berries can be fatal, and the sap causes skin blistering. Its small, laurel-like leaves and low growth habit distinguish it from the much larger Cherry Laurel."
+    },
+    {
+        "name": "Mezereon",
+        "latin_name": "Daphne mezereum",
+        "category": "Shrub",
+        "months": ["February", "March", "April", "May", "June", "July", "August"],
+        "habitat": "Woodland, especially calcareous beech woods, hedgerows, gardens",
+        "regions": ["Southern", "All"],
+        "difficulty": 2,
+        "parts": "ALL PARTS ARE DEADLY — especially berries and bark",
+        "warnings": "☠️ DEADLY. All parts contain daphnin and mezerein. Even a few berries can be FATAL to a child. The sap causes severe skin blistering. Do NOT touch without gloves. Do NOT eat any part. This plant has caused fatalities.",
+        "description": "**Identification:** Small deciduous shrub, 30-120cm tall. Stems are grey-brown, smooth. Flowers appear BEFORE the leaves in late winter/early spring (February-March) — bright pink-purple, fragrant, in clusters on bare stems. Leaves appear after flowering — oval, grey-green, 3-8cm, in a spiral at stem tips. Berries are bright red, 8-12mm, in small clusters. **Danger:** EXTREMELY POISONOUS. All parts contain mezerein and daphnin. Berries are the most toxic — a few berries can be fatal to a child. Symptoms: burning mouth and throat, vomiting, diarrhoea, kidney failure, potentially death. The sap causes severe skin blistering and contact dermatitis.",
+        "id_keys": {
+            "Flowers": "Bright pink-purple, fragrant, appearing on BARE STEMS before leaves in February-March — very distinctive",
+            "Berries": "Bright red, 8-12mm, in clusters — DEADLY POISONOUS",
+            "Stems": "Grey-brown, smooth, with flowers and later berries directly on the stem",
+            "Leaves": "Oval, grey-green, 3-8cm, appearing AFTER the flowers"
+        },
+        "danger_tips": {
+            "where": "Woodland on calcareous soils, hedgerows, and gardens. Increasingly rare in the wild",
+            "when": "Flowers February-March (on bare stems). Berries June-August. All parts are poisonous year-round",
+            "sustainable": "☠️ Do NOT touch without gloves. Remove from gardens where children may have access. Report locations to warn others",
+            "danger_zone": "☠️ DEADLY. A few berries can kill a child. All parts are poisonous. Sap causes severe skin blistering. EXTREME DANGER"
+        },
+        "lookalikes": [
+            {
+                "name": "Spurge Laurel (Daphne laureola)",
+                "danger": "DEADLY",
+                "diff": "Spurge Laurel has EVERGREEN leathery leaves and yellowish-green flowers. Mezereon is DECIDUOUS with bright pink-purple flowers on bare stems. Both are DEADLY"
+            },
+            {
+                "name": "Other Daphne species",
+                "danger": "DEADLY",
+                "diff": "ALL Daphne species are poisonous. Treat the entire genus as deadly"
+            }
+        ],
+        "confusion_notes": "☠️ Mezereon is one of the most dangerous plants in the UK. Its bright pink-purple flowers on bare stems in late winter and bright red berries make it attractive — and especially dangerous for children. ALL parts are deadly. The sap
 ]
