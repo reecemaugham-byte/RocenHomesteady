@@ -34,4 +34,85 @@ EDIBLE_SEAWEED = [
         ],
         "confusion_notes": "Safe. Very distinct — dark red, hand-shaped, leathery texture. Other seaweeds are mostly edible but check ID.",
     },
+        {
+        "name": "Bladderwrack",
+        "latin_name": "Fucus vesiculosus",
+        "category": "Seaweed",
+        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        "habitat": "Coastal Rocks, Sheltershores",
+        "regions": ["Coastal"],
+        "difficulty": 1,
+        "parts": "Fronds",
+        "warnings": "Contains iodine. Use in moderation. Can be made into tea.",
+        "description": "**Identification:** Olive-brown, flat, branched fronds with distinctive paired air bladders (bubbles) along the edges. Found on mid-shore rocks.",
+        "id_keys": {
+            "Colour": "Olive-brown, darker when dry",
+            "Shape": "Flat, branched, with paired air bladders",
+            "Bladders": "Paired bubbles along the midrib (KEY ID)"
+        },
+        "foraging_tips": {
+            "where": "Mid-shore rocks, sheltered coasts.",
+            "when": "Year-round (best Spring).",
+            "sustainable": "Snip above holdfast. Wash well.",
+            "danger_zone": "Safe in moderation. Contains iodine. Do not eat large amounts."
+        },
+        "lookalikes": [
+            {"name": "Knotted Wrack", "danger": "EDIBLE", "diff": "Knotted Wrack has single (not paired) air bladders. Both are edible."}
+        ],
+        "confusion_notes": "Safe in moderation. The PAIRED air bladders along the midrib are the key identifier. Contains iodine — do not eat large amounts."
+    },
+    {
+        "name": "Sugar Kelp",
+        "latin_name": "Saccharina latissima",
+        "category": "Seaweed",
+        "months": ["January", "February", "March", "April", "May", "June"],
+        "habitat": "Coastal Rocks, Shallow water",
+        "regions": ["Coastal"],
+        "difficulty": 2,
+        "parts": "Fronds",
+        "warnings": "Sweet taste when dried. Rich in minerals. Wash thoroughly.",
+        "description": "**Identification:** Long, wavy, golden-brown frond with a wrinkled centre (like a crinkled ribbon). Sweet taste when dried. Holdfast at base.",
+        "id_keys": {
+            "Shape": "Long, wavy, ribbon-like with crinkled centre",
+            "Colour": "Golden-brown, olive when wet",
+            "Taste": "Sweet when dried (sugar kelp)"
+        },
+        "foraging_tips": {
+            "where": "Rocks, shallow water, lower shore.",
+            "when": "Winter to Spring (best quality).",
+            "sustainable": "Snip above holdfast.",
+            "danger_zone": "Safe. Wash thoroughly. Sweet when dried."
+        },
+        "lookalikes": [
+            {"name": "Oarweed", "danger": "EDIBLE", "diff": "Oarweed has finger-like fronds from a single holdfast. Sugar Kelp is a single long ribbon."}
+        ],
+        "confusion_notes": "Safe. The long, wavy, crinkled ribbon shape and sweet taste when dried are distinctive."
+    },
+    {
+        "name": "Laver (Nori)",
+        "latin_name": "Porphyra umbilicalis",
+        "category": "Seaweed",
+        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        "habitat": "Coastal Rocks",
+        "regions": ["Coastal"],
+        "difficulty": 2,
+        "parts": "Fronds",
+        "warnings": "Wash very thoroughly. Can be eaten raw or cooked. Used to make Welsh laverbread.",
+        "description": "**Identification:** Thin, dark purple/black, sheet-like seaweed. Grows on rocks in the intertidal zone. Becomes greenish when cooked.",
+        "id_keys": {
+            "Colour": "Dark purple/black, thin sheets",
+            "Shape": "Thin sheets growing from a central point on rocks",
+            "Texture": "Thin, delicate when wet, papery when dry"
+        },
+        "foraging_tips": {
+            "where": "Rocks in the intertidal zone.",
+            "when": "Year-round (best in Winter/Spring).",
+            "sustainable": "Snip from rocks. Leave holdfast.",
+            "danger_zone": "Safe. Wash VERY thoroughly (traps sand). Traditional Welsh laverbread ingredient."
+        },
+        "lookalikes": [
+            {"name": "Other Purple Seaweeds", "danger": "EDIBLE", "diff": "Most thin purple seaweeds in the UK are edible, but Laver is the most common."}
+        ],
+        "confusion_notes": "Safe. The thin, dark purple/black sheets on rocks are distinctive. Used to make Welsh laverbread and Japanese nori."
+    },
 ]
