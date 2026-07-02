@@ -277,7 +277,7 @@ EDIBLE_SHRUBS = [
         ],
         "confusion_notes": "CRITICAL: Guelder Rose berries MUST be cooked. Raw they are bitter and mildly toxic. The maple-like leaves and red translucent berries are distinctive."
     },
-        {
+    {
         "name": "Blackberry",
         "latin_name": "Rubus fruticosus agg.",
         "category": "Shrub",
