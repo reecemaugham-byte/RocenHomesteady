@@ -977,4 +977,440 @@ EDIBLE_PLANTS = [
         ],
         "confusion_notes": "Safe when cooked. Arrow-shaped leaves with mealy coating underneath. Often found near old settlements."
     },
+        {
+        "name": "Primrose",
+        "latin_name": "Primula vulgaris",
+        "category": "Plant",
+        "months": ["February", "March", "April"],
+        "habitat": "Woodlands, Hedgerows, Gardens",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Flowers, Young leaves",
+        "warnings": "Only eat in moderation. Do not confuse with Primula obconica (indoor primrose, irritant).",
+        "description": "**Identification:** Low-growing plant. Pale yellow flowers with five petals, each petal notched. Crinkled, tongue-shaped leaves in a rosette.",
+        "id_keys": {
+            "Flowers": "Pale yellow, 5 notched petals, facing upwards",
+            "Leaves": "Crinkled, tongue-shaped, in a rosette",
+            "Habitat": "Woodland, hedge banks, shady places"
+        },
+        "foraging_tips": {
+            "where": "Woodlands, hedge banks, shady gardens.",
+            "when": "Early spring (February-April).",
+            "sustainable": "Pick a few flowers only. Leave leaves.",
+            "danger_zone": "Safe in moderation. Do NOT eat indoor primroses."
+        },
+        "lookalikes": [
+            {"name": "Cowslip", "danger": "EDIBLE", "diff": "Cowslip has taller stems with nodding clusters of yellow flowers. Primrose has single flowers on short stems."},
+            {"name": "Oxlip", "danger": "EDIBLE", "diff": "Oxlip has flowers on one side of the stem. Primrose flowers face upwards."}
+        ],
+        "confusion_notes": "Safe. Pale yellow flowers facing upwards on short stems. Do NOT eat indoor primroses (Primula obconica) — they cause skin irritation."
+    },
+    {
+        "name": "Cowslip",
+        "latin_name": "Primula veris",
+        "category": "Plant",
+        "months": ["April", "May"],
+        "habitat": "Meadows, Pastures, Hedge banks",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Flowers, Young leaves",
+        "warnings": "Protected in the wild. Pick sparingly. Cowslip wine is traditional.",
+        "description": "**Identification:** Tall stems with nodding clusters of deep yellow, funnel-shaped flowers. Each flower has a small calyx with five teeth. Crinkled leaves in a rosette.",
+        "id_keys": {
+            "Flowers": "Deep yellow, funnel-shaped, nodding clusters on tall stems",
+            "Leaves": "Crinkled, oval, in a rosette",
+            "Calyx": "Five-toothed green calyx behind flower"
+        },
+        "foraging_tips": {
+            "where": "Meadows, pastures, hedge banks (decreasing due to habitat loss).",
+            "when": "April-May.",
+            "sustainable": "PROTECTED in many areas. Pick flowers sparingly from abundant patches only.",
+            "danger_zone": "Safe. Traditional for cowslip wine and tea."
+        },
+        "lookalikes": [
+            {"name": "Primrose", "danger": "EDIBLE", "diff": "Primrose has single pale yellow flowers on short stems. Cowslip has clusters of deeper yellow on tall stems."}
+        ],
+        "confusion_notes": "Safe. Deep yellow funnel-shaped flowers in nodding clusters on tall stems. Protected — pick sparingly."
+    },
+    {
+        "name": "Salad Burnet",
+        "latin_name": "Sanguisorba minor",
+        "category": "Plant",
+        "months": ["March", "April", "May", "June", "July"],
+        "habitat": "Grassland, Dry meadows, Chalk",
+        "regions": ["Southern", "Central"],
+        "difficulty": 1,
+        "parts": "Leaves",
+        "warnings": "Cucumber flavour. Good in salads.",
+        "description": "**Identification:** Low-growing plant with paired, rounded leaflets with toothed edges. Tiny pink/red flowers in round heads on tall stems.",
+        "id_keys": {
+            "Leaves": "Rounded, paired leaflets, toothed edges",
+            "Flowers": "Tiny, pink/red, in round cluster heads",
+            "Taste": "Cucumber flavour"
+        },
+        "foraging_tips": {
+            "where": "Dry grassland, chalk, meadows.",
+            "when": "Spring to Summer.",
+            "sustainable": "Pick young leaves from the rosette.",
+            "danger_zone": "Safe. Cucumber flavour is distinctive."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "Rounded leaflets with toothed edges and cucumber flavour are distinctive."}
+        ],
+        "confusion_notes": "Safe. The cucumber flavour and rounded, toothed leaflets are distinctive."
+    },
+    {
+        "name": "Silverweed",
+        "latin_name": "Potentilla anserina",
+        "category": "Plant",
+        "months": ["April", "May", "June", "July", "August", "September"],
+        "habitat": "Grassland, Paths, Riverbanks",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Roots (cooked)",
+        "warnings": "Roots are starchy and edible cooked. Leaves also edible raw but bitter.",
+        "description": "**Identification:** Low-growing creeping plant. Leaves are silvery-white underneath, green on top, with many toothed leaflets. Yellow flowers with 5 petals.",
+        "id_keys": {
+            "Leaves": "Green on top, SILVER-WHITE underneath, many toothed leaflets",
+            "Flowers": "Yellow, 5 petals",
+            "Habitat": "Paths, bare ground, riverbanks"
+        },
+        "foraging_tips": {
+            "where": "Paths, bare ground, riverbanks, grassland.",
+            "when": "Autumn for roots, Spring for leaves.",
+            "sustainable": "Digging roots kills the plant. Only dig where abundant.",
+            "danger_zone": "Roots must be cooked. Raw roots are starchy but tough."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "The silver-white underside of the leaves is unique."}
+        ],
+        "confusion_notes": "Safe. The SILVER-WHITE underside of the leaves is the key identifier. Roots were an important food source historically."
+    },
+    {
+        "name": "Wild Hop",
+        "latin_name": "Humulus lupulus",
+        "category": "Plant",
+        "months": ["June", "July", "August", "September"],
+        "habitat": "Hedgerows, Woodlands, Riverbanks",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Young shoots, Flowers (cones)",
+        "warnings": "Young shoots eaten like asparagus. Flowers used for brewing. Can cause skin irritation.",
+        "description": "**Identification:** Vigorous climbing plant with twining stems. Deeply lobed, rough leaves. Distinctive cone-like green flowers (hops).",
+        "id_keys": {
+            "Leaves": "Lobed, rough texture, opposite pairs",
+            "Flowers": "Green cone-like papery structures (hops)",
+            "Stem": "Twining, climbing (wraps clockwise)"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, riverbanks, woods.",
+            "when": "Spring for shoots, Late Summer for flowers.",
+            "sustainable": "Pick a few cones. Leave plenty for wildlife.",
+            "danger_zone": "Can cause skin irritation. Handle with gloves if sensitive."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "The cone-like flowers and twining stems are distinctive."}
+        ],
+        "confusion_notes": "Safe. The cone-like green flowers (hops) and twining stems are distinctive. Can cause skin irritation in some people."
+    },
+    {
+        "name": "Bistort",
+        "latin_name": "Persicaria bistorta",
+        "category": "Plant",
+        "months": ["April", "May", "June"],
+        "habitat": "Meadows, Damp grassland",
+        "regions": ["Northern", "Wales", "Scotland"],
+        "difficulty": 1,
+        "parts": "Leaves, Roots",
+        "warnings": "Leaves edible raw or cooked. Roots are very astringent — best cooked.",
+        "description": "**Identification:** Tall pink flower spikes on a plant with distinctive arrow-shaped basal leaves. The leaves have a 'tucked under' edge.",
+        "id_keys": {
+            "Leaves": "Arrow-shaped, basal, edges curled under",
+            "Flowers": "Pink, in dense spikes on tall stems",
+            "Habitat": "Damp meadows, northern UK"
+        },
+        "foraging_tips": {
+            "where": "Damp meadows, northern England, Wales, Scotland.",
+            "when": "Spring for leaves.",
+            "sustainable": "Pick leaves, leave roots.",
+            "danger_zone": "Leaves are safe. Roots are very astringent and should be soaked before cooking."
+        },
+        "lookalikes": [
+            {"name": "None dangerous", "danger": "SAFE", "diff": "The pink flower spikes and arrow-shaped leaves with curled edges are distinctive."}
+        ],
+        "confusion_notes": "Safe. The pink flower spikes and arrow-shaped leaves with edges curled under are distinctive."
+    },
+    {
+        "name": "Lesser Celandine",
+        "latin_name": "Ficaria verna",
+        "category": "Plant",
+        "months": ["February", "March", "April"],
+        "habitat": "Woodlands, Hedgerows, Gardens",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Leaves (cooked), Flower buds (pickled)",
+        "warnings": "Contains protoanemonin when RAW. Must be cooked or dried. Do NOT eat raw in quantity.",
+        "description": "**Identification:** Low-growing with shiny, heart-shaped leaves. Bright yellow star-like flowers (8-12 petals). One of the first flowers of spring.",
+        "id_keys": {
+            "Leaves": "Heart-shaped, shiny, dark green, often mottled",
+            "Flowers": "Bright yellow, 8-12 petals, star-like",
+            "Habitat": "Woodland floor, hedge banks, early spring"
+        },
+        "foraging_tips": {
+            "where": "Woodlands, hedge banks, gardens.",
+            "when": "February-April.",
+            "sustainable": "Pick a few leaves from abundant patches.",
+            "danger_zone": "MUST be cooked or dried. Contains protoanemonin when raw."
+        },
+        "lookalikes": [
+            {"name": "Buttercup", "danger": "POISONOUS", "diff": "Buttercup has 5 shiny petals. Lesser Celandine has 8-12 petals and is a low-growing plant."},
+            {"name": "Greater Celandine", "danger": "POISONOUS", "diff": "Greater Celandine has orange sap and divided leaves. Lesser Celandine has no orange sap and heart-shaped leaves."}
+        ],
+        "confusion_notes": "CAUTION: Must be COOKED or dried. Lesser Celandine has 8-12 petals and heart-shaped leaves. Buttercup has exactly 5 petals. Do NOT eat raw."
+    },
+    {
+        "name": "Sweet Woodruff",
+        "latin_name": "Galium odoratum",
+        "category": "Plant",
+        "months": ["May", "June"],
+        "habitat": "Woodlands, Hedgerows",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Leaves, Flowers",
+        "warnings": "Use in moderation. Contains coumarin (gives the sweet scent). Large amounts can cause headaches.",
+        "description": "**Identification:** Low-growing, spreading plant with whorls of narrow leaves. Tiny white flowers. Smells of sweet hay/vanilla when dried.",
+        "id_keys": {
+            "Leaves": "Whorls of 6-8 narrow leaves",
+            "Flowers": "Tiny white, star-shaped",
+            "Smell": "Sweet hay/vanilla when dried"
+        },
+        "foraging_tips": {
+            "where": "Woodland floors, hedge bottoms.",
+            "when": "May-June.",
+            "sustainable": "Pick sparingly. Dry for later use.",
+            "danger_zone": "Use in moderation. Contains coumarin. Large amounts cause headaches."
+        },
+        "lookalikes": [
+            {"name": "Cleavers", "danger": "EDIBLE", "diff": "Cleavers is sticky and has whorls of 6-8 narrow leaves too, but has NO sweet smell when dried."}
+        ],
+        "confusion_notes": "Safe in moderation. The sweet hay/vanilla smell when dried is distinctive. Use sparingly — large amounts can cause headaches."
+    },
+    {
+        "name": "Wild Basil",
+        "latin_name": "Clinopodium vulgare",
+        "category": "Plant",
+        "months": ["July", "August", "September"],
+        "habitat": "Grassland, Hedgerows, Dry banks",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Leaves, Flowers",
+        "warnings": "Mild basil flavour. Use as seasoning.",
+        "description": "**Identification:** Upright plant with oval, slightly toothed leaves. Whorls of pink/purple flowers at the top of the stem. Mild basil scent.",
+        "id_keys": {
+            "Leaves": "Oval, slightly toothed, opposite pairs",
+            "Flowers": "Pink/purple, in whorls at top of stem",
+            "Smell": "Mild basil scent when crushed"
+        },
+        "foraging_tips": {
+            "where": "Dry grassland, hedge banks.",
+            "when": "Summer.",
+            "sustainable": "Pick leaves and flowers.",
+            "danger_zone": "Safe. Mild basil flavour."
+        },
+        "lookalikes": [
+            {"name": "Wild Thyme", "danger": "EDIBLE", "diff": "Wild Thyme is low-growing with tiny leaves and a stronger thyme smell. Wild Basil is taller with larger leaves and a milder basil smell."}
+        ],
+        "confusion_notes": "Safe. Mild basil smell. Taller than Wild Thyme with larger leaves."
+    },
+    {
+        "name": "White Clover",
+        "latin_name": "Trifolium repens",
+        "category": "Plant",
+        "months": ["May", "June", "July", "August", "September"],
+        "habitat": "Lawns, Grassland, Paths",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Flowers, Leaves",
+        "warnings": "Mild, sweet flavour. Good as tea. Avoid if on blood thinners.",
+        "description": "**Identification:** Low-growing with three leaflets (often with white mark). White/pale pink globe-shaped flowers. Very common in lawns.",
+        "id_keys": {
+            "Leaves": "3 leaflets, often with white V-shaped mark",
+            "Flowers": "White/pale pink, round globe shape",
+            "Habitat": "Very common in lawns and grass"
+        },
+        "foraging_tips": {
+            "where": "Lawns, paths, fields.",
+            "when": "Spring to Autumn.",
+            "sustainable": "Very common. Pick flowers freely.",
+            "danger_zone": "Safe. Avoid if on blood thinners."
+        },
+        "lookalikes": [
+            {"name": "Red Clover", "danger": "EDIBLE", "diff": "Red Clover has pink/purple flowers. White Clover has white/pale pink flowers."}
+        ],
+        "confusion_notes": "Safe. White globe-shaped flowers and three leaflets. Very common in lawns. Good for tea."
+    },
+    {
+        "name": "Wood Avens",
+        "latin_name": "Geum urbanum",
+        "category": "Plant",
+        "months": ["May", "June", "July"],
+        "habitat": "Woodlands, Hedgerows, Gardens",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Roots, Young leaves",
+        "warnings": "Roots have a clove-like flavour. Used in herbal tea.",
+        "description": "**Identification:** Low rosette of lobed leaves. Yellow, 5-petalled flowers on thin stems. Seeds are small burred hooks that stick to clothing.",
+        "id_keys": {
+            "Leaves": "Lobed, toothed, in a rosette",
+            "Flowers": "Yellow, 5 petals, nodding",
+            "Seeds": "Small hooked burs that stick to clothes"
+        },
+        "foraging_tips": {
+            "where": "Woodland, hedgerows, gardens.",
+            "when": "Spring for leaves, Autumn for roots.",
+            "sustainable": "Dig roots only where abundant.",
+            "danger_zone": "Safe. Roots taste of cloves."
+        },
+        "lookalikes": [
+            {"name": "Water Avens", "danger": "EDIBLE", "diff": "Water Avens has pink/purple flowers and grows in damp places. Wood Avens has yellow flowers."}
+        ],
+        "confusion_notes": "Safe. Yellow flowers and seeds that stick to clothing. The roots have a distinctive clove flavour."
+    },
+    {
+        "name": "Wild Chervil",
+        "latin_name": "Anthriscus cerefolium",
+        "category": "Plant",
+        "months": ["April", "May", "June"],
+        "habitat": "Hedgerows, Woodland edges",
+        "regions": ["Southern", "Central"],
+        "difficulty": 3,
+        "parts": "Leaves, Stems",
+        "warnings": "EXPERT ONLY. Very similar to Hemlock. MUST have hairy stems and smell of parsley.",
+        "description": "**Identification:** Feathery, fern-like leaves. White umbel flowers. Hairy stems (key ID feature). Smells of sweet parsley when crushed.",
+        "id_keys": {
+            "Stem": "HAIRY, green, NO purple spots (critical ID)",
+            "Leaves": "Feathery, fern-like, hairy underneath",
+            "Smell": "Sweet parsley when crushed"
+        },
+        "foraging_tips": {
+            "where": "Hedgerows, woodland edges.",
+            "when": "Spring.",
+            "sustainable": "Pick leaves from the top.",
+            "danger_zone": "CRITICAL: Must have HAIRY stems and smell of PARSLEY. If it has purple spots or smells of mouse urine, it is HEMLOCK."
+        },
+        "lookalikes": [
+            {"name": "Hemlock", "danger": "DEADLY", "diff": "Hemlock has SMOOTH stems with PURPLE SPOTS and smells of mouse urine. Wild Chervil has HAIRY stems and smells of parsley."}
+        ],
+        "confusion_notes": "CRITICAL: Wild Chervil has HAIRY stems and smells of PARSLEY. Hemlock has SMOOTH stems with PURPLE SPOTS and smells of MOUSE URINE. If you see purple spots, do NOT touch it."
+    },
+    {
+        "name": "Marsh Woundwort",
+        "latin_name": "Stachys palustris",
+        "category": "Plant",
+        "months": ["June", "July", "August"],
+        "habitat": "Damp meadows, Riverbanks, Marshes",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Tubers (cooked)",
+        "warnings": "Tubers must be cooked. Raw tubers are unpleasant.",
+        "description": "**Identification:** Tall plant with square stem. Pink/purple flower spikes. Toothed, pointed leaves. Produces strings of small tubers underground.",
+        "id_keys": {
+            "Stem": "Square (mint family), tall",
+            "Flowers": "Pink/purple spikes, orchid-like",
+            "Leaves": "Pointed, toothed, opposite pairs",
+            "Tubers": "Strings of small tubers underground"
+        },
+        "foraging_tips": {
+            "where": "Damp meadows, riverbanks, marshes.",
+            "when": "Autumn for tubers.",
+            "sustainable": "Digging tubers kills the plant. Only dig where abundant.",
+            "danger_zone": "MUST be cooked. Raw tubers are unpleasant."
+        },
+        "lookalikes": [
+            {"name": "Hedge Woundwort", "danger": "EDIBLE (leaves only)", "diff": "Hedge Woundwort has unpleasant smell and grows in dry places. Marsh Woundwort has no bad smell and grows in WET places."}
+        ],
+        "confusion_notes": "Safe when cooked. Marsh Woundwort grows in WET places and has no bad smell. Hedge Woundwort grows in dry places and smells unpleasant."
+    },
+    {
+        "name": "Common Poppy",
+        "latin_name": "Papaver rhoeas",
+        "category": "Plant",
+        "months": ["June", "July", "August"],
+        "habitat": "Fields, Roadsides, Waste ground",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Seeds only",
+        "warnings": "ONLY the seeds are edible. All other parts are toxic. Do NOT confuse with Opium Poppy.",
+        "description": "**Identification:** Iconic bright red flowers with 4 papery petals and a dark centre. Finely divided leaves. Round seed heads that rattle when dry.",
+        "id_keys": {
+            "Flowers": "Bright red, 4 papery petals, dark centre",
+            "Leaves": "Finely divided, hairy",
+            "Seed heads": "Round, rattle when dry"
+        },
+        "foraging_tips": {
+            "where": "Fields, roadsides, waste ground.",
+            "when": "Summer for flowers, Late Summer for seeds.",
+            "sustainable": "Shake seeds from dry heads. Leave plenty.",
+            "danger_zone": "ONLY the seeds are edible. ALL other parts are TOXIC."
+        },
+        "lookalikes": [
+            {"name": "Opium Poppy", "danger": "POISONOUS (cultivated)", "diff": "Opium Poppy is larger with pink/purple/red flowers and a smooth seed head. Common Poppy is smaller with bright red flowers."}
+        ],
+        "confusion_notes": "ONLY the SEEDS are edible. The flowers, leaves, and stems are TOXIC. Do NOT eat any part except the seeds."
+    },
+    {
+        "name": "Wavy Bittercress",
+        "latin_name": "Cardamine flexuosa",
+        "category": "Plant",
+        "months": ["March", "April", "May", "June", "July", "August", "September"],
+        "habitat": "Damp ground, Stream sides, Gardens",
+        "regions": ["All"],
+        "difficulty": 1,
+        "parts": "Leaves, Stems, Flowers",
+        "warnings": "Peppery taste, similar to Hairy Bittercress.",
+        "description": "**Identification:** Small plant with pinnate leaves (leaflets along a central stem). Tiny white 4-petalled flowers. Slender seed pods that explode when touched. Prefers damp ground.",
+        "id_keys": {
+            "Leaves": "Pinnate, 5-9 leaflets, on a central stem",
+            "Flowers": "Tiny white, 4 petals",
+            "Stem": "Wavy/bent at the nodes (flexuosa = wavy)",
+            "Seeds": "Slender pods that explode"
+        },
+        "foraging_tips": {
+            "where": "Damp ground, stream sides, gardens.",
+            "when": "Spring to Autumn.",
+            "sustainable": "Common. Pick freely.",
+            "danger_zone": "Safe. Great pepper substitute."
+        },
+        "lookalikes": [
+            {"name": "Hairy Bittercress", "danger": "EDIBLE", "diff": "Hairy Bittercress has a line of hairs on the stem. Wavy Bittercress has a wavy stem with no line of hairs."}
+        ],
+        "confusion_notes": "Safe. Both bittercresses are edible. Wavy Bittercress prefers damp ground and has a wavy stem. Both have exploding seed pods."
+    },
+    {
+        "name": "Poppy (Seeds)",
+        "latin_name": "Papaver somniferum",
+        "category": "Plant",
+        "months": ["June", "July", "August"],
+        "habitat": "Gardens, Waste ground",
+        "regions": ["All"],
+        "difficulty": 2,
+        "parts": "Seeds ONLY",
+        "warnings": "ONLY the seeds are edible. All other parts are TOXIC. Do NOT cultivate in the UK (controlled).",
+        "description": "**Identification:** Large flowers in pink, purple, red, or white. Large, smooth seed pod (rounded). Blue-grey seeds.",
+        "id_keys": {
+            "Flowers": "Large, pink/purple/red/white, papery petals",
+            "Seed pod": "Large, smooth, rounded (distinctive)",
+            "Seeds": "Blue-grey, small, edible"
+        },
+        "foraging_tips": {
+            "where": "Gardens (ornamental), waste ground.",
+            "when": "Late Summer for seeds.",
+            "sustainable": "Shake seeds from dry heads.",
+            "danger_zone": "CRITICAL: ONLY the SEEDS are edible. All other parts contain opiates. Do NOT cultivate (controlled substance)."
+        },
+        "lookalikes": [
+            {"name": "Common Poppy", "danger": "EDIBLE (seeds)", "diff": "Common Poppy is smaller with bright red flowers and hairy stems. Opium Poppy is larger with smooth stems and a smooth, rounded seed pod."}
+        ],
+        "confusion_notes": "CRITICAL: ONLY the SEEDS are edible. All other parts of Opium Poppy are TOXIC and contain opiates. Do NOT cultivate (it is a controlled substance in the UK)."
+    },
 ]
