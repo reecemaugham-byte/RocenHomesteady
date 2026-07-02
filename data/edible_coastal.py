@@ -220,7 +220,7 @@ EDIBLE_COASTAL = [
         ],
         "confusion_notes": "Safe. Distinctive lilac daisy-like flower growing on saltmarshes.",
     },
-        {
+    {
         "name": "Sea Lettuce",
         "latin_name": "Ulva lactuca",
         "category": "Seaweed",
@@ -274,7 +274,7 @@ EDIBLE_COASTAL = [
         ],
         "confusion_notes": "Safe from clean water. Only collect in months with an 'R'. Check for red tide warnings. Cook thoroughly."
     },
-        {
+    {
         "name": "Sea Rocket",
         "latin_name": "Cakile maritima",
         "category": "Coastal",
@@ -328,7 +328,7 @@ EDIBLE_COASTAL = [
         ],
         "confusion_notes": "PROTECTED species. Do NOT pick from wild populations. The spiny steel-blue leaves and cone-like flower heads on sand dunes are distinctive."
     },
-        {
+    {
         "name": "Scurvygrass",
         "latin_name": "Cochlearia officinalis",
         "category": "Coastal",
