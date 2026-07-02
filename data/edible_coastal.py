@@ -328,4 +328,174 @@ EDIBLE_COASTAL = [
         ],
         "confusion_notes": "PROTECTED species. Do NOT pick from wild populations. The spiny steel-blue leaves and cone-like flower heads on sand dunes are distinctive."
     },
+        {
+        "name": "Scurvygrass",
+        "latin_name": "Cochlearia officinalis",
+        "category": "Coastal",
+        "months": ["March", "April", "May", "June", "July"],
+        "habitat": "Rocky cliffs, salt marshes, coastal paths, shingle, sea walls",
+        "regions": ["Coastal", "All"],
+        "difficulty": 1,
+        "parts": "Leaves and flowers",
+        "warnings": "Can accumulate salt — rinse well in fresh water before eating. Very peppery and bitter in summer — best in spring. Do not confuse with other white-flowered coastal plants.",
+        "description": "**Identification:** Low-growing plant with fleshy, kidney-shaped to heart-shaped leaves. White flowers with 4 petals. Leaves are thick and succulent, glossy green. 5-30cm tall. Grows in clumps on coastal rocks, cliffs, and walls. **Uses:** Leaves are rich in Vitamin C — historically eaten to prevent scurvy. Very peppery, mustard-like flavour. Add small amounts to salads, sandwiches, or use as a mustard substitute.",
+        "id_keys": {
+            "Leaves": "Fleshy, thick, kidney/heart-shaped, glossy green, succulent",
+            "Flowers": "White, 4 petals, small, in loose clusters",
+            "Habitat": "Coastal — cliffs, salt marshes, sea walls, shingle",
+            "Taste": "Very peppery, hot, mustard-like — one of the hottest wild leaves in the UK"
+        },
+        "foraging_tips": {
+            "where": "Rocky cliffs, salt marsh edges, coastal paths, and sea walls",
+            "when": "Spring (March-May) — leaves are most tender and less bitter",
+            "sustainable": "Pick a few leaves per plant. Never uproot. Leaves regrow quickly",
+            "danger_zone": "⚠️ Rinse thoroughly in fresh water to remove excess salt. Very peppery — use sparingly"
+        },
+        "lookalikes": [
+            {
+                "name": "Sea Radish (Raphanus raphanistrum subsp. maritimum)",
+                "danger": "EDIBLE",
+                "diff": "Sea Radish has lobed, deeply divided leaves with bristly hairs; Scurvygrass has smooth, fleshy, kidney-shaped leaves"
+            }
+        ],
+        "confusion_notes": "Scurvygrass is distinctive with its small, fleshy, kidney-shaped leaves and peppery taste. Few plants combine succulent leaves with that intense mustard heat."
+    },
+    {
+        "name": "Sea Plantain",
+        "latin_name": "Plantago maritima",
+        "category": "Coastal",
+        "months": ["April", "May", "June", "July", "August", "September"],
+        "habitat": "Rocky cliffs, salt marshes, coastal turf, shingle ridges",
+        "regions": ["Coastal", "All"],
+        "difficulty": 1,
+        "parts": "Leaves and flower spikes",
+        "warnings": "Rinse well to remove salt. Leaves can become tough and stringy later in the season — pick young.",
+        "description": "**Identification:** Narrow, fleshy, succulent leaves growing in a basal rosette. Leaves are 5-20cm long, linear, with distinctive parallel veins and a succulent texture. Flowers are greenish-white on long stalks. Found in coastal turf and on cliffs. **Uses:** Young leaves are tender and slightly salty — eat raw in salads or cook as a green. Flower buds can be steamed briefly like asparagus tips. Pleasant, mild flavour with a hint of salt.",
+        "id_keys": {
+            "Leaves": "Narrow, linear, fleshy and succulent, 5-20cm, growing from a basal rosette",
+            "Veins": "Distinct parallel veins running the length of each leaf",
+            "Texture": "Succulent, slightly crunchy, not fibrous when young",
+            "Habitat": "Coastal turf, cliffs, salt marshes — exclusively coastal"
+        },
+        "foraging_tips": {
+            "where": "Coastal cliff tops, salt marsh edges, seaside turf — common on rocky coasts",
+            "when": "April to June for best leaves; flower buds in early summer",
+            "sustainable": "Pick a few leaves per rosette, leaving the plant intact. Flower buds can be collected sparingly",
+            "danger_zone": "⚠️ Rinse well to remove excess salt. Pick young leaves — older ones become stringy"
+        },
+        "lookalikes": [
+            {
+                "name": "Ribwort Plantain (Plantago lanceolata)",
+                "danger": "EDIBLE",
+                "diff": "Ribwort Plantain has hairy, non-succulent leaves with more pointed tips; Sea Plantain has smooth, fleshy, succulent leaves"
+            }
+        ],
+        "confusion_notes": "Sea Plantain is easy to identify — its succulent, fleshy leaves distinguish it from inland plantains. The combination of coastal habitat and succulent texture is distinctive."
+    },
+    {
+        "name": "Spear-leaved Orache",
+        "latin_name": "Atriplex prostrata",
+        "category": "Coastal",
+        "months": ["May", "June", "July", "August", "September", "October"],
+        "habitat": "Upper beaches, shingle, salt marshes, waste ground near coast",
+        "regions": ["Coastal", "All"],
+        "difficulty": 2,
+        "parts": "Young leaves and tender stem tips",
+        "warnings": "Can accumulate salt — rinse in fresh water before eating. Some Atriplex species hybridise making ID tricky. Leaves become bitter with age — pick young.",
+        "description": "**Identification:** Tall (30-80cm), grey-green to green plant with triangular, spear-shaped leaves with two pointed lobes (halberd shape) at the base. Leaves are mealy/white on the underside when young. Stems are often reddish. Found on shingle beaches and upper shorelines. **Uses:** Young leaves are tender and mild — use like spinach. Can be eaten raw in salads when young, or cooked in soups, stews, and as a pot herb. Very versatile.",
+        "id_keys": {
+            "Leaves": "Triangular, spear-shaped with two pointed lobes (halberd shape) at the base. Grey-green, mealy white underneath",
+            "Stems": "Often reddish-striped or red-tinged, upright",
+            "Habitat": "Upper beaches, shingle, drift lines, and disturbed coastal ground",
+            "Size": "30-80cm tall, bushy"
+        },
+        "foraging_tips": {
+            "where": "Upper beaches, shingle ridges, and salt marsh edges — look on the drift line",
+            "when": "May to October — best in early summer when leaves are young and tender",
+            "sustainable": "Pick young leaves and tips from multiple plants. Never uproot",
+            "danger_zone": "⚠️ Rinse thoroughly to remove salt and sand. Pick from above the tide line, not from polluted areas"
+        },
+        "lookalikes": [
+            {
+                "name": "Common Orache (Atriplex patula)",
+                "danger": "EDIBLE",
+                "diff": "Common Orache has narrower, more angular leaves without the distinct basal lobes. Both are edible"
+            },
+            {
+                "name": "Frosted Orache (Atriplex laciniata)",
+                "danger": "EDIBLE",
+                "diff": "Frosted Orache has more silvery, frosted-looking leaves and larger, more lobed shape. Also edible"
+            }
+        ],
+        "confusion_notes": "All UK Atriplex (Orache) species are edible, so even if you can't distinguish between them, they are safe to eat. The main concern is collecting from clean areas above the tide line."
+    },
+    {
+        "name": "Oyster Plant",
+        "latin_name": "Mertensia maritima",
+        "category": "Coastal",
+        "months": ["June", "July", "August", "September"],
+        "habitat": "Shingle beaches, sandy shores, upper drift lines",
+        "regions": ["Coastal", "Northern"],
+        "difficulty": 3,
+        "parts": "Leaves and stems",
+        "warnings": "⚠️ RARE and PROTECTED in many areas. Do NOT harvest from wild populations unless abundant and you have permission. Considered a delicacy — grow your own from seed if possible. Rinse well to remove salt.",
+        "description": "**Identification:** Low-growing, spreading plant with thick, fleshy, blue-green leaves. Leaves are elliptical, 2-5cm, with a distinctive silvery-blue sheen. Flowers are pinkish-purple, turning blue. Found on shingle beaches. Leaves have a remarkable oyster-like flavour when eaten. **Uses:** Eat leaves raw or lightly cooked. The flavour is remarkably similar to oysters — salty, buttery, and slightly metallic. A true coastal delicacy. Use sparingly in salads or as a garnish.",
+        "id_keys": {
+            "Leaves": "Thick, fleshy, blue-green with a silvery sheen. Elliptical, 2-5cm",
+            "Colour": "Distinctive blue-green to silvery-grey — unlike almost anything else on the shore",
+            "Flowers": "Pink buds opening to small blue flowers",
+            "Habitat": "Shingle beaches — increasingly rare in the wild"
+        },
+        "foraging_tips": {
+            "where": "Shingle beaches on northern and Scottish coasts — RARE, do not harvest wild",
+            "when": "June to September",
+            "sustainable": "⚠️ RARE: Do not harvest from wild populations. Grow from seed in a coastal garden. If you find a large, healthy population, take only a few leaves per plant",
+            "danger_zone": "⚠️ Protected in many areas. Never pick from small populations. Consider growing your own"
+        },
+        "lookalikes": [
+            {
+                "name": "Sea Sandwort (Honckenya peploides)",
+                "danger": "EDIBLE",
+                "diff": "Sea Sandwort has smaller, rounded, fleshy leaves in pairs along the stem; Oyster Plant has larger, blue-silver elliptical leaves"
+            }
+        ],
+        "confusion_notes": "Oyster Plant is unmistakable with its blue-silver fleshy leaves and oyster flavour. However, it is RARE and should not be harvested from wild populations in most areas."
+    },
+    {
+        "name": "Scotch Lovage",
+        "latin_name": "Ligusticum scoticum",
+        "category": "Coastal",
+        "months": ["April", "May", "June", "July", "August", "September"],
+        "habitat": "Rocky cliffs, coastal grassland, sea walls, cliff tops",
+        "regions": ["Coastal", "Northern"],
+        "difficulty": 2,
+        "parts": "Young leaves, stems, and seeds",
+        "warnings": "⚠️ Member of the carrot family — requires careful identification. Do NOT confuse with Hemlock or Hemlock Water Dropwort which grow in similar habitats. Crush a leaf — Scotch Lovage smells of celery/lovage, NOT of mouse urine (hemlock).",
+        "description": "**Identification:** Tall (30-90cm) plant with glossy, dark green, 2-3 times divided leaves. Leaf segments are broad and toothed. White flowers in umbels. Thick, ridged stems with purple colouring. Found on coastal cliffs. Strong celery/lovage scent when crushed. **Uses:** Young leaves and stems have a strong celery-lovage flavour. Use sparingly in soups, stews, and salads. Seeds can be used as a spice, similar to celery seed. Excellent in seafood dishes.",
+        "id_keys": {
+            "Leaves": "Glossy, dark green, 2-3 times divided into broad, toothed segments",
+            "Stems": "Thick, ridged, often purple-tinged, cylindrical (NOT spotted or blotched)",
+            "Scent": "Strong, pleasant celery/lovage scent when crushed — KEY distinguishing feature",
+            "Habitat": "Coastal cliffs and grassland — almost exclusively found by the sea"
+        },
+        "foraging_tips": {
+            "where": "Rocky cliffs, coastal grassland, and sea walls — primarily Scottish and northern coasts",
+            "when": "April to September — best leaves in spring",
+            "sustainable": "Pick a few leaves per plant. Never uproot. Use sparingly as flavour is strong",
+            "danger_zone": "⚠️ Carrot family — MUST be able to distinguish from Hemlock (Conium maculatum). Crush leaf: lovage/celery scent = safe. Mouse urine smell = HEMLOCK POISONOUS"
+        },
+        "lookalikes": [
+            {
+                "name": "Hemlock (Conium maculatum)",
+                "danger": "DEADLY",
+                "diff": "Hemlock has purple-SPOTTED (not just tinged) stems, smells of mouse urine when crushed, and has finer, more delicate leaves. Scotch Lovage smells of celery/lovage"
+            },
+            {
+                "name": "Sweet Cicely (Myrrhis odorata)",
+                "danger": "EDIBLE",
+                "diff": "Sweet Cicely has soft, hairy, fern-like leaves with a sweet aniseed scent. Not typically coastal"
+            }
+        ],
+        "confusion_notes": "⚠️ CRITICAL: As a carrot family member, Scotch Lovage must be distinguished from DEADLY Hemlock. Always crush and smell a leaf: celery/lovage scent = safe; mouse urine smell = Hemlock (DEADLY). When in doubt, do NOT eat."
+    }
 ]
