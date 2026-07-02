@@ -344,7 +344,7 @@ EDIBLE_TREES = [
         ],
         "confusion_notes": "CRITICAL: Rowan berries MUST be cooked. Raw they contain parasorbic acid which causes stomach upset. Cooked they are safe.",
     },
-        {
+    {
         "name": "Ash (Keys)",
         "latin_name": "Fraxinus excelsior",
         "category": "Tree",
