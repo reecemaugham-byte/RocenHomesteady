@@ -34,4 +34,280 @@ EDIBLE_SHELLFISH = [
         ],
         "confusion_notes": "Safe. Distinctive ribbed shell, heart shape. Check for red tide warnings before collecting.",
     },
+        {
+        "name": "Winkles",
+        "latin_name": "Littorina littorea",
+        "category": "Shellfish",
+        "months": ["September", "October", "November", "December", "January", "February", "March", "April"],
+        "habitat": "Rocky shores, harbour walls, pier pilings, stony beaches",
+        "regions": ["Coastal", "All"],
+        "difficulty": 1,
+        "parts": "Whole animal (boiled and picked from shell)",
+        "warnings": "⚠️ Only collect from clean water sites. Check FSA and local advisories for algal toxins and pollution. Must be purged (soaked in clean salt water) for several hours before cooking. Cook thoroughly — boil for at least 5 minutes. Do not collect after heavy rain near sewage outfalls.",
+        "description": "**Identification:** Small, dark grey-black spiral shell, 2-3cm tall. Pointed cone shape with distinct whorls. Dark operculum (trap door) seals the shell when closed. Found in large clusters on rocks and harbour walls. **Uses:** Boil in salted water for 5+ minutes. Pick from shell with a pin or toothpick. Eat with vinegar, pepper, or dipped in butter. Classic British seaside food.",
+        "id_keys": {
+            "Shell": "Dark grey-black, 2-3cm tall, pointed conical spiral with distinct whorls",
+            "Operculum": "Hard dark 'trap door' that seals the shell opening when retracted",
+            "Size": "2-3cm — small, no danger of confusing with larger dangerous species",
+            "Position": "Found in clusters on rocks, harbour walls, and stony beaches"
+        },
+        "foraging_tips": {
+            "where": "Rocky shores, harbour walls, piers, and stony beaches above the low tide line",
+            "when": "Autumn to spring (September to April) — best in cooler months",
+            "sustainable": "Take only what you will eat. Leave small winkles and avoid stripping areas. Follow local byelaws on minimum sizes",
+            "danger_zone": "⚠️ Check FSA shellfish warnings. Purge in clean salt water for 3-4 hours before cooking. Boil for at least 5 minutes"
+        },
+        "lookalikes": [
+            {
+                "name": "Dog Whelks (Nucella lapillus)",
+                "danger": "EDIBLE",
+                "diff": "Dog whelks are larger with a thicker shell and shorter spire. Winkles are small, thinner-shelled, and more pointed. Both are technically edible but dog whelks taste bitter"
+            },
+            {
+                "name": "Topshells (Gibbula spp.)",
+                "danger": "EDIBLE",
+                "diff": "Topshells are more rounded and dome-shaped with colourful patterns; winkles are darker and more pointed"
+            }
+        ],
+        "confusion_notes": "Winkles are one of the safest shellfish to identify — small, pointed, dark, and found in clusters. Most similar-looking snails are also edible. The main risk is water quality, not identification."
+    },
+    {
+        "name": "Whelks",
+        "latin_name": "Buccinum undatum",
+        "category": "Shellfish",
+        "months": ["October", "November", "December", "January", "February", "March", "April", "May"],
+        "habitat": "Sandy and muddy seabed, subtidal, often found washed up on beaches after storms",
+        "regions": ["Coastal", "All"],
+        "difficulty": 2,
+        "parts": "Whole animal (boiled and shelled)",
+        "warnings": "⚠️ Only collect from clean water sites. Check FSA advisories for algal toxins. Cook thoroughly — boil for at least 8-10 minutes. May accumulate toxins. Only collect live ones (shell tightly closed or operculum responds to touch).",
+        "description": "**Identification:** Large, thick, pale grey-buff spiral shell, 6-11cm tall. Distinctively sculptured with ridges. Shell opening has a wide, oval lip. Soft body with a large foot and siphon. Often found in fish markets. **Uses:** Boil for 8-10 minutes in salted water. Remove from shell. Can be eaten with vinegar and pepper, or used in stews, chowders, and stir-fries. Firm, chewy texture with strong sea flavour.",
+        "id_keys": {
+            "Shell": "Large, thick, pale grey-buff, 6-11cm, with strong spiral ridges",
+            "Shape": "Pointed spiral with a wide oval opening at the base",
+            "Size": "6-11cm — significantly larger than winkles",
+            "Live test": "Live whelks have an operculum (trap door) that responds to touch"
+        },
+        "foraging_tips": {
+            "where": "Subtidal — often caught in pots or found washed ashore after storms. Check tide lines for fresh shells",
+            "when": "Autumn to spring — best in cooler months",
+            "sustainable": "Minimum size ~45mm shell height. Only take what you will eat. Whelk populations can be overfished",
+            "danger_zone": "⚠️ Check FSA shellfish warnings. Cook thoroughly. Only eat live specimens that respond to touch"
+        },
+        "lookalikes": [
+            {
+                "name": "Dog Whelk (Nucella lapillus)",
+                "danger": "EDIBLE",
+                "diff": "Dog Whelks are smaller (3-5cm), thicker-shelled, and feed on barnacles and mussels. Not recommended as food due to bitter taste"
+            },
+            {
+                "name": "Netted Dog Whelk (Hinia reticulata)",
+                "danger": "EDIBLE",
+                "diff": "Smaller, more delicate shell with net-like pattern. Not traditionally eaten"
+            }
+        ],
+        "confusion_notes": "Common Whelks are large and distinctive. The main concern is water quality and thorough cooking, not identification confusion."
+    },
+    {
+        "name": "Prawns",
+        "latin_name": "Palaemon serratus",
+        "category": "Shellfish",
+        "months": ["May", "June", "July", "August", "September", "October"],
+        "habitat": "Rock pools, seagrass beds, shallow coastal waters, harbour walls",
+        "regions": ["Coastal", "All"],
+        "difficulty": 2,
+        "parts": "Whole animal (head and tail), or peeled tail meat",
+        "warnings": "⚠️ Check water quality before collecting. Only collect from clean water. Some people are allergic to crustaceans — prawns are a common allergen. Cook thoroughly if eating raw-caught. Be aware of algal bloom warnings.",
+        "description": "**Identification:** Semi-transparent body with greyish-blue stripes and orange spots on the tail. Long rostrum (beak) with teeth. Large claws on front legs. 5-11cm long. Found in rock pools and shallow water. Swims backwards with rapid tail flips. **Uses:** Boil for 2-3 minutes until pink. Can be eaten whole (head-on) or peeled. Excellent in sandwiches, pasta, stir-fries, or simply with lemon and mayonnaise.",
+        "id_keys": {
+            "Body": "Semi-transparent, greyish with subtle blue stripes and orange tail spots",
+            "Rostrum": "Long pointed beak (rostrum) extending forward from between the eyes, with teeth along the upper edge",
+            "Size": "5-11cm — larger than shrimp species",
+            "Behaviour": "Found in rock pools; swims backwards rapidly when disturbed"
+        },
+        "foraging_tips": {
+            "where": "Rock pools, shallow coastal water, harbour walls, seagrass beds — especially around low tide",
+            "when": "May to October — best in summer months when they come inshore",
+            "sustainable": "Use a push net or hand net. Return small prawns and egg-carrying females. Follow local byelaws",
+            "danger_zone": "⚠️ Check for algal bloom warnings. Allergen risk for some people. Cook thoroughly"
+        },
+        "lookalikes": [
+            {
+                "name": "Brown Shrimp (Crangon crangon)",
+                "danger": "EDIBLE",
+                "diff": "Brown Shrimp is flatter, more mottled brown, smaller, and lacks the long rostrum. Both are edible"
+            }
+        ],
+        "confusion_notes": "Prawns are easy to identify by their long rostrum and semi-transparent body. All UK prawn and shrimp species are edible. The main risks are water quality and shellfish allergies."
+    },
+    {
+        "name": "Edible Crab",
+        "latin_name": "Cancer pagurus",
+        "category": "Shellfish",
+        "months": ["April", "May", "June", "July", "August", "September", "October", "November"],
+        "habitat": "Rocky seabed, under large boulders on the lower shore, subtidal",
+        "regions": ["Coastal", "All"],
+        "difficulty": 3,
+        "parts": "White meat (claws and body), brown meat (inside shell)",
+        "warnings": "⚠️ ONLY collect from clean water sites. Check FSA advisories. Pinchers can cause painful injury — handle carefully. Must be cooked thoroughly. Do NOT collect berried (egg-carrying) females. Follow local byelaws for minimum sizes (usually 140mm carapace width). Allergen risk for shellfish.",
+        "description": "**Identification:** Large, heavy crab with a distinctive pie-crust edge on the oval shell. Red-brown to orange-brown shell with white-tipped massive claws. Shell width up to 25cm. Found under rocks and in crevices on the lower shore. **Uses:** Boil for 15-20 minutes in well-salted water. Crack claws and extract white meat. Brown meat from inside the shell is a delicacy. Use in sandwiches, crab cakes, pasta, or simply with lemon.",
+        "id_keys": {
+            "Shell": "Oval, red-brown to orange-brown, with a distinctive crinkled 'pie-crust' edge",
+            "Claws": "Massive, black-tipped claws — the main source of white meat",
+            "Size": "Shell width up to 25cm — the largest common UK shore crab",
+            "Colour": "Red-brown to orange-brown shell, white underside"
+        },
+        "foraging_tips": {
+            "where": "Under large boulders and in crevices on the lower rocky shore, or subtidal in pots",
+            "when": "April to November — best in late spring and summer",
+            "sustainable": "Minimum carapace width 140mm. Never take berried females (egg-carrying). Follow local byelaws. Return undersized crabs",
+            "danger_zone": "⚠️ Claws can cause serious pinch injuries. Handle from the rear. Never collect berried females. Check FSA warnings"
+        },
+        "lookalikes": [
+            {
+                "name": "Velvet Swimming Crab (Necora puber)",
+                "danger": "EDIBLE",
+                "diff": "Velvet Crab is smaller, has red eyes, flat paddle-like rear legs, and a velvety shell texture. Edible but less meat"
+            },
+            {
+                "name": "Shore Crab (Carcinus maenas)",
+                "danger": "EDIBLE",
+                "diff": "Shore Crab is smaller, green-grey, with five teeth behind each eye. Edible but very little meat"
+            }
+        ],
+        "confusion_notes": "The Edible Crab is unmistakable with its large size, pie-crust shell edge, and massive black-tipped claws. The main concern is safe handling and legal size limits, not identification."
+    },
+    {
+        "name": "Razor Clams",
+        "latin_name": "Ensis spp.",
+        "category": "Shellfish",
+        "months": ["June", "July", "August", "September", "October"],
+        "habitat": "Sandy beaches, buried deep in sand between low and high tide marks",
+        "regions": ["Coastal", "All"],
+        "difficulty": 2,
+        "parts": "Whole animal (foot and body meat)",
+        "warnings": "⚠️ CRITICAL: Only collect from Class A waters. Check FSA shellfish classification for your area. Razor clams can accumulate toxins and biotoxins. Purge in clean salt water for 12-24 hours before cooking. Cook thoroughly. Do NOT collect from unclassified waters.",
+        "description": "**Identification:** Long, thin, straight-edged shell resembling an old-fashioned cut-throat razor. Up to 20cm long. Shiny olive-brown periostracum (skin) on shell. Keyhole-shaped openings visible in the sand at low tide. Lives buried vertically deep in sand. **Uses:** Steam or boil for 3-5 minutes. Can also be grilled with garlic butter. Sweet, tender meat. Popular in Spanish and Portuguese cuisine.",
+        "id_keys": {
+            "Shell": "Long, thin, straight-edged — like an old cut-throat razor blade. Up to 20cm",
+            "Colour": "White/cream shell with olive-brown shiny outer skin (periostracum)",
+            "Sand sign": "Keyhole-shaped or figure-of-eight openings visible in wet sand at low tide",
+            "Depth": "Buried 30-60cm deep in sand — requires digging or salting to extract"
+        },
+        "foraging_tips": {
+            "where": "Sandy beaches — look for keyhole openings in the sand at low tide",
+            "when": "June to October, during low spring tides for best access",
+            "sustainable": "Pour salt down the hole to make them rise up — more sustainable than digging. Only take what you will eat. Follow local byelaws",
+            "danger_zone": "⚠️ CRITICAL: Only collect from classified waters (check FSA). Purge 12-24 hours in clean salt water. Cook thoroughly. Toxin risk is real"
+        },
+        "lookalikes": [
+            {
+                "name": "Pod Razor (Ensis siliqua)",
+                "danger": "EDIBLE",
+                "diff": "Pod Razor is slightly longer and more curved. Both Ensis species are edible"
+            },
+            {
+                "name": "Jackknife Clam (Ensis ensis)",
+                "danger": "EDIBLE",
+                "diff": "Slightly curved shell. All UK razor clam species are edible"
+            }
+        ],
+        "confusion_notes": "All UK razor clam species (Ensis spp.) are edible. The main risk is NOT identification — it's water quality and biotoxin accumulation. Only collect from classified and monitored waters."
+    },
+    {
+        "name": "Oysters",
+        "latin_name": "Ostrea edulis / Magallana gigas",
+        "category": "Shellfish",
+        "months": ["September", "October", "November", "December", "January", "February", "March", "April"],
+        "habitat": "Estuaries, sheltered bays, oyster beds, subtidal",
+        "regions": ["Coastal", "All"],
+        "difficulty": 3,
+        "parts": "Whole animal (meat and liquor inside shell)",
+        "warnings": "⚠️ CRITICAL: Only collect from classified Class A waters. Check FSA shellfish classification. Raw oysters carry risk of norovirus and Vibrio bacteria. People with liver conditions, weakened immune systems, or pregnant women should avoid raw oysters. Purge and cook if in any doubt. Follow local byelaws — many areas are protected.",
+        "description": "**Identification:** Native Oyster: round, flat shell, grey-white, 6-11cm. Pacific Oyster: larger (8-20cm), elongated, deeply cupped lower shell, rough with flaky layers. Both found on oyster beds, reefs, and estuary beds. **Uses:** Native oysters are traditionally eaten raw with lemon. Pacific oysters can be eaten raw, grilled, baked, or used in stews. Rich, distinctive flavour.",
+        "id_keys": {
+            "Native Oyster": "Round, flat, grey-white shell, 6-11cm. Smaller and flatter than Pacific",
+            "Pacific Oyster": "Larger (8-20cm), elongated, deeply cupped lower shell, rough flaky layers. Much more common",
+            "Live test": "Shell should be tightly closed. Tap open shells — live oysters will close",
+            "Habitat": "Estuary beds, sheltered bays, oyster reefs"
+        },
+        "foraging_tips": {
+            "where": "Estuary beds, sheltered bays, and designated oyster grounds — check local permissions",
+            "when": "September to April (traditionally only in months with an 'R'). Avoid spawning season (May-August)",
+            "sustainable": "Follow local byelaws strictly. Many areas require permits. Return undersized oysters. Never take from protected beds",
+            "danger_zone": "⚠️ CRITICAL: Only from classified Class A waters. Raw oysters carry real health risks for vulnerable groups. Check FSA classification"
+        },
+        "lookalikes": [
+            {
+                "name": "Pacific Oyster (Magallana gigas)",
+                "danger": "EDIBLE",
+                "diff": "Larger, more elongated, deeper cupped shell with rough flaky layers. Both species are edible"
+            }
+        ],
+        "confusion_notes": "The main risk with oysters is water quality and food safety, NOT identification. Both UK species are edible. Only collect from classified and monitored waters."
+    },
+    {
+        "name": "Scallops",
+        "latin_name": "Pecten maximus",
+        "category": "Shellfish",
+        "months": ["November", "December", "January", "February", "March", "April", "May"],
+        "habitat": "Sandy and gravelly seabed, subtidal (5-50m depth)",
+        "regions": ["Coastal", "All"],
+        "difficulty": 3,
+        "parts": "White adductor muscle and orange roe (coral)",
+        "warnings": "⚠️ Check FSA classifications before collecting. Dive-caught only (no dredging for foragers). Must be collected from clean waters. People with shellfish allergies should avoid. Cook thoroughly unless from Class A waters.",
+        "description": "**Identification:** King Scallop: large (10-15cm), fan-shaped shell with distinct radiating ribs. Upper shell flat, lower shell deeply cupped. Orange roe (coral) and large white adductor muscle inside. Can swim by clapping shells together. **Uses:** Pan-fry the white muscle for 1-2 minutes each side. Roe (coral) is also edible. Wrap in bacon, serve with black pudding, or use in chowder.",
+        "id_keys": {
+            "Shell": "Fan-shaped, 10-15cm, with distinct radiating ribs. Lower shell is deeply cupped, upper is flat",
+            "Colours": "Shell is white/cream to light brown outside. Inside: white adductor muscle and orange roe (coral)",
+            "Swimming": "Live scallops can swim by clapping their shells — a distinctive behaviour",
+            "Size": "King Scallops 10-15cm; Queen Scallops smaller at 5-8cm"
+        },
+        "foraging_tips": {
+            "where": "Sandy and gravelly seabed — usually requires diving. Found subtidal at 5-50m depth",
+            "when": "November to May — closed season during summer spawning months",
+            "sustainable": "Minimum size 100mm for King Scallops. Dive-caught only. Do not use dredges. Follow local byelaws",
+            "danger_zone": "⚠️ Requires diving to collect. Check FSA water classifications. Never collect from unclassified waters"
+        },
+        "lookalikes": [
+            {
+                "name": "Queen Scallop (Aequipecten opercularis)",
+                "danger": "EDIBLE",
+                "diff": "Smaller (5-8cm), more symmetrical shells, both valves slightly cupped. Equally edible"
+            }
+        ],
+        "confusion_notes": "Scallops are easy to identify by their fan-shaped ribbed shells. The main considerations are diving safety and water quality classification, not identification."
+    },
+    {
+        "name": "Brown Shrimp",
+        "latin_name": "Crangon crangon",
+        "category": "Shellfish",
+        "months": ["May", "June", "July", "August", "September", "October"],
+        "habitat": "Sandy seabed, shallow coastal waters, estuaries, intertidal sand flats",
+        "regions": ["Coastal", "All"],
+        "difficulty": 2,
+        "parts": "Whole shrimp (peeled tail meat)",
+        "warnings": "⚠️ Only collect from clean water sites. Check FSA advisories. Cook thoroughly. Shellfish allergen risk. Brown shrimps are small and labour-intensive to peel.",
+        "description": "**Identification:** Small, flat, mottled brown-grey shrimp, 3-5cm long. Short, flattened body. No long rostrum (unlike prawns). Blends into sand. Found burrowed in sand in shallow water. **Uses:** Boil for 3-5 minutes in salted water. Peel (labour-intensive). Used in potted shrimp, sandwiches, and as a topping. Classic English seaside food, especially in Morecambe Bay.",
+        "id_keys": {
+            "Body": "Small (3-5cm), flat, mottled brown-grey — perfectly camouflaged on sand",
+            "Shape": "Flatter and broader than prawns, no long rostrum",
+            "Behaviour": "Buries in sand with only eyes visible; swims short distances when disturbed",
+            "Habitat": "Shallow sandy water, estuaries, sand flats"
+        },
+        "foraging_tips": {
+            "where": "Sandy shallows, estuaries, and sand flats — push net through shallow water",
+            "when": "May to October — best in summer",
+            "sustainable": "Use a push net. Return small shrimp and egg-carrying females. Follow local byelaws",
+            "danger_zone": "⚠️ Check water quality advisories. Cook thoroughly. Shellfish allergen risk"
+        },
+        "lookalikes": [
+            {
+                "name": "Prawns (Palaemon serratus)",
+                "danger": "EDIBLE",
+                "diff": "Prawns are larger, semi-transparent with blue stripes and a long rostrum; Brown Shrimp is small, brown, flat, and mottled"
+            }
+        ],
+        "confusion_notes": "Brown Shrimp is easy to identify — small, brown, flat, and sandy. All UK shrimp and prawn species are edible. Water quality is the main concern."
+    }
 ]
