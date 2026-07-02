@@ -34,7 +34,7 @@ EDIBLE_SEAWEED = [
         ],
         "confusion_notes": "Safe. Very distinct — dark red, hand-shaped, leathery texture. Other seaweeds are mostly edible but check ID.",
     },
-        {
+    {
         "name": "Bladderwrack",
         "latin_name": "Fucus vesiculosus",
         "category": "Seaweed",
@@ -115,7 +115,7 @@ EDIBLE_SEAWEED = [
         ],
         "confusion_notes": "Safe. The thin, dark purple/black sheets on rocks are distinctive. Used to make Welsh laverbread and Japanese nori."
     },
-        {
+    {
         "name": "Sea Spaghetti",
         "latin_name": "Himanthalia elongata",
         "category": "Seaweed",
