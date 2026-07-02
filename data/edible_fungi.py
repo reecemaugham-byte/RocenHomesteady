@@ -727,7 +727,7 @@ EDIBLE_FUNGI = [
                 "diff": "Parasol has a smooth, snakeskin-patterned stem (not shaggy), brown colour pattern on cap (not shaggy scales), and flesh does NOT turn orange-red when cut"
             },
             {
-                "name": immature Amanita species (e.g., Amanita citrina)",
+                "name": "Immature Amanita species (e.g., Amanita citrina)",
                 "danger": "POISONOUS",
                 "diff": "Young Amanitas are egg-shaped but have a VOLVA (bag/cup at the base of the stem) and do NOT have shaggy brown scales. Always dig up the base to check for a volva"
             }
