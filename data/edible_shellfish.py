@@ -34,7 +34,7 @@ EDIBLE_SHELLFISH = [
         ],
         "confusion_notes": "Safe. Distinctive ribbed shell, heart shape. Check for red tide warnings before collecting.",
     },
-        {
+    {
         "name": "Winkles",
         "latin_name": "Littorina littorea",
         "category": "Shellfish",
