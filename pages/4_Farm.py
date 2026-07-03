@@ -98,7 +98,7 @@ for bname, bdata in FARM_BUILDINGS.items():
     bid = bdata['id']
     if bid not in TILE_STYLES:
         TILE_STYLES[bid] = {
-            "icon": bdata['icon'],
+            "icon": bdata.get('icon', '🏠'), # Replace 🏠 with whatever your default fallback icon is
             "label": bname,
             "bg": "#1a2e1a",
             "border": "#4CAF50",
