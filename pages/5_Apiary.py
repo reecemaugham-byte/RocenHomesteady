@@ -3,6 +3,7 @@ import random
 import math
 
 from utils import (init_session_state, apply_brand_theme, render_save_load)
+from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, NECTAR_FLOW, HONEY_TYPES,
                          APIARY_PRODUCTS, BEEKEEPING_SEASONS, WEATHER_CHANCES, TEMP_RANGE)
 
@@ -17,6 +18,7 @@ st.set_page_config(
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
+user = render_auth()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
@@ -129,6 +131,8 @@ with st.sidebar:
         st.markdown("🌿 **Rocen Homesteady**")
     st.markdown("---")
 
+    render_logout_sidebar()
+    st.markdown("---")
     render_save_load()
     st.markdown("---")
 
@@ -593,10 +597,11 @@ with inspect_tab:
                     health_issues.append("⚠️ Colony is weak — may not survive winter")
 
                 if health_issues:
+                    issues_html = "<br>".join([f"<span style='color: var(--cream-dim); font-size: 0.9rem;'>• {issue}</span>" for issue in health_issues])
                     st.markdown(f"""
                     <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 1rem;">
                         <div style="color: var(--danger); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;">Health Issues:</div>
-                        {"<br>".join(f'{"<br>".join(health_issues)}')}
+                        {issues_html}
                     </div>
                     """, unsafe_allow_html=True)
                 else:
