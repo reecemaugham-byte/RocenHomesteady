@@ -73,6 +73,38 @@ def get_mg_season(month):
             return season
     return "Spring"
 
+# --- TILE DISPLAY HELPER ---
+TILE_STYLES = {
+    0: {"icon": "🌱", "label": "Empty", "bg": "#1a2e1a", "border": "#3d5a3d", "text": "var(--cream-dim)"},
+    1: {"icon": "🌊", "label": "Stream", "bg": "#0a1a2e", "border": "#2196F3", "text": "#90CAF9"},
+    2: {"icon": "🌱", "label": "Seed", "bg": "#1a2e1a", "border": "#4CAF50", "text": "#81C784"},
+    3: {"icon": "🌿", "label": "Growing", "bg": "#1a2e1a", "border": "#66BB6A", "text": "#A5D6A7"},
+    4: {"icon": "🌾", "label": "Ready!", "bg": "#2a2a00", "border": "#FFC107", "text": "#FFD54F"},
+    5: {"icon": "🏠", "label": "House", "bg": "#1a2a1a", "border": "#8D6E63", "text": "#BCAAA4"},
+    6: {"icon": "🔋", "label": "Generator", "bg": "#1a1a1a", "border": "#FFC107", "text": "#FFD54F"},
+    7: {"icon": "🌿", "label": "Weed", "bg": "#2a1a0a", "border": "#8D6E63", "text": "#BCAAA4"},
+    8: {"icon": "☀️", "label": "Solar", "bg": "#2a2a00", "border": "#FFC107", "text": "#FFD54F"},
+    9: {"icon": "🦅", "label": "Scarecrow", "bg": "#1a1a0a", "border": "#FFC107", "text": "#FFD54F"},
+    10: {"icon": "🌳", "label": "Tree", "bg": "#0a2a0a", "border": "#2E7D32", "text": "#66BB6A"},
+    11: {"icon": "🌴", "label": "Orchard", "bg": "#0a2a0a", "border": "#4CAF50", "text": "#81C784"},
+    12: {"icon": "🐔", "label": "Chickens", "bg": "#1a2a1a", "border": "#FF9800", "text": "#FFB74D"},
+    13: {"icon": "🐄", "label": "Cows", "bg": "#1a1a0a", "border": "#8D6E63", "text": "#BCAAA4"},
+    14: {"icon": "🐐", "label": "Goats", "bg": "#1a1a0a", "border": "#A1887F", "text": "#D7CCC8"},
+    15: {"icon": "🫧", "label": "Cold Frame", "bg": "#0a2a2a", "border": "#26C6DA", "text": "#80DEEA"},
+}
+
+# Add building styles from FARM_BUILDINGS
+for bname, bdata in FARM_BUILDINGS.items():
+    bid = bdata['id']
+    if bid not in TILE_STYLES:
+        TILE_STYLES[bid] = {
+            "icon": bdata['icon'],
+            "label": bname,
+            "bg": "#1a2e1a",
+            "border": "#4CAF50",
+            "text": "var(--cream)"
+        }
+
 # --- SIDEBAR ---
 with st.sidebar:
     try:
@@ -386,43 +418,119 @@ with farm_tab:
 
     st.markdown("---")
 
-    # --- FARM GRID ---
-    st.markdown("#### 🗺️ Farm")
+    # ==========================================
+    # UPGRADED FARM GRID
+    # ==========================================
+    st.markdown("#### 🗺️ Your Farm")
 
-    for row_idx, row in enumerate(game['grid']):
-        cols = st.columns(6)
-        for col_idx, tile in enumerate(row):
+    # Placing mode banner
+    if game['placing_mode']:
+        b_name = game['placing_mode']
+        b_data = FARM_BUILDINGS.get(b_name, {})
+        b_icon = b_data.get('icon', '🏗️')
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber); border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1rem;">
+            <span style="color: var(--amber); font-weight: 700;">📍 Placing Mode:</span>
+            <span style="color: var(--cream-dim);"> Click a <span style="color: var(--green-leaf);">🌱 Empty</span> tile to build <b>{b_icon} {b_name}</b>.</span>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("❌ Cancel Placement", key="cancel_placement"):
+            cost = FARM_BUILDINGS[b_name]['cost']
+            game['money'] += cost
+            game['placing_mode'] = None
+            st.rerun()
+
+    # Render grid with styled tiles
+    for row_idx in range(5):
+        row_cols = st.columns(6)
+        for col_idx in range(6):
             tile_val = game['grid'][row_idx][col_idx]
+            is_damaged = (row_idx, col_idx) in game.get('damaged_buildings', [])
+            soil = game['soil_health'][row_idx][col_idx]
+            crop_name = game['crop_map'].get((row_idx, col_idx), "")
 
-            with cols[col_idx]:
-                st.markdown('<div class="grid-game">', unsafe_allow_html=True)
+            with row_cols[col_idx]:
+                style = TILE_STYLES.get(tile_val, {"icon": "❓", "label": str(tile_val), "bg": "#1a1a1a", "border": "#555", "text": "#aaa"})
 
+                # Determine display label
+                if tile_val in [2, 3] and crop_name:
+                    display_label = f"{style['icon']} {crop_name}"
+                elif tile_val == 4 and crop_name:
+                    display_label = f"🌾 {crop_name}"
+                else:
+                    display_label = style['icon']
+
+                # Soil indicator for growing/ready crops
+                soil_info = ""
+                if tile_val in [2, 3, 4]:
+                    soil_info = f"<div style='font-size: 0.55rem; color: var(--cream-dim);'>Soil {soil}%</div>"
+
+                # Damage overlay
+                damage_badge = ""
+                if is_damaged:
+                    damage_badge = "<div style='color: var(--danger); font-size: 0.6rem; font-weight: 700; text-transform: uppercase;'>DAMAGED</div>"
+
+                # Background style
+                if is_damaged:
+                    border_style = "2px dashed var(--danger)"
+                    bg_style = "linear-gradient(135deg, #2a0a0a, #1a0000)"
+                else:
+                    border_style = f"2px solid {style['border']}"
+                    bg_style = style['bg']
+
+                # Render visual tile
+                st.markdown(f"""
+                <div style="
+                    background: {bg_style};
+                    border: {border_style};
+                    border-radius: 10px;
+                    padding: 0.4rem;
+                    text-align: center;
+                    min-height: 80px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                ">
+                    <div style="font-size: 1.4rem; line-height: 1;">{style['icon']}</div>
+                    <div style="color: {style['text']}; font-size: 0.65rem; font-weight: 600; margin-top: 0.15rem; line-height: 1.2;">{style['label'] if tile_val not in [2, 3, 4] else crop_name}</div>
+                    {damage_badge}
+                    {soil_info}
+                </div>
+                """, unsafe_allow_html=True)
+
+                # Interactive buttons below tile
                 if tile_val == 7:
-                    if st.button("🧹", key=f"fm_w_{row_idx}_{col_idx}"):
+                    if st.button("🧹 Clear", key=f"fm_w_{row_idx}_{col_idx}", use_container_width=True):
                         game['grid'][row_idx][col_idx] = 0
                         game['fallow_days'][row_idx][col_idx] = 0
                         st.rerun()
 
                 elif tile_val == 0:
-                    if game['build_sel'] != "None":
-                        b_name = game['build_sel']
+                    if game['placing_mode'] and game['placing_mode'] != "None":
+                        b_name = game['placing_mode']
                         b_data = FARM_BUILDINGS.get(b_name, None)
                         if b_data:
                             if b_name in ["Chicken Coop", "Cow Pasture", "Goat Pen"] and current_year < 2:
-                                st.caption("🔒 Y2")
+                                st.caption("🔒 Year 2")
                             else:
-                                if st.button("🏗️", key=f"fm_b_{row_idx}_{col_idx}"):
+                                if st.button(f"Build £{b_data['cost']}", key=f"fm_b_{row_idx}_{col_idx}", use_container_width=True):
                                     if game['money'] >= b_data['cost']:
                                         game['money'] -= b_data['cost']
                                         game['grid'][row_idx][col_idx] = b_data['id']
-                                        game['build_sel'] = "None"
+                                        if b_name not in game.get('owned_buildings', {}):
+                                            game['owned_buildings'] = game.get('owned_buildings', {})
+                                        game['owned_buildings'][b_name] = game['owned_buildings'].get(b_name, 0) + 1
+                                        if b_name == "Barn":
+                                            game['stats']['Storage_Limit'] = game['stats'].get('Storage_Limit', 10) + 20
+                                        game['placing_mode'] = None
                                         st.rerun()
                                     else:
                                         st.error(f"Need £{b_data['cost']}")
                     else:
-                        if st.button("🌱", key=f"fm_p_{row_idx}_{col_idx}"):
-                            crop = game['tool']
-                            cost = SEED_COST.get(crop, 6)
+                        crop = game['tool']
+                        cost = SEED_COST.get(crop, 6)
+                        if st.button(f"🌱 £{cost}", key=f"fm_p_{row_idx}_{col_idx}", use_container_width=True):
                             if game['money'] >= cost:
                                 game['money'] -= cost
                                 game['grid'][row_idx][col_idx] = 2
@@ -433,7 +541,7 @@ with farm_tab:
                                 st.error(f"Need £{cost}")
 
                 elif tile_val == 4:
-                    if st.button("🌾", key=f"fm_h_{row_idx}_{col_idx}"):
+                    if st.button("🌾 Harvest", key=f"fm_h_{row_idx}_{col_idx}", use_container_width=True):
                         crop = game['crop_map'].get((row_idx, col_idx), "Carrot")
                         yield_count = 1
                         for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
@@ -458,17 +566,24 @@ with farm_tab:
                         st.toast(f"+{harvested} {crop}")
                         st.rerun()
 
-                else:
-                    if tile_val in [2, 3]:
-                        soil = game['soil_health'][row_idx][col_idx]
-                        crop_name = game['crop_map'].get((row_idx, col_idx), "?")
-                        st.button(tile, key=f"fm_v_{row_idx}_{col_idx}", disabled=True,
-                                  help=f"{crop_name} - Soil: {soil}%")
-                        st.progress(max(1, soil // 10))
-                    else:
-                        st.button(tile, key=f"fm_v_{row_idx}_{col_idx}", disabled=True)
+                elif tile_val == 1:
+                    disable_fish = (current_season == "Winter")
+                    if st.button("🎣 Fish", key=f"fm_fish_{row_idx}_{col_idx}", disabled=disable_fish, use_container_width=True):
+                        game['inventory']['Fish'] = game['inventory'].get('Fish', 0) + 1
+                        st.toast("🎣 Caught a Fish!")
+                        st.rerun()
 
-                st.markdown('</div>', unsafe_allow_html=True)
+    # --- LEGEND ---
+    st.markdown(f"""
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="background: #1a2e1a; border: 1px solid #3d5a3d; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: var(--cream-dim);">🌱 Empty</span>
+        <span style="background: #1a2e1a; border: 1px solid #4CAF50; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #81C784;">🌱🌿 Growing</span>
+        <span style="background: #2a2a00; border: 1px solid #FFC107; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #FFD54F;">🌾 Ready</span>
+        <span style="background: #0a1a2e; border: 1px solid #2196F3; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #90CAF9;">🌊 Stream</span>
+        <span style="background: #2a1a0a; border: 1px solid #8D6E63; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #BCAAA4;">🌿 Weed</span>
+        <span style="background: #0a2a2a; border: 1px solid #26C6DA; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #80DEEA;">🫧 Cold Frame</span>
+    </div>
+    """, unsafe_allow_html=True)
 
     # --- MARKET ---
     st.markdown("---")
