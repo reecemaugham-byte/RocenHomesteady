@@ -3,9 +3,7 @@ import random
 from datetime import datetime
 
 from utils import init_session_state, apply_brand_theme, render_save_load
-from auth import render_auth, render_logout_sidebar
-from game_config import (ACHIEVEMENTS, SEASON_ICONS, SEASON_MONTHS,
-                         VILLAGE_ITEMS, VILLAGE_BUILDINGS, VILLAGE_PRODUCTION,
+from game_config import (ACHIEVEMENTS, SEASON_ICONS, VILLAGE_ITEMS, VILLAGE_BUILDINGS, VILLAGE_PRODUCTION,
                          KITCHEN_RECIPES, BASICS)
 from plants_data import UK_PLANTS
 
@@ -17,36 +15,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CUSTOM CSS ---
-st.markdown("""
-<style>
-    div.grid-game div.stButton > button {
-        width: 100% !important; height: auto !important; aspect-ratio: 1 / 1 !important;
-        padding: 0 !important; font-size: 1.5em !important; border: 1px solid #444 !important;
-        background-color: #2b2b2b !important; color: white !important; border-radius: 8px !important;
-    }
-    div.grid-game div.stButton > button:hover { border-color: #fff !important; transform: scale(1.05); }
-    .plant-card {
-        border-radius: 20px; padding: 20px; text-align: center;
-        background: linear-gradient(145deg, #2b2b2b, #1a1a1a);
-        box-shadow: 10px 10px 20px #1a1a1a; margin-bottom: 20px; border: 1px solid #444;
-    }
-    .market-box div.stButton > button { font-size: 14px !important; white-space: normal !important;
-                                          height: auto !important; padding: 5px !important; }
-    @media (max-width: 768px) {
-        .plant-card { padding: 10px !important; }
-        div.grid-game div.stButton > button { font-size: 1em !important; }
-    }
-</style>
-""", unsafe_allow_html=True)
-
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
-user = render_auth()
-render_logout_sidebar()
 
-# Initialize Achievements if not exists
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
 
@@ -90,7 +62,6 @@ tab1, tab2 = st.tabs(["🏘️ Eco-Village", "🍳 The Wild Kitchen"])
 with tab1:
     st.header("🏘️ Eco-Village Builder")
 
-    # --- HOW TO PLAY ---
     with st.expander("📖 How to Play"):
         st.markdown("""
         1. **Forage:** Gather resources from the woods or sell items found in **Foraging Games**.
@@ -98,8 +69,8 @@ with tab1:
         3. **Produce:** Use the 🏭 Production section to turn raw goods into valuable items.
         4. **Market:** Sell items for money. Processed goods are worth much more than raw!
         5. **⚠️ Winter:** Solar panels stop. Nature stops growing. **Stockpile food before winter!**
-        6. **Cold Frame** 🫧: Produces +3 Food/day even in winter.
-        7. **Smokehouse** 🥓: Cook Smoked Fish and Jerky without needing Power.
+        6. **Cold Frame 🫧:** Produces +3 Food/day even in winter.
+        7. **Smokehouse 🥓:** Cook Smoked Fish and Jerky without needing Power.
         8. **Storage:** Build a Barn to increase your inventory limit.
 
         **💡 Tip:** Dandelion Tea is worth 25x more than raw Dandelions. Invest in production!
@@ -129,7 +100,7 @@ with tab1:
 
     game = st.session_state.village
 
-    # --- MIGRATIONS for older saves ---
+    # --- MIGRATIONS ---
     if 'Storage_Limit' not in game['stats']:
         game['stats']['Storage_Limit'] = 10
     if 'season' not in game:
@@ -145,62 +116,91 @@ with tab1:
     if 'Max_Power' not in game['stats']:
         game['stats']['Max_Power'] = 20
 
-    # --- DEFINITIONS (FROM game_config) ---
     ITEMS = VILLAGE_ITEMS.copy()
     BUILDINGS = VILLAGE_BUILDINGS.copy()
     PRODUCTION = VILLAGE_PRODUCTION.copy()
 
-    # Add foraged items from master inventory to market data
     for plant in UK_PLANTS['edible']:
         name = plant['name']
         if name not in ITEMS:
             ITEMS[name] = {"icon": "🌿", "rarity": 0.0, "value": 3, "food": 2}
 
-    # --- BUILDING CHECKS (needed by multiple sections) ---
     has_cold_frame = any('🫧' in row for row in game['grid'])
     has_smokehouse = any('🥓' in row for row in game['grid'])
 
-    # --- DERIVED VALUES ---
     current_season = game['season']
     current_storage = sum(game['inventory'].values())
     max_storage = game['stats']['Storage_Limit']
 
-    # --- WIN/LOSE STATE ---
+    # --- WIN/LOSE ---
     if game['stats']['Money'] >= 5000:
-        st.balloons()
-        st.success("🏆 **VILLAGE TYCOON!** You've built a thriving community!")
+        st.markdown(f"""
+        <div class="level-up">
+            <div style="font-size: 3rem;">🏆</div>
+            <div style="color: var(--amber); font-family: 'Crimson Text', Georgia, serif; font-size: 1.8rem; font-weight: 700;">VILLAGE TYCOON!</div>
+            <div style="color: var(--cream); font-size: 1rem; margin-top: 0.5rem;">You've built a thriving community!</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     if game['stats']['Food'] <= 0 or game['stats']['Water'] <= 0:
-        st.error("💀 **GAME OVER:** Your village starved. Try again!")
-        if st.button("Restart Village", key="restart_village_gameover"):
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a0000, #2a0a0a); border: 2px solid var(--danger); border-radius: 12px; padding: 2rem; text-align: center; margin: 1rem 0;">
+            <div style="font-size: 3rem;">💀</div>
+            <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.8rem; font-weight: 700;">GAME OVER</div>
+            <div style="color: var(--cream-dim); font-size: 1rem; margin-top: 0.5rem;">Your village starved. Try again!</div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("🔄 Restart Village", key="restart_village_gameover"):
             st.session_state.village = None
             st.rerun()
 
     # --- RENDER STATS ---
     s = game['stats']
-    st.markdown(f"### {SEASON_ICONS.get(current_season, '🌸')} {current_season} - Day {game['day']}")
+    season_colour = {"Spring": "#4CAF50", "Summer": "#FFC107", "Autumn": "#FF8F00", "Winter": "#90CAF9"}.get(current_season, "#4CAF50")
+
+    st.markdown(f"""
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber-dark); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--amber); font-size: 0.75rem; font-weight: 600;">{SEASON_ICONS.get(current_season, '🌸')} SEASON</div>
+            <div style="color: var(--cream); font-size: 1.1rem; font-weight: 700;">{current_season} — Day {game['day']}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1.metric("🍖 Food", s['Food'])
+    c2.metric("💧 Water", s['Water'])
+    c3.metric("⚡ Power", f"{s['Power']}/{s['Max_Power']}")
+    c4.metric("💰 Money", f"£{s['Money']}")
+    nature = game['nature_health']
+    c5.metric("🌿 Nature", f"{nature}%")
+    c6.metric("📦 Storage", f"{current_storage}/{max_storage}")
 
     # --- WINTER WARNING ---
     if current_season == "Autumn":
-        st.warning("🍂 **AUTUMN WARNING:** Winter is coming! Stockpile food and build a Cold Frame!")
+        st.markdown(f"""
+        <div style="background: #3d2e0a; border: 1px solid var(--amber); border-radius: 10px; padding: 0.8rem 1rem;">
+            <span style="color: var(--amber); font-weight: 600;">🍂 AUTUMN WARNING:</span>
+            <span style="color: var(--cream-dim);"> Winter is coming! Stockpile food and build a Cold Frame!</span>
+        </div>
+        """, unsafe_allow_html=True)
     elif current_season == "Winter":
         if has_cold_frame:
-            st.info("❄️ **WINTER:** Crops protected by Cold Frame! 🫧")
+            st.markdown(f"""
+            <div style="background: var(--info-bg); border: 1px solid #2196F3; border-radius: 10px; padding: 0.8rem 1rem;">
+                <span style="color: #2196F3; font-weight: 600;">❄️ WINTER:</span>
+                <span style="color: var(--cream-dim);"> Crops protected by Cold Frame! 🫧</span>
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.error("❄️ **WINTER:** Solar panels offline. Nature dormant. Cold Frame still produces food.")
-
-    cols = st.columns(6)
-    cols[0].metric("🍖 Food", s['Food'])
-    cols[1].metric("💧 Water", s['Water'])
-    cols[2].metric("⚡ Power", f"{s['Power']}/{s['Max_Power']}")
-    cols[3].metric("💰 Money", f"£{s['Money']}")
-
-    nature = game['nature_health']
-    cols[4].progress(max(0, nature / 100), text=f"🌿 Nature: {nature}%")
-    cols[5].metric("📦 Storage", f"{current_storage}/{max_storage}")
+            st.markdown(f"""
+            <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 0.8rem 1rem;">
+                <span style="color: var(--danger); font-weight: 600;">❄️ WINTER:</span>
+                <span style="color: var(--cream-dim);"> Solar panels offline. Nature dormant. Cold Frame still produces food.</span>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown("---")
-
     map_tab, forage_tab = st.tabs(["🗺️ Village Map", "🎒 Market & Pantry"])
 
     # ==========================================
@@ -208,7 +208,12 @@ with tab1:
     # ==========================================
     with map_tab:
         if game['placing_mode']:
-            st.info(f"📍 **Placing Mode:** Click a 🌲 tile to build **{game['placing_mode']}**.")
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber); border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1rem;">
+                <span style="color: var(--amber); font-weight: 700;">📍 Placing Mode:</span>
+                <span style="color: var(--cream-dim);"> Click a 🌲 tile to build <b>{game['placing_mode']}</b>.</span>
+            </div>
+            """, unsafe_allow_html=True)
             if st.button("❌ Cancel Placement", key="cancel_placement"):
                 cost = BUILDINGS[game['placing_mode']]['cost']
                 game['stats']['Money'] += cost
@@ -245,7 +250,7 @@ with tab1:
                             if game['stats']['Stamina'] >= 5:
                                 game['stats']['Stamina'] -= 5
                                 game['inventory']['Fish'] = game['inventory'].get('Fish', 0) + 1
-                                st.success("Caught Fish!")
+                                st.toast("🎣 Caught Fish!")
                                 st.rerun()
                             else:
                                 st.error("Need Stamina")
@@ -257,7 +262,7 @@ with tab1:
                             if game['stats']['Money'] >= repair_cost:
                                 game['stats']['Money'] -= repair_cost
                                 game['damaged_buildings'].remove((row_idx, col_idx))
-                                st.success("Repaired!")
+                                st.toast("Repaired!")
                                 st.rerun()
                             else:
                                 st.error(f"Need £{repair_cost}")
@@ -287,7 +292,6 @@ with tab1:
         if st.button("⏭️ End Day (Survive)", use_container_width=True, key="end_day_village"):
             game['day'] += 1
 
-            # Season Logic (40 days per season)
             day_in_cycle = game['day'] % 40
             if day_in_cycle < 10:
                 game['season'] = "Spring"
@@ -298,12 +302,10 @@ with tab1:
             else:
                 game['season'] = "Winter"
 
-            # Resource Drain
             game['stats']['Food'] = max(0, game['stats']['Food'] - 1)
             game['stats']['Water'] = max(0, game['stats']['Water'] - 1)
             game['stats']['Stamina'] = min(100, game['stats']['Stamina'] + 20)
 
-            # Building Logic
             for r in range(4):
                 for c in range(6):
                     tile = game['grid'][r][c]
@@ -312,14 +314,12 @@ with tab1:
 
                     current_season_local = game['season']
 
-                    # Winter effects
                     if current_season_local == "Winter":
                         if tile in ['🔋', '☀️']:
-                            continue  # Solar offline
+                            continue
                         if tile == '🌳':
-                            continue  # Nature dormant
+                            continue
 
-                    # Production buildings
                     if tile == '🏠':
                         game['stats']['Stamina'] = min(100, game['stats']['Stamina'] + 20)
                     elif tile == '🪨':
@@ -343,7 +343,6 @@ with tab1:
                             game['inventory']['Wood'] = game['inventory'].get('Wood', 0) + 1
                             game['nature_health'] = max(0, game['nature_health'] - 2)
 
-            # Damage Logic (15% chance)
             if random.random() < 0.15:
                 protected_tiles = ['🌲', '🌊', '🫧', '🥓']
                 buildings = [
@@ -359,7 +358,6 @@ with tab1:
                     repair_cost = b_data.get('repair', 10)
                     st.toast(f"⚠️ Building {icon} damaged! Repair for £{repair_cost}")
 
-            # Achievement Checks
             if game['day'] >= 30 and not st.session_state.achievements['eco_survivor']:
                 st.session_state.achievements['eco_survivor'] = True
                 st.toast("🏅 Achievement Unlocked: Settler!")
@@ -382,7 +380,12 @@ with tab1:
             disable_forage = (current_season == "Winter")
 
             if game['nature_health'] < 20:
-                st.error("⚠️ Nature depleted! Build a Reserve to restore it.")
+                st.markdown(f"""
+                <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+                    <span style="color: var(--danger); font-weight: 600;">⚠️ Nature depleted!</span>
+                    <span style="color: var(--cream-dim);"> Build a Reserve to restore it.</span>
+                </div>
+                """, unsafe_allow_html=True)
 
             if st.button("🌲 Forage in Woods", key="forage_woods", disabled=disable_forage):
                 if game['stats']['Stamina'] >= 10:
@@ -407,7 +410,6 @@ with tab1:
                 else:
                     st.error("Need Stamina")
 
-            # Seasonal foraging
             if current_season in ["Spring", "Summer"]:
                 if st.button("🌸 Forage in Meadows", key="forage_meadow"):
                     if game['stats']['Stamina'] >= 10:
@@ -416,7 +418,7 @@ with tab1:
                             game['nature_health'] = max(0, game['nature_health'] - 5)
                             seasonal_plants = [
                                 p for p in UK_PLANTS['edible']
-                                if any(m in SEASON_MONTHS[current_season] for m in p.get('months', []))
+                                if any(m in SEASON_ICONS and SEASON_MONTHS.get(current_season, []) and m in SEASON_MONTHS[current_season] for m in p.get('months', []))
                             ]
                             if seasonal_plants and random.random() < 0.4:
                                 found_plant = random.choice(seasonal_plants)
@@ -434,12 +436,11 @@ with tab1:
                     else:
                         st.error("Need Stamina")
 
-            # Stream fishing
             if st.button("🎣 Fish at Stream", key="forage_fish"):
                 if game['stats']['Stamina'] >= 5:
                     game['stats']['Stamina'] -= 5
                     game['inventory']['Fish'] = game['inventory'].get('Fish', 0) + 1
-                    st.success("Caught a Fish!")
+                    st.toast("🎣 Caught a Fish!")
                     st.rerun()
                 else:
                     st.error("Need Stamina")
@@ -450,7 +451,6 @@ with tab1:
                 needs_power = recipe.get('power', 0) > 0
                 has_power = game['stats']['Power'] >= recipe.get('power', 0) or not needs_power
 
-                # Smokehouse recipes bypass power requirement
                 if recipe.get('smokehouse') and has_smokehouse:
                     has_power = True
 
@@ -474,28 +474,24 @@ with tab1:
                     disabled=not can_craft,
                     key=f"make_{recipe_name}"
                 ):
-                    # Consume ingredients
                     for ing, qty in recipe['ingredients'].items():
                         if ing not in BASICS:
                             game['inventory'][ing] -= qty
                             if game['inventory'][ing] <= 0:
                                 del game['inventory'][ing]
 
-                    # Consume power (unless smokehouse bypass)
                     if recipe.get('power', 0) > 0 and not (recipe.get('smokehouse') and has_smokehouse):
                         game['stats']['Power'] -= recipe['power']
 
-                    # Produce output
                     out = recipe['output']
                     game['inventory'][out] = game['inventory'].get(out, 0) + recipe.get('qty', 1)
-                    st.success(f"Made {recipe_name}!")
+                    st.toast(f"Made {recipe_name}!")
                     st.rerun()
 
         with col2:
             st.markdown("#### 💰 Market & Pantry")
             st.caption(f"Storage: {current_storage}/{max_storage}")
 
-            # Merge village inventory with foraged items from other pages
             combined_inventory = {}
             for item_name, count in game['inventory'].items():
                 if count > 0:
@@ -505,7 +501,11 @@ with tab1:
                     combined_inventory[item_name] = combined_inventory.get(item_name, 0) + count
 
             if not combined_inventory:
-                st.info("Empty — Forage in Foraging Games or produce here!")
+                st.markdown(f"""
+                <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                    <div style="color: var(--cream-dim);">Empty — Forage in Foraging Games or produce here!</div>
+                </div>
+                """, unsafe_allow_html=True)
             else:
                 hdr_cols = st.columns([2, 1, 1, 1])
                 hdr_cols[0].write("**Item**")
@@ -526,7 +526,6 @@ with tab1:
                     row_cols[0].write(f"{icon} {item_name}")
                     row_cols[1].write(f"{count}")
 
-                    # Eat button
                     if food_val > 0:
                         if row_cols[2].button("🍽️", key=f"eat_{item_name}",
                                               help=f"Restores {food_val} Food"):
@@ -544,7 +543,6 @@ with tab1:
                     else:
                         row_cols[2].write("—")
 
-                    # Sell button
                     if row_cols[3].button(f"£{val}", key=f"sell_btn_{item_name}"):
                         if item_name in game['inventory'] and game['inventory'][item_name] > 0:
                             game['inventory'][item_name] -= 1
@@ -568,13 +566,28 @@ with tab1:
     with st.expander("🏅 Eco-Village Achievements"):
         for key in ["eco_survivor", "eco_wealth"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements[key] else "🔒"
+            is_unlocked = st.session_state.achievements[key]
+            border_color = "var(--green-leaf)" if is_unlocked else "#444"
+            bg = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if is_unlocked else "var(--bg-card)"
+
             progress = ""
             if key == "eco_survivor":
-                progress = f"({game['day']}/30 days)" if not st.session_state.achievements[key] else "(Done)"
+                progress = f"({game['day']}/30 days)" if not is_unlocked else "(Done)"
             elif key == "eco_wealth":
-                progress = f"(£{game['stats']['Money']}/£2000)" if not st.session_state.achievements[key] else "(Done)"
-            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
+                progress = f"(£{game['stats']['Money']}/£2000)" if not is_unlocked else "(Done)"
+
+            st.markdown(f"""
+            <div style="background: {bg}; border: 2px solid {border_color}; border-radius: 10px; padding: 0.8rem; margin: 0.5rem 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{'✅' if is_unlocked else '🔒'}</span>
+                        <span style="color: {'var(--green-leaf)' if is_unlocked else 'var(--cream-dim)'}; font-weight: 700;">{ach['name']}</span>
+                    </div>
+                    <span style="color: var(--cream-dim); font-size: 0.8rem;">{progress}</span>
+                </div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">{ach['desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
         # Building summary
         st.markdown("---")
@@ -615,7 +628,12 @@ with tab2:
     total_edible = len(UK_PLANTS['edible'])
 
     if not inv:
-        st.info("🥗 Your Pantry is empty! Go **Foraging in Foraging Games** to find ingredients.")
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 1.5rem; text-align: center;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🥗</div>
+            <div style="color: var(--cream-dim);">Your Pantry is empty! Go **Foraging in Foraging Games** to find ingredients.</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # --- PROGRESSION LOGIC ---
     beginner_unlocked = len([
@@ -638,7 +656,12 @@ with tab2:
     col_main, col_side = st.columns([2, 1])
 
     with col_side:
-        st.markdown("### 🎒 Pantry")
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+            <div style="color: var(--amber); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem;">🎒 Pantry</div>
+        </div>
+        """, unsafe_allow_html=True)
+
         if not inv:
             st.info("Empty — Forage items in Foraging Games")
         else:
@@ -652,11 +675,15 @@ with tab2:
         st.caption(", ".join(BASICS))
 
         st.markdown("---")
-        st.markdown("### 🏆 Progress")
-        st.metric("Kitchen Score", st.session_state.kitchen_score)
-        st.metric("Beginner Unlocked", f"{beginner_unlocked}/3")
-        st.metric("Intermediate Unlocked", f"{inter_unlocked}/8")
-        st.metric("Advanced Unlocked", f"{adv_unlocked}/7")
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 12px; padding: 1rem;">
+            <div style="color: var(--amber); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem;">🏆 Progress</div>
+            <div style="color: var(--cream); font-size: 0.9rem;">Kitchen Score: <b>{st.session_state.kitchen_score}</b></div>
+            <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">Beginner: {beginner_unlocked}/3 ✅</div>
+            <div style="color: var(--cream-dim); font-size: 0.85rem;">Intermediate: {inter_unlocked}/8 🔒</div>
+            <div style="color: var(--cream-dim); font-size: 0.85rem;">Advanced: {adv_unlocked}/7 🔒</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     with col_main:
         st.markdown("### 📖 Recipe Book")
@@ -664,7 +691,13 @@ with tab2:
 
         def render_recipe_tab(recipe_list, container, locked=False, req_count=0):
             if locked:
-                container.warning(f"🔒 Unlock **{req_count} recipes** in the previous tier to access this tab.")
+                st.markdown(f"""
+                <div style="background: var(--bg-card); border: 2px dashed #555; border-radius: 12px; padding: 2rem; text-align: center;">
+                    <div style="font-size: 2rem;">🔒</div>
+                    <div style="color: var(--cream-dim); font-size: 1.1rem; font-weight: 600; margin-top: 0.5rem;">Unlock {req_count} recipes to access this tier.</div>
+                    <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">Complete more Beginner recipes to progress!</div>
+                </div>
+                """, unsafe_allow_html=True)
                 return
 
             for recipe in recipe_list:
@@ -676,7 +709,11 @@ with tab2:
                         if ing not in BASICS
                     )
 
-                    with st.expander(f"{recipe['icon']} {recipe['name']} - {get_difficulty_stars(recipe['diff'])}"):
+                    diff_stars = get_difficulty_stars(recipe['diff'])
+                    border_color = "var(--green-leaf)" if is_unlocked else "#555"
+                    bg = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if is_unlocked else "var(--bg-card)"
+
+                    with st.expander(f"{recipe['icon']} {recipe['name']} {diff_stars}"):
                         st.markdown(f"**{recipe['desc']}**")
                         st.info(f"**Health Benefits:** {recipe.get('benefits', 'Nutritious wild food.')}")
                         st.markdown("---")
@@ -694,8 +731,15 @@ with tab2:
                         st.markdown("---")
 
                         if not is_unlocked:
-                            # --- UNLOCK PHASE ---
-                            st.warning(f"🔒 **Preparation Required:** Answer {len(recipe['prep_questions'])} question(s).")
+                            st.markdown(f"""
+                            <div style="background: #3d2e0a; border: 1px solid var(--amber); border-radius: 10px; padding: 1rem; margin: 0.5rem 0;">
+                                <div style="color: var(--amber); font-weight: 700;">🔒 Preparation Required</div>
+                                <div style="color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.3rem;">
+                                    Answer {len(recipe['prep_questions'])} question(s) to unlock this recipe.
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
+
                             for i, q_data in enumerate(recipe['prep_questions']):
                                 st.radio(f"Q{i+1}: {q_data['q']}", q_data['opts'],
                                         key=f"q_{recipe['name']}_{i}")
@@ -710,9 +754,7 @@ with tab2:
 
                                 if passed:
                                     st.session_state.unlocked_recipes.append(recipe['name'])
-                                    st.success(f"✅ Correct! **{recipe['name']}** Unlocked!")
 
-                                    # Achievement Checks
                                     if recipe['diff'] == 1:
                                         count = len([
                                             r for r in st.session_state.unlocked_recipes
@@ -732,14 +774,18 @@ with tab2:
                                             st.session_state.achievements['kitchen_master'] = True
                                             st.toast("🏅 Achievement Unlocked: Master Chef!")
 
+                                    st.success(f"✅ Correct! **{recipe['name']}** Unlocked!")
                                     st.rerun()
                                 else:
                                     st.error("❌ Incorrect. Review the safety notes and try again!")
 
                         else:
-                            # --- COOKING PHASE ---
                             if has_ingredients:
-                                st.success("✅ Ready to Cook!")
+                                st.markdown(f"""
+                                <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem; text-align: center; margin: 0.5rem 0;">
+                                    <span style="color: var(--green-leaf); font-weight: 600;">✅ Ready to Cook!</span>
+                                </div>
+                                """, unsafe_allow_html=True)
                                 if st.button(f"🍳 Cook {recipe['name']}", key=f"cook_{recipe['name']}"):
                                     for ing, qty in recipe['ingredients'].items():
                                         if ing not in BASICS:
@@ -749,7 +795,7 @@ with tab2:
 
                                     result_dish = recipe['name']
                                     st.session_state.master_inventory[result_dish] = (
-                                        st.session_state.master_inventory.get(result_dish, 0) + 1
+                                        st.session_state.master_inventory.get(result_dish, 0) + recipe.get('qty', 1)
                                     )
 
                                     points = recipe['diff'] * 15
@@ -763,8 +809,13 @@ with tab2:
                                     for ing, qty in recipe['ingredients'].items()
                                     if ing not in BASICS and inv.get(ing, 0) < qty
                                 ]
-                                st.warning(f"Missing ingredients: {', '.join(missing)}")
-                                st.caption("💡 Go foraging in Foraging Games to find ingredients!")
+                                st.markdown(f"""
+                                <div style="background: #3d2e0a; border: 1px solid var(--amber-dark); border-radius: 10px; padding: 0.8rem 1rem; margin: 0.5rem 0;">
+                                    <div style="color: var(--amber); font-weight: 600;">🧺 Missing Ingredients</div>
+                                    <div style="color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.3rem;">{', '.join(missing)}</div>
+                                    <div style="color: var(--cream-dim); font-size: 0.8rem; margin-top: 0.3rem;">💡 Go foraging in Foraging Games to find ingredients!</div>
+                                </div>
+                                """, unsafe_allow_html=True)
 
         beginner_recipes = [r for r in KITCHEN_RECIPES if r['diff'] == 1]
         inter_recipes = [r for r in KITCHEN_RECIPES if r['diff'] == 2]
@@ -783,17 +834,35 @@ with tab2:
     with st.expander("🏅 Kitchen Achievements"):
         for key in ["kitchen_apprentice", "kitchen_master"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements[key] else "🔒"
+            is_unlocked = st.session_state.achievements[key]
+            border_color = "var(--green-leaf)" if is_unlocked else "#444"
+            bg = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if is_unlocked else "var(--bg-card)"
+
             progress = ""
             if key == "kitchen_apprentice":
-                progress = f"({beginner_unlocked}/3)" if not st.session_state.achievements[key] else "(Done)"
+                progress = f"({beginner_unlocked}/3)" if not is_unlocked else "(Done)"
             elif key == "kitchen_master":
                 total_inter = len([r for r in KITCHEN_RECIPES if r['diff'] == 2])
-                progress = f"({inter_unlocked}/{total_inter})" if not st.session_state.achievements[key] else "(Done)"
-            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
+                progress = f"({inter_unlocked}/{total_inter})" if not is_unlocked else "(Done)"
+
+            st.markdown(f"""
+            <div style="background: {bg}; border: 2px solid {border_color}; border-radius: 10px; padding: 0.8rem; margin: 0.5rem 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{'✅' if is_unlocked else '🔒'}</span>
+                        <span style="color: {'var(--green-leaf)' if is_unlocked else 'var(--cream-dim)'}; font-weight: 700;">{ach['name']}</span>
+                    </div>
+                    <span style="color: var(--cream-dim); font-size: 0.8rem;">{progress}</span>
+                </div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">{ach['desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
         # Recipe collection tracker
         total_recipes = len(KITCHEN_RECIPES)
         total_unlocked = len(st.session_state.unlocked_recipes)
-        st.markdown("---")
-        st.metric("📖 Recipes Unlocked", f"{total_unlocked}/{total_recipes}")
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 0.8rem 1rem; text-align: center; margin-top: 0.5rem;">
+            <span style="color: var(--amber); font-weight: 700;">📖 Recipes Unlocked: {total_unlocked}/{total_recipes}</span>
+        </div>
+        """, unsafe_allow_html=True)
