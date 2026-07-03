@@ -1352,6 +1352,7 @@ with tab3:
         """)
 
     # --- SETTINGS ---
+    st.markdown("#### ⚙️ Quiz Settings")
     col_settings1, col_settings2, col_settings3 = st.columns(3)
     with col_settings1:
         quiz_mode = st.selectbox("📚 Category",
@@ -1371,14 +1372,36 @@ with tab3:
         max_questions = st.session_state.quiz_max
         lives = 3
 
-    st.markdown("---")
+    # --- CHALLENGE MODE BANNER ---
+    if challenge_mode:
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #2a0a0a, #3d1515); border: 2px solid var(--danger); border-radius: 12px; padding: 1rem; text-align: center; margin-bottom: 1rem;">
+            <div style="font-size: 1.5rem;">⚔️</div>
+            <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.2rem; font-weight: 700;">CHALLENGE MODE</div>
+            <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">1 Life · 10 Questions · Can you survive?</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # --- STATS ---
-    col1, col2, col3 = st.columns(3)
-    col1.metric("🔥 Streak", f"{st.session_state.daily_streak} Correct")
-    col2.metric("🌟 Score", st.session_state.quiz_score)
-    col3.metric("❓ Question", f"{st.session_state.quiz_q_num}/{max_questions}")
-    st.progress(min(st.session_state.quiz_q_num / max_questions, 1.0))
+    # --- STATS ROW ---
+    streak_fire = "🔥" * min(st.session_state.daily_streak, 5) if st.session_state.daily_streak > 0 else ""
+    st.markdown(f"""
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <div style="background: linear-gradient(135deg, #1a0a00, #2a1a00); border: 2px solid #FF8F00; border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: #FF8F00; font-size: 0.75rem; font-weight: 600;">STREAK</div>
+            <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{streak_fire} {st.session_state.daily_streak}</div>
+        </div>
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber-dark); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--amber); font-size: 0.75rem; font-weight: 600;">SCORE</div>
+            <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{st.session_state.quiz_score}</div>
+        </div>
+        <div style="background: var(--bg-card); border: 2px solid #3d5a3d; border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--green-leaf); font-size: 0.75rem; font-weight: 600;">QUESTION</div>
+            <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{st.session_state.quiz_q_num}/{max_questions}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.progress(min(st.session_state.quiz_q_num / max_questions, 1.0), text=f"Progress: {st.session_state.quiz_q_num}/{max_questions}")
 
     # --- BUILD QUESTION POOL ---
     if quiz_mode == "All":
@@ -1396,7 +1419,7 @@ with tab3:
     if not pool:
         st.warning("No plants found for this category. Try 'All'.")
     else:
-        # Initialise lives tracker
+        # Initialize lives tracker
         if 'quiz_lives_remaining' not in st.session_state:
             st.session_state.quiz_lives_remaining = lives
         if 'quiz_plants_seen' not in st.session_state:
@@ -1404,9 +1427,15 @@ with tab3:
 
         # --- CHALLENGE MODE GAME OVER ---
         if challenge_mode and st.session_state.quiz_lives_remaining <= 0 and st.session_state.quiz_q_num > 0:
-            st.error("⚔️ **Challenge Failed!** You ran out of lives.")
-            st.markdown(f"**Score:** {st.session_state.quiz_score} | **Questions answered:** {st.session_state.quiz_q_num}")
-            if st.button("🔄 Try Challenge Again", key="restart_challenge_fail"):
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #1a0000, #2a0a0a); border: 2px solid var(--danger); border-radius: 12px; padding: 2rem; text-align: center; margin: 1rem 0;">
+                <div style="font-size: 3rem;">⚔️</div>
+                <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.8rem; font-weight: 700;">CHALLENGE FAILED</div>
+                <div style="color: var(--cream-dim); font-size: 1rem; margin-top: 0.5rem;">You ran out of lives.</div>
+                <div style="color: var(--cream); font-size: 0.9rem; margin-top: 0.5rem;">Score: <b>{st.session_state.quiz_score}</b> | Questions answered: <b>{st.session_state.quiz_q_num}</b></div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("🔄 Try Challenge Again", key="restart_challenge_fail", use_container_width=True):
                 st.session_state.quiz_score = 0
                 st.session_state.quiz_q_num = 0
                 st.session_state.q_data = None
@@ -1416,14 +1445,19 @@ with tab3:
 
         # --- REGULAR GAME OVER ---
         elif st.session_state.quiz_q_num >= max_questions:
-            st.balloons()
-            if challenge_mode:
-                st.success("⚔️ **CHALLENGE COMPLETE!** Incredible!")
-                if not st.session_state.achievements['quiz_challenger']:
-                    st.session_state.achievements['quiz_challenger'] = True
-                    st.toast("🏅 Achievement Unlocked: Challenger!")
-            else:
-                st.success("🎉 **Challenge Complete!**")
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 2px solid var(--green-leaf); border-radius: 12px; padding: 2rem; text-align: center; margin: 1rem 0;">
+                <div style="font-size: 3rem;">🎉</div>
+                <div style="color: var(--green-leaf); font-family: 'Crimson Text', Georgia, serif; font-size: 1.8rem; font-weight: 700;">
+                    {'⚔️ CHALLENGE COMPLETE!' if challenge_mode else 'QUIZ COMPLETE!'}
+                </div>
+                <div style="color: var(--cream); font-size: 1.2rem; margin-top: 0.5rem;">Final Score: <b>{st.session_state.quiz_score}</b></div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            if challenge_mode and not st.session_state.achievements.get('quiz_challenger', False):
+                st.session_state.achievements['quiz_challenger'] = True
+                st.toast("🏅 Achievement Unlocked: Challenger!")
 
             st.metric("Final Score", st.session_state.quiz_score)
 
@@ -1433,7 +1467,7 @@ with tab3:
                         icon = "✅" if correct else "❌"
                         st.write(f"{icon} {p_name}")
 
-            if st.button("🔄 Try Again", key="restart_quiz"):
+            if st.button("🔄 Try Again", key="restart_quiz", use_container_width=True):
                 st.session_state.quiz_score = 0
                 st.session_state.quiz_q_num = 0
                 st.session_state.q_data = None
@@ -1445,7 +1479,13 @@ with tab3:
         else:
             # Show lives in non-challenge mode
             if not challenge_mode:
-                st.metric("❤️ Lives", "❤️" * max(0, st.session_state.quiz_lives_remaining))
+                lives_display = "❤️" * max(0, st.session_state.quiz_lives_remaining)
+                st.markdown(f"""
+                <div style="background: var(--danger-bg); border: 2px solid var(--danger); border-radius: 10px; padding: 0.5rem 1rem; text-align: center; margin-bottom: 1rem;">
+                    <span style="color: var(--danger); font-weight: 600;">Lives:</span>
+                    <span style="color: var(--cream); font-size: 1.2rem; font-weight: 700;">{lives_display}</span>
+                </div>
+                """, unsafe_allow_html=True)
 
             # Generate question if needed
             if st.session_state.q_data is None:
@@ -1595,7 +1635,7 @@ with tab3:
 
             q = st.session_state.q_data
 
-            # Question type icons
+            # Question type icons and colours
             q_type_icons = {
                 'id_check': '🔍', 'parts_check': '🍃', 'season_check': '📅',
                 'lookalike_check': '☠️', 'warning_check': '⚠️'
@@ -1603,13 +1643,32 @@ with tab3:
             q_type_names = {
                 'id_check': 'Identification', 'parts_check': 'Edible Parts',
                 'season_check': 'Season', 'lookalike_check': 'Dangerous Lookalike',
-                'warning_check': 'Warning'
+                'warning_check': 'Safety Check'
+            }
+            q_type_colours = {
+                'id_check': '#2196F3', 'parts_check': '#FFC107',
+                'season_check': '#FF8F00', 'lookalike_check': '#ff5252',
+                'warning_check': '#9C27B0'
             }
             q_icon = q_type_icons.get(q['type'], '❓')
             q_name = q_type_names.get(q['type'], 'Question')
+            q_colour = q_type_colours.get(q['type'], '#4CAF50')
 
-            st.markdown(f"### {q_icon} {q_name}")
-            st.markdown(f"#### {q['text']}")
+            # --- QUESTION TYPE HEADER ---
+            st.markdown(f"""
+            <div style="background: var(--bg-card); border-left: 4px solid {q_colour}; border-radius: 0 10px 10px 0; padding: 0.8rem 1rem; margin-bottom: 0.8rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{q_icon}</span>
+                        <span style="color: {q_colour}; font-weight: 700; font-size: 1.1rem;">{q_name}</span>
+                    </div>
+                    <span style="color: var(--cream-dim); font-size: 0.8rem;">Q{st.session_state.quiz_q_num + 1}/{max_questions}</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # --- QUESTION ---
+            st.markdown(f"### {q['text']}")
 
             cols = st.columns(len(q['options']))
             for i, opt in enumerate(q['options']):
@@ -1617,7 +1676,6 @@ with tab3:
                     if opt == q['correct']:
                         st.session_state.quiz_score += 1
                         st.session_state.daily_streak += 1
-                        st.toast(f"✅ Correct! +1 Point")
 
                         if 'quiz_plants_seen' in st.session_state:
                             st.session_state.quiz_plants_seen.append((q['plant']['name'], True))
@@ -1629,7 +1687,6 @@ with tab3:
                     else:
                         st.session_state.daily_streak = 0
                         st.session_state.quiz_lives_remaining -= 1
-                        st.toast(f"❌ Wrong! The answer was: {q['correct']}")
 
                         if 'quiz_plants_seen' in st.session_state:
                             st.session_state.quiz_plants_seen.append((q['plant']['name'], False))
@@ -1644,10 +1701,25 @@ with tab3:
     with st.expander("🏅 Quiz Achievements"):
         for key in ["quiz_streak", "quiz_challenger"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+            is_unlocked = st.session_state.achievements.get(key, False)
+            border_color = "var(--green-leaf)" if is_unlocked else "#444"
+            bg = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if is_unlocked else "var(--bg-card)"
+
             progress = ""
             if key == "quiz_streak":
-                progress = f"({st.session_state.daily_streak}/5)" if not st.session_state.achievements[key] else "(Done)"
+                progress = f"({st.session_state.daily_streak}/5)" if not is_unlocked else "(Done)"
             elif key == "quiz_challenger":
-                progress = "(Done)" if st.session_state.achievements[key] else "(Complete Challenge Mode)"
-            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
+                progress = "(Done)" if is_unlocked else "(Complete Challenge Mode)"
+
+            st.markdown(f"""
+            <div style="background: {bg}; border: 2px solid {border_color}; border-radius: 10px; padding: 0.8rem; margin: 0.5rem 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{'✅' if is_unlocked else '🔒'}</span>
+                        <span style="color: {'var(--green-leaf)' if is_unlocked else 'var(--cream-dim)'}; font-weight: 700;">{ach['name']}</span>
+                    </div>
+                    <span style="color: var(--cream-dim); font-size: 0.8rem;">{progress}</span>
+                </div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">{ach['desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
