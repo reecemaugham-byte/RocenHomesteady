@@ -3,9 +3,9 @@ import random
 import time
 import json
 import os
+import sqlite3
 from datetime import datetime
 from pathlib import Path
-from supabase import create_client, Client
 
 # --- DATA IMPORTS ---
 from plants_data import UK_PLANTS
@@ -29,53 +29,50 @@ except ImportError:
     Image = None
 
 # ==========================================
-# DATABASE (Supabase — permanent cloud storage)
+# DATABASE (SQLite for persistence)
 # ==========================================
-def get_supabase():
-    url = os.environ.get("SUPABASE_URL", "")
-    key = os.environ.get("SUPABASE_KEY", "")
-    if not url or not key:
-        try:
-            url = st.secrets["SUPABASE_URL"]
-            key = st.secrets["SUPABASE_KEY"]
-        except:
-            st.error("Supabase not configured. Set environment variables or secrets.")
-            st.stop()
-    return create_client(url, key)
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rocen_save.db')
+
+def init_db():
+    """Create the saves table if it doesn't exist."""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS saves
+                     (username TEXT PRIMARY KEY, data TEXT, last_saved TEXT)''')
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"DB Init Error: {e}")
 
 def save_game(username, data):
-    """Save game data to Supabase."""
+    """Save game data to SQLite."""
     if not username:
         return False
     try:
-        supabase = get_supabase()
-        json_data = json.dumps(data)
-        existing = supabase.table("game_saves").select("username").eq("username", username).execute()
-        if existing.data:
-            supabase.table("game_saves").update({
-                "data": json_data,
-                "last_saved": datetime.utcnow().isoformat()
-            }).eq("username", username).execute()
-        else:
-            supabase.table("game_saves").insert({
-                "username": username,
-                "data": json_data,
-                "last_saved": datetime.utcnow().isoformat()
-            }).execute()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("INSERT OR REPLACE INTO saves (username, data, last_saved) VALUES (?, ?, ?)",
+                  (username, json.dumps(data), datetime.now().isoformat()))
+        conn.commit()
+        conn.close()
         return True
     except Exception as e:
         print(f"Save Error: {e}")
         return False
 
 def load_game(username):
-    """Load game data from Supabase."""
+    """Load game data from SQLite."""
     if not username:
         return None
     try:
-        supabase = get_supabase()
-        result = supabase.table("game_saves").select("data").eq("username", username).execute()
-        if result.data:
-            return json.loads(result.data[0]["data"])
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT data FROM saves WHERE username=?", (username,))
+        row = c.fetchone()
+        conn.close()
+        if row:
+            return json.loads(row[0])
         return None
     except Exception as e:
         print(f"Load Error: {e}")
@@ -145,44 +142,414 @@ def init_session_state():
         if key not in st.session_state:
             st.session_state[key] = value
 
+    # Initialize DB on first run
+    init_db()
+
 # ==========================================
 # THEME
 # ==========================================
 def apply_brand_theme():
     st.markdown("""
     <style>
-    .stApp, section.main > div { background-color: #3A2416; }
-    .stMarkdown, .stHeader, p, label,
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea { color: #FFFFFF !important; }
-    h1, h2, h3 { color: #B87333 !important; font-family: 'Georgia', serif !important;
-                 border-bottom: 2px solid #6B4226; padding-bottom: 10px; }
-    .stButton > button { background-color: #6B4226; color: white !important;
-                         border-radius: 20px; border: 1px solid #B87333;
-                         padding: 10px 24px; font-weight: bold;
-                         box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
-    .stButton > button:hover { background-color: #B87333; color: #FFFFFF !important;
-                               transform: scale(1.02); }
-    [data-testid="stSidebar"] { background-color: #1B3A28; }
-    [data-testid="stSidebar"] * { color: #FFFFFF !important; }
-    [data-testid="stSidebar"] .stMarkdown hr { border-color: #B87333; }
-    [data-testid="stMetric"] { background-color: #6B4226; border-radius: 10px;
-                               padding: 15px; box-shadow: 0 0 0 1px #B87333;
-                               border-left: 5px solid #B87333; color: white; }
-    [data-testid="stMetric"] label { color: #B87333 !important; }
-    [data-testid="stMetric"] [data-testid="stMetricValue"] { color: white !important; }
-    .stTabs [data-badges="badge"] { background-color: #3F5F2A; color: #FFFFFF; }
-    button[aria-selected="true"] { background-color: #B87333 !important;
-                                   color: #FFFFFF !important;
-                                   border-bottom: 2px solid #6B4226; }
-    .streamlit-expanderHeader { background-color: #6B4226 !important;
-                                border-radius: 10px; border-left: 5px solid #B87333;
-                                color: #FFFFFF !important; font-weight: bold; }
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea,
-    .stSelectbox > div > div { background-color: #3F5F2A !important;
-                               color: #FFFFFF !important; border: 1px solid #B87333; }
+    /* ─── FONTS ─── */
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* ─── ROOT COLOURS ─── */
+    :root {
+        --bg-deep: #0a1a0a;
+        --bg-main: #1a2e1a;
+        --bg-card: #1e331e;
+        --bg-card-hover: #264026;
+        --green-leaf: #4CAF50;
+        --green-light: #66BB6A;
+        --green-dark: #2E7D32;
+        --amber: #FFC107;
+        --amber-dark: #FF8F00;
+        --brown: #5D4037;
+        --brown-light: #795548;
+        --cream: #F5F0E8;
+        --cream-dim: #B8AFA3;
+        --danger: #ff5252;
+        --danger-bg: #2a1010;
+        --info-bg: #0a1a2a;
+        --shadow: rgba(0, 0, 0, 0.4);
+    }
+
+    /* ─── APP BACKGROUND ─── */
+    .stApp {
+        background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-main) 100%) !important;
+        color: var(--cream) !important;
+    }
+
+    /* ─── MAIN CONTENT ─── */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        max-width: 1200px;
+    }
+
+    /* ─── TYPOGRAPHY ─── */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--cream) !important;
+        font-family: 'Crimson Text', Georgia, serif !important;
+    }
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.6rem !important; border-bottom: 2px solid var(--green-dark) !important; padding-bottom: 0.5rem !important; }
+    h3 { font-size: 1.3rem !important; }
+
+    p, span, div, label, .stMarkdown, .stText {
+        color: var(--cream) !important;
+    }
+
+    /* ─── SIDEBAR ─── */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0d1f0d 0%, #142814 100%) !important;
+        border-right: 1px solid #2d4a2d !important;
+    }
+    section[data-testid="stSidebar"] * {
+        color: var(--cream) !important;
+    }
+    section[data-testid="stSidebar"] .stMarkdown hr {
+        border-color: #2d4a2d !important;
+    }
+
+    /* ─── BUTTONS ─── */
+    .stButton > button {
+        background: linear-gradient(135deg, var(--green-dark), var(--green-leaf)) !important;
+        color: var(--cream) !important;
+        border: 1px solid var(--green-light) !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1.5rem !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(135deg, var(--green-leaf), var(--green-light)) !important;
+        box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4) !important;
+        transform: translateY(-1px) !important;
+    }
+    .stButton > button:active {
+        transform: translateY(0px) !important;
+    }
+    .stButton > button:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.4) !important;
+    }
+    .stButton > button:disabled {
+        background: #2a3a2a !important;
+        color: #666 !important;
+        border-color: #444 !important;
+        box-shadow: none !important;
+    }
+
+    /* ─── TEXT INPUTS ─── */
+    .stTextInput > div > div > input {
+        background: var(--bg-card) !important;
+        color: var(--cream) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+    }
+    .stTextInput > div > div > input:focus {
+        border-color: var(--green-leaf) !important;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2) !important;
+    }
+    .stTextInput > div > label {
+        color: var(--cream-dim) !important;
+    }
+
+    /* ─── SELECTBOXES ─── */
+    .stSelectbox > div > div {
+        background: var(--bg-card) !important;
+        color: var(--cream) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+    }
+    .stSelectbox > div > label {
+        color: var(--cream-dim) !important;
+    }
+
+    /* ─── CHECKBOXES ─── */
+    .stCheckbox > label {
+        color: var(--cream) !important;
+    }
+    .stCheckbox > label > div[data-testid="stMarkdownContainer"] {
+        color: var(--cream) !important;
+    }
+
+    /* ─── RADIO ─── */
+    .stRadio > label {
+        color: var(--cream) !important;
+    }
+
+    /* ─── EXPANDERS ─── */
+    .streamlit-expanderHeader {
+        background: var(--bg-card) !important;
+        color: var(--cream) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+    }
+    .streamlit-expanderHeader:hover {
+        background: var(--bg-card-hover) !important;
+        border-color: var(--green-leaf) !important;
+    }
+    .streamlit-expanderContent {
+        border: 1px solid #3d5a3d !important;
+        border-top: none !important;
+        border-radius: 0 0 8px 8px !important;
+    }
+
+    /* ─── METRICS ─── */
+    [data-testid="stMetric"] {
+        background: var(--bg-card) !important;
+        border-radius: 10px !important;
+        padding: 12px 16px !important;
+        box-shadow: 0 2px 8px var(--shadow) !important;
+        border-left: 4px solid var(--green-leaf) !important;
+    }
+    [data-testid="stMetricLabel"] {
+        color: var(--cream-dim) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-size: 0.85rem !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: var(--amber) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+    }
+    [data-testid="stMetricDelta"] {
+        color: var(--green-light) !important;
+    }
+
+    /* ─── PROGRESS BARS ─── */
+    .stProgress > div > div > div > div {
+        background: linear-gradient(90deg, var(--green-dark), var(--green-leaf)) !important;
+    }
+    .stProgress > div > div > div {
+        background: var(--bg-card) !important;
+    }
+
+    /* ─── TABS ─── */
+    .stTabs [data-baseweb="tab-list"] {
+        background: var(--bg-card) !important;
+        border-radius: 10px !important;
+        padding: 0.2rem !important;
+        gap: 0.2rem !important;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: var(--cream-dim) !important;
+        border-radius: 8px !important;
+        padding: 0.5rem 1rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-weight: 500 !important;
+    }
+    .stTabs [aria-selected="true"] {
+        background: var(--green-dark) !important;
+        color: var(--cream) !important;
+        border: 1px solid var(--green-leaf) !important;
+    }
+    .stTabs [aria-selected="false"]:hover {
+        background: var(--bg-card-hover) !important;
+    }
+
+    /* ─── ALERTS / TOASTS ─── */
+    .stAlert {
+        border-radius: 10px !important;
+        padding: 1rem !important;
+    }
+    [data-bd-type="success"] {
+        background: #1a3d1a !important;
+        border: 1px solid var(--green-leaf) !important;
+        color: var(--cream) !important;
+    }
+    [data-bd-type="warning"] {
+        background: #3d2e0a !important;
+        border: 1px solid var(--amber) !important;
+        color: var(--cream) !important;
+    }
+    [data-bd-type="error"] {
+        background: var(--danger-bg) !important;
+        border: 1px solid var(--danger) !important;
+        color: var(--cream) !important;
+    }
+    [data-bd-type="info"] {
+        background: var(--info-bg) !important;
+        border: 1px solid #2196F3 !important;
+        color: var(--cream) !important;
+    }
+
+    /* ─── DATAFRAMES ─── */
+    .stDataFrame {
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar {
+        width: 8px !important;
+    }
+    ::-webkit-scrollbar-track {
+        background: var(--bg-deep) !important;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #3d5a3d !important;
+        border-radius: 4px !important;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--green-dark) !important;
+    }
+
+    /* ─── HIDE STREAMLIT BRANDING ─── */
+    #MainMenu { visibility: hidden !important; }
+    footer { visibility: hidden !important; }
+    header { visibility: hidden !important; }
+
+    /* ─── SEPARATOR LINES ─── */
+    hr {
+        border-color: #2d4a2d !important;
+    }
+
+    /* ─── CONTAINER OVERRIDES ─── */
+    .element-container {
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    /* ─── CAPTION ─── */
+    .stCaption {
+        color: var(--cream-dim) !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* ───────────────────────────────────────── */
+    /* GAME-SPECIFIC STYLES                      */
+    /* ───────────────────────────────────────── */
+
+    /* Case file styling (Survival School) */
+    .case-file {
+        background: linear-gradient(135deg, #1a1a0a, #2a2a10) !important;
+        border: 2px solid var(--amber-dark) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        box-shadow: 0 4px 16px rgba(255, 143, 0, 0.15) !important;
+    }
+    .case-file h3, .case-file h4 {
+        color: var(--amber) !important;
+        font-family: 'Crimson Text', Georgia, serif !important;
+    }
+
+    /* Safe card */
+    .safe-card {
+        background: linear-gradient(135deg, #0a2a0a, #1a3d1a) !important;
+        border: 2px solid var(--green-leaf) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+    }
+
+    /* Danger card */
+    .danger-card {
+        background: linear-gradient(135deg, #2a0a0a, #3d1515) !important;
+        border: 2px solid var(--danger) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+    }
+
+    /* Feedback boxes */
+    .correct-feedback {
+        background: linear-gradient(135deg, #0a2a0a, #1a3d1a) !important;
+        border: 2px solid var(--green-leaf) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+        margin: 1rem 0 !important;
+    }
+    .wrong-feedback {
+        background: linear-gradient(135deg, #2a0a0a, #3d1515) !important;
+        border: 2px solid var(--danger) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+        margin: 1rem 0 !important;
+    }
+
+    /* Level up banner */
+    .level-up {
+        background: linear-gradient(135deg, #2a1a00, #3d2e00) !important;
+        border: 2px solid var(--amber) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        text-align: center !important;
+        margin: 1rem 0 !important;
+        box-shadow: 0 0 30px rgba(255, 193, 7, 0.3) !important;
+    }
+
+    /* Game card */
+    .game-card {
+        background: var(--bg-card) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        margin: 0.5rem 0 !important;
+        box-shadow: 0 2px 8px var(--shadow) !important;
+    }
+
+    /* Streak flame */
+    .streak-display {
+        background: linear-gradient(135deg, #1a0a00, #2a1a00) !important;
+        border: 2px solid var(--amber-dark) !important;
+        border-radius: 12px !important;
+        padding: 0.8rem 1.2rem !important;
+        text-align: center !important;
+    }
+
+    /* Plant card (for Foraging Quest etc.) */
+    .plant-card {
+        border-radius: 20px !important;
+        padding: 20px !important;
+        text-align: center !important;
+        background: linear-gradient(145deg, var(--bg-card), var(--bg-deep)) !important;
+        box-shadow: 10px 10px 20px rgba(0,0,0,0.3) !important;
+        margin-bottom: 20px !important;
+        border: 1px solid #3d5a3d !important;
+    }
+
+    /* Grid game buttons (Eco-Village, Farm) */
+    div.grid-game div.stButton > button {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1 !important;
+        padding: 0 !important;
+        font-size: 1.5em !important;
+        border: 1px solid #3d5a3d !important;
+        background-color: var(--bg-card) !important;
+        color: var(--cream) !important;
+        border-radius: 8px !important;
+    }
+    div.grid-game div.stButton > button:hover {
+        border-color: var(--green-leaf) !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* Market buttons */
+    .market-box div.stButton > button {
+        font-size: 14px !important;
+        white-space: normal !important;
+        height: auto !important;
+        padding: 5px !important;
+    }
+
+    /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
+        .block-container { padding: 1rem !important; }
+        h1 { font-size: 1.5rem !important; }
+        h2 { font-size: 1.3rem !important; }
+        h3 { font-size: 1.1rem !important; }
         .plant-card { padding: 10px !important; }
         div.grid-game div.stButton > button { font-size: 1em !important; }
     }
@@ -193,12 +560,24 @@ def apply_brand_theme():
 # AUDIO
 # ==========================================
 def clean_text_for_audio(text):
-    if not text: return ""
+    if not text:
+        return ""
     text = text.replace("**", "").replace("##", "").replace("*", "")
-    icon_map = {"🌿": "Plant", "🌲": "Woodland", "☠️": "Poison", "✅": "Correct",
-                "❌": "Wrong", "🕵️": "Inspector", "⚡": "Bonus", "🎓": "Graduate",
-                "🌱": "Seedling", "🍄": "Mushroom", "🏖️": "Coastal", "🏡": "Urban",
-                "🌾": "Meadow", "💧": "Water", "🪨": "Rock"}
+    icon_map = {
+        "🌿": "Plant", "🌲": "Woodland", "☠️": "Poison", "✅": "Correct",
+        "❌": "Wrong", "🕵️": "Inspector", "⚡": "Bonus", "🎓": "Graduate",
+        "🌱": "Seedling", "🍄": "Mushroom", "🏖️": "Coastal", "🏡": "Urban",
+        "🌾": "Meadow", "💧": "Water", "🪨": "Rock", "🌸": "Spring",
+        "☀️": "Summer", "🍂": "Autumn", "❄️": "Winter", "🍃": "Leaves",
+        "🌳": "Tree", "🐝": "Bee", "🍎": "Apple", "🫧": "Cold frame",
+        "🥓": "Smokehouse", "🔋": "Battery", "☀️": "Solar", "🐔": "Chicken",
+        "🐄": "Cow", "🐐": "Goat", "🌾": "Wheat", "🥕": "Carrot",
+        "🌽": "Corn", "🐟": "Fish", "🥚": "Egg", "🥛": "Milk",
+        "🍯": "Honey", "📏": "Rule", "📋": "Case", "🔍": "Observation",
+        "⚖️": "Verdict", "🎯": "Target", "🔥": "Streak", "🤕": "Injured",
+        "🛡️": "Shield", "🏆": "Trophy", "🏅": "Medal", "⚠️": "Warning",
+        "📦": "Package", "💰": "Money", "🏗️": "Building", "🧹": "Clear",
+    }
     for icon, word in icon_map.items():
         text = text.replace(icon, word)
     return text.strip()
@@ -225,6 +604,7 @@ def generate_survival_cases():
     """Generate survival school cases from plant data. Uses KS2-friendly language."""
     cases = []
 
+    # Fallback hardcoded cases (always available)
     fallback_cases = [
         {"level": 1, "clue": "You find a tall plant with white umbrella-shaped flowers. The stem is smooth with purple spots on it. There are no hairs on the stem at all.",
          "rule": "🚨 Rule: In the Carrot family, purple spots usually mean POISON. Hairy stems are usually safe.",
@@ -246,6 +626,7 @@ def generate_survival_cases():
          "safe_habitat": "Woodland"}
     ]
 
+    # Generate cases from plant data
     for plant in UK_PLANTS['edible']:
         lookalikes = plant.get('lookalikes', [])
         plant_difficulty = plant.get('difficulty', 2)
@@ -261,11 +642,13 @@ def generate_survival_cases():
             danger_diff = la.get('diff', '')
             safe_name = plant['name']
 
+            # Determine level
             if plant.get('category') == 'Fungi' or plant_difficulty >= 3:
                 level = 2 if plant_difficulty == 2 else 3
             else:
                 level = 1
 
+            # Generate KS2-friendly clue
             if id_keys:
                 features = list(id_keys.items())[:3]
                 clue_parts = []
@@ -288,8 +671,10 @@ def generate_survival_cases():
                 desc = plant.get('description', 'No description available.')
                 clue = f"You find {safe_name}. {desc[:100]}..."
 
+            # Generate KS2-friendly rule
             rule = f"⚠️ Key Difference: {danger_diff}" if danger_diff else f"🚨 Rule: {safe_name} has special identifying features. Check carefully!"
 
+            # Generate KS2-friendly fact
             if confusion_notes:
                 fact_text = confusion_notes
                 fact_text = fact_text.replace("Key Diff:", "Remember:")
@@ -298,6 +683,7 @@ def generate_survival_cases():
             else:
                 fact = f"🕵️ {safe_name} is SAFE. {danger_name} is {danger_level}."
 
+            # Find the safe plant's habitat
             raw_habitat = plant.get('habitat', 'Various').split(',')[0].strip()
             habitat_map = {
                 "Woodlands": "Woodland", "Woods": "Woodland", "Wood": "Woodland",
@@ -310,9 +696,11 @@ def generate_survival_cases():
             }
             safe_habitat = habitat_map.get(raw_habitat, "Woodland")
 
+            # Determine icons
             safe_icon = "🌿"
             danger_icon = "☠️" if danger_level in ['DEADLY', 'EXTREME'] else "⚠️"
 
+            # Category-specific icons
             cat = plant.get('category', '')
             if cat == 'Fungi':
                 safe_icon = "🍄"
@@ -335,6 +723,7 @@ def generate_survival_cases():
                 "safe_habitat": safe_habitat
             })
 
+    # If no cases generated, use fallbacks
     if not cases:
         cases = fallback_cases
 
@@ -347,6 +736,7 @@ def generate_foraging_question(plant, question_type=None):
     """Generate a foraging question of a random or specified type."""
     all_plants = UK_PLANTS['edible'] + UK_PLANTS['poisonous']
 
+    # Determine question type
     if question_type is None:
         has_danger = any(
             la.get('danger', '') in ['POISONOUS', 'DEADLY', 'HIGH', 'EXTREME']
@@ -363,6 +753,7 @@ def generate_foraging_question(plant, question_type=None):
                 weights=[3, 3, 2, 2, 1], k=1
             )[0]
 
+    # --- HABITAT QUESTION ---
     if question_type == 'habitat':
         raw_habitat = plant['habitat'].split(',')[0].strip()
         habitat_map = {
@@ -379,6 +770,7 @@ def generate_foraging_question(plant, question_type=None):
         wrong = [h for h in all_habitats if h != correct]
         options = [correct] + random.sample(wrong, min(3, len(wrong)))
         random.shuffle(options)
+
         return {
             'type': 'habitat', 'plant': plant,
             'question': f"Where does {plant['name']} typically grow?",
@@ -387,10 +779,12 @@ def generate_foraging_question(plant, question_type=None):
             'points': 10
         }
 
+    # --- IDENTIFICATION QUESTION ---
     elif question_type == 'identification':
         id_keys = plant.get('id_keys', {})
         if not id_keys:
             return generate_foraging_question(plant, 'habitat')
+
         correct_key, correct_value = random.choice(list(id_keys.items()))
         wrong_options = []
         used_values = {correct_value}
@@ -403,10 +797,13 @@ def generate_foraging_question(plant, question_type=None):
                     wrong_options.append(v)
                     used_values.add(v)
                     break
+
         while len(wrong_options) < 3:
             wrong_options.append("Unknown feature")
+
         options = [correct_value] + wrong_options[:3]
         random.shuffle(options)
+
         return {
             'type': 'identification', 'plant': plant,
             'question': f"Which is a key identifier for {plant['name']}?",
@@ -415,6 +812,7 @@ def generate_foraging_question(plant, question_type=None):
             'points': 12
         }
 
+    # --- LOOKALIKE QUESTION ---
     elif question_type == 'lookalike':
         dangerous_lookalikes = [
             la for la in plant.get('lookalikes', [])
@@ -422,6 +820,7 @@ def generate_foraging_question(plant, question_type=None):
         ]
         if not dangerous_lookalikes:
             return generate_foraging_question(plant, 'identification')
+
         chosen = random.choice(dangerous_lookalikes)
         correct = chosen['name']
         wrong_options = []
@@ -430,10 +829,13 @@ def generate_foraging_question(plant, question_type=None):
             if other_plant['name'] not in used_names and len(wrong_options) < 2:
                 wrong_options.append(other_plant['name'])
                 used_names.add(other_plant['name'])
+
         while len(wrong_options) < 2:
             wrong_options.append("Unknown plant")
+
         options = [correct] + wrong_options[:2]
         random.shuffle(options)
+
         return {
             'type': 'lookalike', 'plant': plant,
             'question': f"Which plant is a DANGEROUS lookalike of {plant['name']}?",
@@ -442,6 +844,7 @@ def generate_foraging_question(plant, question_type=None):
             'points': 15
         }
 
+    # --- PARTS QUESTION ---
     elif question_type == 'parts':
         raw_parts = plant.get('parts', 'Leaves')
         if isinstance(raw_parts, str):
@@ -450,11 +853,13 @@ def generate_foraging_question(plant, question_type=None):
             parts = raw_parts
         if not parts:
             parts = ['Leaves']
+
         correct = parts[0]
         wrong_parts = ["Roots", "Berries", "Flowers", "Seeds", "Bark", "Stem"]
         wrong = [p for p in wrong_parts if p not in parts]
         options = [correct] + random.sample(wrong, min(2, len(wrong)))
         random.shuffle(options)
+
         return {
             'type': 'parts', 'plant': plant,
             'question': f"Which part of {plant['name']} can you eat?",
@@ -463,6 +868,7 @@ def generate_foraging_question(plant, question_type=None):
             'points': 10
         }
 
+    # --- SEASON QUESTION ---
     elif question_type == 'season':
         correct_months = plant.get('months', ['Summer'])
         correct = random.choice(correct_months)
@@ -472,6 +878,7 @@ def generate_foraging_question(plant, question_type=None):
             wrong_months = ["January", "March"]
         options = [correct] + random.sample(wrong_months, min(2, len(wrong_months)))
         random.shuffle(options)
+
         return {
             'type': 'season', 'plant': plant,
             'question': f"When is {plant['name']} best harvested?",
@@ -480,10 +887,12 @@ def generate_foraging_question(plant, question_type=None):
             'points': 10
         }
 
+    # --- WARNING QUESTION ---
     elif question_type == 'warning':
         warning = plant.get('warnings', plant.get('description', ''))
         if not warning:
             return generate_foraging_question(plant, 'habitat')
+
         if random.random() < 0.5:
             return {
                 'type': 'warning', 'plant': plant,
@@ -505,6 +914,7 @@ def generate_foraging_question(plant, question_type=None):
                     false_warning = warning.lower().replace(orig.lower(), swap.lower())
                     false_warning = false_warning[0].upper() + false_warning[1:]
                     break
+
             if false_warning == warning:
                 return {
                     'type': 'warning', 'plant': plant,
@@ -513,6 +923,7 @@ def generate_foraging_question(plant, question_type=None):
                     'explanation': f"This is correct: {warning}",
                     'points': 12
                 }
+
             return {
                 'type': 'warning', 'plant': plant,
                 'question': f"True or False: {false_warning}",
@@ -521,53 +932,51 @@ def generate_foraging_question(plant, question_type=None):
                 'points': 12
             }
 
+    # Fallback
     return generate_foraging_question(plant, 'habitat')
 
 # ==========================================
 # SIDEBAR
 # ==========================================
 def render_sidebar():
+    # --- LOGO ---
     try:
-        st.sidebar.image("logo.png", width=150)
+        st.sidebar.image("logo.png", use_container_width=True)
     except:
         st.sidebar.title("🌿 Rocen Homesteady")
 
-    # --- SAVE/LOAD (uses logged-in username) ---
+    # --- SAVE/LOAD ---
     st.sidebar.markdown("### 💾 Save Progress")
+    username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
+                                      key='username_input')
 
-    if st.session_state.get('user'):
-        username = st.session_state['user']['username']
-        st.sidebar.success(f"Logged in as: **{username}**")
-    else:
-        username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
-                                          key='username_input')
-        if username != st.session_state.get('username', ''):
-            st.session_state['username'] = username
+    if username != st.session_state.get('username', ''):
+        st.session_state['username'] = username
 
     col1, col2 = st.sidebar.columns(2)
     with col1:
         if st.button("💾 Save", key='save_btn_sidebar'):
-            if username:
+            if st.session_state.get('username'):
                 data = get_save_data()
-                if save_game(username, data):
-                    st.sidebar.success("Game saved! ✅")
+                if save_game(st.session_state['username'], data):
+                    st.sidebar.success("Game saved!")
                 else:
                     st.sidebar.error("Save failed!")
             else:
-                st.sidebar.warning("Log in or enter a name to save.")
+                st.sidebar.warning("Enter a name to save.")
     with col2:
         if st.button("📂 Load", key='load_btn_sidebar'):
-            if username:
-                data = load_game(username)
+            if st.session_state.get('username'):
+                data = load_game(st.session_state['username'])
                 if data:
                     apply_save_data(data)
                     st.session_state['game_loaded'] = True
-                    st.sidebar.success("Game loaded! ✅")
+                    st.sidebar.success("Game loaded!")
                     st.rerun()
                 else:
-                    st.sidebar.warning("No save found for this user.")
+                    st.sidebar.warning("No save found for this name.")
             else:
-                st.sidebar.warning("Log in or enter a name to load.")
+                st.sidebar.warning("Enter a name to load.")
 
     st.sidebar.markdown("---")
 
@@ -611,37 +1020,3 @@ def render_sidebar():
         Cardiff, CF10 3BH
     </div>
     """, unsafe_allow_html=True)
-
-# ==========================================
-# COMPACT SAVE/LOAD FOR GAME PAGES
-# ==========================================
-def render_save_load():
-    """Compact save/load widget for game pages."""
-    username = ""
-    if st.session_state.get('user'):
-        username = st.session_state['user']['username']
-    elif st.session_state.get('username'):
-        username = st.session_state['username']
-
-    if username:
-        st.sidebar.success(f"💾 Saving as: **{username}**")
-        c1, c2 = st.sidebar.columns(2)
-        with c1:
-            if st.button("💾 Save", key=f'save_game_page'):
-                data = get_save_data()
-                if save_game(username, data):
-                    st.sidebar.success("Saved! ✅")
-                else:
-                    st.sidebar.error("Save failed!")
-        with c2:
-            if st.button("📂 Load", key=f'load_game_page'):
-                data = load_game(username)
-                if data:
-                    apply_save_data(data)
-                    st.session_state['game_loaded'] = True
-                    st.sidebar.success("Loaded! ✅")
-                    st.rerun()
-                else:
-                    st.sidebar.warning("No save found.")
-    else:
-        st.sidebar.warning("Log in to save progress")
