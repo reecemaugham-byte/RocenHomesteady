@@ -276,11 +276,28 @@ with tab1:
         st.markdown("#### 🛠️ Build")
 
         if not game['placing_mode']:
-            build_cols = st.columns(len(BUILDINGS))
+            build_cols = st.columns(3)
             for i, (name, data) in enumerate(BUILDINGS.items()):
-                with build_cols[i]:
-                    st.caption(data['desc'])
-                    if st.button(f"{data['icon']} {name} - £{data['cost']}", key=f"buy_{name}", use_container_width=True):
+                with build_cols[i % 3]:
+                    st.markdown(f"""
+                    <div style="
+                        background: var(--bg-card);
+                        border: 1px solid #3d5a3d;
+                        border-radius: 10px;
+                        padding: 0.8rem;
+                        text-align: center;
+                        height: 140px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                    ">
+                        <div style="font-size: 2rem; margin-bottom: 0.3rem;">{data['icon']}</div>
+                        <div style="color: var(--cream); font-weight: 700; font-size: 0.95rem;">{name}</div>
+                        <div style="color: var(--amber); font-weight: 600; font-size: 0.9rem; margin-top: 0.2rem;">£{data['cost']}</div>
+                        <div style="color: var(--cream-dim); font-size: 0.75rem; margin-top: 0.3rem; line-height: 1.3;">{data['desc'][:50]}{'...' if len(data['desc']) > 50 else ''}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    if st.button(f"Build {name}", key=f"buy_{name}", use_container_width=True):
                         if game['stats']['Money'] >= data['cost']:
                             game['stats']['Money'] -= data['cost']
                             game['placing_mode'] = name
