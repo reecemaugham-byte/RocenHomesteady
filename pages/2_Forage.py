@@ -614,6 +614,7 @@ with tab1:
         5. **Bonus:** Get 5 right in a row to unlock a Bonus Question!
         """)
 
+    # --- SEASON SELECTION ---
     st.markdown("### 🗓️ Choose a Season")
     season_cols = st.columns(4)
     seasons = ["Spring", "Summer", "Autumn", "Winter"]
@@ -634,29 +635,74 @@ with tab1:
 
     for i, s in enumerate(seasons):
         is_earned = s in st.session_state.season_badge_progress
+        is_active = st.session_state.active_season == s
         badge_txt = " 🏅" if is_earned else ""
-        if season_cols[i].button(f"{SEASON_ICONS[s]} {s}{badge_txt}", key=f"season_{s}", use_container_width=True):
+
+        with season_cols[i]:
+            if is_active:
+                st.markdown(f"""
+                <div style="
+                    background: linear-gradient(135deg, var(--green-dark), var(--green-leaf));
+                    border: 2px solid var(--green-light);
+                    border-radius: 10px;
+                    padding: 0.5rem;
+                    text-align: center;
+                    color: var(--cream);
+                    font-weight: 700;
+                    font-size: 0.95rem;
+                    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+                ">
+                    {SEASON_ICONS[s]} {s}{badge_txt}
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div style="
+                    background: var(--bg-card);
+                    border: 1px solid #3d5a3d;
+                    border-radius: 10px;
+                    padding: 0.5rem;
+                    text-align: center;
+                    color: var(--cream-dim);
+                    font-weight: 500;
+                    font-size: 0.95rem;
+                ">
+                    {SEASON_ICONS[s]} {s}{badge_txt}
+                </div>
+                """, unsafe_allow_html=True)
+
+    for i, s in enumerate(seasons):
+        if season_cols[i].button(f"{SEASON_ICONS[s]} {s}", key=f"season_{s}", use_container_width=True):
             st.session_state.active_season = s
             st.session_state.current_question = None
             st.rerun()
 
-    st.info(f"**Current Season:** {st.session_state.active_season} {SEASON_ICONS[st.session_state.active_season]}")
-
-    # --- COLLECTION TRACKER ---
+    # --- STATS ROW ---
     total_edible = len(UK_PLANTS['edible'])
     collection_list = list(st.session_state.master_inventory.keys())
     total_found = len(collection_list)
 
-    st.sidebar.metric("🌿 Species Found", f"{total_found}/{total_edible}")
-    if total_found > 0:
-        with st.sidebar.expander("View Collection"):
-            for p in collection_list[-5:]:
-                st.write(f"✅ {p}")
+    st.markdown(f"""
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber-dark); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--amber); font-size: 0.75rem; font-weight: 600;">SCORE</div>
+            <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{st.session_state.game_score}</div>
+        </div>
+        <div style="background: var(--danger-bg); border: 2px solid var(--danger); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--danger); font-size: 0.75rem; font-weight: 600;">LIVES</div>
+            <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{"❤️" * max(0, st.session_state.game_lives)}</div>
+        </div>
+        <div style="background: linear-gradient(135deg, #1a0a00, #2a1a00); border: 2px solid #FF8F00; border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: #FF8F00; font-size: 0.75rem; font-weight: 600;">STREAK</div>
+            <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{"🔥" * min(st.session_state.game_streak, 5)} {st.session_state.game_streak}</div>
+        </div>
+        <div style="background: var(--bg-card); border: 2px solid var(--green-leaf); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--green-leaf); font-size: 0.75rem; font-weight: 600;">HERBARIUM</div>
+            <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{total_found}/{total_edible}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("🌟 Score", st.session_state.game_score)
-    col2.metric("❤️ Lives", "❤️" * max(0, st.session_state.game_lives))
-    col3.metric("🔥 Streak", st.session_state.game_streak)
     st.markdown("---")
 
     active_season = st.session_state.active_season
@@ -673,8 +719,13 @@ with tab1:
             st.session_state.bonus_round = True
 
         if st.session_state.bonus_round:
-            st.markdown("## ⚡ BONUS ROUND!")
-            st.markdown("You've identified 5 plants in a row! Answer for **Double Points**.")
+            st.markdown(f"""
+            <div class="level-up">
+                <div style="font-size: 2rem;">⚡</div>
+                <div style="color: var(--amber); font-family: 'Crimson Text', Georgia, serif; font-size: 1.5rem; font-weight: 700;">BONUS ROUND!</div>
+                <div style="color: var(--cream); font-size: 0.95rem; margin-top: 0.3rem;">You've identified 5 plants in a row! Answer for <b>Double Points</b>.</div>
+            </div>
+            """, unsafe_allow_html=True)
 
             bonus_plant = random.choice(available_plants)
             parts = bonus_plant.get('parts', 'Leaves')
@@ -688,22 +739,39 @@ with tab1:
             bonus_options = parts_list + safe_sample(wrong_options, 2)
             random.shuffle(bonus_options)
 
-            q_text = f"**Bonus:** Which part of **{bonus_plant['name']}** do we usually eat?"
-            ans = st.radio(q_text, bonus_options, key="bonus_q")
+            st.markdown(f"### ⚡ Which part of **{bonus_plant['name']}** do we usually eat?")
+            ans = st.radio("Select your answer:", bonus_options, key="bonus_q")
 
-            if st.button("Submit Bonus", key="submit_bonus"):
+            if st.button("Submit Bonus Answer", key="submit_bonus"):
                 if ans in parts_list:
                     st.session_state.game_score += 20
-                    st.success("🎉 Correct! +20 XP!")
+                    st.session_state.bonus_round = False
+                    st.session_state.game_streak = 0
+                    st.session_state.current_question = None
                     plant_name = bonus_plant['name']
                     current_count = st.session_state.master_inventory.get(plant_name, 0)
                     st.session_state.master_inventory[plant_name] = current_count + 1
                     st.session_state.total_plants_identified += 1
+
+                    st.markdown(f"""
+                    <div class="correct-feedback">
+                        <div style="font-size: 1.5rem;">🎉</div>
+                        <div style="color: var(--green-leaf); font-family: 'Crimson Text', Georgia, serif; font-size: 1.3rem; font-weight: 700;">BONUS CORRECT! +20 XP</div>
+                    </div>
+                    """, unsafe_allow_html=True)
                 else:
-                    st.error(f"Incorrect! The answer was: {', '.join(parts_list)}")
-                st.session_state.bonus_round = False
-                st.session_state.game_streak = 0
-                st.session_state.current_question = None
+                    st.session_state.bonus_round = False
+                    st.session_state.game_streak = 0
+                    st.session_state.current_question = None
+
+                    st.markdown(f"""
+                    <div class="wrong-feedback">
+                        <div style="font-size: 1.5rem;">❌</div>
+                        <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.3rem; font-weight: 700;">Incorrect!</div>
+                        <div style="color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.3rem;">The answer was: {', '.join(parts_list)}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                time.sleep(1)
                 st.rerun()
 
         else:
@@ -716,43 +784,77 @@ with tab1:
 
             q = st.session_state.current_question
 
-            # Visual Card Layout
+            # --- QUESTION TYPE HEADER ---
+            q_type_icons = {
+                'habitat': '🌍', 'identification': '🔍', 'lookalike': '☠️',
+                'parts': '🍃', 'season': '📅', 'warning': '⚠️'
+            }
+            q_type_names = {
+                'habitat': 'Habitat', 'identification': 'ID Check',
+                'lookalike': 'Lookalike Danger', 'parts': 'Edible Parts',
+                'season': 'Season', 'warning': 'True or False'
+            }
+            q_type_colours = {
+                'habitat': '#4CAF50', 'identification': '#2196F3',
+                'lookalike': '#ff5252', 'parts': '#FFC107',
+                'season': '#FF8F00', 'warning': '#9C27B0'
+            }
+            q_icon = q_type_icons.get(q['type'], '🌿')
+            q_name = q_type_names.get(q['type'], 'Question')
+            q_colour = q_type_colours.get(q['type'], '#4CAF50')
+            q_points = q.get('points', 10)
+
+            st.markdown(f"""
+            <div style="background: var(--bg-card); border-left: 4px solid {q_colour}; border-radius: 0 10px 10px 0; padding: 0.8rem 1rem; margin-bottom: 0.8rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{q_icon}</span>
+                        <span style="color: {q_colour}; font-weight: 700; font-size: 1.1rem;">{q_name}</span>
+                    </div>
+                    <span style="background: {q_colour}20; color: {q_colour}; padding: 0.15rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid {q_colour}50;">
+                        +{q_points} XP
+                    </span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # --- PLANT CARD ---
+            plant_desc = q['plant'].get('description', 'No description available.')
+            id_keys = q['plant'].get('id_keys', {})
+            if id_keys:
+                keys_html = "<br>".join([f"<b>{k}:</b> {v}" for k, v in list(id_keys.items())[:3]])
+                desc_html = f"<div style='font-size: 0.85rem; text-align: left; color: var(--cream-dim);'>{keys_html}</div>"
+            else:
+                desc_html = f"<div style='font-size: 0.85rem; text-align: left; color: var(--cream-dim);'><i>{plant_desc[:150]}</i></div>"
+
+            is_poisonous = q['type'] == 'lookalike'
+            card_border = "var(--danger)" if is_poisonous else "var(--green-leaf)"
+
             col_vis, col_quiz = st.columns([1, 1.5])
 
             with col_vis:
-                plant_desc = q['plant'].get('description', 'No description available.')
-                id_keys = q['plant'].get('id_keys', {})
-                if id_keys:
-                    keys_html = "<br>".join([f"<b>{k}:</b> {v}" for k, v in list(id_keys.items())[:3]])
-                    desc_html = f"<p style='font-size: 0.9em; text-align: left;'>{keys_html}</p>"
-                else:
-                    desc_html = f"<p><i>{plant_desc[:150]}</i></p>"
-
-                q_type_icons = {
-                    'habitat': '🌍', 'identification': '🔍', 'lookalike': '☠️',
-                    'parts': '🍃', 'season': '📅', 'warning': '⚠️'
-                }
-                q_type_names = {
-                    'habitat': 'Habitat', 'identification': 'ID Check',
-                    'lookalike': 'Lookalike', 'parts': 'Edible Parts',
-                    'season': 'Season', 'warning': 'True/False'
-                }
-                q_icon = q_type_icons.get(q['type'], '🌿')
-                q_name = q_type_names.get(q['type'], 'Question')
-
                 st.markdown(f"""
-                <div class='plant-card'>
-                    <h1 style='font-size: 4em; margin-bottom: 0px;'>🌿</h1>
-                    <h3>{q['plant']['name']}</h3>
-                    <p style='color: #aaa;'>Latin: <i>{q['plant'].get('latin_name', 'N/A')}</i></p>
-                    <hr>
+                <div style="
+                    background: linear-gradient(145deg, var(--bg-card), var(--bg-deep));
+                    border: 2px solid {card_border};
+                    border-radius: 12px;
+                    padding: 1.2rem;
+                    text-align: center;
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 0.3rem;">🌿</div>
+                    <div style="color: var(--cream); font-size: 1.2rem; font-weight: 700; font-family: 'Crimson Text', Georgia, serif;">
+                        {q['plant']['name']}
+                    </div>
+                    <div style="color: var(--cream-dim); font-size: 0.9rem; font-style: italic; margin: 0.3rem 0;">
+                        {q['plant'].get('latin_name', 'N/A')}
+                    </div>
+                    <div style="border-top: 1px solid #3d5a3d; margin: 0.5rem 0;"></div>
                     {desc_html}
                 </div>
                 """, unsafe_allow_html=True)
 
             with col_quiz:
-                st.markdown(f"**{q_icon} {q_name} Question** ({q.get('points', 10)} XP)")
-
+                # --- CLUE ---
                 clue_text = ""
                 if q['type'] == 'habitat':
                     if id_keys:
@@ -772,26 +874,34 @@ with tab1:
                         clue_text = f"Clue: {q['plant'].get('description', '')[:100]}..."
 
                 if clue_text:
-                    st.info(f"🕵️ **{clue_text}**")
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #1a1a0a, #2a2a10); border: 1px solid {q_colour}; border-radius: 10px; padding: 0.8rem; margin-bottom: 0.8rem;">
+                        <div style="color: {q_colour}; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem;">🕵️ CLUE</div>
+                        <div style="color: var(--cream); font-size: 0.95rem;">{clue_text}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
 
+                # --- AUDIO ---
                 if EDGE_TTS_AVAILABLE:
                     if st.button("🔊 Listen to Clue", key=f"audio_{q['plant']['name']}"):
                         with st.spinner("Generating audio..."):
                             audio_file = generate_voice(clue_text)
                             if audio_file:
-                                st.audio(audio_file, format='audio/mp3')
+                                st.audio(audio_file, format="audio/mp3")
                             else:
                                 st.warning("Could not generate audio.")
 
+                # --- QUESTION ---
                 st.markdown(f"### {q['question']}")
 
+                # --- ANSWER BUTTONS ---
                 btn_cols = st.columns(len(q['options']))
                 for i, option in enumerate(q['options']):
                     if q['type'] == 'habitat':
                         icon = HABITAT_ICONS.get(option, "❓")
                         label = f"{icon} {option}"
                     else:
-                        label = f"👉 {option}"
+                        label = f"{option}"
 
                     if btn_cols[i].button(label, key=f"opt_{i}", use_container_width=True):
                         if option == q['correct']:
@@ -806,9 +916,7 @@ with tab1:
                             current_count = st.session_state.master_inventory.get(plant_name, 0)
                             st.session_state.master_inventory[plant_name] = current_count + 1
 
-                            st.success(f"✅ Correct! +{total_points} XP!")
-                            st.info(f"💡 {q['explanation']}")
-
+                            # Achievement checks
                             if len(st.session_state.master_inventory) >= 1 and not st.session_state.achievements['foraging_novice']:
                                 st.session_state.achievements['foraging_novice'] = True
                                 st.toast("🏅 Achievement Unlocked: Novice Forager!")
@@ -821,20 +929,29 @@ with tab1:
 
                             if active_season not in st.session_state.season_badge_progress:
                                 st.session_state.season_badge_progress.append(active_season)
+
+                            st.session_state.current_question = None
+                            time.sleep(0.5)
+                            st.rerun()
                         else:
                             st.session_state.game_lives -= 1
                             st.session_state.game_streak = 0
-                            st.error(f"❌ Not quite! The answer was: **{q['correct']}**")
-                            st.info(f"💡 {q['explanation']}")
+                            st.session_state.current_question = None
+                            time.sleep(0.5)
+                            st.rerun()
 
-                        st.session_state.current_question = None
-                        time.sleep(0.5)
-                        st.rerun()
-
+    # --- GAME OVER ---
     if st.session_state.game_lives <= 0:
-        st.markdown("### 🤕 Adventure Over")
-        st.markdown("Even the best explorers need a rest. Try again to learn more!")
-        if st.button("🔄 Restart Adventure", key="restart_quest"):
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a0000, #2a0a0a); border: 2px solid var(--danger); border-radius: 12px; padding: 2rem; text-align: center; margin: 1rem 0;">
+            <div style="font-size: 3rem;">🤕</div>
+            <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.8rem; font-weight: 700;">Adventure Over</div>
+            <div style="color: var(--cream-dim); font-size: 1rem; margin-top: 0.5rem;">Even the best explorers need a rest. Try again to learn more!</div>
+            <div style="color: var(--cream); font-size: 0.9rem; margin-top: 0.5rem;">Final Score: <b>{st.session_state.game_score} XP</b></div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("🔄 Restart Adventure", key="restart_quest", use_container_width=True):
             st.session_state.game_lives = 3
             st.session_state.game_score = 0
             st.session_state.current_question = None
@@ -846,16 +963,31 @@ with tab1:
     with st.expander("🏅 Foraging Achievements"):
         for key in ["foraging_novice", "foraging_botanist", "foraging_master"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+            is_unlocked = st.session_state.achievements.get(key, False)
+            border_color = "var(--green-leaf)" if is_unlocked else "#444"
+            bg = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if is_unlocked else "var(--bg-card)"
+
             progress = ""
             if key == "foraging_novice":
-                progress = f"({len(st.session_state.master_inventory)}/1)" if not st.session_state.achievements[key] else "(Done)"
+                progress = "(Done)" if is_unlocked else f"({len(st.session_state.master_inventory)}/1)"
             elif key == "foraging_botanist":
-                progress = f"({len(st.session_state.master_inventory)}/25)" if not st.session_state.achievements[key] else "(Done)"
+                progress = "(Done)" if is_unlocked else f"({len(st.session_state.master_inventory)}/25)"
             elif key == "foraging_master":
                 prog = len(st.session_state.season_badge_progress)
-                progress = f"({prog}/4)" if not st.session_state.achievements[key] else "(Done)"
-            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
+                progress = "(Done)" if is_unlocked else f"({prog}/4)"
+
+            st.markdown(f"""
+            <div style="background: {bg}; border: 2px solid {border_color}; border-radius: 10px; padding: 0.8rem; margin: 0.5rem 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{'✅' if is_unlocked else '🔒'}</span>
+                        <span style="color: {'var(--green-leaf)' if is_unlocked else 'var(--cream-dim)'}; font-weight: 700;">{ach['name']}</span>
+                    </div>
+                    <span style="color: var(--cream-dim); font-size: 0.8rem;">{progress}</span>
+                </div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">{ach['desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
 # ==========================================
 # GAME TAB 2: SURVIVAL SCHOOL
