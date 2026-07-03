@@ -7,6 +7,7 @@ from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, FARM_ICONS, FARM_BUILDINGS,
                          SEED_COST, BASE_PRICES, BASICS, MG_CROPS, MG_COMPANIONS,
                          MG_ANTAGONISTS, MG_SEASONS, MG_MARKET_BASE)
+from plants_data import UK_PLANTS
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -16,28 +17,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CUSTOM CSS ---
-st.markdown("""
-<style>
-    div.grid-game div.stButton > button {
-        width: 100% !important; height: auto !important; aspect-ratio: 1 / 1 !important;
-        padding: 0 !important; font-size: 1.5em !important; border: 1px solid #444 !important;
-        background-color: #2b2b2b !important; color: white !important; border-radius: 8px !important;
-    }
-    div.grid-game div.stButton > button:hover { border-color: #fff !important; transform: scale(1.05); }
-    .market-box div.stButton > button { font-size: 14px !important; white-space: normal !important;
-                                          height: auto !important; padding: 5px !important; }
-    @media (max-width: 768px) {
-        div.grid-game div.stButton > button { font-size: 1em !important; }
-    }
-</style>
-""", unsafe_allow_html=True)
-
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
 user = render_auth()
-render_logout_sidebar()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
@@ -98,6 +81,8 @@ with st.sidebar:
         st.markdown("🌿 **Rocen Homesteady**")
     st.markdown("---")
 
+    render_logout_sidebar()
+    st.markdown("---")
     render_save_load()
     st.markdown("---")
 
@@ -193,9 +178,27 @@ if st.session_state.get('market_garden') is None:
 
 mg = st.session_state.market_garden
 
-for key in ['companion_count', 'rotation_count', 'total_harvests', 'events']:
+for key in ['companion_count', 'rotation_count', 'total_harvests', 'events',
+            'has_polytunnel', 'fertiliser', 'organic_certified',
+            'has_irrigation', 'water_saved', 'golden_found', 'rare_found']:
     if key not in mg:
-        mg[key] = 0 if key != 'events' else []
+        if key in ['companion_count', 'rotation_count', 'total_harvests', 'water_saved']:
+            mg[key] = 0
+        elif key in ['events', 'golden_found', 'rare_found']:
+            mg[key] = []
+        elif key in ['fertiliser']:
+            mg[key] = 0
+        else:
+            mg[key] = False
+
+# --- DERIVED VALUES ---
+mg_month = get_mg_month(mg['day'])
+mg_season = get_mg_season(mg_month)
+available_crops = [name for name, data in MG_CROPS.items() if mg_season in data['season']]
+
+if mg.get('has_polytunnel') and mg_season == "Spring":
+    summer_crops = [name for name, data in MG_CROPS.items() if "Summer" in data['season'] and name not in available_crops]
+    available_crops = available_crops + summer_crops
 
 # --- TITLE AND TABS ---
 st.title("🚜 Farm Games")
@@ -207,6 +210,8 @@ farm_tab, garden_tab = st.tabs(["🚜 Farm Tycoon", "🌱 Market Garden"])
 # TAB 1: FARM TYCOON
 # ==========================================
 with farm_tab:
+    st.header("🚜 Farm Tycoon")
+
     with st.expander("📖 Guide & Progression"):
         st.markdown("""
         **📅 Timeline:**
@@ -235,8 +240,13 @@ with farm_tab:
 
     if game['manor_bought']:
         st.balloons()
-        st.success("🏆 **FARMING DYNASTY COMPLETE!**")
-        st.markdown(f"**Final Money:** £{game['money']} | **Days:** {game['day']} | **Harvests:** {game['total_harvests']}")
+        st.markdown(f"""
+        <div class="level-up">
+            <div style="font-size: 3rem;">🏆</div>
+            <div style="color: var(--amber); font-family: 'Crimson Text', Georgia, serif; font-size: 1.8rem; font-weight: 700;">FARMING DYNASTY COMPLETE!</div>
+            <div style="color: var(--cream); font-size: 1rem; margin-top: 0.5rem;">Final Money: £{game['money']} | Days: {game['day']} | Harvests: {game['total_harvests']}</div>
+        </div>
+        """, unsafe_allow_html=True)
         if st.button("🔄 Start New Farm", key="restart_farm_win"):
             st.session_state.farm_game = None
             st.rerun()
@@ -244,34 +254,85 @@ with farm_tab:
     if game['last_event']:
         event_str = game['last_event'].strip()
         if event_str:
-            st.warning(f"**Report:** {event_str}")
+            st.markdown(f"""
+            <div style="background: #3d2e0a; border: 1px solid var(--amber-dark); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+                <span style="color: var(--amber-dark); font-weight: 600;">📋 Report:</span>
+                <span style="color: var(--cream);"> {event_str}</span>
+            </div>
+            """, unsafe_allow_html=True)
 
     if game['market_event']:
-        st.info(f"📈 **Market Surge:** {game['market_event']} prices have doubled!")
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 1px solid var(--amber); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+            <span style="color: var(--amber); font-weight: 600;">📈 Market Surge:</span>
+            <span style="color: var(--cream);"> {game['market_event']} prices have doubled!</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("📅 Year", f"{current_year} - {current_season}")
-    c2.metric("💰 Money", f"£{game['money']}")
-    c3.metric("🐔 Chickens", chickens if current_year >= 2 else "🔒 Y2")
-    c4.metric("🐄 Cows / 🐐 Goats", f"{cows}/{goats}" if current_year >= 2 else "🔒 Y2")
+    # --- STATS ---
+    st.markdown(f"""
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber-dark); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--amber-dark); font-size: 0.75rem; font-weight: 600;">📅 YEAR</div>
+            <div style="color: var(--cream); font-size: 1.1rem; font-weight: 700;">{current_year} - {current_season}</div>
+        </div>
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--amber); font-size: 0.75rem; font-weight: 600;">💰 MONEY</div>
+            <div style="color: var(--cream); font-size: 1.1rem; font-weight: 700;">£{game['money']}</div>
+        </div>
+        <div style="background: var(--bg-card); border: 2px solid #3d5a3d; border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 80px;">
+            <div style="color: var(--green-leaf); font-size: 0.75rem; font-weight: 600;">🐔 CHICKENS</div>
+            <div style="color: var(--cream); font-size: 1.1rem; font-weight: 700;">{chickens if current_year >= 2 else "🔒 Y2"}</div>
+        </div>
+        <div style="background: var(--bg-card); border: 2px solid #3d5a3d; border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 100px;">
+            <div style="color: var(--green-leaf); font-size: 0.75rem; font-weight: 600;">🐄 COWS / 🐐 GOATS</div>
+            <div style="color: var(--cream); font-size: 1.1rem; font-weight: 700;">{cows}/{goats} {"🔒 Y2" if current_year < 2 else ""}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     if current_season == "Autumn":
-        st.warning("🍂 **AUTUMN:** Winter is coming! Build a Cold Frame to protect crops!")
+        st.markdown(f"""
+        <div style="background: #3d2e0a; border: 1px solid var(--amber); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+            <span style="color: var(--amber); font-weight: 600;">🍂 AUTUMN WARNING:</span>
+            <span style="color: var(--cream-dim);"> Winter is coming! Stockpile food and build a Cold Frame!</span>
+        </div>
+        """, unsafe_allow_html=True)
     elif current_season == "Winter":
         if has_cold_frame:
-            st.info("❄️ **WINTER:** Crops protected by Cold Frame! 🫧")
+            st.markdown(f"""
+            <div style="background: var(--info-bg); border: 1px solid #2196F3; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+                <span style="color: #2196F3; font-weight: 600;">❄️ WINTER:</span>
+                <span style="color: var(--cream-dim);"> Crops protected by Cold Frame! 🫧</span>
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.error("❄️ **WINTER:** Crops will die! Build a Cold Frame next year.")
+            st.markdown(f"""
+            <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+                <span style="color: var(--danger); font-weight: 600;">❄️ WINTER:</span>
+                <span style="color: var(--cream-dim);"> Crops will die! Build a Cold Frame to protect them.</span>
+            </div>
+            """, unsafe_allow_html=True)
 
+    # --- INVENTORY ---
     inv_str = " | ".join([f"**{k}:** {v}" for k, v in game['inventory'].items() if v > 0])
-    st.markdown(f"**🎒 Stock:** {inv_str if inv_str else 'Empty'}")
+    if inv_str:
+        st.markdown(f"**🎒 Stock:** {inv_str}")
+    else:
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 0.5rem 1rem; text-align: center;">
+            <span style="color: var(--cream-dim);">🎒 Empty — start farming!</span>
+        </div>
+        """, unsafe_allow_html=True)
 
     feed_needed = chickens + (cows * 2) + goats
     if total_animals > 0:
-        feed_color = "🟢" if game['inventory'].get('Feed', 0) >= feed_needed else "🔴"
-        st.caption(f"{feed_color} Feed Needed: {feed_needed}/day | Feed in Stock: {game['inventory'].get('Feed', 0)}")
+        feed_colour = "🟢" if game['inventory'].get('Feed', 0) >= feed_needed else "🔴"
+        st.caption(f"{feed_colour} Feed Needed: {feed_needed}/day | Feed in Stock: {game['inventory'].get('Feed', 0)}")
 
     st.markdown("---")
+
+    # --- TOOL SELECTION ---
     t1, t2, t3, t4 = st.columns(4)
     with t1:
         game['tool'] = st.selectbox("🌱 Plant", ["Carrot", "Wheat", "Corn"], key="farm_tool_crops")
@@ -303,11 +364,12 @@ with farm_tab:
     with t4:
         st.caption(f"🌱 Tool: {game['tool']}")
 
+    # --- FEED PRODUCTION ---
     st.markdown("---")
     st.markdown("#### 🏭 Feed Production")
     f1, f2 = st.columns(2)
     with f1:
-        st.write("**Recipe:** 1 Wheat + 1 Carrot + 1 Corn = 5 Feed")
+        st.markdown("**Recipe:** 1 Wheat + 1 Carrot + 1 Corn = 5 Feed")
     with f2:
         has_ing = (
             game['inventory'].get('Wheat', 0) >= 1
@@ -319,130 +381,26 @@ with farm_tab:
             game['inventory']['Carrot'] -= 1
             game['inventory']['Corn'] -= 1
             game['inventory']['Feed'] = game['inventory'].get('Feed', 0) + 5
-            st.success("+5 Feed Bags")
+            st.toast("+5 Feed Bags")
             st.rerun()
 
     st.markdown("---")
-    if st.button("⏭️ End Day", use_container_width=True, key="end_day_farm"):
-        game['last_event'] = ""
 
-        for item, qty in game['sales_log'].items():
-            if qty > 10:
-                game['market_prices'][item] = max(1, int(BASE_PRICES.get(item, 10) * 0.8))
-            else:
-                game['market_prices'][item] = min(
-                    BASE_PRICES.get(item, 10) + 5,
-                    int(BASE_PRICES.get(item, 10) * 1.05)
-                )
-        game['sales_log'] = {}
-        game['market_event'] = None
-
-        if random.random() < 0.2:
-            surge_crop = random.choice(["Carrot", "Wheat", "Corn"])
-            game['market_event'] = surge_crop
-            game['last_event'] += f"📈 {surge_crop} SURGE! "
-
-        is_drought = (
-            current_season == "Summer"
-            and random.random() < 0.3
-            and not any(11 in row for row in game['grid'])
-        )
-        is_pest_event = (
-            current_season != "Winter"
-            and random.random() < 0.2
-            and not any(10 in row for row in game['grid'])
-        )
-
-        if is_drought:
-            game['last_event'] += "☀️ DROUGHT! "
-        if is_pest_event:
-            game['last_event'] += "🐛 PESTS! "
-
-        for r in range(5):
-            for c in range(6):
-                tile = game['grid'][r][c]
-
-                if tile == 0:
-                    game['fallow_days'][r][c] += 1
-                    game['soil_health'][r][c] = min(100, game['soil_health'][r][c] + 5)
-                    if game['fallow_days'][r][c] > 3 and random.random() < 0.2:
-                        game['grid'][r][c] = 7
-                        game['fallow_days'][r][c] = 0
-
-                elif tile in [2, 3]:
-                    game['fallow_days'][r][c] = 0
-                    if current_season == "Winter" and not has_cold_frame:
-                        game['grid'][r][c] = 0
-                        game['crop_map'].pop((r, c), None)
-                        game['last_event'] += "❄️ Winter Kill. "
-                    elif not is_drought:
-                        game['grid'][r][c] = tile + 1
-
-                    if is_pest_event and random.random() < 0.4:
-                        game['grid'][r][c] = 0
-                        game['crop_map'].pop((r, c), None)
-
-                elif tile == 9:
-                    game['inventory']['Honey'] = game['inventory'].get('Honey', 0) + 1
-
-                elif tile == 12:
-                    if game['inventory'].get('Feed', 0) >= 1:
-                        game['inventory']['Feed'] -= 1
-                        game['inventory']['Egg'] = game['inventory'].get('Egg', 0) + 1
-                    elif game['inventory'].get('Wheat', 0) >= 1:
-                        game['inventory']['Wheat'] -= 1
-                        game['inventory']['Egg'] = game['inventory'].get('Egg', 0) + 1
-                    else:
-                        game['last_event'] += "🐔 Hungry! "
-
-                elif tile == 13:
-                    if game['inventory'].get('Feed', 0) >= 2:
-                        game['inventory']['Feed'] -= 2
-                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
-                    elif game['inventory'].get('Wheat', 0) >= 2:
-                        game['inventory']['Wheat'] -= 2
-                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
-                    else:
-                        game['last_event'] += "🐄 Hungry! "
-
-                elif tile == 14:
-                    if game['inventory'].get('Feed', 0) >= 1:
-                        game['inventory']['Feed'] -= 1
-                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
-                    elif game['inventory'].get('Wheat', 0) >= 1:
-                        game['inventory']['Wheat'] -= 1
-                        game['inventory']['Milk'] = game['inventory'].get('Milk', 0) + 1
-                    else:
-                        game['last_event'] += "🐐 Hungry! "
-
-        if game['total_harvests'] >= 1 and not st.session_state.achievements.get('farm_harvest', False):
-            st.session_state.achievements['farm_harvest'] = True
-            st.toast("🏅 Achievement Unlocked: Green Thumb!")
-
-        if total_animals >= 5 and not st.session_state.achievements.get('farm_rancher', False):
-            st.session_state.achievements['farm_rancher'] = True
-            st.toast("🏅 Achievement Unlocked: Rancher!")
-
-        if game['money'] >= 5000 and not st.session_state.achievements.get('farm_winner', False):
-            st.session_state.achievements['farm_winner'] = True
-            st.toast("🏅 Achievement Unlocked: Farming Dynasty!")
-
-        game['day'] += 1
-        st.rerun()
-
+    # --- FARM GRID ---
     st.markdown("#### 🗺️ Farm")
 
-    for r in range(5):
+    for row_idx, row in enumerate(game['grid']):
         cols = st.columns(6)
-        for c in range(6):
-            tile_val = game['grid'][r][c]
-            icon = FARM_ICONS.get(tile_val, "❓")
+        for col_idx, tile in enumerate(row):
+            tile_val = game['grid'][row_idx][col_idx]
 
-            with cols[c]:
+            with cols[col_idx]:
+                st.markdown('<div class="grid-game">', unsafe_allow_html=True)
+
                 if tile_val == 7:
-                    if st.button("🧹", key=f"fm_w_{r}_{c}"):
-                        game['grid'][r][c] = 0
-                        game['fallow_days'][r][c] = 0
+                    if st.button("🧹", key=f"fm_w_{row_idx}_{col_idx}"):
+                        game['grid'][row_idx][col_idx] = 0
+                        game['fallow_days'][row_idx][col_idx] = 0
                         st.rerun()
 
                 elif tile_val == 0:
@@ -451,46 +409,46 @@ with farm_tab:
                         b_data = FARM_BUILDINGS.get(b_name, None)
                         if b_data:
                             if b_name in ["Chicken Coop", "Cow Pasture", "Goat Pen"] and current_year < 2:
-                                st.warning("🔒 Unlock in Year 2")
+                                st.caption("🔒 Y2")
                             else:
-                                if st.button("🏗️", key=f"fm_b_{r}_{c}"):
+                                if st.button("🏗️", key=f"fm_b_{row_idx}_{col_idx}"):
                                     if game['money'] >= b_data['cost']:
                                         game['money'] -= b_data['cost']
-                                        game['grid'][r][c] = b_data['id']
+                                        game['grid'][row_idx][col_idx] = b_data['id']
                                         game['build_sel'] = "None"
                                         st.rerun()
                                     else:
                                         st.error(f"Need £{b_data['cost']}")
                     else:
-                        if st.button("🌱", key=f"fm_p_{r}_{c}"):
+                        if st.button("🌱", key=f"fm_p_{row_idx}_{col_idx}"):
                             crop = game['tool']
                             cost = SEED_COST.get(crop, 6)
                             if game['money'] >= cost:
                                 game['money'] -= cost
-                                game['grid'][r][c] = 2
-                                game['crop_map'][(r, c)] = crop
-                                game['fallow_days'][r][c] = 0
+                                game['grid'][row_idx][col_idx] = 2
+                                game['crop_map'][(row_idx, col_idx)] = crop
+                                game['fallow_days'][row_idx][col_idx] = 0
                                 st.rerun()
                             else:
                                 st.error(f"Need £{cost}")
 
                 elif tile_val == 4:
-                    if st.button("🌾", key=f"fm_h_{r}_{c}"):
-                        crop = game['crop_map'].get((r, c), "Carrot")
+                    if st.button("🌾", key=f"fm_h_{row_idx}_{col_idx}"):
+                        crop = game['crop_map'].get((row_idx, col_idx), "Carrot")
                         yield_count = 1
                         for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                            nr, nc = r + dr, c + dc
+                            nr, nc = row_idx + dr, col_idx + dc
                             if 0 <= nr < 5 and 0 <= nc < 6:
                                 if game['grid'][nr][nc] == 9:
                                     yield_count += 1
 
-                        harvested = max(1, int(yield_count * (game['soil_health'][r][c] / 100)))
+                        harvested = max(1, int(yield_count * (game['soil_health'][row_idx][col_idx] / 100)))
 
                         game['inventory'][crop] = game['inventory'].get(crop, 0) + harvested
-                        game['grid'][r][c] = 0
-                        game['soil_health'][r][c] = max(0, game['soil_health'][r][c] - 10)
-                        game['crop_map'].pop((r, c), None)
-                        game['fallow_days'][r][c] = 0
+                        game['grid'][row_idx][col_idx] = 0
+                        game['soil_health'][row_idx][col_idx] = max(0, game['soil_health'][row_idx][col_idx] - 10)
+                        game['crop_map'].pop((row_idx, col_idx), None)
+                        game['fallow_days'][row_idx][col_idx] = 0
                         game['total_harvests'] += 1
 
                         if game['total_harvests'] >= 1 and not st.session_state.achievements.get('farm_harvest', False):
@@ -502,14 +460,17 @@ with farm_tab:
 
                 else:
                     if tile_val in [2, 3]:
-                        soil = game['soil_health'][r][c]
-                        crop_name = game['crop_map'].get((r, c), "?")
-                        st.button(icon, key=f"fm_v_{r}_{c}", disabled=True,
+                        soil = game['soil_health'][row_idx][col_idx]
+                        crop_name = game['crop_map'].get((row_idx, col_idx), "?")
+                        st.button(tile, key=f"fm_v_{row_idx}_{col_idx}", disabled=True,
                                   help=f"{crop_name} - Soil: {soil}%")
                         st.progress(max(1, soil // 10))
                     else:
-                        st.button(icon, key=f"fm_v_{r}_{c}", disabled=True)
+                        st.button(tile, key=f"fm_v_{row_idx}_{col_idx}", disabled=True)
 
+                st.markdown('</div>', unsafe_allow_html=True)
+
+    # --- MARKET ---
     st.markdown("---")
     st.markdown("#### 💰 Market")
 
@@ -526,6 +487,9 @@ with farm_tab:
 
         if game['market_event'] == item:
             price = price * 2
+            surge_msg = "📈"
+        else:
+            surge_msg = ""
 
         crash_msg = ""
         if game['sales_log'].get(item, 0) > 10:
@@ -549,6 +513,7 @@ with farm_tab:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # --- RESET ---
     st.markdown("---")
     with st.expander("🔄 Reset Farm"):
         st.warning("This will delete your entire farm progress!")
@@ -559,15 +524,30 @@ with farm_tab:
     with st.expander("🏅 Farm Achievements"):
         for key in ["farm_harvest", "farm_rancher", "farm_winner"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+            is_unlocked = st.session_state.achievements.get(key, False)
+            border_color = "var(--green-leaf)" if is_unlocked else "#444"
+            bg = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if is_unlocked else "var(--bg-card)"
+
             progress = ""
             if key == "farm_harvest":
-                progress = "(Done)" if st.session_state.achievements.get(key, False) else f"({game['total_harvests']}/1)"
+                progress = "(Done)" if is_unlocked else f"({game['total_harvests']}/1)"
             elif key == "farm_rancher":
-                progress = "(Done)" if st.session_state.achievements.get(key, False) else f"({total_animals}/5)"
+                progress = "(Done)" if is_unlocked else f"({total_animals}/5)"
             elif key == "farm_winner":
-                progress = "(Done)" if st.session_state.achievements.get(key, False) else f"(£{game['money']}/£5000)"
-            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
+                progress = "(Done)" if is_unlocked else f"(£{game['money']}/£5000)"
+
+            st.markdown(f"""
+            <div style="background: {bg}; border: 2px solid {border_color}; border-radius: 10px; padding: 0.8rem; margin: 0.5rem 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{'✅' if is_unlocked else '🔒'}</span>
+                        <span style="color: {'var(--green-leaf)' if is_unlocked else 'var(--cream-dim)'}; font-weight: 700;">{ach['name']}</span>
+                    </div>
+                    <span style="color: var(--cream-dim); font-size: 0.8rem;">{progress}</span>
+                </div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">{ach['desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
 # ==========================================
 # TAB 2: MARKET GARDEN
@@ -609,24 +589,6 @@ with garden_tab:
         """)
 
     # --- GAME STATE ---
-    if st.session_state.get('market_garden') is None:
-        mg_beds = []
-        for i in range(12):
-            mg_beds.append({
-                'crop': None, 'days': 0, 'soil_N': 80, 'soil_P': 80, 'soil_K': 80,
-                'history': [], 'watered': False
-            })
-        st.session_state.market_garden = {
-            'beds': mg_beds, 'day': 13, 'money': 80, 'compost': 0,
-            'inventory': {}, 'total_earned': 0, 'level': 1, 'xp': 0,
-            'weather': '☀️ Sunny', 'market_prices': dict(MG_MARKET_BASE),
-            'sales_log': {}, 'events': [], 'companion_count': 0,
-            'rotation_count': 0, 'total_harvests': 0,
-            'has_polytunnel': False, 'fertiliser': 0,
-            'organic_certified': False, 'has_irrigation': False,
-            'water_saved': 0, 'golden_found': [], 'rare_found': [],
-        }
-
     mg = st.session_state.market_garden
 
     for key in ['companion_count', 'rotation_count', 'total_harvests', 'events',
@@ -647,7 +609,6 @@ with garden_tab:
     mg_season = get_mg_season(mg_month)
     available_crops = [name for name, data in MG_CROPS.items() if mg_season in data['season']]
 
-    # Polytunnel extends spring to include summer crops
     if mg.get('has_polytunnel') and mg_season == "Spring":
         summer_crops = [name for name, data in MG_CROPS.items() if "Summer" in data['season'] and name not in available_crops]
         available_crops = available_crops + summer_crops
@@ -664,24 +625,46 @@ with garden_tab:
     # --- GOLDEN COLLECTION ---
     golden_found = mg.get('golden_found', [])
     if golden_found:
-        st.success(f"🌟 **Golden Crops Found:** {', '.join(golden_found)}")
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+            <span style="color: var(--amber); font-weight: 600;">🌟 Golden Crops Found:</span>
+            <span style="color: var(--cream);"> {', '.join(golden_found)}</span>
+        </div>
+        """, unsafe_allow_html=True)
 
     # --- EVENTS ---
     if mg['events']:
         with st.expander("📋 Recent Events", expanded=True):
             for event in mg['events'][-5:]:
                 st.markdown(event)
+        if len(mg['events']) > 5:
+            st.caption(f"... and {len(mg['events']) - 5} more events")
 
     # --- WEATHER ---
     is_raining = "Rainy" in mg.get('weather', '')
     if is_raining:
-        st.success("🌧️ **It's raining!** All beds watered for free today.")
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #0a1a2a, #1a2e3d); border: 1px solid #2196F3; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+            <span style="color: #2196F3; font-weight: 600;">🌧️ It's raining!</span>
+            <span style="color: var(--cream-dim);"> All beds watered for free today.</span>
+        </div>
+        """, unsafe_allow_html=True)
     elif mg_season == "Winter":
-        st.error("❄️ **Winter:** No crops can be planted. Browse the Seed Catalogue and plan for spring!")
+        st.markdown(f"""
+        <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+            <span style="color: var(--danger); font-weight: 600;">❄️ Winter:</span>
+            <span style="color: var(--cream-dim);"> No crops can be planted. Browse the Seed Catalogue and plan for spring!</span>
+        </div>
+        """, unsafe_allow_html=True)
     elif mg_season == "Autumn":
-        st.warning("🍂 **Autumn:** Fewer crops available. Clear beds for winter.")
+        st.markdown(f"""
+        <div style="background: #3d2e0a; border: 1px solid var(--amber); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+            <span style="color: var(--amber); font-weight: 600;">🍂 Autumn:</span>
+            <span style="color: var(--cream-dim);"> Fewer crops available. Clear beds for winter.</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # --- SEED CATALOGUE (always available, useful in winter) ---
+    # --- SEED CATALOGUE ---
     with st.expander("🌱 Seed Catalogue"):
         st.markdown("**Available by Season:**")
         for season in ["Spring", "Summer", "Autumn", "Winter"]:
@@ -720,9 +703,19 @@ with garden_tab:
                 other = pair[0] if pair[1] == plant_crop else pair[1]
                 antagonists.append(f"{MG_CROPS[other]['icon']} {other}: {desc}")
         if companions:
-            st.success("🤝 **Companions:** " + " | ".join(companions))
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+                <span style="color: var(--green-leaf); font-weight: 600;">🤝 Companions:</span>
+                <span style="color: var(--cream-dim);"> {" | ".join(companions)}</span>
+            </div>
+            """, unsafe_allow_html=True)
         if antagonists:
-            st.error("⚠️ **Avoid planting near:** " + " | ".join(antagonists))
+            st.markdown(f"""
+            <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+                <span style="color: var(--danger); font-weight: 600;">⚠️ Avoid planting near:</span>
+                <span style="color: var(--cream-dim);"> {" | ".join(antagonists)}</span>
+            </div>
+            """, unsafe_allow_html=True)
 
     # --- BED GRID ---
     for row in range(3):
@@ -736,11 +729,11 @@ with garden_tab:
                     days_left = max(0, crop_data['days'] - bed['days'])
                     progress = min(100, int(bed['days'] / crop_data['days'] * 100))
 
-                    companions, penalties = get_companion_bonus(bed_idx, bed['crop'], mg['beds'])
+                    companions_bed, penalties_bed = get_companion_bonus(bed_idx, bed['crop'], mg['beds'])
 
-                    if penalties:
+                    if penalties_bed:
                         st.markdown('<div style="border: 2px solid #f44336; border-radius: 8px; padding: 4px; background: #3a1a1a;">', unsafe_allow_html=True)
-                    elif companions:
+                    elif companions_bed:
                         st.markdown('<div style="border: 2px solid #4CAF50; border-radius: 8px; padding: 4px; background: #1a3a1a;">', unsafe_allow_html=True)
 
                     st.markdown(f"**Bed {bed_idx + 1}: {crop_data['icon']} {bed['crop']}**")
@@ -749,32 +742,30 @@ with garden_tab:
                               f"P:{get_soil_color(bed['soil_P'])}{bed['soil_P']} "
                               f"K:{get_soil_color(bed['soil_K'])}{bed['soil_K']}")
 
-                    if companions:
-                        for adj_crop, bonus in companions:
+                    if companions_bed:
+                        for adj_crop, bonus in companions_bed:
                             st.caption(f"🤝 +{int((bonus['yield_bonus']-1)*100)}% from {adj_crop}")
-                    if penalties:
-                        for adj_crop, desc in penalties:
+                    if penalties_bed:
+                        for adj_crop, desc in penalties_bed:
                             st.caption(f"⚠️ {desc}")
 
                     if days_left == 0:
                         if st.button(f"🌾 Harvest", key=f"mg_harvest_{bed_idx}"):
                             yield_mult = 1.0
-                            for adj_crop, bonus in companions:
+                            for adj_crop, bonus in companions_bed:
                                 yield_mult *= bonus['yield_bonus']
-                            for adj_crop, desc in penalties:
+                            for adj_crop, desc in penalties_bed:
                                 yield_mult *= 0.7
 
                             if bed['history'] and bed['crop'] not in bed['history'][-2:]:
                                 yield_mult *= 1.1
 
-                            # Soil penalty for low NPK
                             soil_avg = (bed['soil_N'] + bed['soil_P'] + bed['soil_K']) / 3
                             if soil_avg < 40:
                                 yield_mult *= 0.7
 
                             harvest_amount = max(1, int(yield_mult * random.randint(1, 3)))
 
-                            # Golden crop chance (1 in 100)
                             if random.random() < 0.01:
                                 golden_name = f"Golden {bed['crop']}"
                                 harvest_amount = 1
@@ -806,7 +797,7 @@ with garden_tab:
                             if harvest_amount > 0 and 'Golden' not in str(mg['events'][-1] if mg['events'] else ''):
                                 mg['events'].append(f"🌾 Harvested {harvest_amount}x {bed['crop'] if bed['crop'] else 'crop'}!")
 
-                            if companions:
+                            if companions_bed:
                                 mg['companion_count'] = mg.get('companion_count', 0) + 1
                                 if not st.session_state.achievements.get('mg_companion', False):
                                     st.session_state.achievements['mg_companion'] = True
@@ -834,7 +825,7 @@ with garden_tab:
                         elif bed['watered']:
                             st.caption("💧 Watered today")
 
-                    if penalties or companions:
+                    if penalties_bed or companions_bed:
                         st.markdown('</div>', unsafe_allow_html=True)
 
                 else:
@@ -937,7 +928,11 @@ with garden_tab:
                 else:
                     st.error("Need £200!")
         else:
-            st.success("✅ Polytunnel built!")
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem;">
+                <span style="color: var(--green-leaf); font-weight: 600;">✅ Polytunnel built!</span>
+            </div>
+            """, unsafe_allow_html=True)
 
         if not mg.get('has_irrigation'):
             if st.button("💧 Irrigation (£150)", key="mg_buy_irrig"):
@@ -951,7 +946,11 @@ with garden_tab:
                 else:
                     st.error("Need £150!")
         else:
-            st.success("✅ Irrigation active!")
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem;">
+                <span style="color: var(--green-leaf); font-weight: 600;">✅ Irrigation active!</span>
+            </div>
+            """, unsafe_allow_html=True)
 
     with a4:
         st.markdown("#### 🏷️ Certifications")
@@ -967,7 +966,11 @@ with garden_tab:
                 else:
                     st.error("Need £500!")
         else:
-            st.success("✅ Organic Certified! +30% prices")
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem;">
+                <span style="color: var(--green-leaf); font-weight: 600;">✅ Organic Certified! +30% prices</span>
+            </div>
+            """, unsafe_allow_html=True)
 
     # --- MARKET ---
     st.markdown("---")
@@ -986,8 +989,6 @@ with garden_tab:
             total_price = int(price * organic_bonus)
 
             with sell_cols[col_idx % 6]:
-                if col_idx % 6 == 0 and col_idx > 0:
-                    sell_cols = st.columns(6)
                 st.markdown(f"**{crop_data['icon']} {item}**")
                 st.caption(f"Qty: {qty} | £{total_price}/unit")
                 if st.button(f"Sell All £{total_price * qty}", key=f"mg_sell_{item}"):
@@ -1004,11 +1005,21 @@ with garden_tab:
                     st.rerun()
             col_idx += 1
     else:
-        st.info("Nothing to sell. Harvest crops first!")
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 1.5rem; text-align: center;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌾</div>
+            <div style="color: var(--cream-dim);">Nothing to sell. Harvest crops first!</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # --- END DAY ---
     st.markdown("---")
-    st.info(f"📅 **Current:** {SEASON_ICONS.get(mg_season, '🌸')} {mg_season} — {mg_month} | 💧 Watering: {'FREE (rain!)' if is_raining else '50p/bed'}")
+    st.markdown(f"""
+    <div style="background: var(--info-bg); border: 1px solid #2196F3; border-radius: 10px; padding: 0.8rem 1rem;">
+        <span style="color: #2196F3;">⏰</span>
+        <span style="color: var(--cream-dim);"> Current: {SEASON_ICONS.get(mg_season, '🌸')} {mg_season} — {mg_month[:3]} Wk{get_week_in_month(mg['day'])} | 💧 Watering: {'FREE (rain!)' if is_raining else '50p/bed'}</span>
+    </div>
+    """, unsafe_allow_html=True)
 
     if st.button("⏭️ Advance Day", use_container_width=True, key="mg_advance"):
         mg['day'] += 1
@@ -1031,24 +1042,22 @@ with garden_tab:
         # Calculate water cost
         water_cost = 0
         if mg.get('has_irrigation'):
-            # Irrigation: auto-water, costs 1 per day total
             water_cost = 1
             for bed in mg['beds']:
                 bed['watered'] = True
         elif is_raining:
-            # Rain waters everything for free
             water_cost = 0
             for bed in mg['beds']:
                 bed['watered'] = True
             mg['water_saved'] = mg.get('water_saved', 0) + 0.50 * sum(1 for b in mg['beds'] if b['crop'])
         else:
-            # Manual watering needed
             for bed in mg['beds']:
                 if bed['crop'] and not bed['watered']:
                     water_cost += 0.50
 
         mg['money'] -= water_cost
         if water_cost > 0:
+            mg['events'] = mg.get('events', [])
             mg['events'].append(f"💧 Watering cost: £{water_cost:.2f}")
 
         # Process beds
@@ -1064,6 +1073,7 @@ with garden_tab:
 
                 soil_avg = (bed['soil_N'] + bed['soil_P'] + bed['soil_K']) / 3
                 if soil_avg < 30:
+                    mg['events'] = mg.get('events', [])
                     mg['events'].append(f"⚠️ Bed soil is poor — yields reduced!")
 
             elif bed['crop'] is None:
@@ -1076,6 +1086,7 @@ with garden_tab:
                 crop_data = MG_CROPS[bed['crop']]
                 if crop_data['family'] != 'Herb':
                     bed_idx_pos = mg['beds'].index(bed)
+                    mg['events'] = mg.get('events', [])
                     mg['events'].append(f"❄️ {bed['crop']} in Bed {bed_idx_pos+1} killed by frost!")
                     bed['history'].append(bed['crop'])
                     bed['crop'] = None
@@ -1088,8 +1099,10 @@ with garden_tab:
                 for bed in mg['beds']:
                     if bed['crop'] and not bed['watered']:
                         bed['days'] = max(0, bed['days'] - 1)
+                mg['events'] = mg.get('events', [])
                 mg['events'].append("🥶 Late frost! Unwatered crops lost a day.")
             elif event == "pests":
+                mg['events'] = mg.get('events', [])
                 mg['events'].append("🐛 Pest outbreak! Companion planting helps protect crops.")
 
         # Market price fluctuations
@@ -1109,6 +1122,7 @@ with garden_tab:
             if mg['xp'] >= xp_needed:
                 if mg['level'] < lvl:
                     mg['level'] = lvl
+                    mg['events'] = mg.get('events', [])
                     mg['events'].append(f"⭐ Level up! Now level {lvl}!")
                     st.toast(f"⭐ Level Up! You're now Level {lvl}!")
                 break
