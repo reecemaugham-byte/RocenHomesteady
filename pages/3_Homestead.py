@@ -3,6 +3,7 @@ import random
 from datetime import datetime
 
 from utils import init_session_state, apply_brand_theme, render_save_load
+from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, VILLAGE_ITEMS, VILLAGE_BUILDINGS, VILLAGE_PRODUCTION,
                          KITCHEN_RECIPES, BASICS)
 from plants_data import UK_PLANTS
@@ -18,6 +19,7 @@ st.set_page_config(
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
+user = render_auth()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
@@ -30,6 +32,8 @@ with st.sidebar:
         st.markdown("🌿 **Rocen Homesteady**")
     st.markdown("---")
 
+    render_logout_sidebar()
+    st.markdown("---")
     render_save_load()
     st.markdown("---")
 
