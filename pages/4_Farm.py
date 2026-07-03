@@ -424,7 +424,7 @@ with farm_tab:
     st.markdown("#### 🗺️ Your Farm")
 
     # Placing mode banner
-    if game['placing_mode']:
+    if game.get('placing_mode', False):
         b_name = game['placing_mode']
         b_data = FARM_BUILDINGS.get(b_name, {})
         b_icon = b_data.get('icon', '🏗️')
