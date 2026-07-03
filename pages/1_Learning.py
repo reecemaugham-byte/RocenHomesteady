@@ -146,7 +146,7 @@ def render_plant_card(plant, status, kids_mode, edge_tts_available):
 
         # Audio
         if edge_tts_available:
-            if st.button(f"🔊 Pronounce {latin_name}", key=f"latin_btn_{plant['name']}"):
+            if st.button(f"🔊 Pronounce {latin_name}", key=f"latin_btn_{status}_{plant['name']}_{plant.get('latin_name', '')}"):
                 with st.spinner("Generating pronunciation..."):
                     audio_file = generate_voice(latin_name)
                     if audio_file:
