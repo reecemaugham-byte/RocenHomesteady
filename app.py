@@ -2,6 +2,7 @@ import streamlit as st
 import base64
 from datetime import datetime
 from utils import init_session_state, apply_brand_theme, render_sidebar
+from auth import render_auth, render_logout_sidebar
 from plants_data import UK_PLANTS
 from game_config import ACHIEVEMENTS
 
@@ -16,6 +17,8 @@ st.set_page_config(
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
+user = render_auth()
+render_logout_sidebar()
 
 # --- LOGO ABOVE SIDEBAR NAVIGATION ---
 try:
