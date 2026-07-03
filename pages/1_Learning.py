@@ -85,7 +85,7 @@ if st.session_state.completed_modules:
     st.sidebar.caption(f"📚 Modules: {len(st.session_state.completed_modules)}/{len(LESSON_CONTENT)}")
 
 # --- HELPER: RENDER A PLANT CARD ---
-def render_plant_card(plant, status, kids_mode, edge_tts_available):
+def render_plant_card(plant, status, kids_mode, edge_tts_available, idx=0):
     """Render a single plant's expander card."""
     icon = "🌿" if status == "Edible" else "☠️"
     cat_badge = plant.get('category', 'Plant')
@@ -146,7 +146,7 @@ def render_plant_card(plant, status, kids_mode, edge_tts_available):
 
         # Audio
         if edge_tts_available:
-            if st.button(f"🔊 Pronounce {latin_name}", key=f"latin_btn_{status}_{plant['name']}_{plant.get('latin_name', '')}"):
+            if st.button(f"🔊 Pronounce {latin_name}", key=f"latin_btn_{idx}"):
                 with st.spinner("Generating pronunciation..."):
                     audio_file = generate_voice(latin_name)
                     if audio_file:
@@ -382,8 +382,8 @@ with learn_tab1:
             page_plants = filtered[start_idx:end_idx]
 
             # --- RENDER PLANTS ON THIS PAGE ---
-            for status, plant in page_plants:
-                render_plant_card(plant, status, kids_mode, EDGE_TTS_AVAILABLE)
+            for idx, (status, plant) in enumerate(page_plants):
+                render_plant_card(plant, status, kids_mode, EDGE_TTS_AVAILABLE, idx=idx)
 
             # --- PAGE NAVIGATION ---
             if total_pages > 1:
