@@ -901,14 +901,36 @@ with tab2:
 
     # --- PROGRESS ---
     progress = st.session_state.survival_correct_count / 5
-    st.progress(min(progress, 1.0),
-                text=f"Level {st.session_state.survival_level} Progress: {st.session_state.survival_correct_count}/5 Cases")
+    level_name = SURVIVAL_DIFFICULTY.get(st.session_state.survival_level, "Level 1")
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("❤️ Lives", "❤️" * max(0, st.session_state.survival_lives))
-    col2.metric("🌟 Score", st.session_state.survival_score)
-    col3.metric("🕵️ Cases Solved", st.session_state.survival_cases_solved)
-    st.markdown("---")
+    st.markdown(f"""
+    <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--amber); font-family: 'Crimson Text', Georgia, serif; font-size: 1.1rem; font-weight: 700;">🕵️ {level_name}</span>
+            <span style="color: var(--cream-dim); font-size: 0.85rem;">Cases to next level: {st.session_state.survival_correct_count}/5</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.progress(min(progress, 1.0), text=f"Level {st.session_state.survival_level} Progress: {st.session_state.survival_correct_count}/5 Cases")
+
+    # --- STATS ROW ---
+    st.markdown(f"""
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <div style="background: var(--danger-bg); border: 2px solid var(--danger); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 100px;">
+            <div style="color: var(--danger); font-size: 0.8rem; font-weight: 600;">LIVES</div>
+            <div style="color: var(--cream); font-size: 1.4rem; font-weight: 700;">{"❤️" * max(0, st.session_state.survival_lives)}</div>
+        </div>
+        <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber-dark); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 100px;">
+            <div style="color: var(--amber); font-size: 0.8rem; font-weight: 600;">SCORE</div>
+            <div style="color: var(--cream); font-size: 1.4rem; font-weight: 700;">{st.session_state.survival_score}</div>
+        </div>
+        <div style="background: var(--bg-card); border: 2px solid #3d5a3d; border-radius: 10px; padding: 0.6rem 1rem; text-align: center; flex: 1; min-width: 100px;">
+            <div style="color: var(--green-leaf); font-size: 0.8rem; font-weight: 600;">CASES SOLVED</div>
+            <div style="color: var(--cream); font-size: 1.4rem; font-weight: 700;">{st.session_state.survival_cases_solved}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # --- SELECT CURRENT CASE ---
     if st.session_state.survival_current_case is None:
@@ -919,31 +941,67 @@ with tab2:
 
     case = st.session_state.survival_current_case
 
-    level_name = SURVIVAL_DIFFICULTY.get(st.session_state.survival_level, "Level 1")
-    st.info(f"**{level_name}**")
+    # ─────────────────────────────────────────
+    # CASE FILE DISPLAY
+    # ─────────────────────────────────────────
 
-    # --- DISPLAY CASE ---
-    st.info("🔎 **New Case File Found!**")
+    st.markdown(f"""
+    <div class="case-file">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+            <h3 style="margin: 0; color: var(--amber); font-family: 'Crimson Text', Georgia, serif;">📋 Case File #{st.session_state.survival_cases_solved + 1}</h3>
+            <span style="background: {'#ff525220' if case['level'] == 1 else '#ff525240' if case['level'] == 2 else '#ff525260'}; color: {'#4CAF50' if case['level'] == 1 else '#FFC107' if case['level'] == 2 else '#ff5252'}; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid {'#4CAF50' if case['level'] == 1 else '#FFC107' if case['level'] == 2 else '#ff5252'}50;">
+                {'Beginner' if case['level'] == 1 else 'Intermediate' if case['level'] == 2 else 'Expert'}
+            </span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with st.container():
-        st.markdown(f"**🌿 Safe Plant:** {case['safe_icon']} {case['safe_plant']}")
-        st.markdown(f"**☠️ Danger Plant:** {case['danger_icon']} {case['danger_plant']}")
-        st.markdown("---")
-        st.markdown(f"**📍 Habitat:** {case['safe_habitat']}")
-        st.markdown(f"**🔍 Your Observation:** {case['clue']}")
-        st.markdown(f"**📋 Rule:** {case['rule']}")
+    # ── LOCATION & HABITAT ──
+    st.markdown(f"""
+    <div style="background: var(--bg-card); border-left: 4px solid var(--green-leaf); border-radius: 0 8px 8px 0; padding: 0.8rem 1rem; margin-bottom: 0.8rem;">
+        <span style="color: var(--cream-dim); font-size: 0.8rem;">📍 LOCATION</span><br>
+        <span style="color: var(--cream); font-size: 1rem; font-weight: 600;">{case['safe_habitat']}</span>
+    </div>
+    """, unsafe_allow_html=True)
 
+    # ── YOUR OBSERVATION (THE CLUE) ──
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #1a1a0a, #2a2a10); border: 1px solid var(--amber); border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem;">
+        <div style="color: var(--amber); font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem;">🔍 YOUR OBSERVATION</div>
+        <div style="color: var(--cream); font-size: 1.05rem; line-height: 1.5;">{case['clue']}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── THE RULE ──
+    st.markdown(f"""
+    <div style="background: #3d2e0a; border: 1px solid var(--amber-dark); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 1rem;">
+        <div style="color: var(--amber); font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem;">⚠️ KEY RULE</div>
+        <div style="color: var(--cream); font-size: 0.95rem;">{case['rule']}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── AUDIO ──
     if EDGE_TTS_AVAILABLE:
         if st.button("🔊 Listen to Clue", key="audio_clue_btn"):
             with st.spinner("Generating audio..."):
                 audio_file = generate_voice(case['clue'])
                 if audio_file:
-                    st.audio(audio_file, format='audio/mp3')
+                    st.audio(audio_file, format="audio/mp3")
                 else:
                     st.warning("Could not generate audio.")
 
-    # --- VERDICT ---
-    st.markdown("#### ⚠️ VERDICT: Which is the **SAFE** plant?")
+    st.markdown("---")
+
+    # ─────────────────────────────────────────
+    # VERDICT
+    # ─────────────────────────────────────────
+
+    st.markdown(f"""
+    <div style="background: var(--bg-card); border: 2px solid var(--amber); border-radius: 12px; padding: 1rem; text-align: center; margin-bottom: 1rem;">
+        <div style="color: var(--amber); font-family: 'Crimson Text', Georgia, serif; font-size: 1.2rem; font-weight: 700;">⚖️ VERDICT</div>
+        <div style="color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.3rem;">Which is the <span style="color: var(--green-leaf); font-weight: 700;">SAFE</span> plant?</div>
+    </div>
+    """, unsafe_allow_html=True)
 
     options = [
         {"name": case['safe_plant'], "icon": case['safe_icon'], "is_safe": True},
@@ -954,71 +1012,139 @@ with tab2:
     if st.session_state.survival_result is None:
         btn_col1, btn_col2 = st.columns(2)
 
-        if btn_col1.button(f"{options[0]['icon']} {options[0]['name']}",
-                           key="surv_opt_1", use_container_width=True):
-            if options[0]['is_safe']:
-                st.session_state.survival_result = "correct"
-                st.session_state.survival_score += 20
-                st.session_state.survival_correct_count += 1
-                st.session_state.total_plants_identified += 1
-                st.session_state.survival_cases_solved += 1
+        with btn_col1:
+            opt = options[0]
+            border_color = "var(--green-leaf)" if opt['is_safe'] else "var(--danger)"
+            bg_color = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if opt['is_safe'] else "linear-gradient(135deg, #2a1010, #3d1515)"
+            hover_text = "This looks safe..." if opt['is_safe'] else "This could be dangerous..."
 
-                if not st.session_state.achievements['survival_scout']:
-                    st.session_state.achievements['survival_scout'] = True
-                    st.toast("🏅 Achievement Unlocked: Scout!")
-                if (st.session_state.survival_cases_solved >= 20
-                        and not st.session_state.achievements['survival_detective']):
-                    st.session_state.achievements['survival_detective'] = True
-                    st.toast("🏅 Achievement Unlocked: Detective!")
-            else:
-                st.session_state.survival_result = "wrong"
-                st.session_state.survival_lives -= 1
-                st.session_state.survival_correct_count = 0
-            st.rerun()
+            if st.button(
+                f"{opt['icon']} {opt['name']}",
+                key="surv_opt_1",
+                use_container_width=True
+            ):
+                if opt['is_safe']:
+                    st.session_state.survival_result = "correct"
+                    st.session_state.survival_score += 20
+                    st.session_state.survival_correct_count += 1
+                    st.session_state.total_plants_identified += 1
+                    st.session_state.survival_cases_solved += 1
 
-        if btn_col2.button(f"{options[1]['icon']} {options[1]['name']}",
-                           key="surv_opt_2", use_container_width=True):
-            if options[1]['is_safe']:
-                st.session_state.survival_result = "correct"
-                st.session_state.survival_score += 20
-                st.session_state.survival_correct_count += 1
-                st.session_state.total_plants_identified += 1
-                st.session_state.survival_cases_solved += 1
+                    if not st.session_state.achievements['survival_scout']:
+                        st.session_state.achievements['survival_scout'] = True
+                        st.toast("🏅 Achievement Unlocked: Scout!")
+                    if (st.session_state.survival_cases_solved >= 20
+                            and not st.session_state.achievements['survival_detective']):
+                        st.session_state.achievements['survival_detective'] = True
+                        st.toast("🏅 Achievement Unlocked: Detective!")
+                else:
+                    st.session_state.survival_result = "wrong"
+                    st.session_state.survival_lives -= 1
+                    st.session_state.survival_correct_count = 0
+                st.rerun()
 
-                if not st.session_state.achievements['survival_scout']:
-                    st.session_state.achievements['survival_scout'] = True
-                    st.toast("🏅 Achievement Unlocked: Scout!")
-                if (st.session_state.survival_cases_solved >= 20
-                        and not st.session_state.achievements['survival_detective']):
-                    st.session_state.achievements['survival_detective'] = True
-                    st.toast("🏅 Achievement Unlocked: Detective!")
-            else:
-                st.session_state.survival_result = "wrong"
-                st.session_state.survival_lives -= 1
-                st.session_state.survival_correct_count = 0
-            st.rerun()
+        with btn_col2:
+            opt = options[1]
+            border_color = "var(--green-leaf)" if opt['is_safe'] else "var(--danger)"
+            bg_color = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if opt['is_safe'] else "linear-gradient(135deg, #2a1010, #3d1515)"
 
-    else:
-        # --- SHOW RESULT ---
-        if st.session_state.survival_result == "correct":
-            st.success("✅ CASE SOLVED! Great work, Inspector.")
-            if (st.session_state.survival_correct_count >= 5
-                    and st.session_state.survival_level == 1):
-                st.session_state.survival_level = 2
-                st.session_state.survival_correct_count = 0
-                st.markdown("# 🏆 LEVEL UP!")
-                st.write("You have unlocked **Level 2: Fungi & Roots**! Cases now include harder plants and fungi.")
-                if not st.session_state.achievements['survival_expert']:
-                    st.session_state.achievements['survival_expert'] = True
-                    st.toast("🏅 Achievement Unlocked: Graduate!")
-        else:
-            st.error("☠️ DANGER! That was the wrong choice.")
-            st.warning(f"The safe plant was **{case['safe_plant']}**, not {case['danger_plant']}.")
+            if st.button(
+                f"{opt['icon']} {opt['name']}",
+                key="surv_opt_2",
+                use_container_width=True
+            ):
+                if opt['is_safe']:
+                    st.session_state.survival_result = "correct"
+                    st.session_state.survival_score += 20
+                    st.session_state.survival_correct_count += 1
+                    st.session_state.total_plants_identified += 1
+                    st.session_state.survival_cases_solved += 1
 
-        st.markdown("### 📝 Case File Analysis")
-        st.markdown(case['fact'])
+                    if not st.session_state.achievements['survival_scout']:
+                        st.session_state.achievements['survival_scout'] = True
+                        st.toast("🏅 Achievement Unlocked: Scout!")
+                    if (st.session_state.survival_cases_solved >= 20
+                            and not st.session_state.achievements['survival_detective']):
+                        st.session_state.achievements['survival_detective'] = True
+                        st.toast("🏅 Achievement Unlocked: Detective!")
+                else:
+                    st.session_state.survival_result = "wrong"
+                    st.session_state.survival_lives -= 1
+                    st.session_state.survival_correct_count = 0
+                st.rerun()
 
-        # Show extra detail from plant data
+    # ─────────────────────────────────────────
+    # RESULT DISPLAY
+    # ─────────────────────────────────────────
+
+    elif st.session_state.survival_result == "correct":
+        st.markdown(f"""
+        <div class="correct-feedback">
+            <div style="font-size: 2rem;">✅</div>
+            <div style="color: var(--green-leaf); font-family: 'Crimson Text', Georgia, serif; font-size: 1.4rem; font-weight: 700;">CASE SOLVED!</div>
+            <div style="color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.3rem;">Great work, Inspector. +20 points.</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Level up check
+        if (st.session_state.survival_correct_count >= 5
+                and st.session_state.survival_level == 1):
+            st.session_state.survival_level = 2
+            st.session_state.survival_correct_count = 0
+            st.markdown(f"""
+            <div class="level-up">
+                <div style="font-size: 2rem;">🏆</div>
+                <div style="color: var(--amber); font-family: 'Crimson Text', Georgia, serif; font-size: 1.5rem; font-weight: 700;">LEVEL UP!</div>
+                <div style="color: var(--cream); font-size: 1rem; margin-top: 0.3rem;">You've unlocked <b>Level 2: Fungi & Roots</b></div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">Cases now include harder plants and fungi.</div>
+            </div>
+            """, unsafe_allow_html=True)
+            if not st.session_state.achievements['survival_expert']:
+                st.session_state.achievements['survival_expert'] = True
+                st.toast("🏅 Achievement Unlocked: Graduate!")
+
+    elif st.session_state.survival_result == "wrong":
+        st.markdown(f"""
+        <div class="wrong-feedback">
+            <div style="font-size: 2rem;">☠️</div>
+            <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.4rem; font-weight: 700;">DANGER!</div>
+            <div style="color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.3rem;">That was the wrong choice. The safe plant was <b>{case['safe_plant']}</b>.</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ── SIDE-BY-SIDE COMPARISON ──
+    if st.session_state.survival_result is not None:
+        comp_col1, comp_col2 = st.columns(2)
+
+        with comp_col1:
+            st.markdown(f"""
+            <div class="safe-card">
+                <div style="font-size: 2rem;">🌿</div>
+                <div style="color: var(--green-leaf); font-weight: 700; font-size: 1.1rem; margin: 0.3rem 0;">{case['safe_plant']}</div>
+                <div style="color: var(--green-light); font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem;">✅ SAFE TO EAT</div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem;">{case['safe_habitat']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with comp_col2:
+            st.markdown(f"""
+            <div class="danger-card">
+                <div style="font-size: 2rem;">☠️</div>
+                <div style="color: var(--danger); font-weight: 700; font-size: 1.1rem; margin: 0.3rem 0;">{case['danger_plant']}</div>
+                <div style="color: #ff8a80; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem;">⚠️ DANGEROUS</div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem;">Do NOT consume</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # ── CASE ANALYSIS ──
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 1rem; margin-top: 1rem;">
+            <div style="color: var(--amber); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem;">📝 Case Analysis</div>
+            <div style="color: var(--cream); font-size: 0.95rem; line-height: 1.6;">{case['fact']}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # ── EXTRA DETAIL ──
         safe_plant_data = None
         for p in UK_PLANTS['edible']:
             if p['name'] == case['safe_plant']:
@@ -1031,9 +1157,10 @@ with tab2:
                 if lookalikes:
                     st.markdown("**Lookalikes:**")
                     for la in lookalikes:
-                        danger = la.get('danger', 'Unknown')
-                        danger_icon = "☠️" if danger in ["DEADLY", "EXTREME"] else "⚠️" if danger in ["POISONOUS", "HIGH"] else "✅"
-                        st.markdown(f"- {danger_icon} **{la['name']}** ({danger}): {la['diff']}")
+                        if isinstance(la, dict):
+                            danger = la.get('danger', 'Unknown')
+                            danger_icon = "☠️" if danger in ["DEADLY", "EXTREME"] else "⚠️" if danger in ["POISONOUS", "HIGH"] else "✅"
+                            st.markdown(f"- {danger_icon} **{la['name']}** ({danger}): {la['diff']}")
                 warnings = safe_plant_data.get('warnings', '')
                 if warnings:
                     st.markdown(f"**⚠️ Warning:** {warnings}")
@@ -1041,17 +1168,26 @@ with tab2:
                 if confusion:
                     st.markdown(f"**🔍 Key ID Note:** {confusion}")
 
-        if st.button("📋 Next Case", key="next_case_btn"):
+        if st.button("📋 Next Case", key="next_case_btn", use_container_width=True):
             st.session_state.survival_current_case = None
             st.session_state.survival_result = None
             st.rerun()
 
-    # --- GAME OVER ---
+    # ─────────────────────────────────────────
+    # GAME OVER
+    # ─────────────────────────────────────────
+
     if st.session_state.survival_lives <= 0:
-        st.markdown("## 🤕 Training Ended")
-        st.markdown("Don't worry, even experts make mistakes. Review the case files and try again!")
-        st.markdown(f"**Cases solved this session:** {st.session_state.survival_cases_solved}")
-        if st.button("🔄 Restart Training", key="restart_survival"):
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a0000, #2a0a0a); border: 2px solid var(--danger); border-radius: 12px; padding: 2rem; text-align: center; margin: 1rem 0;">
+            <div style="font-size: 3rem;">🤕</div>
+            <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.8rem; font-weight: 700;">Training Ended</div>
+            <div style="color: var(--cream-dim); font-size: 1rem; margin-top: 0.5rem;">Don't worry, even experts make mistakes.</div>
+            <div style="color: var(--cream); font-size: 0.9rem; margin-top: 0.5rem;">Cases solved this session: <b>{st.session_state.survival_cases_solved}</b></div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("🔄 Restart Training", key="restart_survival", use_container_width=True):
             st.session_state.survival_lives = 3
             st.session_state.survival_correct_count = 0
             st.session_state.survival_current_case = None
@@ -1059,20 +1195,39 @@ with tab2:
             st.session_state.survival_level = 1
             st.rerun()
 
-    # --- ACHIEVEMENT DISPLAY ---
+    # ─────────────────────────────────────────
+    # ACHIEVEMENTS
+    # ─────────────────────────────────────────
+
     st.markdown("---")
     with st.expander("🏅 Survival Achievements"):
         for key in ["survival_scout", "survival_expert", "survival_detective"]:
             ach = ACHIEVEMENTS[key]
-            status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+            is_unlocked = st.session_state.achievements.get(key, False)
+            border_color = "var(--green-leaf)" if is_unlocked else "#444"
+            bg = "linear-gradient(135deg, #0a2a0a, #1a3d1a)" if is_unlocked else "var(--bg-card)"
+            icon = ach.get('icon', '🏅') if is_unlocked else '🔒'
+
             progress = ""
             if key == "survival_scout":
-                progress = "(1 case)" if st.session_state.achievements[key] else "(0/1)"
+                progress = "(1 case)" if is_unlocked else "(0/1)"
             elif key == "survival_expert":
-                progress = "(Done)" if st.session_state.achievements[key] else f"({st.session_state.survival_correct_count}/5 this level)"
+                progress = "(Done)" if is_unlocked else f"({st.session_state.survival_correct_count}/5 this level)"
             elif key == "survival_detective":
-                progress = "(Done)" if st.session_state.achievements[key] else f"({st.session_state.survival_cases_solved}/20 total)"
-            st.markdown(f"**{status} {ach['name']}**\n- *{ach['desc']}* {progress}")
+                progress = "(Done)" if is_unlocked else f"({st.session_state.survival_cases_solved}/20 total)"
+
+            st.markdown(f"""
+            <div style="background: {bg}; border: 2px solid {border_color}; border-radius: 10px; padding: 0.8rem; margin: 0.5rem 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 0.3rem;">{icon}</span>
+                        <span style="color: {'var(--green-leaf)' if is_unlocked else 'var(--cream-dim)'}; font-weight: 700;">{ach['name']}</span>
+                    </div>
+                    <span style="color: var(--cream-dim); font-size: 0.8rem;">{progress}</span>
+                </div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">{ach['desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
         st.caption(f"📊 {len(all_cases)} unique cases available ({len([c for c in all_cases if c['level'] == 1])} Level 1, {len([c for c in all_cases if c['level'] == 2])} Level 2, {len([c for c in all_cases if c['level'] == 3])} Level 3)")
 
