@@ -647,45 +647,6 @@ with tab1:
                 st.session_state.current_question = None
                 st.rerun()
 
-        with season_cols[i]:
-            if is_active:
-                st.markdown(f"""
-                <div style="
-                    background: linear-gradient(135deg, var(--green-dark), var(--green-leaf));
-                    border: 2px solid var(--green-light);
-                    border-radius: 10px;
-                    padding: 0.5rem;
-                    text-align: center;
-                    color: var(--cream);
-                    font-weight: 700;
-                    font-size: 0.95rem;
-                    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
-                ">
-                    {SEASON_ICONS[s]} {s}{badge_txt}
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown(f"""
-                <div style="
-                    background: var(--bg-card);
-                    border: 1px solid #3d5a3d;
-                    border-radius: 10px;
-                    padding: 0.5rem;
-                    text-align: center;
-                    color: var(--cream-dim);
-                    font-weight: 500;
-                    font-size: 0.95rem;
-                ">
-                    {SEASON_ICONS[s]} {s}{badge_txt}
-                </div>
-                """, unsafe_allow_html=True)
-
-    for i, s in enumerate(seasons):
-        if season_cols[i].button(f"{SEASON_ICONS[s]} {s}", key=f"season_{s}", use_container_width=True):
-            st.session_state.active_season = s
-            st.session_state.current_question = None
-            st.rerun()
-
     # --- STATS ROW ---
     total_edible = len(UK_PLANTS['edible'])
     collection_list = list(st.session_state.master_inventory.keys())
