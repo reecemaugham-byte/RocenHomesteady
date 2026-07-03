@@ -615,7 +615,12 @@ with tab1:
         """)
 
     # --- SEASON SELECTION ---
-    st.markdown("### 🗓️ Choose a Season")
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, var(--green-dark), var(--green-leaf)); border: 2px solid var(--green-light); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; margin-bottom: 0.8rem;">
+        <span style="color: var(--cream); font-weight: 700; font-size: 1.1rem;">{SEASON_ICONS.get(st.session_state.active_season, '🌸')} Active Season: {st.session_state.active_season}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
     season_cols = st.columns(4)
     seasons = ["Spring", "Summer", "Autumn", "Winter"]
 
@@ -635,8 +640,12 @@ with tab1:
 
     for i, s in enumerate(seasons):
         is_earned = s in st.session_state.season_badge_progress
-        is_active = st.session_state.active_season == s
         badge_txt = " 🏅" if is_earned else ""
+        with season_cols[i]:
+            if st.button(f"{SEASON_ICONS[s]} {s}{badge_txt}", key=f"season_{s}", use_container_width=True):
+                st.session_state.active_season = s
+                st.session_state.current_question = None
+                st.rerun()
 
         with season_cols[i]:
             if is_active:
