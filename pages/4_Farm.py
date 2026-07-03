@@ -507,7 +507,12 @@ with farm_tab:
                         st.rerun()
 
                 elif tile_val == 0:
-                    if game['placing_mode'] and game['placing_mode'] != "None":
+                    # Get the value safely, default to False if it doesn't exist yet
+                    placing_mode = game.get('placing_mode', False)
+
+                    # Now check if it's active and not the string "None"
+                    if placing_mode and placing_mode != "None":
+
                         b_name = game['placing_mode']
                         b_data = FARM_BUILDINGS.get(b_name, None)
                         if b_data:
