@@ -2,8 +2,7 @@ import streamlit as st
 import random
 import math
 
-from utils import init_session_state, apply_brand_theme, render_save_load   # <<< CHANGED
-from auth import render_auth, render_logout_sidebar                           # <<< ADD
+from utils import (init_session_state, apply_brand_theme, render_save_load)
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, NECTAR_FLOW, HONEY_TYPES,
                          APIARY_PRODUCTS, BEEKEEPING_SEASONS, WEATHER_CHANCES, TEMP_RANGE)
 
@@ -15,38 +14,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CUSTOM CSS ---
-st.markdown("""
-<style>
-    .bee-hive-grid div.stButton > button {
-        width: 100% !important; height: 60px !important; font-size: 1.5em !important;
-        border: 2px solid #444 !important; background-color: #2b2b2b !important;
-        color: white !important; border-radius: 8px !important;
-    }
-    .bee-hive-grid div.stButton > button:hover { border-color: #FFD700 !important; }
-    .frame-box {
-        border: 2px solid #555; border-radius: 8px; padding: 8px; text-align: center;
-        background: #1a1a1a; min-height: 80px;
-    }
-    .alert-box {
-        border: 2px solid #FFD700; border-radius: 10px; padding: 12px;
-        background: linear-gradient(145deg, #3d2e00, #1a1a00); margin: 8px 0;
-    }
-    .dash-metric {
-        border: 1px solid #444; border-radius: 8px; padding: 10px;
-        text-align: center; background: #1a1a1a;
-    }
-    @media (max-width: 768px) {
-        .bee-hive-grid div.stButton > button { font-size: 1em !important; height: 45px !important; }
-    }
-</style>
-""", unsafe_allow_html=True)
-
 # --- INIT ---
 init_session_state()
 apply_brand_theme()
-user = render_auth()
-render_logout_sidebar()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
@@ -81,7 +51,6 @@ def get_temperature(season):
     return random.randint(low, high)
 
 def can_inspect(weather_str, temperature):
-    """Can't inspect in rain/storms, or below 14°C"""
     if "Rainy" in weather_str or "Stormy" in weather_str:
         return False
     if temperature < 14:
@@ -117,7 +86,7 @@ def create_hive(name="Willow"):
 if st.session_state.get('apiary_game') is None:
     st.session_state.apiary_game = {
         'hives': [create_hive("Willow")],
-        'week': 13,  # Start in April (week 13)
+        'week': 13,
         'money': 100,
         'level': 1,
         'xp': 0,
@@ -160,8 +129,8 @@ with st.sidebar:
         st.markdown("🌿 **Rocen Homesteady**")
     st.markdown("---")
 
-    render_save_load()          # <<< ADD THIS LINE
-    st.markdown("---")          # <<< ADD THIS LINE
+    render_save_load()
+    st.markdown("---")
 
     unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
     total_count = len(ACHIEVEMENTS)
@@ -175,12 +144,12 @@ with st.sidebar:
 
     st.markdown("---")
     st.caption("📚 Curriculum: Science (Life Cycles, Ecosystems, Pollination), PSHE (Responsibility)")
-  
+
 # --- MAIN DISPLAY ---
 st.title("🐝 Apiary Manager")
 st.caption("Manage your hives through the seasons. Inspect regularly, treat for varroa, and harvest liquid gold!")
 
-# --- GUIDE (moved to top so players read it first) ---
+# --- GUIDE ---
 with st.expander("📖 Beekeeper's Guide — Read before playing!"):
     st.markdown("""
     **🖱️ Quick Start:**
@@ -230,7 +199,16 @@ st.markdown("---")
 
 # --- TOP STATS ---
 s1, s2, s3, s4, s5, s6 = st.columns(6)
-s1.metric(f"{SEASON_ICONS.get(current_season, '🌸')} Season", current_season)
+
+season_colour = {"Spring": "#4CAF50", "Summer": "#FFC107", "Autumn": "#FF8F00", "Winter": "#90CAF9"}.get(current_season, "#4CAF50")
+
+s1.markdown(f"""
+<div style="background: var(--bg-card); border-left: 4px solid {season_colour}; border-radius: 0 10px 10px 0; padding: 0.6rem 0.8rem; text-align: center;">
+    <div style="color: var(--cream-dim); font-size: 0.75rem; font-weight: 600;">{SEASON_ICONS.get(current_season, '🌸')} SEASON</div>
+    <div style="color: var(--cream); font-size: 1.1rem; font-weight: 700;">{current_season}</div>
+</div>
+""", unsafe_allow_html=True)
+
 s2.metric("📅 Month", f"{current_month[:3]} Wk{get_week_in_month(game['week'])}")
 s3.metric(f"{game['weather']}", f"{game['temperature']}°C")
 s4.metric("🐝 Hives", f"{total_hives} alive")
@@ -240,13 +218,22 @@ s6.metric("⭐ Level", f"{game['level']} ({game['xp']} XP)")
 # --- CAN INSPECT? ---
 inspect_allowed = can_inspect(game['weather'], game['temperature'])
 
-# --- NECTAR FLOW INFO ---
+# --- NECTAR FLOW ---
 if nectar_info['flow'] > 0:
-    st.success(f"🌸 **Nectar Flow:** {nectar_info['source']} (Strength: {'⭐' * nectar_info['flow']})")
-    if nectar_info['honey_type']:
-        st.info(f"🍯 Honey type this month: **{nectar_info['honey_type']}**")
+    flow_stars = "⭐" * nectar_info['flow']
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #1a2e1a, #243524); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+        <span style="color: var(--green-leaf); font-weight: 600;">🌸 Nectar Flow:</span>
+        <span style="color: var(--cream);"> {nectar_info['source']} (Strength: {flow_stars})</span>
+        {"<span style='color: var(--amber); margin-left: 0.5rem;'>🍯 Honey type: <b>" + nectar_info['honey_type'] + "</b></span>" if nectar_info.get('honey_type') else ""}
+    </div>
+    """, unsafe_allow_html=True)
 else:
-    st.info("❄️ No significant nectar flow this month. Bees rely on stores.")
+    st.markdown(f"""
+    <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+        <span style="color: var(--cream-dim);">❄️ No significant nectar flow this month. Bees rely on stores.</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- EVENTS ---
 if game['events']:
@@ -257,12 +244,27 @@ if game['events']:
         st.caption(f"... and {len(game['events']) - 5} more events")
 
 # --- SEASONAL WARNINGS ---
-if current_month == "April" or current_month == "May" or current_month == "June":
-    st.warning("⚠️ **Swarm Season!** Check for queen cells every week. A swarmed colony loses half its bees.")
+if current_month in ["April", "May", "June"]:
+    st.markdown(f"""
+    <div style="background: #3d2e0a; border: 1px solid var(--amber); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+        <span style="color: var(--amber); font-weight: 600;">⚠️ Swarm Season!</span>
+        <span style="color: var(--cream-dim);"> Check for queen cells every week. A swarmed colony loses half its bees.</span>
+    </div>
+    """, unsafe_allow_html=True)
 if current_month == "August":
-    st.warning("⚠️ **Varroa Treatment Month!** Apply treatment now before winter bees are raised.")
+    st.markdown(f"""
+    <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+        <span style="color: var(--danger); font-weight: 600;">⚠️ Varroa Treatment Month!</span>
+        <span style="color: var(--cream-dim);"> Apply treatment now before winter bees are raised.</span>
+    </div>
+    """, unsafe_allow_html=True)
 if current_season == "Winter":
-    st.info("❄️ **Winter:** No inspections. Heft hives to check stores. Apply oxalic acid in December.")
+    st.markdown(f"""
+    <div style="background: var(--info-bg); border: 1px solid #2196F3; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+        <span style="color: #2196F3; font-weight: 600;">❄️ Winter:</span>
+        <span style="color: var(--cream-dim);"> No inspections. Heft hives to check stores. Apply oxalic acid in December.</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("---")
 
@@ -278,8 +280,14 @@ with overview_tab:
     st.markdown("### 🏠 Your Apiary")
 
     if not active_hives:
-        st.error("💀 All your colonies have died! Buy a new hive to continue.")
-        if st.button("🛒 Buy New Hive (£75)", key="buy_hive_dead"):
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a0000, #2a0a0a); border: 2px solid var(--danger); border-radius: 12px; padding: 2rem; text-align: center; margin: 1rem 0;">
+            <div style="font-size: 3rem;">💀</div>
+            <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.5rem; font-weight: 700;">All Colonies Have Died</div>
+            <div style="color: var(--cream-dim); font-size: 0.95rem; margin-top: 0.5rem;">Buy a new hive to continue your beekeeping journey.</div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("🛒 Buy New Hive (£75)", key="buy_hive_dead", use_container_width=True):
             if game['money'] >= 75:
                 game['money'] -= 75
                 new_name = random.choice(["Oak", "Birch", "Hazel", "Ash", "Elm", "Rowan", "Holly", "Ivy"])
@@ -294,45 +302,75 @@ with overview_tab:
     else:
         for i, hive in enumerate(active_hives):
             weeks_since_inspection = game['week'] - hive['inspected_week']
-            inspection_status = "✅ Recent" if weeks_since_inspection <= 1 else ("⚠️ Overdue" if weeks_since_inspection <= 3 else "❌ Unknown")
+            if weeks_since_inspection <= 1:
+                inspection_status = "✅ Recent"
+                inspection_colour = "var(--green-leaf)"
+            elif weeks_since_inspection <= 3:
+                inspection_status = "⚠️ Overdue"
+                inspection_colour = "var(--amber)"
+            else:
+                inspection_status = "❌ Unknown"
+                inspection_colour = "var(--danger)"
+
+            total_stores = hive['honey_frames'] + (hive['super_honey_frames'] if hive['has_super'] else 0)
+            stores_label = "Good" if total_stores >= 7 else ("Low" if total_stores >= 3 else "Critical")
+
+            varroa = hive['varroa_count']
+            if weeks_since_inspection <= 2:
+                varroa_label = "Low" if varroa <= 3 else ("⚠️ Rising" if varroa <= 6 else "🚨 Critical")
+                varroa_colour = "var(--green-leaf)" if varroa <= 3 else ("var(--amber)" if varroa <= 6 else "var(--danger)")
+            else:
+                varroa_label = "❓ Unknown"
+                varroa_colour = "var(--cream-dim)"
 
             with st.expander(f"🐝 {hive['name']} — Pop: {hive['population']:,} | {inspection_status}"):
-                col1, col2, col3, col4 = st.columns(4)
+                # Quick stats row
+                d1, d2, d3, d4 = st.columns(4)
 
                 # Queen status
                 if weeks_since_inspection <= 1:
-                    queen_icon = "👑" if hive['queen'] == 'present' else ("⚠️" if hive['queen'] == 'failing' else "💀")
-                    col1.metric("Queen", f"{queen_icon} {hive['queen'].title()}")
+                    queen_icon = {"present": "👑", "failing": "⚠️", "virgin": "🐣", "dead": "💀"}.get(hive['queen'], "❓")
+                    queen_label = {"present": "Present", "failing": "Failing", "virgin": "Virgin", "dead": "No Queen"}.get(hive['queen'], "Unknown")
+                    d1.metric("Queen", f"{queen_icon} {queen_label}")
                 else:
-                    col1.metric("Queen", "❓ Unknown")
+                    d1.metric("Queen", "❓ Unknown")
 
                 # Population
                 pop_label = "Strong" if hive['population'] > 40000 else ("Medium" if hive['population'] > 20000 else "Weak")
-                col2.metric("Population", f"{hive['population']:,}", pop_label)
+                d2.metric("Population", f"{hive['population']:,}", pop_label)
 
                 # Stores
-                total_stores = hive['honey_frames'] + (hive['super_honey_frames'] if hive['has_super'] else 0)
-                stores_label = "Good" if total_stores >= 7 else ("Low" if total_stores >= 3 else "Critical")
-                col3.metric("Honey Stores", f"{total_stores} frames", stores_label)
+                stores_status = "✅ Good" if total_stores >= 7 else ("⚠️ Low" if total_stores >= 3 else "🚨 Critical")
+                d3.metric("Honey Stores", f"{total_stores} frames", stores_status)
 
                 # Varroa
-                if weeks_since_inspection <= 2:
-                    varroa_label = "Low" if hive['varroa_count'] <= 3 else ("⚠️ Rising" if hive['varroa_count'] <= 6 else "🚨 Critical")
-                    col4.metric("Varroa", f"{hive['varroa_count']}/300", varroa_label)
-                else:
-                    col4.metric("Varroa", "❓ Unknown")
+                d4.metric("Varroa", f"{varroa}/300", varroa_label)
 
                 # Queen cells alert
                 if hive['queen_cells'] > 0 and weeks_since_inspection <= 1:
-                    st.warning(f"⚠️ **{hive['queen_cells']} queen cell(s) found!** Swarm risk is HIGH. Consider splitting.")
+                    st.markdown(f"""
+                    <div style="background: #3d2e0a; border: 1px solid var(--amber); border-radius: 8px; padding: 0.5rem 0.8rem;">
+                        <span style="color: var(--amber); font-weight: 600;">⚠️ {hive['queen_cells']} Queen Cell(s) Found!</span>
+                        <span style="color: var(--cream-dim);"> Swarm risk is HIGH. Consider splitting.</span>
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 # Swarm warning
                 if hive['population'] > 40000 and current_month in ["April", "May", "June"]:
-                    st.warning("🐝 High population + swarm season = High swarm risk! Inspect weekly.")
+                    st.markdown(f"""
+                    <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 8px; padding: 0.5rem 0.8rem;">
+                        <span style="color: var(--danger); font-weight: 600;">🐝 High population + swarm season = High swarm risk!</span>
+                        <span style="color: var(--cream-dim);"> Inspect weekly.</span>
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 # Winter stores warning
                 if current_season in ["Autumn", "Winter"] and total_stores < 5:
-                    st.error("❄️ Stores critically low! Feed immediately or colony will starve.")
+                    st.markdown(f"""
+                    <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 8px; padding: 0.5rem 0.8rem;">
+                        <span style="color: var(--danger); font-weight: 600;">❄️ Stores dangerously low! Feed immediately or colony will starve.</span>
+                    </div>
+                    """, unsafe_allow_html=True)
 
         # --- BUY HIVE ---
         st.markdown("---")
@@ -340,12 +378,21 @@ with overview_tab:
         max_hives = game['level'] + 1
         hive_cost = 75
 
-        col_cost, col_level, col_buy = st.columns(3)
-        col_cost.metric("Cost", f"£{hive_cost}")
-        col_level.metric("Max Hives", f"{max_hives} (Level {game['level']})")
+        st.markdown(f"""
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+            <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 0.8rem 1rem; text-align: center; flex: 1; min-width: 100px;">
+                <div style="color: var(--cream-dim); font-size: 0.8rem; font-weight: 600;">COST</div>
+                <div style="color: var(--amber); font-size: 1.3rem; font-weight: 700;">£{hive_cost}</div>
+            </div>
+            <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 0.8rem 1rem; text-align: center; flex: 1; min-width: 100px;">
+                <div style="color: var(--cream-dim); font-size: 0.8rem; font-weight: 600;">MAX HIVES</div>
+                <div style="color: var(--cream); font-size: 1.3rem; font-weight: 700;">{max_hives} (Level {game['level']})</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
         can_buy = game['money'] >= hive_cost and total_hives < max_hives
-        if col_buy.button(f"Buy Hive (£{hive_cost})", disabled=not can_buy, key="buy_hive_main"):
+        if st.button(f"🛒 Buy Hive (£{hive_cost})", disabled=not can_buy, key="buy_hive_main", use_container_width=True):
             game['money'] -= hive_cost
             new_name = random.choice(["Oak", "Birch", "Hazel", "Ash", "Elm", "Rowan", "Holly", "Ivy",
                                        "Cedar", "Pine", "Maple", "Linden", "Sycamore", "Alder", "Thorn"])
@@ -363,10 +410,26 @@ with inspect_tab:
     st.markdown("### 🔍 Hive Inspection")
 
     if not inspect_allowed:
-        st.error(f"🚫 **Cannot inspect today.** Weather: {game['weather']} | Temp: {game['temperature']}°C (need ≥14°C and dry)")
-        st.caption("In real beekeeping, you should only open the hive on warm, dry days to avoid chilling the brood.")
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a0000, #2a0a0a); border: 2px solid var(--danger); border-radius: 12px; padding: 1.5rem; text-align: center; margin: 1rem 0;">
+            <div style="font-size: 2rem;">🚫</div>
+            <div style="color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.3rem; font-weight: 700;">Cannot Inspect Today</div>
+            <div style="color: var(--cream-dim); font-size: 0.95rem; margin-top: 0.5rem;">
+                Weather: {game['weather']} | Temperature: {game['temperature']}°C<br>
+                <span style="font-size: 0.85rem;">(Need ≥14°C and dry)</span>
+            </div>
+            <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.5rem; font-style: italic;">
+                In real beekeeping, you should only open the hive on warm, dry days to avoid chilling the brood.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.success(f"✅ **Good inspection weather!** {game['weather']} | {game['temperature']}°C")
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 1rem;">
+            <span style="color: var(--green-leaf); font-weight: 600;">✅ Good inspection weather!</span>
+            <span style="color: var(--cream);"> {game['weather']} | {game['temperature']}°C</span>
+        </div>
+        """, unsafe_allow_html=True)
 
     if not active_hives:
         st.warning("No active hives to inspect.")
@@ -379,12 +442,23 @@ with inspect_tab:
             weeks_since = game['week'] - selected_hive['inspected_week']
 
             if not inspect_allowed:
-                st.info("❄️ You can only heft the hive (lift one side to estimate stores).")
+                # Heft check only
                 total_stores = selected_hive['honey_frames']
                 heft = "Heavy" if total_stores >= 7 else ("About right" if total_stores >= 4 else "Light ⚠️")
-                st.metric("Heft Check", heft)
+                heft_colour = "var(--green-leaf)" if total_stores >= 7 else ("var(--amber)" if total_stores >= 4 else "var(--danger)")
+                st.markdown(f"""
+                <div style="background: var(--info-bg); border: 1px solid #2196F3; border-radius: 10px; padding: 1rem; text-align: center;">
+                    <div style="color: #2196F3; font-size: 0.9rem;">❄️ You can only heft the hive (lift one side to estimate stores).</div>
+                    <div style="color: {heft_colour}; font-size: 1.3rem; font-weight: 700; margin-top: 0.5rem;">{heft}</div>
+                </div>
+                """, unsafe_allow_html=True)
                 if total_stores < 4:
-                    st.error("⚠️ Stores feel light! Feed fondant or syrup.")
+                    st.markdown(f"""
+                    <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 8px; padding: 0.5rem 0.8rem;">
+                        <span style="color: var(--danger); font-weight: 600;">⚠️ Stores feel light! Feed fondant or syrup.</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+
             elif weeks_since > 0 or selected_hive['inspected_week'] == 0:
                 if st.button(f"🔍 Inspect '{selected_hive['name']}'", key="do_inspect"):
                     selected_hive['inspected_week'] = game['week']
@@ -439,7 +513,16 @@ with inspect_tab:
                 b_cols = st.columns(11)
                 for i, frame in enumerate(brood_frames):
                     with b_cols[i]:
-                        st.markdown(f"<div class='frame-box'>{frame}</div>", unsafe_allow_html=True)
+                        frame_colours = {
+                            "🍯": "#DAA520", "🟡": "#FFD700", "🥚": "#FFFFFF",
+                            "🐛": "#F5F5DC", "🟤": "#8B4513", "⚠️": "#FF4444", "⬜": "#333333"
+                        }
+                        bg = frame_colours.get(frame, "#333333")
+                        st.markdown(f"""
+                        <div style="background: {bg}20; border: 2px solid {bg}; border-radius: 4px; padding: 4px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.2rem;">{frame}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
 
                 if selected_hive['has_super']:
                     sf = int(min(selected_hive['super_honey_frames'], 8))
@@ -448,12 +531,28 @@ with inspect_tab:
                     s_cols = st.columns(8)
                     for i, frame in enumerate(super_frames):
                         with s_cols[i]:
-                            st.markdown(f"<div class='frame-box'>{frame}</div>", unsafe_allow_html=True)
+                            bg = "#DAA52020" if frame == "🍯" else "#33333320"
+                            border = "#DAA520" if frame == "🍯" else "#333333"
+                            st.markdown(f"""
+                            <div style="background: {bg}; border: 2px solid {border}; border-radius: 4px; padding: 4px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 1.2rem;">{frame}</span>
+                            </div>
+                            """, unsafe_allow_html=True)
 
+                # Queen cells
                 if selected_hive['queen_cells'] > 0:
-                    st.warning(f"⚠️ **{selected_hive['queen_cells']} Queen Cell(s) Found!** Consider splitting or removing.")
+                    st.markdown(f"""
+                    <div style="background: #3d2e0a; border: 1px solid var(--amber); border-radius: 8px; padding: 0.8rem 1rem; margin: 0.5rem 0;">
+                        <span style="color: var(--amber); font-weight: 700;">⚠️ {selected_hive['queen_cells']} Queen Cell(s) Found!</span>
+                        <span style="color: var(--cream-dim);"> Consider splitting or removing them.</span>
+                    </div>
+                    """, unsafe_allow_html=True)
                 else:
-                    st.success("✅ No queen cells found.")
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 8px; padding: 0.5rem 0.8rem; margin: 0.5rem 0;">
+                        <span style="color: var(--green-leaf); font-weight: 600;">✅ No queen cells found.</span>
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 st.caption("🍯 Honey | 🟡 Pollen | 🥚 Eggs | 🐛 Larvae | 🟤 Capped Brood | ⬜ Empty | ⚠️ Queen Cell")
 
@@ -462,8 +561,9 @@ with inspect_tab:
                 st.markdown("#### 📊 Colony Dashboard")
 
                 d1, d2, d3, d4 = st.columns(4)
-                queen_icon = {"present": "👑 Present", "failing": "⚠️ Failing", "virgin": "🐣 Virgin", "dead": "💀 No Queen"}
-                d1.metric("👑 Queen", queen_icon.get(selected_hive['queen'], selected_hive['queen']))
+
+                queen_icon_map = {"present": "👑 Present", "failing": "⚠️ Failing", "virgin": "🐣 Virgin", "dead": "💀 No Queen"}
+                d1.metric("👑 Queen", queen_icon_map.get(selected_hive['queen'], selected_hive['queen']))
 
                 pop = selected_hive['population']
                 pop_delta = "Strong" if pop > 40000 else ("Medium" if pop > 20000 else "Weak")
@@ -474,31 +574,37 @@ with inspect_tab:
                 d3.metric("🪲 Varroa", f"{varroa}/300", varroa_status)
 
                 stores = int(selected_hive['honey_frames'] + (selected_hive['super_honey_frames'] if selected_hive['has_super'] else 0))
-                stores_status = "✅ Good" if stores >= 7 else ("⚠️ Low" if stores >= 4 else "🚨 Critical")
+                stores_status = "✅ Good" if stores >= 7 else ("⚠️ Low" if stores >= 3 else "🚨 Critical")
                 d4.metric("🍯 Stores", f"{stores} frames", stores_status)
 
                 # Health assessment
-                st.markdown("---")
                 health_issues = []
                 if selected_hive['queen'] == 'failing':
                     health_issues.append("⚠️ Queen is failing — consider requeening")
                 if selected_hive['queen'] == 'dead':
                     health_issues.append("🚨 No queen — colony will die without intervention")
                 if selected_hive['varroa_count'] > 6:
-                    health_issues.append("🚨 Varroa levels critical — treat immediately")
+                    health_issues.append(f"🚨 Varroa levels critical ({selected_hive['varroa_count']}/300) — treat immediately")
                 elif selected_hive['varroa_count'] > 3:
-                    health_issues.append(f"Varroa rising ({selected_hive['varroa_count']}/300) - treat in Aug/Sep or Dec")
+                    health_issues.append(f"Varroa rising ({selected_hive['varroa_count']}/300) — treat in Aug/Sep or Dec")
                 if stores < 4 and current_season in ["Autumn", "Winter"]:
                     health_issues.append("🚨 Winter stores dangerously low — feed now!")
                 if selected_hive['population'] < 15000:
                     health_issues.append("⚠️ Colony is weak — may not survive winter")
 
                 if health_issues:
-                    st.error("**Health Issues:**")
-                    for issue in health_issues:
-                        st.markdown(f"- {issue}")
+                    st.markdown(f"""
+                    <div style="background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 10px; padding: 1rem;">
+                        <div style="color: var(--danger); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;">Health Issues:</div>
+                        {"<br>".join(f'{"<br>".join(health_issues)}')}
+                    </div>
+                    """, unsafe_allow_html=True)
                 else:
-                    st.success("✅ Colony looks healthy!")
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 1rem;">
+                        <span style="color: var(--green-leaf); font-weight: 700;">✅ Colony looks healthy!</span>
+                    </div>
+                    """, unsafe_allow_html=True)
 
             elif selected_hive['inspected_week'] == 0:
                 st.info("🔍 Click **Inspect** to check this hive.")
@@ -532,9 +638,13 @@ with actions_tab:
                             game['events'].append(f"📦 Super added to '{act_hive['name']}'.")
                             st.rerun()
                         else:
-                            st.error("Need £25!")
+                            st.error("Need £15!")
                 else:
-                    st.info("✅ Super already on hive.")
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+                        <span style="color: var(--green-leaf); font-weight: 600;">✅ Super already on hive.</span>
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 # FEED SPRING SYRUP
                 can_feed_spring = current_season == "Spring" and not act_hive['fed_spring']
@@ -564,7 +674,7 @@ with actions_tab:
 
                 # FEED FONDANT (Winter)
                 if current_season == "Winter":
-                    if st.button("🍬 Feed Fondant — £8", key="feed_fondant"):
+                    if st.button("🍬 Feed Fondant — £4", key="feed_fondant"):
                         if game['money'] >= 4:
                             game['money'] -= 4
                             act_hive['honey_frames'] = min(11, act_hive['honey_frames'] + 1)
@@ -598,17 +708,20 @@ with actions_tab:
                             st.error(f"Need £{cost}!")
                 else:
                     if act_hive['treated_this_year']:
-                        st.success("✅ Already treated this year.")
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, #0a2a0a, #1a3d1a); border: 1px solid var(--green-leaf); border-radius: 10px; padding: 0.8rem 1rem;">
+                            <span style="color: var(--green-leaf); font-weight: 600;">✅ Already treated this year.</span>
+                        </div>
+                        """, unsafe_allow_html=True)
                     else:
                         st.caption("Treatment in Aug/Sep (Apivar £15) or Dec (Oxalic £10). Keep advancing weeks!")
 
-                # SPLIT COLONY (swarm control)
+                # SPLIT COLONY
                 can_split = (act_hive['queen_cells'] >= 2 and
                             act_hive['population'] > 20000 and
                             total_hives < game['level'] + 1 and
                             current_month in ["April", "May", "June"])
                 if st.button("✂️ Split Colony (Swarm Control)", key="split_colony", disabled=not can_split):
-                    # Create new hive from split
                     new_name = random.choice(["Oak", "Birch", "Hazel", "Ash", "Elm", "Rowan", "Holly", "Ivy",
                                                "Cedar", "Pine", "Maple", "Linden"])
                     while new_name in game.get('hive_names_used', []):
@@ -628,7 +741,7 @@ with actions_tab:
                     game['xp'] += 10
                     st.rerun()
 
-                # REMOVE QUEEN CELLS (if not wanting to split)
+                # REMOVE QUEEN CELLS
                 if act_hive['queen_cells'] > 0:
                     if st.button(f"🔪 Remove {act_hive['queen_cells']} Queen Cell(s)", key="remove_qc"):
                         act_hive['queen_cells'] = 0
@@ -654,7 +767,12 @@ with actions_tab:
         st.markdown("---")
         st.markdown("#### 🪦 Dead Colonies")
         for dh in dead_hives:
-            st.error(f"**{dh['name']}** — {dh['death_reason']}")
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #1a0000, #2a0a0a); border: 1px solid #555; border-radius: 10px; padding: 1rem; margin: 0.5rem 0;">
+                <div style="color: var(--danger); font-weight: 700;">💀 {dh['name']}</div>
+                <div style="color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.3rem;">{dh['death_reason']}</div>
+            </div>
+            """, unsafe_allow_html=True)
             if st.button(f"🗑️ Remove '{dh['name']}'", key=f"remove_{dh['name']}"):
                 game['hives'] = [h for h in game['hives'] if h['name'] != dh['name']]
                 st.rerun()
@@ -672,12 +790,18 @@ with market_tab:
         harvestable = [h for h in active_hives if h['has_super'] and h['super_honey_frames'] >= 4]
 
         if not harvestable:
-            st.info("No hives ready for harvest. Add supers and wait for the nectar flow!")
+            st.markdown(f"""
+            <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem;">🍯</div>
+                <div style="color: var(--cream-dim); font-size: 0.95rem;">No hives ready for harvest.</div>
+                <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.3rem;">Add supers and wait for the nectar flow!</div>
+            </div>
+            """, unsafe_allow_html=True)
         else:
             for hive in harvestable:
                 frames = hive['super_honey_frames']
                 honey_type = nectar_info.get('honey_type', 'Summer Wildflower')
-                honey_value = HONEY_TYPES.get(honey_type, HONEY_TYPES['Summer Wildflower'])['value'] if honey_type else HONEY_TYPES['Summer Wildflower']['value']
+                honey_value = HONEY_TYPES.get(honey_type, HONEY_TYPES.get('Summer Wildflower', {})).get('value', 5) if honey_type else HONEY_TYPES.get('Summer Wildflower', {}).get('value', 5)
                 jars = max(1, int(frames * 1.5))
 
                 if st.button(f"🍯 Harvest from '{hive['name']}' ({frames} frames → ~{jars} jars of {honey_type})", key=f"harvest_{hive['name']}"):
@@ -685,7 +809,6 @@ with market_tab:
                     game['inventory'][honey_key] = game['inventory'].get(honey_key, 0) + jars
                     game['inventory']['Beeswax'] = game['inventory'].get('Beeswax', 0) + max(1, frames // 3)
 
-                    # Remove super
                     hive['has_super'] = False
                     hive['super_honey_frames'] = 0
                     hive['honey_frames'] = max(0, hive['honey_frames'] - 2)
@@ -703,7 +826,11 @@ with market_tab:
     with hm2:
         st.markdown("#### 💰 Sell Products")
         if not game['inventory']:
-            st.info("Nothing to sell. Harvest honey first!")
+            st.markdown(f"""
+            <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 1.5rem; text-align: center;">
+                <div style="color: var(--cream-dim);">Nothing to sell. Harvest honey first!</div>
+            </div>
+            """, unsafe_allow_html=True)
         else:
             for item, qty in list(game['inventory'].items()):
                 if qty <= 0:
@@ -729,13 +856,22 @@ with market_tab:
         inv_str = " | ".join([f"**{k}:** {v}" for k, v in game['inventory'].items() if v > 0])
         st.markdown(inv_str)
     else:
-        st.info("Empty — harvest honey to fill your inventory!")
+        st.markdown(f"""
+        <div style="background: var(--bg-card); border: 1px solid #3d5a3d; border-radius: 10px; padding: 1rem; text-align: center;">
+            <span style="color: var(--cream-dim);">Empty — harvest honey to fill your inventory!</span>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ==========================================
-# ADVANCE WEEK (turn-based progression)
+# ADVANCE WEEK
 # ==========================================
 st.markdown("---")
-st.info("⏰ **This game is turn-based.** Inspect your hives, take actions, then click below to advance one week.")
+st.markdown(f"""
+<div style="background: var(--info-bg); border: 1px solid #2196F3; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;">
+    <span style="color: #2196F3;">⏰</span>
+    <span style="color: var(--cream-dim);"> This game is turn-based. Inspect your hives, take actions, then click below to advance one week.</span>
+</div>
+""", unsafe_allow_html=True)
 
 week_info_col1, week_info_col2 = st.columns(2)
 with week_info_col1:
@@ -804,7 +940,7 @@ if st.button("⏭️ Advance Week", use_container_width=True, key="advance_week"
                 if hive['has_super']:
                     hive['super_honey_frames'] = min(8, hive['super_honey_frames'] + honey_gain)
 
-        # Varroa (applies all seasons)
+        # Varroa
         if new_season in ["Spring", "Summer"] and not hive['treated_this_year']:
             hive['varroa_count'] = min(20, hive['varroa_count'] + random.randint(0, 1))
 
