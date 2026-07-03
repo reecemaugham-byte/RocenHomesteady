@@ -939,6 +939,7 @@ def generate_foraging_question(plant, question_type=None):
 # SIDEBAR
 # ==========================================
 def render_sidebar():
+    """Full sidebar with logo, save/load, stats, achievements, safety info."""
     # --- LOGO ---
     try:
         st.sidebar.image("logo.png", use_container_width=True)
@@ -955,7 +956,7 @@ def render_sidebar():
 
     col1, col2 = st.sidebar.columns(2)
     with col1:
-        if st.button("💾 Save", key='save_btn_sidebar'):
+        if st.button("💾 Save", key='save_btn_main'):
             if st.session_state.get('username'):
                 data = get_save_data()
                 if save_game(st.session_state['username'], data):
@@ -965,7 +966,7 @@ def render_sidebar():
             else:
                 st.sidebar.warning("Enter a name to save.")
     with col2:
-        if st.button("📂 Load", key='load_btn_sidebar'):
+        if st.button("📂 Load", key='load_btn_main'):
             if st.session_state.get('username'):
                 data = load_game(st.session_state['username'])
                 if data:
@@ -994,6 +995,67 @@ def render_sidebar():
         st.sidebar.caption("Recently Unlocked:")
         for key in unlocked_keys[-3:]:
             st.sidebar.write(f"✅ {ACHIEVEMENTS[key]['name']}")
+
+    # --- SAFETY ---
+    st.sidebar.markdown("---")
+    st.sidebar.warning("⚠️ **Safety First**")
+    st.sidebar.markdown("""
+    - Never eat a plant based solely on an app.
+    - Always cross-reference with a field guide.
+    - **UK Law:** Only pick for personal use.
+    - It is illegal to uproot plants without permission.
+    """)
+
+    # --- RESET ---
+    if st.sidebar.button("🔄 Reset All Progress"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
+
+    # --- BUSINESS ---
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("""
+    <div style="text-align: center; font-size: 12px; line-height: 1.4;">
+        <b>Rocen Homesteady LTD</b><br>
+        4th Floor, 14 Museum Place<br>
+        Cardiff, CF10 3BH
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def render_save_load():
+    """Save/Load UI only — for game pages that have their own sidebar content."""
+    st.sidebar.markdown("### 💾 Save Progress")
+    username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
+                                      key='username_input_games')
+
+    if username != st.session_state.get('username', ''):
+        st.session_state['username'] = username
+
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        if st.button("💾 Save", key='save_btn_games'):
+            if st.session_state.get('username'):
+                data = get_save_data()
+                if save_game(st.session_state['username'], data):
+                    st.sidebar.success("Game saved!")
+                else:
+                    st.sidebar.error("Save failed!")
+            else:
+                st.sidebar.warning("Enter a name to save.")
+    with col2:
+        if st.button("📂 Load", key='load_btn_games'):
+            if st.session_state.get('username'):
+                data = load_game(st.session_state['username'])
+                if data:
+                    apply_save_data(data)
+                    st.session_state['game_loaded'] = True
+                    st.sidebar.success("Game loaded!")
+                    st.rerun()
+                else:
+                    st.sidebar.warning("No save found for this name.")
+            else:
+                st.sidebar.warning("Enter a name to load.")
 
     # --- SAFETY ---
     st.sidebar.markdown("---")
