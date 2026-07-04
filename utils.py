@@ -966,58 +966,65 @@ def generate_foraging_question(plant, question_type=None):
 # SIDEBAR
 # ==========================================
 def render_sidebar():
-    """Full sidebar with logo, save/load, stats, achievements, safety info."""
+    """Full sidebar with logo, seamless login/save, stats, achievements, safety info."""
     # --- LOGO ---
     try:
         st.sidebar.image("logo.png", use_container_width=True)
     except:
         st.sidebar.title("🌿 Rocen Homesteady")
 
-    # --- SAVE/LOAD ---
-    st.sidebar.markdown("### 💾 Save Progress")
-    username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
-                                      key='username_input')
+    st.sidebar.markdown("---")
 
-    if username != st.session_state.get('username', ''):
-        st.session_state['username'] = username
-
-    col1, col2 = st.sidebar.columns(2)
-    with col1:
-        if st.button("💾 Save", key='save_btn_main'):
-            if st.session_state.get('username'):
-                data = get_save_data()
-                if save_game(st.session_state['username'], data):
-                    st.sidebar.success("Game saved!")
-                else:
-                    st.sidebar.error("Save failed!")
-            else:
-                st.sidebar.warning("Enter a name to save.")
-    with col2:
-        if st.button("📂 Load", key='load_btn_main'):
-            if st.session_state.get('username'):
+    # --- SEAMLESS LOGIN / SAVE ---
+    if 'username' not in st.session_state or not st.session_state['username']:
+        # STATE 1: Not logged in
+        st.sidebar.markdown("### 🏕️ Start Your Journey")
+        username_input = st.sidebar.text_input("Enter your name, Wanderer...", key='login_input')
+        
+        if st.sidebar.button("Enter the Woods", use_container_width=True):
+            if username_input:
+                st.session_state['username'] = username_input
+                # Attempt to load existing save
                 data = load_game(st.session_state['username'])
                 if data:
                     apply_save_data(data)
-                    st.session_state['game_loaded'] = True
-                    st.sidebar.success("Game loaded!")
-                    st.rerun()
+                    st.sidebar.success(f"Welcome back, {username_input}!")
                 else:
-                    st.sidebar.warning("No save found for this name.")
+                    st.session_state['game_loaded'] = True
+                    st.sidebar.success(f"Welcome, {username_input}!")
+                st.rerun()
             else:
-                st.sidebar.warning("Enter a name to load.")
+                st.sidebar.warning("Please enter a name to continue.")
+    else:
+        # STATE 2: Logged in
+        st.sidebar.markdown(f"### 🌿 Welcome, **{st.session_state['username']}**")
+        
+        # Save button (No need to type name again!)
+        if st.sidebar.button("💾 Save Progress", use_container_width=True):
+            data = get_save_data()
+            if save_game(st.session_state['username'], data):
+                st.sidebar.success("Progress saved!")
+            else:
+                st.sidebar.error("Save failed! Try again.")
+        
+        # Switch user (for shared devices)
+        if st.sidebar.button("🔄 Switch User", use_container_width=True):
+            # We don't delete progress, just log out
+            st.session_state['username'] = ''
+            st.rerun()
 
     st.sidebar.markdown("---")
 
     # --- PLAYER STATS ---
     total_edible = len(UK_PLANTS['edible'])
-    collected = len(st.session_state.master_inventory)
+    collected = len(st.session_state.get('master_inventory', {}))
     st.sidebar.metric("🌱 Species Found", f"{collected}/{total_edible}")
 
-    unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
+    unlocked_count = sum(1 for v in st.session_state.get('achievements', {}).values() if v)
     total_ach = len(ACHIEVEMENTS)
     st.sidebar.metric("🏆 Achievements", f"{unlocked_count}/{total_ach}")
 
-    unlocked_keys = [k for k, v in st.session_state.achievements.items() if v]
+    unlocked_keys = [k for k, v in st.session_state.get('achievements', {}).items() if v]
     if unlocked_keys:
         st.sidebar.caption("Recently Unlocked:")
         for key in unlocked_keys[-3:]:
@@ -1034,7 +1041,7 @@ def render_sidebar():
     """)
 
     # --- RESET ---
-    if st.sidebar.button("🔄 Reset All Progress"):
+    if st.sidebar.button("🗑️ Reset All Progress"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
@@ -1049,6 +1056,11 @@ def render_sidebar():
     </div>
     """, unsafe_allow_html=True)
 
+
+def render_save_load():
+    """A minimal save/load UI for game pages that have their own sidebar content."""
+    # This now mirrors the clean logic of the main sidebar
+    render_sidebar()
 
 def render_save_load():
     """Save/Load UI only — for game pages that have their own sidebar content."""
