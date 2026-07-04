@@ -21,6 +21,8 @@ st.set_page_config(
 init_session_state()
 apply_brand_theme()
 user = render_auth()
+render_logout_sidebar()
+render_sidebar()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
@@ -105,37 +107,22 @@ for bname, bdata in FARM_BUILDINGS.items():
             "text": "var(--cream)"
         }
 
-# --- SIDEBAR ---
-with st.sidebar:
-    try:
-        st.image("logo.png", use_container_width=True)
-    except:
-        st.markdown("🌿 **Rocen Homesteady**")
-    st.markdown("---")
+# --- GAME SIDEBAR STATS ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("#### 🚜 Farm Achievements")
+for key in ["farm_harvest", "farm_rancher", "farm_winner"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    render_logout_sidebar()
-    st.markdown("---")
-    render_save_load()
-    st.markdown("---")
+st.sidebar.markdown("#### 🌱 Garden Achievements")
+for key in ["mg_first_harvest", "mg_companion", "mg_rotation", "mg_market_master"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
-    total_count = len(ACHIEVEMENTS)
-    st.metric("🏆 Achievements", f"{unlocked_count} / {total_count}")
-
-    st.markdown("#### 🚜 Farm Achievements")
-    for key in ["farm_harvest", "farm_rancher", "farm_winner"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
-        st.caption(f"{status} {ach['name']}")
-
-    st.markdown("#### 🌱 Garden Achievements")
-    for key in ["mg_first_harvest", "mg_companion", "mg_rotation", "mg_market_master"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
-        st.caption(f"{status} {ach['name']}")
-
-    st.markdown("---")
-    st.caption("📚 Curriculum: Maths (Money & Resources), Science (Seasons, Life Cycles)")
+st.sidebar.markdown("---")
+st.sidebar.caption("📚 Curriculum: Maths (Money & Resources), Science (Seasons, Life Cycles)")
 
 # --- FARM GAME STATE ---
 if st.session_state.get('farm_game') is None:
