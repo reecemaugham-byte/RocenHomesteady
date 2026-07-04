@@ -1,62 +1,83 @@
 import streamlit as st
 import hashlib
-import os
 from datetime import datetime
-from supabase import create_client, Client
-
-# --- SUPABASE CONNECTION ---
-def get_supabase():
-    url = os.environ.get("SUPABASE_URL", "")
-    key = os.environ.get("SUPABASE_KEY", "")
-    if not url or not key:
-        try:
-            url = st.secrets["SUPABASE_URL"]
-            key = st.secrets["SUPABASE_KEY"]
-        except:
-            st.error("Supabase not configured. Set environment variables or secrets.")
-            st.stop()
-    return create_client(url, key)
+from utils import get_db_connection, load_game, apply_save_data
 
 # --- PASSWORD HASHING ---
 def hash_password(password: str) -> str:
     salt = "rocen_homesteady_salt_2024"
     return hashlib.sha256(f"{password}{salt}".encode()).hexdigest()
 
+# --- DATABASE INIT FOR AUTH ---
+def init_auth_db():
+    """Create the users table if it doesn't exist."""
+    conn = get_db_connection()
+    if conn:
+        try:
+            c = conn.cursor()
+            c.execute('''CREATE TABLE IF NOT EXISTS users
+                         (username TEXT PRIMARY KEY, 
+                          hashed_password TEXT, 
+                          is_active BOOLEAN DEFAULT TRUE,
+                          created_at TEXT,
+                          last_login TEXT)''')
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print(f"Auth DB Init Error: {e}")
+
 # --- AUTH FUNCTIONS ---
 def sign_up(username: str, password: str) -> tuple:
-    supabase = get_supabase()
+    init_auth_db() # ensure table exists
+    conn = get_db_connection()
+    if not conn:
+        return False, "Database connection failed."
     try:
-        existing_user = supabase.table("users").select("username").eq("username", username).execute()
-        if existing_user.data:
+        c = conn.cursor()
+        # Check if user exists
+        c.execute("SELECT username FROM users WHERE username=%s", (username,))
+        if c.fetchone():
+            conn.close()
             return False, "That username is already taken. Try a different one!"
 
+        # Insert new user
         hashed_pw = hash_password(password)
-        result = supabase.table("users").insert({
-            "username": username,
-            "hashed_password": hashed_pw,
-            "is_active": True
-        }).execute()
-
+        created_at = datetime.utcnow().isoformat()
+        c.execute("""INSERT INTO users (username, hashed_password, is_active, created_at) 
+                     VALUES (%s, %s, %s, %s)""", 
+                  (username, hashed_pw, True, created_at))
+        conn.commit()
+        conn.close()
         return True, "Account created! You can now log in."
     except Exception as e:
         return False, f"Something went wrong: {str(e)}"
 
 def log_in(username: str, password: str) -> tuple:
-    supabase = get_supabase()
+    init_auth_db() # ensure table exists
+    conn = get_db_connection()
+    if not conn:
+        return False, "Database connection failed."
     try:
         hashed_pw = hash_password(password)
-        result = supabase.table("users").select("*").eq("username", username).eq("hashed_password", hashed_pw).execute()
+        c = conn.cursor()
+        c.execute("SELECT username FROM users WHERE username=%s AND hashed_password=%s", (username, hashed_pw))
+        result = c.fetchone()
 
-        if result.data:
-            user = result.data[0]
+        if result:
+            # Update last login time
             try:
-                supabase.table("users").update({
-                    "last_login": datetime.utcnow().isoformat()
-                }).eq("id", user["id"]).execute()
+                last_login = datetime.utcnow().isoformat()
+                c.execute("UPDATE users SET last_login=%s WHERE username=%s", (last_login, username))
+                conn.commit()
             except:
                 pass
-            return True, user
+            conn.close()
+            
+            # Return a user dictionary
+            user_data = {"username": username}
+            return True, user_data
         else:
+            conn.close()
             return False, "Invalid username or password."
     except Exception as e:
         return False, f"Something went wrong: {str(e)}"
@@ -93,7 +114,6 @@ def render_auth():
                     if success:
                         st.session_state.user = result
                         # Auto-load saved progress on login
-                        from utils import load_game, apply_save_data
                         saved_data = load_game(username)
                         if saved_data:
                             apply_save_data(saved_data)
@@ -120,13 +140,13 @@ def render_auth():
                 elif new_password != new_password2:
                     st.warning("Passwords don't match.")
                 else:
-                    success, msg = sign_up(new_username, new_password)
+                    success, msg = sign_up(new_username, password=new_password)
                     if success:
                         st.success(msg)
                     else:
                         st.error(msg)
 
-    # Block the rest of the app
+    # Block the rest of the app if not logged in
     st.stop()
     return None
 
@@ -137,5 +157,7 @@ def render_logout_sidebar():
             st.markdown("---")
             st.markdown(f"👤 **{st.session_state.user['username']}**")
             if st.button("🚪 Log Out"):
-                st.session_state.user = None
+                # Clear all session state for a clean logout
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
                 st.rerun()
