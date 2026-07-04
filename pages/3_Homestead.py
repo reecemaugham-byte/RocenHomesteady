@@ -20,41 +20,28 @@ st.set_page_config(
 init_session_state()
 apply_brand_theme()
 user = render_auth()
+render_logout_sidebar()
+render_sidebar()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
 
-# --- SIDEBAR ---
-with st.sidebar:
-    try:
-        st.image("logo.png", use_container_width=True)
-    except:
-        st.markdown("🌿 **Rocen Homesteady**")
-    st.markdown("---")
+# --- GAME SIDEBAR STATS ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("#### 🏘️ Village Achievements")
+for key in ["eco_survivor", "eco_wealth"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements[key] else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    render_logout_sidebar()
-    st.markdown("---")
-    render_save_load()
-    st.markdown("---")
+st.sidebar.markdown("#### 🍳 Kitchen Achievements")
+for key in ["kitchen_apprentice", "kitchen_master"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements[key] else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
-    total_count = len(ACHIEVEMENTS)
-    st.metric("🏆 Achievements", f"{unlocked_count} / {total_count}")
-
-    st.markdown("#### 🏘️ Village Achievements")
-    for key in ["eco_survivor", "eco_wealth"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements[key] else "🔒"
-        st.caption(f"{status} {ach['name']}")
-
-    st.markdown("#### 🍳 Kitchen Achievements")
-    for key in ["kitchen_apprentice", "kitchen_master"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements[key] else "🔒"
-        st.caption(f"{status} {ach['name']}")
-
-    st.markdown("---")
-    st.caption("📚 Curriculum: Science (Ecosystems, Sustainability), DT (Cooking & Nutrition)")
+st.sidebar.markdown("---")
+st.sidebar.caption("📚 Curriculum: Science (Ecosystems, Sustainability), DT (Cooking & Nutrition)")
 
 st.title("🏘️ Homestead Games")
 
