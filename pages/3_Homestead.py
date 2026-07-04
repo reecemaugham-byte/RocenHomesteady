@@ -2,7 +2,7 @@ import streamlit as st
 import random
 from datetime import datetime
 
-from utils import init_session_state, apply_brand_theme, render_save_load
+from utils import init_session_state, apply_brand_theme, render_sidebar
 from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, VILLAGE_ITEMS, VILLAGE_BUILDINGS, VILLAGE_PRODUCTION,
                          KITCHEN_RECIPES, BASICS)
