@@ -19,6 +19,8 @@ st.set_page_config(
 init_session_state()
 apply_brand_theme()
 user = render_auth()
+render_logout_sidebar()
+render_sidebar()
 
 if 'achievements' not in st.session_state or not st.session_state.achievements:
     st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
@@ -123,31 +125,16 @@ nectar_info = NECTAR_FLOW.get(current_month, {"flow": 0, "source": "None", "hone
 active_hives = [h for h in game['hives'] if not h['dead']]
 total_hives = len(active_hives)
 
-# --- SIDEBAR ---
-with st.sidebar:
-    try:
-        st.image("logo.png", use_container_width=True)
-    except:
-        st.markdown("🌿 **Rocen Homesteady**")
-    st.markdown("---")
+# --- GAME SIDEBAR STATS ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("#### 🐝 Apiary Achievements")
+for key in ["apiary_first_harvest", "apiary_overwinter", "apiary_keeper", "apiary_5_hives", "apiary_varroa"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    render_logout_sidebar()
-    st.markdown("---")
-    render_save_load()
-    st.markdown("---")
-
-    unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
-    total_count = len(ACHIEVEMENTS)
-    st.metric("🏆 Achievements", f"{unlocked_count} / {total_count}")
-
-    st.markdown("#### 🐝 Apiary Achievements")
-    for key in ["apiary_first_harvest", "apiary_overwinter", "apiary_keeper", "apiary_5_hives", "apiary_varroa"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
-        st.caption(f"{status} {ach['name']}")
-
-    st.markdown("---")
-    st.caption("📚 Curriculum: Science (Life Cycles, Ecosystems, Pollination), PSHE (Responsibility)")
+st.sidebar.markdown("---")
+st.sidebar.caption("📚 Curriculum: Science (Life Cycles, Ecosystems, Pollination), PSHE (Responsibility)")
 
 # --- MAIN DISPLAY ---
 st.title("🐝 Apiary Manager")
