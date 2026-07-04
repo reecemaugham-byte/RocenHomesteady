@@ -457,6 +457,7 @@ init_session_state()
 apply_brand_theme()
 user = render_auth()
 render_logout_sidebar()
+render_sidebar()
 
 # Initialize Achievements if not exists or empty
 if 'achievements' not in st.session_state or not st.session_state.achievements:
@@ -516,72 +517,57 @@ if 'master_inventory' not in st.session_state:
 if 'quiz_max' not in st.session_state:
     st.session_state.quiz_max = 10
 
-# --- SIDEBAR ---
-with st.sidebar:
-    try:
-        st.image("logo.png", use_container_width=True)
-    except:
-        st.markdown("🌿 **Rocen Homesteady**")
-    st.markdown("---")
+# --- GAME SIDEBAR STATS ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("#### 🌿 Foraging Achievements")
+for key in ["foraging_novice", "foraging_botanist", "foraging_master"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    render_save_load()
-    st.markdown("---")
+st.sidebar.markdown("#### ☠️ Survival Achievements")
+for key in ["survival_scout", "survival_expert", "survival_detective"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    unlocked_count = sum(1 for v in st.session_state.achievements.values() if v)
-    total_count = len(ACHIEVEMENTS)
-    st.metric("🏆 Achievements", f"{unlocked_count} / {total_count}")
+st.sidebar.markdown("#### 🎲 Quiz Achievements")
+for key in ["quiz_streak", "quiz_challenger"]:
+    ach = ACHIEVEMENTS[key]
+    status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
+    st.sidebar.caption(f"{status} {ach['name']}")
 
-    st.markdown("#### 🌿 Foraging Achievements")
-    for key in ["foraging_novice", "foraging_botanist", "foraging_master"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
-        st.caption(f"{status} {ach['name']}")
+st.sidebar.markdown("---")
+st.sidebar.caption("📚 Curriculum: Science (Plants, Seasonal Changes), PSHE (Safety)")
 
-    st.markdown("#### ☠️ Survival Achievements")
-    for key in ["survival_scout", "survival_expert", "survival_detective"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
-        st.caption(f"{status} {ach['name']}")
-
-    st.markdown("#### 🎲 Quiz Achievements")
-    for key in ["quiz_streak", "quiz_challenger"]:
-        ach = ACHIEVEMENTS[key]
-        status = "✅" if st.session_state.achievements.get(key, False) else "🔒"
-        st.caption(f"{status} {ach['name']}")
-
-    st.markdown("---")
-    st.caption("📚 Curriculum: Science (Plants, Seasonal Changes), PSHE (Safety)")
-
-    # Reset Button
-    st.markdown("---")
-    if st.button("🔄 Reset All Games"):
-        st.session_state.game_score = 0
-        st.session_state.game_lives = 3
-        st.session_state.game_streak = 0
-        st.session_state.bonus_round = False
-        st.session_state.current_question = None
-        st.session_state.survival_lives = 3
-        st.session_state.survival_score = 0
-        st.session_state.survival_correct_count = 0
-        st.session_state.survival_level = 1
-        st.session_state.survival_cases_solved = 0
-        st.session_state.survival_current_case = None
-        st.session_state.survival_result = None
-        st.session_state.survival_seen = []
-        st.session_state.quiz_score = 0
-        st.session_state.quiz_q_num = 0
-        st.session_state.q_data = None
-        st.session_state.daily_streak = 0
-        st.session_state.quiz_lives_remaining = 3
-        st.session_state.quiz_plants_seen = []
-        st.session_state.challenge_completed = False
-        st.session_state.total_plants_identified = 0
-        st.session_state.player_title = "Novice Gatherer"
-        st.session_state.season_badge_progress = []
-        st.session_state.master_inventory = {}
-        st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
-        st.success("All Games Reset!")
-        st.rerun()
+if st.sidebar.button("🔄 Reset All Games"):
+    st.session_state.game_score = 0
+    st.session_state.game_lives = 3
+    st.session_state.game_streak = 0
+    st.session_state.bonus_round = False
+    st.session_state.current_question = None
+    st.session_state.survival_lives = 3
+    st.session_state.survival_score = 0
+    st.session_state.survival_correct_count = 0
+    st.session_state.survival_level = 1
+    st.session_state.survival_cases_solved = 0
+    st.session_state.survival_current_case = None
+    st.session_state.survival_result = None
+    st.session_state.survival_seen = []
+    st.session_state.quiz_score = 0
+    st.session_state.quiz_q_num = 0
+    st.session_state.q_data = None
+    st.session_state.daily_streak = 0
+    st.session_state.quiz_lives_remaining = 3
+    st.session_state.quiz_plants_seen = []
+    st.session_state.challenge_completed = False
+    st.session_state.total_plants_identified = 0
+    st.session_state.player_title = "Novice Gatherer"
+    st.session_state.season_badge_progress = []
+    st.session_state.master_inventory = {}
+    st.session_state.achievements = {k: False for k in ACHIEVEMENTS.keys()}
+    st.success("All Games Reset!")
+    st.rerun()
 
 st.title("🎮 Games & Practice")
 
