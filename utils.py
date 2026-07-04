@@ -967,52 +967,20 @@ def generate_foraging_question(plant, question_type=None):
 # SIDEBAR
 # ==========================================
 def render_sidebar():
-    """Full sidebar with logo, seamless login/save, stats, achievements, safety info."""
+    """Main sidebar: Auto-saves progress, shows stats, safety info."""
+    # --- AUTO-SAVE ---
+    # Automatically save progress to the database if the user is logged in
+    if st.session_state.get('user') and st.session_state.get('game_loaded'):
+        username = st.session_state.user.get('username')
+        if username:
+            data = get_save_data()
+            save_game(username, data)
+
     # --- LOGO ---
     try:
         st.sidebar.image("logo.png", use_container_width=True)
     except:
         st.sidebar.title("🌿 Rocen Homesteady")
-
-    st.sidebar.markdown("---")
-
-    # --- SEAMLESS LOGIN / SAVE ---
-    if 'username' not in st.session_state or not st.session_state['username']:
-        # STATE 1: Not logged in
-        st.sidebar.markdown("### 🏕️ Start Your Journey")
-        username_input = st.sidebar.text_input("Enter your name, Wanderer...", key='login_input')
-        
-        if st.sidebar.button("Enter the Woods", use_container_width=True):
-            if username_input:
-                st.session_state['username'] = username_input
-                # Attempt to load existing save
-                data = load_game(st.session_state['username'])
-                if data:
-                    apply_save_data(data)
-                    st.sidebar.success(f"Welcome back, {username_input}!")
-                else:
-                    st.session_state['game_loaded'] = True
-                    st.sidebar.success(f"Welcome, {username_input}!")
-                st.rerun()
-            else:
-                st.sidebar.warning("Please enter a name to continue.")
-    else:
-        # STATE 2: Logged in
-        st.sidebar.markdown(f"### 🌿 Welcome, **{st.session_state['username']}**")
-        
-        # Save button (No need to type name again!)
-        if st.sidebar.button("💾 Save Progress", use_container_width=True):
-            data = get_save_data()
-            if save_game(st.session_state['username'], data):
-                st.sidebar.success("Progress saved!")
-            else:
-                st.sidebar.error("Save failed! Try again.")
-        
-        # Switch user (for shared devices)
-        if st.sidebar.button("🔄 Switch User", use_container_width=True):
-            # We don't delete progress, just log out
-            st.session_state['username'] = ''
-            st.rerun()
 
     st.sidebar.markdown("---")
 
@@ -1058,67 +1026,7 @@ def render_sidebar():
     """, unsafe_allow_html=True)
 
 
-def render_save_load():
-    """A minimal save/load UI for game pages that have their own sidebar content."""
-    # This now mirrors the clean logic of the main sidebar
-    render_sidebar()
-
-def render_save_load():
-    """Save/Load UI only — for game pages that have their own sidebar content."""
-    st.sidebar.markdown("### 💾 Save Progress")
-    username = st.sidebar.text_input("Your Name", value=st.session_state.get('username', ''),
-                                      key='username_input_games')
-
-    if username != st.session_state.get('username', ''):
-        st.session_state['username'] = username
-
-    col1, col2 = st.sidebar.columns(2)
-    with col1:
-        if st.button("💾 Save", key='save_btn_games'):
-            if st.session_state.get('username'):
-                data = get_save_data()
-                if save_game(st.session_state['username'], data):
-                    st.sidebar.success("Game saved!")
-                else:
-                    st.sidebar.error("Save failed!")
-            else:
-                st.sidebar.warning("Enter a name to save.")
-    with col2:
-        if st.button("📂 Load", key='load_btn_games'):
-            if st.session_state.get('username'):
-                data = load_game(st.session_state['username'])
-                if data:
-                    apply_save_data(data)
-                    st.session_state['game_loaded'] = True
-                    st.sidebar.success("Game loaded!")
-                    st.rerun()
-                else:
-                    st.sidebar.warning("No save found for this name.")
-            else:
-                st.sidebar.warning("Enter a name to load.")
-
-    # --- SAFETY ---
-    st.sidebar.markdown("---")
-    st.sidebar.warning("⚠️ **Safety First**")
-    st.sidebar.markdown("""
-    - Never eat a plant based solely on an app.
-    - Always cross-reference with a field guide.
-    - **UK Law:** Only pick for personal use.
-    - It is illegal to uproot plants without permission.
-    """)
-
-    # --- RESET ---
-    if st.sidebar.button("🔄 Reset All Progress"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
-
-    # --- BUSINESS ---
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("""
-    <div style="text-align: center; font-size: 12px; line-height: 1.4;">
-        <b>Rocen Homesteady LTD</b><br>
-        4th Floor, 14 Museum Place<br>
-        Cardiff, CF10 3BH
-    </div>
-    """, unsafe_allow_html=True)
+def apply_brand_theme():
+    # This function already exists above, leaving this here just to mark the end 
+    # of the sidebar section so you know where the replacement stops.
+    pass
