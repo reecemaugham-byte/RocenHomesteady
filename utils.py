@@ -3,7 +3,6 @@ import random
 import time
 import json
 import os
-import sqlite3
 from datetime import datetime
 from pathlib import Path
 
@@ -29,54 +28,76 @@ except ImportError:
     Image = None
 
 # ==========================================
-# DATABASE (SQLite for persistence)
+# DATABASE (PostgreSQL via DigitalOcean)
 # ==========================================
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rocen_save.db')
+import psycopg2
+
+import os # Make sure this is at the top of utils.py
+
+def get_db_connection():
+    """Create a connection to the PostgreSQL database using Environment Variables."""
+    try:
+        # This looks for the link in DigitalOcean App Platform settings
+        uri = os.environ.get("DATABASE_URL") 
+        conn = psycopg2.connect(uri)
+        return conn
+    except Exception as e:
+        print(f"DB Connection Error: {e}")
+        return None
 
 def init_db():
     """Create the saves table if it doesn't exist."""
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS saves
-                     (username TEXT PRIMARY KEY, data TEXT, last_saved TEXT)''')
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"DB Init Error: {e}")
+    conn = get_db_connection()
+    if conn:
+        try:
+            c = conn.cursor()
+            c.execute('''CREATE TABLE IF NOT EXISTS saves
+                         (username TEXT PRIMARY KEY, data TEXT, last_saved TEXT)''')
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print(f"DB Init Error: {e}")
 
 def save_game(username, data):
-    """Save game data to SQLite."""
+    """Save game data to PostgreSQL."""
     if not username:
         return False
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute("INSERT OR REPLACE INTO saves (username, data, last_saved) VALUES (?, ?, ?)",
-                  (username, json.dumps(data), datetime.now().isoformat()))
-        conn.commit()
-        conn.close()
-        return True
-    except Exception as e:
-        print(f"Save Error: {e}")
-        return False
+    conn = get_db_connection()
+    if conn:
+        try:
+            c = conn.cursor()
+            # PostgreSQL uses %s instead of ? and ON CONFLICT instead of INSERT OR REPLACE
+            c.execute("""INSERT INTO saves (username, data, last_saved) 
+                          VALUES (%s, %s, %s) 
+                          ON CONFLICT (username) 
+                          DO UPDATE SET data = EXCLUDED.data, last_saved = EXCLUDED.last_saved""",
+                      (username, json.dumps(data), datetime.now().isoformat()))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print(f"Save Error: {e}")
+            return False
+    return False
 
 def load_game(username):
-    """Load game data from SQLite."""
+    """Load game data from PostgreSQL."""
     if not username:
         return None
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute("SELECT data FROM saves WHERE username=?", (username,))
-        row = c.fetchone()
-        conn.close()
-        if row:
-            return json.loads(row[0])
-        return None
-    except Exception as e:
-        print(f"Load Error: {e}")
-        return None
+    conn = get_db_connection()
+    if conn:
+        try:
+            c = conn.cursor()
+            c.execute("SELECT data FROM saves WHERE username=%s", (username,))
+            row = c.fetchone()
+            conn.close()
+            if row:
+                return json.loads(row[0])
+            return None
+        except Exception as e:
+            print(f"Load Error: {e}")
+            return None
+    return None
 
 def get_save_data():
     """Collect all saveable session state data."""
