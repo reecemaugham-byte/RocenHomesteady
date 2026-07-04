@@ -6,5 +6,4 @@ Pillow
 plotly
 streamlit-extras
 nest-asyncio
-supabase
 psycopg2-binary==2.9.9
