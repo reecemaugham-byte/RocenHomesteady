@@ -597,6 +597,12 @@ def generate_voice(text, filename="temp_audio.mp3"):
         print(f"Audio Error: {e}")
         return None
 
+def get_week_in_month(day):
+    """Calculates the week of the month (1-5) from the day number."""
+    if day is None or day <= 0:
+        return 1  # Default to week 1 if something goes wrong
+    return (day - 1) // 7 + 1
+
 # ==========================================
 # DYNAMIC SURVIVAL CASE GENERATION
 # ==========================================
