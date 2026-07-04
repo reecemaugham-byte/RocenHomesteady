@@ -198,46 +198,108 @@ with tab1:
     # VILLAGE MAP
     # ==========================================
     with map_tab:
-        if game['placing_mode']:
+        # --- TILE STYLES (Matching Farm Style) ---
+        VILLAGE_TILE_STYLES = {
+            '🌲': {"icon": "🌲", "label": "Empty", "bg": "#1a2e1a", "border": "#3d5a3d", "text": "var(--cream-dim)"},
+            '🌊': {"icon": "🌊", "label": "Stream", "bg": "#0a1a2e", "border": "#2196F3", "text": "#90CAF9"},
+            '🏠': {"icon": "🏠", "label": "House", "bg": "#1a2a1a", "border": "#8D6E63", "text": "#BCAAA4"},
+            '🪨': {"icon": "🪨", "label": "Well", "bg": "#1a2a1a", "border": "#8D6E63", "text": "#BCAAA4"},
+            '🐔': {"icon": "🐔", "label": "Chickens", "bg": "#1a2a1a", "border": "#FF9800", "text": "#FFB74D"},
+            '🔋': {"icon": "🔋", "label": "Battery", "bg": "#1a1a1a", "border": "#FFC107", "text": "#FFD54F"},
+            '☀️': {"icon": "☀️", "label": "Solar", "bg": "#2a2a00", "border": "#FFC107", "text": "#FFD54F"},
+            '🌳': {"icon": "🌳", "label": "Reserve", "bg": "#0a2a0a", "border": "#2E7D32", "text": "#66BB6A"},
+            '🌴': {"icon": "🌴", "label": "Orchard", "bg": "#0a2a0a", "border": "#4CAF50", "text": "#81C784"},
+            '🫧': {"icon": "🫧", "label": "Cold Frame", "bg": "#0a2a2a", "border": "#26C6DA", "text": "#80DEEA"},
+            '🥓': {"icon": "🥓", "label": "Smokehouse", "bg": "#1a1a0a", "border": "#8D6E63", "text": "#BCAAA4"},
+            '🏡': {"icon": "🏡", "label": "Barn", "bg": "#1a2a1a", "border": "#8D6E63", "text": "#BCAAA4"},
+        }
+        # Add building icons dynamically
+        for bname, bdata in BUILDINGS.items():
+            if bdata['icon'] not in VILLAGE_TILE_STYLES:
+                VILLAGE_TILE_STYLES[bdata['icon']] = {
+                    "icon": bdata['icon'], "label": bname, "bg": "#1a2e1a", "border": "#4CAF50", "text": "var(--cream)"
+                }
+
+        # --- PLACING MODE BANNER ---
+        if game.get('placing_mode', False):
+            b_name = game['placing_mode']
+            b_data = BUILDINGS.get(b_name, {})
+            b_icon = b_data.get('icon', '🏗️')
             st.markdown(f"""
             <div style="background: linear-gradient(135deg, #1a1a00, #2a2a00); border: 2px solid var(--amber); border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1rem;">
                 <span style="color: var(--amber); font-weight: 700;">📍 Placing Mode:</span>
-                <span style="color: var(--cream-dim);"> Click a 🌲 tile to build <b>{game['placing_mode']}</b>.</span>
+                <span style="color: var(--cream-dim);"> Click a <span style="color: var(--green-leaf);">🌲 Empty</span> tile to build <b>{b_icon} {b_name}</b>.</span>
             </div>
             """, unsafe_allow_html=True)
-            if st.button("❌ Cancel Placement", key="cancel_placement"):
-                cost = BUILDINGS[game['placing_mode']]['cost']
+            if st.button("❌ Cancel Placement", key="cancel_placement_v"):
+                cost = BUILDINGS[b_name]['cost']
                 game['stats']['Money'] += cost
                 game['placing_mode'] = None
                 st.rerun()
 
+        # --- RENDER GRID ---
         st.markdown("#### 🗺️ Your Land")
 
-        for row_idx, row in enumerate(game['grid']):
-            cols = st.columns(6)
-            for col_idx, tile in enumerate(row):
+        for row_idx in range(4):
+            row_cols = st.columns(6)
+            for col_idx in range(6):
                 current_tile = game['grid'][row_idx][col_idx]
-                is_damaged = (row_idx, col_idx) in game['damaged_buildings']
+                is_damaged = (row_idx, col_idx) in game.get('damaged_buildings', [])
 
-                with cols[col_idx]:
-                    st.markdown('<div class="grid-game">', unsafe_allow_html=True)
+                with row_cols[col_idx]:
+                    style = VILLAGE_TILE_STYLES.get(current_tile, {"icon": current_tile, "label": "Building", "bg": "#1a2e1a", "border": "#4CAF50", "text": "var(--cream)"})
+                    
+                    # Damage overlay styling
+                    damage_badge = ""
+                    border_style = f"2px solid {style['border']}"
+                    bg_style = style['bg']
 
-                    if game['placing_mode'] and current_tile == '🌲':
+                    if is_damaged:
+                        damage_badge = "<div style='color: var(--danger); font-size: 0.6rem; font-weight: 700; text-transform: uppercase;'>DAMAGED</div>"
+                        border_style = "2px dashed var(--danger)"
+                        bg_style = "linear-gradient(135deg, #2a0a0a, #1a0000)"
+
+                    # Render visual tile
+                    st.markdown(f"""
+                    <div style="
+                        background: {bg_style};
+                        border: {border_style};
+                        border-radius: 10px;
+                        padding: 0.4rem;
+                        text-align: center;
+                        min-height: 80px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                    ">
+                        <div style="font-size: 1.4rem; line-height: 1;">{style['icon']}</div>
+                        <div style="color: {style['text']}; font-size: 0.65rem; font-weight: 600; margin-top: 0.15rem; line-height: 1.2;">{style['label']}</div>
+                        {damage_badge}
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    # Interactive buttons below tile
+                    if game.get('placing_mode') and current_tile == '🌲':
                         b_name = game['placing_mode']
-                        b_icon = BUILDINGS[b_name]['icon']
-                        if st.button(f"📍{b_icon}", key=f"v_place_{row_idx}_{col_idx}"):
-                            game['grid'][row_idx][col_idx] = b_icon
-                            if b_name not in game['owned_buildings']:
-                                game['owned_buildings'][b_name] = 0
-                            game['owned_buildings'][b_name] += 1
-                            if b_name == "Barn":
-                                game['stats']['Storage_Limit'] += 20
-                            game['placing_mode'] = None
-                            st.rerun()
+                        b_data = BUILDINGS[b_name]
+                        if st.button(f"Build £{b_data['cost']}", key=f"v_b_{row_idx}_{col_idx}", use_container_width=True):
+                            if game['stats']['Money'] >= b_data['cost']:
+                                game['stats']['Money'] -= b_data['cost']
+                                game['grid'][row_idx][col_idx] = b_data['icon']
+                                if b_name not in game.get('owned_buildings', {}):
+                                    game['owned_buildings'] = game.get('owned_buildings', {})
+                                game['owned_buildings'][b_name] = game['owned_buildings'].get(b_name, 0) + 1
+                                if b_name == "Barn":
+                                    game['stats']['Storage_Limit'] += 20
+                                game['placing_mode'] = None
+                                st.rerun()
+                            else:
+                                st.error(f"Need £{b_data['cost']}")
 
                     elif current_tile == '🌊':
                         disable_fishing = (current_season == "Winter")
-                        if st.button("🎣", key=f"v_fish_{row_idx}_{col_idx}", disabled=disable_fishing):
+                        if st.button("🎣 Fish", key=f"v_fish_{row_idx}_{col_idx}", disabled=disable_fishing, use_container_width=True):
                             if game['stats']['Stamina'] >= 5:
                                 game['stats']['Stamina'] -= 5
                                 game['inventory']['Fish'] = game['inventory'].get('Fish', 0) + 1
@@ -249,7 +311,7 @@ with tab1:
                     elif is_damaged:
                         b_data = next((v for k, v in BUILDINGS.items() if v['icon'] == current_tile), None)
                         repair_cost = b_data['repair'] if b_data else 10
-                        if st.button(f"🛠️ £{repair_cost}", key=f"v_rep_{row_idx}_{col_idx}"):
+                        if st.button(f"🛠️ £{repair_cost}", key=f"v_rep_{row_idx}_{col_idx}", use_container_width=True):
                             if game['stats']['Money'] >= repair_cost:
                                 game['stats']['Money'] -= repair_cost
                                 game['damaged_buildings'].remove((row_idx, col_idx))
@@ -259,9 +321,8 @@ with tab1:
                                 st.error(f"Need £{repair_cost}")
 
                     else:
-                        st.button(tile, key=f"v_view_{row_idx}_{col_idx}", disabled=True)
-
-                    st.markdown('</div>', unsafe_allow_html=True)
+                        # View button for layout consistency (disabled)
+                        st.button("—", key=f"v_view_{row_idx}_{col_idx}", disabled=True, use_container_width=True)
 
         st.markdown("---")
         st.markdown("#### 🛠️ Build")
