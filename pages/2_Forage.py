@@ -3,7 +3,7 @@ import random
 import time
 from datetime import datetime
 
-from utils import init_session_state, apply_brand_theme, render_save_load
+from utils import init_session_state, apply_brand_theme, render_sidebar
 from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, HABITAT_ICONS, SEASON_ICONS, SEASON_MONTHS,
                          SURVIVAL_DIFFICULTY)
