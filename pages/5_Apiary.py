@@ -2,7 +2,7 @@ import streamlit as st
 import random
 import math
 
-from utils import (init_session_state, apply_brand_theme, render_save_load)
+from utils import init_session_state, apply_brand_theme, render_sidebar
 from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, NECTAR_FLOW, HONEY_TYPES,
                          APIARY_PRODUCTS, BEEKEEPING_SEASONS, WEATHER_CHANCES, TEMP_RANGE)
