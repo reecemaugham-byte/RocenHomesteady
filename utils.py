@@ -39,7 +39,8 @@ def get_db_connection():
     try:
         # This looks for the link in DigitalOcean App Platform settings
         uri = os.environ.get("DATABASE_URL") 
-        conn = psycopg2.connect(uri)
+        # sslmode="require" is necessary for DigitalOcean Managed Databases
+        conn = psycopg2.connect(uri, sslmode="require")
         return conn
     except Exception as e:
         print(f"DB Connection Error: {e}")
