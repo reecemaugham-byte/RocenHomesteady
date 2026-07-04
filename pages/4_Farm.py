@@ -2,7 +2,7 @@ import streamlit as st
 import random
 from datetime import datetime
 
-from utils import init_session_state, apply_brand_theme, render_save_load, get_week_in_month
+from utils import init_session_state, apply_brand_theme, render_sidebar, get_week_in_month
 from auth import render_auth, render_logout_sidebar
 from game_config import (ACHIEVEMENTS, SEASON_ICONS, FARM_ICONS, FARM_BUILDINGS,
                          SEED_COST, BASE_PRICES, BASICS, MG_CROPS, MG_COMPANIONS,
