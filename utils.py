@@ -1026,7 +1026,448 @@ def render_sidebar():
     """, unsafe_allow_html=True)
 
 
+# ==========================================
+# THEME
+# ==========================================
 def apply_brand_theme():
-    # This function already exists above, leaving this here just to mark the end 
-    # of the sidebar section so you know where the replacement stops.
-    pass
+    st.markdown("""
+    <style>
+    /* ─── FONTS ─── */
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* ─── ROOT COLOURS ─── */
+    :root {
+        --bg-deep: #0a1a0a;
+        --bg-main: #1a2e1a;
+        --bg-card: #1e331e;
+        --bg-card-hover: #264026;
+        --green-leaf: #4CAF50;
+        --green-light: #66BB6A;
+        --green-dark: #2E7D32;
+        --amber: #FFC107;
+        --amber-dark: #FF8F00;
+        --brown: #5D4037;
+        --brown-light: #795548;
+        --cream: #F5F0E8;
+        --cream-dim: #B8AFA3;
+        --danger: #ff5252;
+        --danger-bg: #2a1010;
+        --info-bg: #0a1a2a;
+        --shadow: rgba(0, 0, 0, 0.4);
+    }
+
+    /* ─── APP BACKGROUND ─── */
+    .stApp {
+        background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-main) 100%) !important;
+        color: var(--cream) !important;
+    }
+
+    /* ─── MAIN CONTENT ─── */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        max-width: 1200px;
+    }
+
+    /* ─── TYPOGRAPHY ─── */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--cream) !important;
+        font-family: 'Crimson Text', Georgia, serif !important;
+    }
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.6rem !important; border-bottom: 2px solid var(--green-dark) !important; padding-bottom: 0.5rem !important; }
+    h3 { font-size: 1.3rem !important; }
+
+    p, span, div, label, .stMarkdown, .stText {
+        color: var(--cream) !important;
+    }
+
+    /* ─── SIDEBAR ─── */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0d1f0d 0%, #142814 100%) !important;
+        border-right: 1px solid #2d4a2d !important;
+    }
+    section[data-testid="stSidebar"] * {
+        color: var(--cream) !important;
+    }
+    section[data-testid="stSidebar"] .stMarkdown hr {
+        border-color: #2d4a2d !important;
+    }
+
+    /* ─── BUTTONS ─── */
+    .stButton > button {
+        background: linear-gradient(135deg, var(--green-dark), var(--green-leaf)) !important;
+        color: var(--cream) !important;
+        border: 1px solid var(--green-light) !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1.5rem !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(135deg, var(--green-leaf), var(--green-light)) !important;
+        box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4) !important;
+        transform: translateY(-1px) !important;
+    }
+    .stButton > button:active {
+        transform: translateY(0px) !important;
+    }
+    .stButton > button:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.4) !important;
+    }
+    .stButton > button:disabled {
+        background: #2a3a2a !important;
+        color: #666 !important;
+        border-color: #444 !important;
+        box-shadow: none !important;
+    }
+
+    /* ─── TEXT INPUTS ─── */
+    .stTextInput > div > div > input {
+        background: var(--bg-card) !important;
+        color: var(--cream) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+    }
+    .stTextInput > div > div > input:focus {
+        border-color: var(--green-leaf) !important;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2) !important;
+    }
+    .stTextInput > div > label {
+        color: var(--cream-dim) !important;
+    }
+
+    /* ─── SELECTBOXES ─── */
+    .stSelectbox > div > div {
+        background: var(--bg-card) !important;
+        color: var(--cream) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+    }
+    .stSelectbox > div > label {
+        color: var(--cream-dim) !important;
+    }
+
+    /* ─── CHECKBOXES ─── */
+    .stCheckbox > label {
+        color: var(--cream) !important;
+    }
+    .stCheckbox > label > div[data-testid="stMarkdownContainer"] {
+        color: var(--cream) !important;
+    }
+
+    /* ─── RADIO ─── */
+    .stRadio > label {
+        color: var(--cream) !important;
+    }
+
+    /* ─── EXPANDERS ─── */
+    .streamlit-expanderHeader {
+        background: var(--bg-card) !important;
+        color: var(--cream) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+    }
+    .streamlit-expanderHeader:hover {
+        background: var(--bg-card-hover) !important;
+        border-color: var(--green-leaf) !important;
+    }
+    .streamlit-expanderContent {
+        border: 1px solid #3d5a3d !important;
+        border-top: none !important;
+        border-radius: 0 0 8px 8px !important;
+    }
+
+    /* ─── METRICS ─── */
+    [data-testid="stMetric"] {
+        background: var(--bg-card) !important;
+        border-radius: 10px !important;
+        padding: 12px 16px !important;
+        box-shadow: 0 2px 8px var(--shadow) !important;
+        border-left: 4px solid var(--green-leaf) !important;
+    }
+    [data-testid="stMetricLabel"] {
+        color: var(--cream-dim) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-size: 0.85rem !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: var(--amber) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+    }
+    [data-testid="stMetricDelta"] {
+        color: var(--green-light) !important;
+    }
+
+    /* ─── PROGRESS BARS ─── */
+    .stProgress > div > div > div > div {
+        background: linear-gradient(90deg, var(--green-dark), var(--green-leaf)) !important;
+    }
+    .stProgress > div > div > div {
+        background: var(--bg-card) !important;
+    }
+
+    /* ─── TABS ─── */
+    .stTabs [data-baseweb="tab-list"] {
+        background: var(--bg-card) !important;
+        border-radius: 10px !important;
+        padding: 0.2rem !important;
+        gap: 0.2rem !important;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: var(--cream-dim) !important;
+        border-radius: 8px !important;
+        padding: 0.5rem 1rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-weight: 500 !important;
+    }
+    .stTabs [aria-selected="true"] {
+        background: var(--green-dark) !important;
+        color: var(--cream) !important;
+        border: 1px solid var(--green-leaf) !important;
+    }
+    .stTabs [aria-selected="false"]:hover {
+        background: var(--bg-card-hover) !important;
+    }
+
+    /* ─── ALERTS / TOASTS ─── */
+    .stAlert {
+        border-radius: 10px !important;
+        padding: 1rem !important;
+    }
+    [data-bd-type="success"] {
+        background: #1a3d1a !important;
+        border: 1px solid var(--green-leaf) !important;
+        color: var(--cream) !important;
+    }
+    [data-bd-type="warning"] {
+        background: #3d2e0a !important;
+        border: 1px solid var(--amber) !important;
+        color: var(--cream) !important;
+    }
+    [data-bd-type="error"] {
+        background: var(--danger-bg) !important;
+        border: 1px solid var(--danger) !important;
+        color: var(--cream) !important;
+    }
+    [data-bd-type="info"] {
+        background: var(--info-bg) !important;
+        border: 1px solid #2196F3 !important;
+        color: var(--cream) !important;
+    }
+
+    /* ─── DATAFRAMES ─── */
+    .stDataFrame {
+        border: 1px solid #3d5a3d !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar {
+        width: 8px !important;
+    }
+    ::-webkit-scrollbar-track {
+        background: var(--bg-deep) !important;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #3d5a3d !important;
+        border-radius: 4px !important;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--green-dark) !important;
+    }
+
+    /* ─── HIDE STREAMLIT BRANDING ─── */
+    #MainMenu { visibility: hidden !important; }
+    footer { visibility: hidden !important; }
+    header { visibility: hidden !important; }
+
+    /* ─── SEPARATOR LINES ─── */
+    hr {
+        border-color: #2d4a2d !important;
+    }
+
+    /* ─── CONTAINER OVERRIDES ─── */
+    .element-container {
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    /* ─── CAPTION ─── */
+    .stCaption {
+        color: var(--cream-dim) !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* ───────────────────────────────────────── */
+    /* GAME-SPECIFIC STYLES                      */
+    /* ───────────────────────────────────────── */
+
+    /* Case file styling (Survival School) */
+    .case-file {
+        background: linear-gradient(135deg, #1a1a0a, #2a2a10) !important;
+        border: 2px solid var(--amber-dark) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        box-shadow: 0 4px 16px rgba(255, 143, 0, 0.15) !important;
+    }
+    .case-file h3, .case-file h4 {
+        color: var(--amber) !important;
+        font-family: 'Crimson Text', Georgia, serif !important;
+    }
+
+    /* Safe card */
+    .safe-card {
+        background: linear-gradient(135deg, #0a2a0a, #1a3d1a) !important;
+        border: 2px solid var(--green-leaf) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+    }
+
+    /* Danger card */
+    .danger-card {
+        background: linear-gradient(135deg, #2a0a0a, #3d1515) !important;
+        border: 2px solid var(--danger) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+    }
+
+    /* Feedback boxes */
+    .correct-feedback {
+        background: linear-gradient(135deg, #0a2a0a, #1a3d1a) !important;
+        border: 2px solid var(--green-leaf) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+        margin: 1rem 0 !important;
+    }
+    .wrong-feedback {
+        background: linear-gradient(135deg, #2a0a0a, #3d1515) !important;
+        border: 2px solid var(--danger) !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+        margin: 1rem 0 !important;
+    }
+
+    /* Level up banner */
+    .level-up {
+        background: linear-gradient(135deg, #2a1a00, #3d2e00) !important;
+        border: 2px solid var(--amber) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        text-align: center !important;
+        margin: 1rem 0 !important;
+        box-shadow: 0 0 30px rgba(255, 193, 7, 0.3) !important;
+    }
+
+    /* Game card */
+    .game-card {
+        background: var(--bg-card) !important;
+        border: 1px solid #3d5a3d !important;
+        border-radius: 12px !important;
+        padding: 1.2rem !important;
+        margin: 0.5rem 0 !important;
+        box-shadow: 0 2px 8px var(--shadow) !important;
+    }
+
+    /* Streak flame */
+    .streak-display {
+        background: linear-gradient(135deg, #1a0a00, #2a1a00) !important;
+        border: 2px solid var(--amber-dark) !important;
+        border-radius: 12px !important;
+        padding: 0.8rem 1.2rem !important;
+        text-align: center !important;
+    }
+
+    /* Plant card (for Foraging Quest etc.) */
+    .plant-card {
+        border-radius: 20px !important;
+        padding: 20px !important;
+        text-align: center !important;
+        background: linear-gradient(145deg, var(--bg-card), var(--bg-deep)) !important;
+        box-shadow: 10px 10px 20px rgba(0,0,0,0.3) !important;
+        margin-bottom: 20px !important;
+        border: 1px solid #3d5a3d !important;
+    }
+
+    /* Grid game buttons (Eco-Village, Farm) */
+    div.grid-game div.stButton > button {
+        width: 100% !important; height: auto !important; aspect-ratio: 1 / 1 !important;
+        padding: 0 !important; font-size: 1.5em !important;
+        border: 1px solid #3d5a3d !important;
+        background-color: #2b2b2b !important; color: white !important; border-radius: 8px !important;
+    }
+    div.grid-game div.stButton > button:hover { border-color: #fff !important; transform: scale(1.05) !important; }
+
+    /* Market buttons */
+    .market-box div.stButton > button { font-size: 14px !important; white-space: normal !important;
+                                          height: auto !important; padding: 5px !important; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+        .block-container { padding: 1rem !important; }
+        h1 { font-size: 1.5rem !important; }
+        h2 { font-size: 1.3rem !important; }
+        h3 { font-size: 1.1rem !important; }
+        .plant-card { padding: 10px !important; }
+        div.grid-game div.stButton > button { font-size: 1em !important; }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# ==========================================
+# AUDIO
+# ==========================================
+def clean_text_for_audio(text):
+    if not text:
+        return ""
+    text = text.replace("**", "").replace("##", "").replace("*", "")
+    icon_map = {
+        "🌿": "Plant", "🌲": "Woodland", "☠️": "Poison", "✅": "Correct",
+        "❌": "Wrong", "🕵️": "Inspector", "⚡": "Bonus", "🎓": "Graduate",
+        "🌱": "Seedling", "🍄": "Mushroom", "🏖️": "Coastal", "🏡": "Urban",
+        "🌾": "Meadow", "💧": "Water", "🪨": "Rock", "🌸": "Spring",
+        "☀️": "Summer", "🍂": "Autumn", "❄️": "Winter", "🍃": "Leaves",
+        "🌳": "Tree", "🐝": "Bee", "🍎": "Apple", "🫧": "Cold frame",
+        "🥓": "Smokehouse", "🔋": "Battery", "☀️": "Solar", "🐔": "Chicken",
+        "🐄": "Cow", "🐐": "Goat", "🌾": "Wheat", "🥕": "Carrot",
+        "🌽": "Corn", "🐟": "Fish", "🥚": "Egg", "🥛": "Milk",
+        "🍯": "Honey", "📏": "Rule", "📋": "Case", "🔍": "Observation",
+        "⚖️": "Verdict", "🎯": "Target", "🔥": "Streak", "🤕": "Injured",
+        "🛡️": "Shield", "🏆": "Trophy", "🏅": "Medal", "⚠️": "Warning",
+        "📦": "Package", "💰": "Money", "🏗️": "Building", "🧹": "Clear",
+    }
+    for icon, word in icon_map.items():
+        text = text.replace(icon, word)
+    return text.strip()
+
+def generate_voice(text, filename="temp_audio.mp3"):
+    if not EDGE_TTS_AVAILABLE:
+        return None
+    import asyncio
+    try:
+        communicate = edge_tts.Communicate(text, "en-GB-SoniaNeural")
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(communicate.save(filename))
+        loop.close()
+        return filename
+    except Exception as e:
+        print(f"Audio Error: {e}")
+        return None
+
+def get_week_in_month(day):
+    """Calculates the week of the month (1-5) from the day number."""
+    if day is None or day <= 0:
+        return 1  # Default to week 1 if something goes wrong
+    return (day - 1) // 7 + 1
