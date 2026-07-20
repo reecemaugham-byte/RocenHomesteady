@@ -5,6 +5,7 @@ from utils import init_session_state, apply_brand_theme, render_sidebar
 from auth import render_auth, render_logout_sidebar
 from plants_data import UK_PLANTS
 from game_config import ACHIEVEMENTS
+from monetization import render_affiliate_section, render_digital_products, render_support_section, render_newsletter_signup, render_seasonal_affiliate_badge
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -239,6 +240,9 @@ with col_eat3:
 
 st.caption(f"📊 {len(plants_in_season)} plants available this month — see the full list in the Learning Center")
 
+# --- Seasonal affiliate recommendation ---
+render_seasonal_affiliate_badge()
+
 # ==========================================
 # DANGER WARNING
 # ==========================================
@@ -470,6 +474,25 @@ with right_col:
         <div style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.5rem;">📖 Learn the full details in our <b>UK Foraging Law</b> lesson.</div>
     </div>
     """, unsafe_allow_html=True)
+
+# ==========================================
+# MONETISATION — Books, Gear, Downloads, Support
+# ==========================================
+
+st.markdown("---")
+
+tab_shop, tab_downloads, tab_support = st.tabs(["📚 Books & Gear", "📥 Downloads", "☕ Support Us"])
+
+with tab_shop:
+    render_affiliate_section()
+
+with tab_downloads:
+    render_digital_products()
+
+with tab_support:
+    render_support_section()
+    st.markdown("---")
+    render_newsletter_signup()
 
 # ==========================================
 # DISCORD & FOOTER
