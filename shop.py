@@ -1,5 +1,5 @@
 """
-monetisation.py — Rocen Homesteady Revenue Module
+shop.py — Rocen Homesteady Shop Module
 Affiliate links, digital products, and support options.
 Styled to match the existing theme.
 
@@ -8,9 +8,38 @@ Buy Me a Coffee: buymeacoffee.com/rocehomesteady
 """
 
 import streamlit as st
+from datetime import datetime
 
 # ==========================================
-# AFFILIATE LINKS — Amazon UK
+# CONSTANTS
+# ==========================================
+
+AMAZON_TAG = "rocehomestead-21"
+BMC_URL = "https://buymeacoffee.com/rocehomesteady"
+
+SEASON_MONTHS = {
+    "Spring": ["March", "April", "May"],
+    "Summer": ["June", "July", "August"],
+    "Autumn": ["September", "October", "November"],
+    "Winter": ["December", "January", "February"],
+}
+
+SEASON_ICONS = {
+    "Spring": "🌸",
+    "Summer": "☀️",
+    "Autumn": "🍂",
+    "Winter": "❄️",
+}
+
+SEASON_COLOURS = {
+    "Spring": "#4CAF50",
+    "Summer": "#FFC107",
+    "Autumn": "#FF8F00",
+    "Winter": "#90CAF9",
+}
+
+# ==========================================
+# AFFILIATE LINKS — Amazon UK (search URLs)
 # ==========================================
 
 AFFILIATE_PRODUCTS = {
@@ -20,7 +49,7 @@ AFFILIATE_PRODUCTS = {
             "author": "John Wright",
             "price": "£9.99",
             "desc": "Month-by-month guide to what's in season across the UK. The book we recommend most.",
-            "url": "https://www.amazon.co.uk/dp/1784890870?tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=foragers+calendar+john+wright&tag={AMAZON_TAG}",
             "emoji": "📖",
         },
         {
@@ -28,7 +57,7 @@ AFFILIATE_PRODUCTS = {
             "author": "Richard Mabey",
             "price": "£7.49",
             "desc": "The classic foraging bible — over 250 wild plants, fruits, and fungi. A British essential.",
-            "url": "https://www.amazon.co.uk/dp/0007247684?tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=food+for+free+richard+mabey&tag={AMAZON_TAG}",
             "emoji": "📖",
         },
         {
@@ -36,7 +65,7 @@ AFFILIATE_PRODUCTS = {
             "author": "John Wright",
             "price": "£10.49",
             "desc": "Everything you need to know about foraging in UK hedgerows, from sloes to sorrel.",
-            "url": "https://www.amazon.co.uk/dp/1444780005?tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=river+cottage+hedgerow+john+wright&tag={AMAZON_TAG}",
             "emoji": "📖",
         },
         {
@@ -44,7 +73,7 @@ AFFILIATE_PRODUCTS = {
             "author": "Thomas Laessoe",
             "price": "£12.99",
             "desc": "The most trusted UK mushroom identification guide. Essential before you pick any fungus.",
-            "url": "https://www.amazon.co.uk/dp/0007467421?tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=collins+mushroom+guide+laessoe&tag={AMAZON_TAG}",
             "emoji": "🍄",
         },
         {
@@ -52,7 +81,7 @@ AFFILIATE_PRODUCTS = {
             "author": "Dick Strawbridge & James Strawbridge",
             "price": "£14.99",
             "desc": "The complete guide to living off-grid in the UK. From growing to preserving to foraging.",
-            "url": "https://www.amazon.co.uk/dp/1405348685?tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=self+sufficiency+21st+century+strawbridge&tag={AMAZON_TAG}",
             "emoji": "🏘️",
         },
     ],
@@ -61,35 +90,35 @@ AFFILIATE_PRODUCTS = {
             "name": "🔪 Hultafors HVK Foraging Knife",
             "price": "£18.50",
             "desc": "The go-to knife for UK foragers — sharp, safe, and built to last. Our top pick.",
-            "url": "https://www.amazon.co.uk/s?k=hultafors+foraging+knife&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=hultafors+foraging+knife&tag={AMAZON_TAG}",
             "emoji": "🔪",
         },
         {
             "name": "🧺 Wicker Foraging Basket",
             "price": "£14.99",
             "desc": "Traditional basket for collecting wild food. Lets spores spread as you walk — better than plastic bags.",
-            "url": "https://www.amazon.co.uk/s?k=wicker+foraging+basket&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=wicker+foraging+basket&tag={AMAZON_TAG}",
             "emoji": "🧺",
         },
         {
             "name": "🎒 Waterproof Roll-Top Bag",
             "price": "£12.99",
             "desc": "Keep your foraged finds dry on wet days. Roll-top seal, lightweight, and affordable.",
-            "url": "https://www.amazon.co.uk/s?k=waterproof+roll+top+bag+small&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=waterproof+roll+top+bag+small&tag={AMAZON_TAG}",
             "emoji": "🎒",
         },
         {
             "name": "🔍 10x Plant Identification Loupe",
             "price": "£6.99",
             "desc": "Essential magnifier for examining leaves, stems, and spore prints. Every forager needs one.",
-            "url": "https://www.amazon.co.uk/s?k=10x+loupe+magnifier+plant&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=10x+loupe+magnifier+plant&tag={AMAZON_TAG}",
             "emoji": "🔍",
         },
         {
             "name": "📖 Waterproof Field Notebook",
             "price": "£8.99",
             "desc": "Rite in the Rain notebook — write in any weather. Perfect for recording foraging spots.",
-            "url": "https://www.amazon.co.uk/s?k=rite+in+the+rain+notebook&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=rite+in+the+rain+notebook&tag={AMAZON_TAG}",
             "emoji": "📝",
         },
     ],
@@ -99,28 +128,28 @@ AFFILIATE_PRODUCTS = {
             "author": "Clive de Bruyn",
             "price": "£12.99",
             "desc": "The essential guide to starting your first hive in the UK. Clear, practical, and comprehensive.",
-            "url": "https://www.amazon.co.uk/s?k=practical+beekeeping+clive+de+bruyn&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=practical+beekeeping+clive+de+bruyn&tag={AMAZON_TAG}",
             "emoji": "🐝",
         },
         {
             "name": "🧤 Full Beekeeping Suit with Veil",
             "price": "£39.99",
             "desc": "Essential protection for hive inspections. Full suit with integrated veil and gloves.",
-            "url": "https://www.amazon.co.uk/s?k=beekeeping+suit+full+body+veil&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=beekeeping+suit+full+body+veil&tag={AMAZON_TAG}",
             "emoji": "🧤",
         },
         {
             "name": "💨 Stainless Steel Bee Smoker",
             "price": "£24.99",
             "desc": "Calm your bees during inspections. Stainless steel with heat shield — built to last.",
-            "url": "https://www.amazon.co.uk/s?k=stainless+steel+bee+smoker&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=stainless+steel+bee+smoker&tag={AMAZON_TAG}",
             "emoji": "💨",
         },
         {
             "name": "🏠 Cedar National Beehive",
             "price": "£149.99",
             "desc": "British Standard National hive in cedar. The most popular hive style in the UK.",
-            "url": "https://www.amazon.co.uk/s?k=national+beehive+cedar+uk&tag=rocehomestead-21",
+            "url": f"https://www.amazon.co.uk/s?k=national+beehive+cedar+uk&tag={AMAZON_TAG}",
             "emoji": "🏠",
         },
     ],
@@ -135,7 +164,7 @@ DIGITAL_PRODUCTS = [
         "name": "📋 UK Foraging Season Calendar 2025",
         "desc": "A3 printable wall calendar showing every edible plant, month by month. Never miss a season again!",
         "price": "£4.99",
-        "url": "https://buymeacoffee.com/rocehomesteady/extras",
+        "url": f"{BMC_URL}/extras",
         "emoji": "📋",
         "category": "printable",
     },
@@ -143,7 +172,7 @@ DIGITAL_PRODUCTS = [
         "name": "🍄 Mushroom Identification Flash Cards",
         "desc": "30 printable flashcards covering the most common UK mushrooms — edible and deadly. Perfect for families and beginners.",
         "price": "£3.99",
-        "url": "https://buymeacoffee.com/rocehomesteady/extras",
+        "url": f"{BMC_URL}/extras",
         "emoji": "🍄",
         "category": "printable",
     },
@@ -151,7 +180,7 @@ DIGITAL_PRODUCTS = [
         "name": "☠️ Dangerous Lookalikes Cheat Sheet",
         "desc": "A4 printable showing every dangerous plant side-by-side with its safe lookalike. Could save a life.",
         "price": "£2.99",
-        "url": "https://buymeacoffee.com/rocehomesteady/extras",
+        "url": f"{BMC_URL}/extras",
         "emoji": "☠️",
         "category": "safety",
     },
@@ -159,7 +188,7 @@ DIGITAL_PRODUCTS = [
         "name": "🧒 Family Foraging Adventure Pack",
         "desc": "Complete pack for families: ID cards, activity sheets, safety checklist, and seasonal calendar. Ages 5-11.",
         "price": "£7.99",
-        "url": "https://buymeacoffee.com/rocehomesteady/extras",
+        "url": f"{BMC_URL}/extras",
         "emoji": "🧒",
         "category": "family",
     },
@@ -173,28 +202,46 @@ SEASON_PRODUCTS = {
     "Spring": {
         "name": "Spring Foraging Kit",
         "desc": "Everything you need for spring wild garlic and nettles",
-        "url": "https://www.amazon.co.uk/s?k=foraging+knife+basket+spring&tag=rocehomestead-21",
+        "url": f"https://www.amazon.co.uk/s?k=foraging+knife+basket+spring&tag={AMAZON_TAG}",
         "emoji": "🌸",
     },
     "Summer": {
         "name": "Summer Foraging Kit",
         "desc": "Berry-picking essentials for hedgerow harvests",
-        "url": "https://www.amazon.co.uk/s?k=foraging+bag+basket+summer&tag=rocehomestead-21",
+        "url": f"https://www.amazon.co.uk/s?k=foraging+bag+basket+summer&tag={AMAZON_TAG}",
         "emoji": "☀️",
     },
     "Autumn": {
         "name": "Autumn Mushroom Kit",
         "desc": "Mushroom hunting gear for the peak fungi season",
-        "url": "https://www.amazon.co.uk/s?k=mushroom+hunting+kit+identification&tag=rocehomestead-21",
+        "url": f"https://www.amazon.co.uk/s?k=mushroom+hunting+kit+identification&tag={AMAZON_TAG}",
         "emoji": "🍂",
     },
     "Winter": {
         "name": "Winter Foraging Guide",
         "desc": "What to forage in the cold months — plus a good thermos",
-        "url": "https://www.amazon.co.uk/s?k=winter+foraging+guide+book+uk&tag=rocehomestead-21",
+        "url": f"https://www.amazon.co.uk/s?k=winter+foraging+guide+book+uk&tag={AMAZON_TAG}",
         "emoji": "❄️",
     },
 }
+
+
+# ==========================================
+# HELPER FUNCTIONS
+# ==========================================
+
+def get_current_season():
+    """Return the current season name based on today's date."""
+    current_month = datetime.now().strftime("%B")
+    for season, months in SEASON_MONTHS.items():
+        if current_month in months:
+            return season
+    return "Winter"
+
+
+def get_current_month():
+    """Return the current month name."""
+    return datetime.now().strftime("%B")
 
 
 # ==========================================
@@ -341,7 +388,7 @@ def render_digital_products():
 
 def render_support_section():
     """Render the 'Support Us' section with Buy Me a Coffee."""
-    st.markdown("""
+    st.markdown(f"""
     <div style="
         background: linear-gradient(135deg, #1a2e1a, #0a1a0a);
         border: 1px solid #3d5a3d;
@@ -354,12 +401,12 @@ def render_support_section():
             ☕ Support Rocen Homesteady
         </h3>
         <p style="color: var(--cream-dim); font-size: 0.95rem; max-width: 550px; margin: 0 auto 0.8rem auto; line-height: 1.6;">
-            This site is <b>100% free</b> for everyone. No paywalls, no ads, no premium tiers.
-            If it's helped you identify a plant, learn a new skill, or stay safe in the wild — 
+            This site is <b>100%% free</b> for everyone. No paywalls, no ads, no premium tiers.
+            If it's helped you identify a plant, learn a new skill, or stay safe in the wild —
             consider buying us a coffee. Every penny goes toward keeping the site running and adding new content.
         </p>
         <div style="margin-top: 1rem;">
-            <a href="https://buymeacoffee.com/rocehomesteady" target="_blank" rel="noopener noreferrer" style="
+            <a href="{BMC_URL}" target="_blank" rel="noopener noreferrer" style="
                 background: linear-gradient(135deg, #FFDD00, #F5A623);
                 color: #1a1a1a;
                 padding: 0.7rem 2rem;
@@ -409,7 +456,6 @@ def render_newsletter_signup():
     with col_nl2:
         if st.button("🌿 Subscribe", use_container_width=True, type="primary", key="newsletter_subscribe_btn"):
             if email and "@" in email and "." in email:
-                # TODO: Connect to your email service (ConvertKit, Mailchimp, etc.)
                 st.success("🌿 Welcome to the foraging community! Check your inbox for a confirmation.")
             else:
                 st.warning("Please enter a valid email address.")
@@ -417,22 +463,7 @@ def render_newsletter_signup():
 
 def render_seasonal_affiliate_badge():
     """Render a small seasonal affiliate badge for the homepage."""
-    from datetime import datetime
-    current_month = datetime.now().strftime("%B")
-
-    SEASON_MONTHS = {
-        "Spring": ["March", "April", "May"],
-        "Summer": ["June", "July", "August"],
-        "Autumn": ["September", "October", "November"],
-        "Winter": ["December", "January", "February"],
-    }
-
-    current_season = "Winter"
-    for season, months in SEASON_MONTHS.items():
-        if current_month in months:
-            current_season = season
-            break
-
+    current_season = get_current_season()
     product = SEASON_PRODUCTS.get(current_season, SEASON_PRODUCTS["Winter"])
 
     st.markdown(f"""
@@ -464,3 +495,28 @@ def render_seasonal_affiliate_badge():
         ">Shop →</a>
     </div>
     """, unsafe_allow_html=True)
+
+
+def render_full_shop_page():
+    """Render the complete shop page — call this from pages/3_Shop.py."""
+    st.markdown("""
+    <h2 style="color: var(--cream); font-family: 'Crimson Text', Georgia, serif; text-align: center; margin-bottom: 0.3rem;">
+        🛒 Shop & Support
+    </h2>
+    <p style="color: var(--cream-dim); text-align: center; font-size: 0.95rem; margin-bottom: 1.5rem;">
+        Hand-picked books, gear, and downloads for UK foragers, gardeners, and beekeepers.
+    </p>
+    """, unsafe_allow_html=True)
+
+    tab_shop, tab_downloads, tab_support = st.tabs(["📚 Books & Gear", "📥 Downloads", "☕ Support Us"])
+
+    with tab_shop:
+        render_affiliate_section()
+
+    with tab_downloads:
+        render_digital_products()
+
+    with tab_support:
+        render_support_section()
+        st.markdown("---")
+        render_newsletter_signup()
