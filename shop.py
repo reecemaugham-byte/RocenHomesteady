@@ -156,7 +156,7 @@ AFFILIATE_PRODUCTS = {
 }
 
 # ==========================================
-# DIGITAL PRODUCTS (Buy Me a Coffee "Extras")
+# DIGITAL PRODUCTS (Buy Me a Coffee)
 # ==========================================
 
 DIGITAL_PRODUCTS = [
@@ -164,7 +164,7 @@ DIGITAL_PRODUCTS = [
         "name": "📋 UK Foraging Season Calendar 2026",
         "desc": "A3 printable wall calendar showing every edible plant, month by month. Never miss a season again!",
         "price": "£4.99",
-        "url": f"{BMC_URL}/extras",
+        "url": "https://buymeacoffee.com/rocehomesteady/e/558993",
         "emoji": "📋",
         "category": "printable",
     },
@@ -172,7 +172,7 @@ DIGITAL_PRODUCTS = [
         "name": "🍄 Mushroom Identification Flash Cards",
         "desc": "30 printable flashcards covering the most common UK mushrooms — edible and deadly. Perfect for families and beginners.",
         "price": "£3.99",
-        "url": f"{BMC_URL}/extras",
+        "url": "https://buymeacoffee.com/rocehomesteady/e/559000",
         "emoji": "🍄",
         "category": "printable",
     },
@@ -180,7 +180,7 @@ DIGITAL_PRODUCTS = [
         "name": "☠️ Dangerous Lookalikes Cheat Sheet",
         "desc": "A4 printable showing every dangerous plant side-by-side with its safe lookalike. Could save a life.",
         "price": "£2.99",
-        "url": f"{BMC_URL}/extras",
+        "url": "https://buymeacoffee.com/rocehomesteady/e/559001",
         "emoji": "☠️",
         "category": "safety",
     },
@@ -188,7 +188,7 @@ DIGITAL_PRODUCTS = [
         "name": "🧒 Family Foraging Adventure Pack",
         "desc": "Complete pack for families: ID cards, activity sheets, safety checklist, and seasonal calendar. Ages 5-11.",
         "price": "£7.99",
-        "url": f"{BMC_URL}/extras",
+        "url": "https://buymeacoffee.com/rocehomesteady/e/559003",
         "emoji": "🧒",
         "category": "family",
     },
