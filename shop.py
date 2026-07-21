@@ -161,7 +161,7 @@ AFFILIATE_PRODUCTS = {
 
 DIGITAL_PRODUCTS = [
     {
-        "name": "📋 UK Foraging Season Calendar 2025",
+        "name": "📋 UK Foraging Season Calendar 2026",
         "desc": "A3 printable wall calendar showing every edible plant, month by month. Never miss a season again!",
         "price": "£4.99",
         "url": f"{BMC_URL}/extras",
