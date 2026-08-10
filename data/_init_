@@ -1,0 +1,5 @@
+# data/__init__.py — Package init for Rocen Homesteady data module
+
+from .game_config import *
+from .plants_data import UK_PLANTS, PLANT_COUNTS
+from .lessons_data import LESSON_CONTENT
