@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/shop.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games">Games</a>
+            <a href="/shop" class="nav-active">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <section class="page-header">
+        <h1>Shop & Support</h1>
+        <p>Hand-picked books, gear, and downloads for UK foragers, gardeners, and beekeepers.</p>
+    </section>
+
+    <!-- SEASONAL BADGE -->
+    <section class="seasonal-badge" data-season-color="{{ season_colour or '#8bc34a' }}" style="border-left: 4px solid #8bc34a;">
+        <div class="seasonal-badge-content">
+            <div class="seasonal-info">
+                <div class="seasonal-tag">🌱 Seasonal Pick</div>
+                <div class="seasonal-name">{{ season_product.name }}</div>
+                <div class="seasonal-desc">{{ season_product.desc }}</div>
+            </div>
+            <a href="{{ season_product.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">Shop Now →</a>
+        </div>
+    </section>
+
+    <!-- MAIN TABS -->
+    <div class="shop-tabs">
+        <button class="shop-tab active" onclick="switchTab('books-gear', this)">Books & Gear</button>
+        <button class="shop-tab" onclick="switchTab('downloads', this)">Downloads</button>
+        <button class="shop-tab" onclick="switchTab('support', this)">Support Us</button>
+    </div>
+
+    <!-- ===================== BOOKS & GEAR TAB ===================== -->
+    <div id="books-gear" class="tab-content active">
+        <div class="tab-intro">
+            <p>Hand-picked by our team. Purchases support the site at <strong>no extra cost</strong> to you.</p>
+        </div>
+
+        <!-- SUB-TABS -->
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchSubTab('books', this)">Books</button>
+            <button class="sub-tab" onclick="switchSubTab('gear', this)">Gear</button>
+            <button class="sub-tab" onclick="switchSubTab('beekeeping', this)">Beekeeping</button>
+        </div>
+
+        <!-- BOOKS -->
+        <div id="books" class="subtab-content active">
+            {% for product in books %}
+            <div class="product-card card-green-accent">
+                <div class="product-details">
+                    <div class="product-name">{{ product.name }}</div>
+                    {% if product.author %}
+                    <div class="product-author">by {{ product.author }}</div>
+                    {% endif %}
+                    <div class="product-desc">{{ product.desc }}</div>
+                </div>
+                <div class="product-action">
+                    <div class="product-price">{{ product.price }}</div>
+                    <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-affiliate">View on Amazon →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- GEAR -->
+        <div id="gear" class="subtab-content">
+            {% for product in gear %}
+            <div class="product-card card-teal-accent">
+                <div class="product-details">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-desc">{{ product.desc }}</div>
+                </div>
+                <div class="product-action">
+                    <div class="product-price">{{ product.price }}</div>
+                    <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-affiliate">View on Amazon →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- BEEKEEPING -->
+        <div id="beekeeping" class="subtab-content">
+            {% for product in beekeeping %}
+            <div class="product-card card-amber-accent">
+                <div class="product-details">
+                    <div class="product-name">{{ product.name }}</div>
+                    {% if product.author %}
+                    <div class="product-author">by {{ product.author }}</div>
+                    {% endif %}
+                    <div class="product-desc">{{ product.desc }}</div>
+                </div>
+                <div class="product-action">
+                    <div class="product-price">{{ product.price }}</div>
+                    <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-affiliate btn-amber">View on Amazon →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ===================== DOWNLOADS TAB ===================== -->
+    <div id="downloads" class="tab-content">
+        <div class="tab-intro">
+            <p>Instant PDF downloads to take on your foraging adventures. Print at home or take to a print shop for best results.</p>
+        </div>
+
+        <div class="downloads-grid">
+            {% for product in digital_products %}
+            <div class="product-card card-green-accent digital-card">
+                <!-- Product Image -->
+                <div class="product-image-wrapper">
+                    <img src="{{ product.image }}" alt="{{ product.name }}" class="product-img">
+                </div>
+                
+                <div class="product-details">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-desc">{{ product.desc }}</div>
+                    {% if product.category == "safety" %}
+                    <span class="category-badge badge-safety">⚠️ Safety</span>
+                    {% elif product.category == "family" %}
+                    <span class="category-badge badge-family">🧒 Family</span>
+                    {% elif product.category == "printable" %}
+                    <span class="category-badge badge-printable">🖨️ Printable</span>
+                    {% endif %}
+                </div>
+                <div class="product-action">
+                    <div class="product-price">{{ product.price }}</div>
+                    <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-download">Get PDF →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <!-- ===================== SUPPORT TAB (RESTORED) ===================== -->
+    <div id="support" class="tab-content">
+        <!-- BUY ME A COFFEE -->
+        <div class="support-card">
+            <div class="support-icon">☕</div>
+            <h2 class="support-title">Support Rocen Homesteady</h2>
+            <p class="support-text">
+                This site is <strong>100% free</strong> for everyone. No paywalls, no ads, no premium tiers.
+                If it's helped you identify a plant, learn a new skill, or stay safe in the wild —
+                consider buying us a coffee. Every penny goes toward keeping the site running and adding new content.
+            </p>
+            <a href="{{ bmc_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-bmc">
+                ☕ Buy Me a Coffee
+            </a>
+            <p class="support-subtitle">🌿 Thank you for supporting independent foraging education.</p>
+        </div>
+
+        <!-- NEWSLETTER -->
+        <div class="newsletter-card">
+            <h3 class="newsletter-title">🌿 Free Monthly Foraging Newsletter</h3>
+            <p class="newsletter-desc">
+                Get seasonal foraging tips, new plant guides, and safety alerts delivered to your inbox.
+            </p>
+            <div class="newsletter-form">
+                <input type="email" id="newsletterEmail" placeholder="forager@example.co.uk" class="newsletter-input">
+                <button class="btn btn-newsletter" onclick="subscribeNewsletter()">🌿 Subscribe</button>
+            </div>
+            <div id="newsletterFeedback" class="newsletter-feedback"></div>
+        </div>
+
+        <!-- SITE STATS -->
+        <div class="support-stats">
+            <div class="stat-item">
+                <div class="stat-number">212</div>
+                <div class="stat-label">Plants Documented</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Interactive Games</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Wild Recipes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Free Forever</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AFFILIATE NOTICE -->
+    <div class="affiliate-notice">
+        <p>🔗 Links may earn us a small commission at no extra cost to you. We only recommend products we genuinely use and trust.</p>
+        <p>📥 All downloads are PDF files — print at home or take to a print shop for best results.</p>
+    </div>
+
+    <footer>
+        <p>© 2026 Rocen Homesteady LTD. All Rights Reserved. Educational Use Only.</p>
+        <p>⚠️ Never eat a plant based solely on an app. Always cross-reference with a field guide or expert.</p>
+    </footer>
+
+    <script>
+        // ==========================================
+        // MAIN TAB SWITCHING
+        // ==========================================
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.shop-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // ==========================================
+        // SUB-TAB SWITCHING
+        // ==========================================
+        function switchSubTab(subId, btn) {
+            document.querySelectorAll('.subtab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sub-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(subId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // ==========================================
+        // NEWSLETTER SIGNUP
+        // ==========================================
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail').value.trim();
+            const feedback = document.getElementById('newsletterFeedback');
+
+            if (!email) {
+                feedback.innerHTML = '<span class="feedback-warning">Please enter your email address.</span>';
+                return;
+            }
+
+            if (!email.includes('@') || !email.includes('.')) {
+                feedback.innerHTML = '<span class="feedback-warning">Please enter a valid email address.</span>';
+                return;
+            }
+
+            feedback.innerHTML = '<span class="feedback-success">🌿 Welcome to the foraging community! Check your inbox for a confirmation.</span>';
+            document.getElementById('newsletterEmail').value = '';
+        }
+
+        document.getElementById('newsletterEmail').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') subscribeNewsletter();
+        });
+    </script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/progress.js"></script>
+</body>
+</html>

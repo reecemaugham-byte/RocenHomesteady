@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apiary Manager — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/apiary.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games" class="nav-active">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <main class="apiary-page">
+        <h1 class="page-title">🐝 Apiary Manager</h1>
+        <p class="page-subtitle">Manage your hives through the seasons. Inspect regularly, treat for varroa, and harvest liquid gold!</p>
+
+        <details class="htp-section">
+            <summary>📖 Beekeeper's Guide — Read before playing!</summary>
+            <div class="htp-content">
+                <p><strong>🖱️ Quick Start:</strong></p>
+                <ol>
+                    <li>You start with 1 hive called "Willow" in April</li>
+                    <li>Click <strong>🔍 Inspect</strong> to check your colony</li>
+                    <li>Add a <strong>Super</strong> in spring so bees can store honey</li>
+                    <li>Watch for <strong>⚠️ Queen Cells</strong> in April–June — split or remove them!</li>
+                    <li><strong>Harvest</strong> honey when the super is full (4+ frames)</li>
+                    <li><strong>Treat for varroa</strong> in August or your colony may die over winter</li>
+                    <li><strong>Feed</strong> spring and autumn syrup to keep stores up</li>
+                </ol>
+                <p><strong>🔍 Reading Frames:</strong> 🍯 Honey | 🟡 Pollen | 🥚 Eggs | 🐛 Larvae | 🟤 Capped Brood | ⬜ Empty | ⚠️ Queen Cell</p>
+                <p><strong>🪲 Varroa Thresholds:</strong> 0–3 ✅ Low | 4–6 ⚠️ Rising | 7+ 🚨 Critical</p>
+            </div>
+        </details>
+
+        <!-- Stats -->
+        <div id="apiary-stats" class="stats-row"></div>
+        <div id="apiary-season-bar"></div>
+        <div id="apiary-nectar"></div>
+        <div id="apiary-events"></div>
+        <div id="apiary-warnings"></div>
+
+        <!-- Mentor Tips -->
+        <div id="mentor-area"></div>
+
+        <!-- Sub-tabs -->
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="apiarySwitchTab('overview')">🏠 Apiary</button>
+            <button class="sub-tab" onclick="apiarySwitchTab('inspect')">🔍 Inspect</button>
+            <button class="sub-tab" onclick="apiarySwitchTab('actions')">🛠️ Actions</button>
+            <button class="sub-tab" onclick="apiarySwitchTab('market')">🍯 Market</button>
+            <button class="sub-tab" onclick="apiarySwitchTab('meadow')">🌿 Meadow</button>
+            <button class="sub-tab" onclick="apiarySwitchTab('calendar')">📅 Calendar</button>
+        </div>
+
+        <!-- Overview -->
+        <div id="tab-overview" class="sub-tab-content active"></div>
+
+        <!-- Inspect -->
+        <div id="tab-inspect" class="sub-tab-content"></div>
+
+        <!-- Actions -->
+        <div id="tab-actions" class="sub-tab-content"></div>
+
+        <!-- Market -->
+        <div id="tab-market" class="sub-tab-content"></div>
+
+        <!-- Meadow -->
+        <div id="tab-meadow" class="sub-tab-content"></div>
+
+        <!-- Calendar -->
+        <div id="tab-calendar" class="sub-tab-content"></div>
+
+        <!-- Advance Week -->
+        <div id="apiary-advance" class="advance-section"></div>
+
+        <!-- Achievements -->
+        <hr class="game-divider">
+        <details class="achievements-section">
+            <summary>🏅 Apiary Achievements</summary>
+            <div id="apiary-achievements" class="achievements-grid"></div>
+        </details>
+
+        <!-- Journal -->
+        <details class="achievements-section">
+            <summary>📓 Beekeeper's Journal</summary>
+            <div id="apiary-journal" class="events-box" style="max-height: 250px;"></div>
+        </details>
+
+        <details class="achievements-section">
+            <summary>🔄 Reset Progress</summary>
+            <div style="padding: 1rem;">
+                <p style="color: var(--danger);">⚠️ This will delete all your apiary progress — hives, honey, money, everything!</p>
+                <button class="btn-danger" onclick="apiary.reset()">🔄 Restart Apiary</button>
+            </div>
+        </details>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+<script>
+    const APIARY_DATA = {};
+</script>
+
+    <script src="/static/js/apiary.js"></script>
+    <script src="/static/js/auth.js"></script>
+
+    <button id="sound-toggle" class="sound-toggle" onclick="ApiarySound.toggle()" title="Toggle sound">🔊</button>
+</body>
+</html>

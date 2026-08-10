@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rocen Homesteady — The UK's Ultimate Foraging Companion</title>
+    <meta name="description" content="Learn to identify, forage, and cook wild plants with 8 curriculum-linked games. Plant ID, survival skills, beekeeping, farming and more — for ages 7-11.">
+    <meta property="og:title" content="Rocen Homesteady — The UK's Ultimate Foraging Companion">
+    <meta property="og:description" content="8 interactive games teaching foraging, survival, cooking, farming and beekeeping. Linked to the National Curriculum.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/static/images/Blogo.png">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <!-- Skip to content (accessibility) -->
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo" aria-label="Rocen Homesteady home"> Rocen Homesteady</a>
+        <div class="nav-links">
+            <a href="/" class="nav-active">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero season-hero-{{ season|lower }}">
+        <img src="/static/images/Blogo.png" alt="Rocen Homesteady logo" class="hero-logo">
+        <h1>The UK's Ultimate Foraging Companion</h1>
+        <p class="hero-subtitle">8 curriculum-linked games teaching plant ID, survival, cooking, farming and beekeeping — for ages 7 to 11.</p>
+        <div class="hero-ctas">
+            <a href="/games" class="btn btn-primary">🎮 Play the Games</a>
+            <a href="https://discord.gg/u4gfppQqjf" class="btn btn-discord" target="_blank" rel="noopener">💬 Join Our Discord</a>
+        </div>
+    </section>
+
+    <!-- SEASONAL PLANTS -->
+    <section class="seasonal season-{{ season|lower }}">
+        <h2 class="season-title">{{ season_icon }} What's in Season — {{ current_month }}</h2>
+        <p>{{ featured_edible|length }} edible plants available this month — see the full list in the Learning Center</p>
+        <div class="plant-cards">
+            {% for plant in featured_edible %}
+            <div class="plant-card">
+                <div class="plant-name">🌿 {{ plant.name }}</div>
+                <div class="plant-latin">{{ plant.get('latin_name', '') }}</div>
+                <div class="plant-desc">{{ plant.get('description', '')[:120] }}{% if plant.get('description', '')|length > 120 %}...{% endif %}</div>
+                <div class="plant-difficulty">{{ '🌱' * plant.get('difficulty', 1) }} Difficulty</div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="/learn" class="section-link">Explore all plants in the Learning Center →</a>
+    </section>
+
+    <!-- DANGER WARNING -->
+    <section class="safety">
+        <h2>⚠️ Safety First</h2>
+        <ul>
+            <li><b>Never eat a plant based solely on an app.</b> Always cross-reference with a field guide or expert.</li>
+            <li><b>If in doubt, leave it out.</b> This is the #1 rule of foraging.</li>
+            <li><b>UK Law:</b> Only pick the Four Fs (Fruit, Foliage, Flowers, Fungi) for personal use.</li>
+            <li><b>It is illegal to uproot plants</b> without the landowner's permission.</li>
+        </ul>
+    </section>
+
+    <!-- DANGER SPOTLIGHT -->
+    {% if featured_dangerous %}
+    <section class="danger-spotlight">
+        <h2>☠️ Can You Tell Them Apart?</h2>
+        <div class="danger-grid">
+            <div class="danger-card safe">
+                <div class="danger-label">{{ season_icon }} IN SEASON NOW</div>
+                <div class="danger-count">{{ featured_edible|length }} edible plants available</div>
+                {% if safe_match %}
+                <div class="safe-match">✅ <b>{{ safe_match.name }}</b> is safe to eat — but watch out for its dangerous lookalike!</div>
+                {% endif %}
+            </div>
+            <div class="danger-card danger">
+                <div class="danger-label">☠️ DANGER THIS MONTH</div>
+                {% for plant in featured_dangerous %}
+                <div class="dangerous-plant">
+                    <b>{{ plant.name }}</b> — {{ plant.get('danger_tips', {}).get('danger_zone', 'Dangerous') }}
+                    {% if plant.get('confusion_notes') %}
+                    <div class="confusion-note">🔍 {{ plant.confusion_notes }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="cta-row">
+            <a href="/games/survival-school" class="btn btn-danger">🛡️ Test Your Safety Knowledge — Survival School</a>
+            <a href="/games" class="btn btn-primary">🎮 See All Games</a>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- FEATURED GAMES -->
+    <section class="featured-games">
+        <h2>🎮 Learn Through Play</h2>
+        <p>Every game links to the National Curriculum. Start with any one — or try them all!</p>
+        <div class="featured-games-grid">
+            <a href="/games/foraging-quest" class="home-game-card" data-theme="forest">
+                <div class="hgc-icon-ring"><i data-lucide="compass"></i></div>
+                <h3 class="hgc-name">Foraging Quest <span class="hgc-new">NEW</span></h3>
+                <span class="hgc-badge hgc-type-adventure">Adventure</span>
+                <p class="hgc-desc">Embark on a wilderness adventure — forage, craft, and survive across the seasons</p>
+                <span class="hgc-age">👦 Ages 7–11</span>
+            </a>
+
+            <a href="/games/survival-school" class="home-game-card" data-theme="danger">
+                <div class="hgc-icon-ring"><i data-lucide="shield-alert"></i></div>
+                <h3 class="hgc-name">Survival School</h3>
+                <span class="hgc-badge hgc-type-challenge">Challenge</span>
+                <p class="hgc-desc">Spot deadly lookalikes and prove your plant safety skills in real-world scenarios</p>
+                <span class="hgc-age">👦 Ages 7–11</span>
+            </a>
+
+            <a href="/games/daily-quiz" class="home-game-card" data-theme="gold">
+                <div class="hgc-icon-ring"><i data-lucide="brain"></i></div>
+                <h3 class="hgc-name">Daily Quiz</h3>
+                <span class="hgc-badge hgc-type-quiz">Quiz</span>
+                <p class="hgc-desc">Test your foraging knowledge with streaks, power-ups, and daily challenges</p>
+                <span class="hgc-age">👦 Ages 7–11</span>
+            </a>
+
+            <a href="/games/eco-village" class="home-game-card" data-theme="amber">
+                <div class="hgc-icon-ring"><i data-lucide="building-2"></i></div>
+                <h3 class="hgc-name">Eco-Village</h3>
+                <span class="hgc-badge hgc-type-simulation">Simulation</span>
+                <p class="hgc-desc">Build a sustainable village, manage resources, and survive the winter</p>
+                <span class="hgc-age">👦 Ages 9–11</span>
+            </a>
+
+        </div>
+        <a href="/games" class="section-link">See all 8 games →</a>
+    </section>
+
+    <!-- COMMUNITIES -->
+    <section class="food-groups">
+        <h2>Built for Foragers, Farmers, Off-Grid Dwellers &amp; Beekeepers</h2>
+        <p>Four communities, one goal: sustainable food. Whether you forage, grow, preserve, or steward pollinators — this is your space.</p>
+        <div class="group-grid">
+            <a href="/games/foraging-quest" class="group-card group-card-foragers">
+                <div class="group-icon"><i data-lucide="leaf"></i></div>
+                <div class="group-name">Foragers</div>
+                <div class="group-desc">
+                    You notice what others walk past. Hedgerow berries, wild garlic, mushrooms after rain — the countryside is your larder.
+                </div>
+                <div class="group-cta">Try Foraging Quest →</div>
+            </a>
+            <a href="/games/eco-village" class="group-card group-card-offgrid">
+                <div class="group-icon"><i data-lucide="flame"></i></div>
+                <div class="group-name">Off-Grid Dwellers</div>
+                <div class="group-desc">
+                    You preserve, store, and make things last. Canning, fermenting, cooking from scratch — every season has a job.
+                </div>
+                <div class="group-cta">Try Eco-Village →</div>
+            </a>
+            <a href="/games/farm-tycoon" class="group-card group-card-farmers">
+                <div class="group-icon"><i data-lucide="wheat"></i></div>
+                <div class="group-name">Farmers</div>
+                <div class="group-desc">
+                    You grow. Planning rotations, companion planting, reading the soil — working with nature, not against it.
+                </div>
+                <div class="group-cta">Try Farm Tycoon →</div>
+            </a>
+            <a href="/games/apiary" class="group-card group-card-beekeepers">
+                <div class="group-icon"><i data-lucide="flower-2"></i></div>
+                <div class="group-name">Beekeepers</div>
+                <div class="group-desc">
+                    You steward the pollinators. Inspecting hives, treating varroa, harvesting honey — the bees depend on your vigilance.
+                </div>
+                <div class="group-cta">Try Apiary Manager →</div>
+            </a>
+        </div>
+        <div class="food-chain">
+            🌿 ➡️ 🏘️ ➡️ 🚜 ➡️ 🐝
+            <span>Foragers find it. Off-Grid Dwellers preserve it. Farmers grow it. Beekeepers protect the pollinators.</span>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_edible }}+</div>
+            <div class="stat-label">🌱 Edible Plants</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_poisonous }}+</div>
+            <div class="stat-label">⚠️ Safety Warnings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_games }}</div>
+            <div class="stat-label">🎮 Interactive Games</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_achievements }}</div>
+            <div class="stat-label">🏆 Achievements</div>
+        </div>
+    </section>
+
+    <!-- HOW TO USE & LAW -->
+    <section class="info-grid">
+        <div class="info-card">
+            <h3>📖 How to Use This App</h3>
+            <ol>
+                <li><b>Learn:</b> Study plants, trees, and fungi in the <a href="/learn"><b>Learning Center</b></a>.</li>
+                <li><b>Play:</b> Test your skills in the <a href="/games"><b>Games</b></a> section (8 unique games!).</li>
+                <li><b>Track:</b> Check your rank and stats in your <b>Profile</b>.</li>
+            </ol>
+            <p class="tip"><b>New?</b> Start with ☠️ <a href="/games/survival-school"><b>Survival School</b></a> — it could save your life.</p>
+        </div>
+        <div class="info-card">
+            <h3>🏛️ UK Law & Foraging</h3>
+            <p><b>The law is different in the UK</b> compared to the US, EU, and Australia.</p>
+            <ul>
+                <li>✅ You CAN pick the Four Fs for personal use</li>
+                <li>❌ You CANNOT uproot wild plants without permission</li>
+                <li>❌ You CANNOT forage on SSSIs (protected sites)</li>
+                <li>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland has stronger right-to-roam laws</li>
+            </ul>
+            <p class="tip">📖 Learn the full details in our <a href="/learn"><b>UK Foraging Law</b></a> lesson.</p>
+        </div>
+    </section>
+
+    <!-- DISCORD -->
+    <section class="discord-cta">
+        <a href="https://discord.gg/u4gfppQqjf" class="btn-discord" target="_blank" rel="noopener">💬 Join Our Discord Community</a>
+    </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="https://discord.gg/u4gfppQqjf" target="_blank" rel="noopener">Discord</a>
+        </div>
+        <p>© 2026 Rocen Homesteady LTD. All Rights Reserved. Educational Use Only.</p>
+        <p>📧 <a href="mailto:Support@RocenHomesteady.co.uk">Support@RocenHomesteady.co.uk</a></p>
+    </footer>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/progress.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Center — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/learn.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+</head>
+<body class="season-{{ season|lower }}">
+
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn" class="nav-active">Learn</a>
+            <a href="/learn/modules">Modules</a>
+            <a href="/games">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <!-- SOUND TOGGLE -->
+    <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="Toggle sounds">
+        🔊
+    </button>
+
+    <!-- HEADER -->
+    <section class="page-header">
+        <h1>📖 Learning Center</h1>
+        <p>Explore {{ total_edible }} edible and {{ total_poisonous }} poisonous plants in the UK</p>
+    </section>
+
+    <!-- SEASON BANNER -->
+    <section class="season-banner season-{{ season|lower }}">
+        <div class="season-banner-content">
+            <span class="season-icon">{{ season_icon }}</span>
+            <span>{{ season }} — {{ current_month }}</span>
+            <button id="seasonToggle" class="btn btn-small" onclick="toggleSeasonFilter()">
+                📅 What's in Season?
+            </button>
+        </div>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="filters">
+        <div class="filter-row">
+            <input type="text" id="searchBox" placeholder="Search plants, habitats, features..." oninput="filterPlants()">
+            <div class="filter-badges" id="countBadges"></div>
+        </div>
+        <div class="kids-toggle">
+            <label>
+                <input type="checkbox" id="kidsMode" onchange="filterPlants()">
+                🧒 Simple ID Mode (Key Safety Info Only)
+            </label>
+        </div>
+    </section>
+
+    <!-- CATEGORY TABS -->
+    <div class="tabs">
+        <button class="tab active" data-category="all" onclick="switchTab(this)">🌿 All</button>
+        <button class="tab" data-category="Tree" onclick="switchTab(this)">🌳 Trees</button>
+        <button class="tab" data-category="Plant" onclick="switchTab(this)">🌱 Plants</button>
+        <button class="tab" data-category="Fungi" onclick="switchTab(this)">🍄 Fungi</button>
+        <button class="tab" data-category="Shrub" onclick="switchTab(this)">🌲 Shrubs</button>
+        <button class="tab" data-category="Coastal" onclick="switchTab(this)">🏖️ Coastal</button>
+        <button class="tab" data-category="Seaweed" onclick="switchTab(this)">🥬 Seaweed</button>
+        <button class="tab" data-category="Shellfish" onclick="switchTab(this)">🐚 Shellfish</button>
+        <button class="tab" data-category="poisonous" onclick="switchTab(this)">☠️ Poisonous</button>
+    </div>
+
+    <!-- PLANT GRID -->
+    <div id="plantGrid" class="plant-grid">
+        <div class="loading">Loading plants...</div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div id="pagination" class="pagination"></div>
+
+    <!-- PLANT COUNT SUMMARY -->
+    <div id="plantSummary" class="plant-summary"></div>
+
+    <!-- PLANT DETAIL MODAL -->
+    <div id="plantModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModalDirect()">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Rocen Homesteady LTD. All Rights Reserved. Educational Use Only.</p>
+        <p>⚠️ Never eat a plant based solely on an app. Always cross-reference with a field guide or expert.</p>
+    </footer>
+
+    <script>
+    // ==========================================
+    // SOUND MANAGER
+    // ==========================================
+    const SoundManager = {
+        ctx: null,
+        enabled: true,
+
+        init() {
+            const saved = localStorage.getItem('rocen_sound');
+            if (saved !== null) this.enabled = saved === 'true';
+            this.updateToggleUI();
+            // Resume AudioContext on first user interaction
+            document.addEventListener('click', () => {
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            }, { once: true });
+        },
+
+        getCtx() {
+            if (!this.ctx) {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return this.ctx;
+        },
+
+        playTone(freq, dur, type = 'sine', vol = 0.15) {
+            if (!this.enabled) return;
+            try {
+                const ctx = this.getCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = freq;
+                osc.type = type;
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + dur);
+            } catch(e) {}
+        },
+
+        correct() {
+            this.playTone(523.25, 0.12);
+            setTimeout(() => this.playTone(659.25, 0.12), 120);
+            setTimeout(() => this.playTone(783.99, 0.25), 240);
+        },
+
+        incorrect() {
+            this.playTone(220, 0.3, 'sawtooth', 0.1);
+        },
+
+        warning() {
+            this.playTone(440, 0.08);
+            setTimeout(() => this.playTone(440, 0.08), 160);
+        },
+
+        open() {
+            this.playTone(440, 0.06);
+            setTimeout(() => this.playTone(554.37, 0.1), 70);
+        },
+
+        close() {
+            this.playTone(554.37, 0.06);
+            setTimeout(() => this.playTone(440, 0.08), 70);
+        },
+
+        speak(text, lang = 'la') {
+            if (!this.enabled || !('speechSynthesis' in window)) return;
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.75;
+            utterance.pitch = 1.0;
+            utterance.volume = 0.8;
+            speechSynthesis.speak(utterance);
+        },
+
+        updateToggleUI() {
+            const btn = document.getElementById('soundToggle');
+            if (!btn) return;
+            btn.textContent = this.enabled ? '🔊' : '🔇';
+            btn.classList.toggle('muted', !this.enabled);
+        }
+    };
+
+    function toggleSound() {
+        SoundManager.enabled = !SoundManager.enabled;
+        localStorage.setItem('rocen_sound', SoundManager.enabled.toString());
+        SoundManager.updateToggleUI();
+        if (SoundManager.enabled) SoundManager.open();
+    }
+
+    function speakLatin(text) {
+        SoundManager.speak(text, 'la');
+    }
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    let allEdible = [];
+    let allPoisonous = [];
+    let currentTab = 'all';
+    let seasonFilter = false;
+    let currentMonth = '{{ current_month }}';
+    const ITEMS_PER_PAGE = 12;
+    let currentPage = 1;
+    let displayedPlants = [];
+
+    // ==========================================
+    // FETCH DATA FROM API
+    // ==========================================
+    async function loadPlants() {
+        try {
+            const [edibleRes, poisonousRes] = await Promise.all([
+                fetch('/api/plants/edible').then(r => r.json()),
+                fetch('/api/plants/poisonous').then(r => r.json())
+            ]);
+            allEdible = edibleRes.plants;
+            allPoisonous = poisonousRes.plants;
+            filterPlants();
+        } catch (err) {
+            document.getElementById('plantGrid').innerHTML =
+                '<div class="error">Failed to load plants. Please refresh.</div>';
+        }
+    }
+
+    // ==========================================
+    // HELPER: ESCAPE HTML
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // ==========================================
+    // FILTER & DISPLAY
+    // ==========================================
+    function filterPlants() {
+        const search = document.getElementById('searchBox').value.toLowerCase();
+        const kidsMode = document.getElementById('kidsMode').checked;
+
+        let plants = [];
+
+        if (currentTab === 'poisonous') {
+            plants = allPoisonous.map(p => ({...p, status: 'Poisonous'}));
+        } else if (currentTab === 'all') {
+            plants = [
+                ...allEdible.map(p => ({...p, status: 'Edible'})),
+                ...allPoisonous.map(p => ({...p, status: 'Poisonous'}))
+            ];
+        } else {
+            plants = [
+                ...allEdible.filter(p => p.category === currentTab).map(p => ({...p, status: 'Edible'})),
+                ...allPoisonous.filter(p => p.category === currentTab).map(p => ({...p, status: 'Poisonous'}))
+            ];
+        }
+
+        // Search filter
+        if (search) {
+            plants = plants.filter(p => {
+                const nameMatch = p.name.toLowerCase().includes(search);
+                const latinMatch = (p.latin_name || '').toLowerCase().includes(search);
+                const habitatMatch = (p.habitat || '').toLowerCase().includes(search);
+                const descMatch = (p.description || '').toLowerCase().includes(search);
+                return nameMatch || latinMatch || habitatMatch || descMatch;
+            });
+        }
+
+        // Season filter
+        if (seasonFilter) {
+            plants = plants.filter(p => p.months && p.months.includes(currentMonth));
+        }
+
+        // Update count badges
+        const edibleCount = plants.filter(p => p.status === 'Edible').length;
+        const poisonousCount = plants.filter(p => p.status === 'Poisonous').length;
+        document.getElementById('countBadges').innerHTML = `
+            <span class="badge badge-green">🌿 ${edibleCount} edible</span>
+            <span class="badge badge-red">☠️ ${poisonousCount} poisonous</span>
+            <span class="badge badge-default">📊 ${plants.length} total</span>
+        `;
+
+        // Sort: edible first, then by name
+        plants.sort((a, b) => {
+            if (a.status === 'Edible' && b.status === 'Poisonous') return -1;
+            if (a.status === 'Poisonous' && b.status === 'Edible') return 1;
+            return a.name.localeCompare(b.name);
+        });
+
+        displayedPlants = plants;
+        renderPlants(plants, kidsMode);
+    }
+
+    // ==========================================
+    // RENDER PLANT CARDS
+    // ==========================================
+    function renderPlants(plants, kidsMode) {
+        const totalPages = Math.ceil(plants.length / ITEMS_PER_PAGE);
+        if (currentPage > totalPages) currentPage = 1;
+
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        const pagePlants = plants.slice(start, start + ITEMS_PER_PAGE);
+
+        const grid = document.getElementById('plantGrid');
+
+        if (pagePlants.length === 0) {
+            grid.innerHTML = '<div class="no-results">No plants match your filters. Try a different search.</div>';
+            document.getElementById('pagination').innerHTML = '';
+            renderSummary();
+            return;
+        }
+
+        grid.innerHTML = pagePlants.map(plant => renderPlantCard(plant, kidsMode)).join('');
+
+        renderPagination(totalPages);
+        renderSummary();
+    }
+
+    function renderPlantCard(plant, kidsMode) {
+        const isPoisonous = plant.status === 'Poisonous';
+        const dangerZone = plant.danger_tips ? plant.danger_tips.danger_zone : '';
+        const isDeadly = dangerZone === 'DEADLY' || dangerZone === 'EXTREME';
+        const isHighDanger = dangerZone === 'HIGH' || dangerZone === 'POISONOUS';
+        const inSeason = plant.months && plant.months.includes(currentMonth);
+        const difficulty = plant.difficulty || 1;
+        const diffLabel = difficulty === 1 ? 'Easy' : difficulty === 2 ? 'Medium' : 'Hard';
+        const diffDots = '●'.repeat(difficulty) + '○'.repeat(3 - difficulty);
+        const safeName = esc(plant.name);
+
+        // --- Kids mode: Poisonous ---
+        if (kidsMode && isPoisonous) {
+            return `
+                <div class="plant-card poisonous kids-danger" data-plant="${safeName}" onclick="openPlantModal(this.dataset.plant)">
+                    <div class="card-image-placeholder danger">
+                        <div class="card-image-icon">☠️</div>
+                        <div class="card-image-label">Photo coming soon</div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-name">${esc(plant.name)}</h3>
+                        <div class="card-kids-danger-banner">🚨 DO NOT TOUCH</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Kids mode: Edible ---
+        if (kidsMode) {
+            return `
+                <div class="plant-card edible kids-safe" data-plant="${safeName}" onclick="openPlantModal(this.dataset.plant)">
+                    <div class="card-image-placeholder safe">
+                        <div class="card-image-icon">🌿</div>
+                        <div class="card-image-label">Photo coming soon</div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-name">${esc(plant.name)}</h3>
+                        <div class="card-safe-badge">✅ Safe to Learn About</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Full mode ---
+        const statusClass = isPoisonous ? 'poisonous' : 'edible';
+        const dangerClass = isDeadly ? ' deadly' : isHighDanger ? ' high-danger' : '';
+        const seasonClass = inSeason ? ' in-season' : '';
+
+        let dangerStripe = '';
+        if (isDeadly) {
+            dangerStripe = '<div class="card-danger-stripe">☠️ DEADLY — Do Not Ingest</div>';
+        } else if (isHighDanger) {
+            dangerStripe = '<div class="card-danger-stripe warning">⚠️ DANGEROUS</div>';
+        }
+
+        let pulseBar = '';
+        if (isDeadly) {
+            pulseBar = '<div class="card-deadly-pulse"></div>';
+        }
+
+        let seasonDot = '';
+        if (inSeason) {
+            seasonDot = '<div class="card-season-indicator"></div>';
+        }
+
+        const placeholderClass = isPoisonous ? 'danger' : 'safe';
+        const placeholderIcon = isPoisonous ? '☠️' : '🌿';
+
+        const latinRow = plant.latin_name
+            ? `<div class="card-latin-row">
+                <em class="card-latin">${esc(plant.latin_name)}</em>
+                <button class="pronounce-btn" onclick="event.stopPropagation(); speakLatin('${esc(plant.latin_name)}')" title="Listen to pronunciation">🔊</button>
+               </div>`
+            : '';
+
+        const monthsStr = plant.months && plant.months.length > 0
+            ? plant.months[0] + (plant.months.length > 1 ? '–' + plant.months[plant.months.length - 1] : '')
+            : '';
+
+        return `
+            <div class="plant-card ${statusClass}${dangerClass}${seasonClass}" data-plant="${safeName}" onclick="openPlantModal(this.dataset.plant)">
+                ${pulseBar}
+                ${dangerStripe}
+                <div class="card-image-placeholder ${placeholderClass}">
+                    <div class="card-image-icon">${placeholderIcon}</div>
+                    <div class="card-image-label">Photo coming soon</div>
+                    ${seasonDot}
+                </div>
+                <div class="card-body">
+                    <div class="card-title-row">
+                        <h3 class="card-name">${esc(plant.name)}</h3>
+                        <span class="card-status ${statusClass}">${plant.status}</span>
+                    </div>
+                    ${latinRow}
+                    <div class="card-tags">
+                        <span class="tag tag-category">${esc(plant.category || 'Plant')}</span>
+                        <span class="tag tag-difficulty" data-level="${difficulty}">${diffLabel} ${diffDots}</span>
+                        ${monthsStr ? `<span class="tag tag-months">${monthsStr}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ==========================================
+    // PAGINATION
+    // ==========================================
+    function renderPagination(totalPages) {
+        const el = document.getElementById('pagination');
+        if (totalPages <= 1) { el.innerHTML = ''; return; }
+        let html = '';
+        if (currentPage > 1) {
+            html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})">⬅ Previous</button>`;
+        }
+        html += `<span class="page-info">Page ${currentPage} of ${totalPages}</span>`;
+        if (currentPage < totalPages) {
+            html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})">Next ➡</button>`;
+        }
+        el.innerHTML = html;
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        const kidsMode = document.getElementById('kidsMode').checked;
+        renderPlants(displayedPlants, kidsMode);
+        window.scrollTo({ top: 400, behavior: 'smooth' });
+    }
+
+    function renderSummary() {
+        const totalEdible = allEdible.length;
+        const totalPoisonous = allPoisonous.length;
+        document.getElementById('plantSummary').innerHTML = `
+            <span class="badge badge-green">🌿 ${totalEdible} Edible Plants</span>
+            <span class="badge badge-red">☠️ ${totalPoisonous} Poisonous Plants</span>
+            <span class="badge badge-default">📊 ${totalEdible + totalPoisonous} Total</span>
+        `;
+    }
+
+    // ==========================================
+    // TABS
+    // ==========================================
+    function switchTab(btn) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        currentTab = btn.dataset.category;
+        currentPage = 1;
+        filterPlants();
+    }
+
+    function toggleSeasonFilter() {
+        seasonFilter = !seasonFilter;
+        const btn = document.getElementById('seasonToggle');
+        btn.textContent = seasonFilter ? '📅 Clear Season Filter' : "📅 What's in Season?";
+        btn.classList.toggle('btn-active', seasonFilter);
+        currentPage = 1;
+        filterPlants();
+    }
+
+    // ==========================================
+    // PLANT DETAIL MODAL
+    // ==========================================
+    function openPlantModal(plantName) {
+        const allPlants = [
+            ...allEdible.map(p => ({...p, status: 'Edible'})),
+            ...allPoisonous.map(p => ({...p, status: 'Poisonous'}))
+        ];
+        const plant = allPlants.find(p => p.name === plantName);
+        if (!plant) return;
+
+        const kidsMode = document.getElementById('kidsMode').checked;
+        SoundManager.open();
+
+        const isPoisonous = plant.status === 'Poisonous';
+        const dangerZone = plant.danger_tips ? plant.danger_tips.danger_zone : '';
+        const isDeadly = dangerZone === 'DEADLY' || dangerZone === 'EXTREME';
+        const isHighDanger = dangerZone === 'HIGH' || dangerZone === 'POISONOUS';
+        const difficulty = plant.difficulty || 1;
+        const diffLabel = difficulty === 1 ? 'Easy' : difficulty === 2 ? 'Medium' : 'Hard';
+
+        // Build season calendar
+        const allMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        let calendarHtml = '';
+        if (plant.months && plant.months.length > 0) {
+            calendarHtml = `<div class="modal-section"><h3>📅 In Season</h3><div class="season-calendar">`;
+            for (const m of allMonths) {
+                const isActive = plant.months.includes(m);
+                const isCurrent = m === currentMonth;
+                let cls = 'cal-month';
+                if (isActive) cls += ' active';
+                if (isCurrent) cls += ' current';
+                calendarHtml += `<span class="${cls}">${m}</span>`;
+            }
+            calendarHtml += `</div></div>`;
+        }
+
+        // --- Kids mode modal ---
+        if (kidsMode && isPoisonous) {
+            const dangerBanner = isDeadly ? 'deadly' : isHighDanger ? 'high' : 'caution';
+            const dangerText = isDeadly ? '☠️ DEADLY — Can Kill' : isHighDanger ? '⚠️ Very Dangerous' : '⚠️ Poisonous';
+            let html = `
+                <div class="modal-plant-header poisonous">
+                    <h2 class="modal-plant-name">☠️ ${esc(plant.name)}</h2>
+                    ${plant.latin_name ? `<div class="modal-plant-latin-row"><em>${esc(plant.latin_name)}</em><button class="pronounce-btn" onclick="speakLatin('${esc(plant.latin_name)}')" title="Listen">🔊</button></div>` : ''}
+                </div>
+                <div class="modal-danger-banner ${dangerBanner}">${dangerText}</div>
+                <div class="modal-tab-panel active" style="display:block; padding:1.5rem;">
+                    <div class="modal-kids-danger">
+                        <div style="font-size:3rem;">🚨</div>
+                        <div style="color:#EF5350; font-weight:800; font-size:1.4rem; margin:0.5rem 0;">DO NOT TOUCH OR EAT</div>
+                        <div style="color:#EF9A9A; font-size:0.95rem;">This plant is dangerous. Stay away from it.</div>
+                    </div>
+                    ${plant.confusion_notes ? `<div class="modal-confusion danger">⚠️ Key ID Note: ${esc(plant.confusion_notes)}</div>` : ''}
+                    ${plant.id_keys && Object.keys(plant.id_keys).length > 0 ? `
+                        <div class="modal-section">
+                            <h3>🔎 How to Recognise It (So You Can Avoid It)</h3>
+                            <ul>${Object.entries(plant.id_keys).map(([k,v]) => `<li><strong>${esc(k)}:</strong> ${esc(v)}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    <div style="text-align:center; color:#7a7570; font-size:0.85rem; margin-top:1rem;">Tell an adult if you see this plant.</div>
+                </div>
+            `;
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('plantModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            if (isDeadly) SoundManager.warning();
+            return;
+        }
+
+        if (kidsMode) {
+            let html = `
+                <div class="modal-plant-header edible">
+                    <h2 class="modal-plant-name">🌿 ${esc(plant.name)}</h2>
+                    ${plant.latin_name ? `<div class="modal-plant-latin-row"><em>${esc(plant.latin_name)}</em><button class="pronounce-btn" onclick="speakLatin('${esc(plant.latin_name)}')" title="Listen">🔊</button></div>` : ''}
+                </div>
+                <div class="modal-tab-panel active" style="display:block; padding:1.5rem;">
+                    <div style="text-align:center; margin-bottom:1rem;">
+                        <div class="card-safe-badge" style="font-size:1.1rem;">✅ Safe to Learn About</div>
+                    </div>
+                    <div class="modal-desc">${esc(plant.description || '')}</div>
+                    ${plant.id_keys && Object.keys(plant.id_keys).length > 0 ? `
+                        <div class="modal-section">
+                            <h3>🔎 How to Identify</h3>
+                            <ul>${Object.entries(plant.id_keys).map(([k,v]) => `<li><strong>${esc(k)}:</strong> ${esc(v)}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    ${calendarHtml}
+                    ${plant.confusion_notes ? `<div class="modal-confusion warning">🔍 Key ID Note: ${esc(plant.confusion_notes)}</div>` : ''}
+                    <div style="color:#7a7570; font-size:0.85rem; text-align:center; margin-top:1rem;">Always check with an adult before touching any plant.</div>
+                </div>
+            `;
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('plantModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            return;
+        }
+
+        // --- Full mode modal with tabs ---
+        const headerClass = isPoisonous ? 'poisonous' : 'edible';
+
+        // Danger banner (shown above tabs for poisonous)
+        let dangerBannerHtml = '';
+        if (isPoisonous && dangerZone) {
+            const bannerClass = isDeadly ? 'deadly' : isHighDanger ? 'high' : 'caution';
+            const bannerText = isDeadly ? `☠️ DANGER LEVEL: ${dangerZone} — Can be Fatal` :
+                              isHighDanger ? `⚠️ DANGER LEVEL: ${dangerZone}` :
+                              `⚠️ Caution: ${dangerZone}`;
+            dangerBannerHtml = `<div class="modal-danger-banner ${bannerClass}">${bannerText}</div>`;
+        }
+
+        // Build tab buttons
+        const tabs = [];
+        const panels = [];
+
+        // Always: Overview
+        tabs.push('Overview');
+        panels.push(buildOverviewPanel(plant, isPoisonous, difficulty, diffLabel, calendarHtml));
+
+        // Always: Identify (if ID keys exist)
+        if (plant.id_keys && Object.keys(plant.id_keys).length > 0) {
+            tabs.push('Identify');
+            panels.push(buildIdentifyPanel(plant));
+        }
+
+        // Lookalikes / Compare
+        if (plant.lookalikes && plant.lookalikes.length > 0) {
+            tabs.push(isPoisonous ? 'Lookalikes' : 'Compare');
+            panels.push(buildLookalikesPanel(plant, isPoisonous));
+        }
+
+        // Foraging tips (edible) or Danger details (poisonous)
+        if (isPoisonous && plant.danger_tips && Object.keys(plant.danger_tips).length > 1) {
+            tabs.push('Danger Info');
+            panels.push(buildDangerPanel(plant));
+        } else if (!isPoisonous && plant.foraging_tips && Object.keys(plant.foraging_tips).length > 0) {
+            tabs.push('Foraging');
+            panels.push(buildForagingPanel(plant));
+        }
+
+        // Warnings
+        if (plant.warnings || plant.confusion_notes) {
+            tabs.push('Warnings');
+            panels.push(buildWarningsPanel(plant, isPoisonous));
+        }
+
+        // Render tabs
+        let tabButtonsHtml = tabs.map((t, i) =>
+            `<button class="modal-tab${i === 0 ? ' active' : ''}" data-tab="${t}" onclick="switchModalTab('${t}')">${t}</button>`
+        ).join('');
+
+        let panelsHtml = panels.map((p, i) =>
+            `<div class="modal-tab-panel${i === 0 ? ' active' : ''}" id="panel-${tabs[i]}" style="display:${i === 0 ? 'block' : 'none'}">${p}</div>`
+        ).join('');
+
+        let html = `
+            <div class="modal-plant-header ${headerClass}">
+                <h2 class="modal-plant-name">${isPoisonous ? '☠️' : '🌿'} ${esc(plant.name)}</h2>
+                <div class="modal-plant-latin-row">
+                    ${plant.latin_name ? `<em class="modal-plant-latin">${esc(plant.latin_name)}</em><button class="pronounce-btn" onclick="speakLatin('${esc(plant.latin_name)}')" title="Listen to Latin pronunciation">🔊</button>` : ''}
+                    <span class="card-status ${headerClass}" style="margin-left:auto;">${plant.status}</span>
+                </div>
+                <div class="modal-plant-meta">
+                    <span>📂 ${esc(plant.category || 'Plant')}</span>
+                    <span>🌱 ${diffLabel}</span>
+                    ${plant.habitat ? `<span>📍 ${esc(plant.habitat)}</span>` : ''}
+                </div>
+            </div>
+            ${dangerBannerHtml}
+            <div class="modal-tabs">${tabButtonsHtml}</div>
+            ${panelsHtml}
+        `;
+
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('plantModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+        if (isDeadly) SoundManager.warning();
+    }
+
+    // ==========================================
+    // MODAL TAB PANEL BUILDERS
+    // ==========================================
+    function buildOverviewPanel(plant, isPoisonous, difficulty, diffLabel, calendarHtml) {
+        let html = `<div class="modal-desc">${esc(plant.description || 'No description available.')}</div>`;
+        html += calendarHtml;
+        if (plant.habitat) {
+            html += `<div class="modal-section"><h3>📍 Habitat</h3><p style="color:#c4b8a8; font-family:var(--font-body);">${esc(plant.habitat)}</p></div>`;
+        }
+        return html;
+    }
+
+    function buildIdentifyPanel(plant) {
+        let html = `<div class="modal-section"><h3>🔎 Identification Keys</h3><ul>`;
+        for (const [key, value] of Object.entries(plant.id_keys)) {
+            html += `<li><strong>${esc(key)}:</strong> ${esc(value)}</li>`;
+        }
+        html += `</ul></div>`;
+        return html;
+    }
+
+    function buildLookalikesPanel(plant, isPoisonous) {
+        let html = `<div class="modal-section"><h3>⚠️ ${isPoisonous ? 'What It Looks Like' : 'Lookalike Warning'}</h3>`;
+        if (isPoisonous && plant.confusion_notes) {
+            html += `<div class="modal-confusion danger">⚠️ Critical ID Note: ${esc(plant.confusion_notes)}</div>`;
+        } else if (!isPoisonous && plant.confusion_notes) {
+            html += `<div class="modal-confusion warning">🔍 Key ID Note: ${esc(plant.confusion_notes)}</div>`;
+        }
+        for (const la of plant.lookalikes) {
+            if (typeof la === 'object') {
+                const isDead = la.danger === 'DEADLY' || la.danger === 'EXTREME';
+                const isHigh = la.danger === 'HIGH' || la.danger === 'POISONOUS';
+                const cls = isDead ? 'deadly' : isHigh ? 'high' : 'safe';
+                const dangerCls = isDead ? 'deadly' : isHigh ? 'high' : la.danger === 'MODERATE' ? 'caution' : 'safe';
+                html += `<div class="lookalike-card ${cls}">
+                    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem;">
+                        <span class="lookalike-name">${esc(la.name)}</span>
+                        <span class="lookalike-danger ${dangerCls}">${esc(la.danger)}</span>
+                    </div>
+                    <div class="lookalike-diff">👉 Difference: ${esc(la.diff)}</div>
+                </div>`;
+            } else {
+                html += `<div class="lookalike-card"><span class="lookalike-name">${esc(la)}</span></div>`;
+            }
+        }
+        html += `</div>`;
+        return html;
+    }
+
+    function buildForagingPanel(plant) {
+        const tips = plant.foraging_tips;
+        let html = `<div class="modal-section"><h3>🧺 Foraging Tips</h3><table class="modal-table">`;
+        if (tips.where) html += `<tr><td>Where to find</td><td>${esc(tips.where)}</td></tr>`;
+        if (tips.when) html += `<tr><td>Best time</td><td>${esc(tips.when)}</td></tr>`;
+        if (tips.sustainable) html += `<tr><td>Sustainable pick</td><td>${esc(tips.sustainable)}</td></tr>`;
+        if (tips.danger_zone) html += `<tr><td>⚠️ Danger zone</td><td>${esc(tips.danger_zone)}</td></tr>`;
+        html += `</table></div>`;
+        return html;
+    }
+
+    function buildDangerPanel(plant) {
+        const tips = plant.danger_tips;
+        let html = `<div class="modal-section"><h3>☠️ Danger Details</h3><table class="modal-table">`;
+        if (tips.where) html += `<tr><td>Where found</td><td>${esc(tips.where)}</td></tr>`;
+        if (tips.when) html += `<tr><td>When dangerous</td><td>${esc(tips.when)}</td></tr>`;
+        if (tips.sustainable) html += `<tr><td>What to do</td><td>${esc(tips.sustainable)}</td></tr>`;
+        if (tips.danger_zone) html += `<tr><td>⚠️ Danger zone</td><td>${esc(tips.danger_zone)}</td></tr>`;
+        html += `</table></div>`;
+        return html;
+    }
+
+    function buildWarningsPanel(plant, isPoisonous) {
+        let html = '';
+        if (plant.warnings) {
+            html += `<div class="modal-warning">${isPoisonous ? '☠️' : '⚠️'} ${esc(plant.warnings)}</div>`;
+        }
+        if (plant.confusion_notes) {
+            const cls = isPoisonous ? 'danger' : 'warning';
+            const icon = isPoisonous ? '⚠️ Critical ID Note' : '🔍 Key ID Note';
+            html += `<div class="modal-confusion ${cls}">${icon}: ${esc(plant.confusion_notes)}</div>`;
+        }
+        if (!html) html = '<p style="color:#7a7570;">No specific warnings for this plant.</p>';
+        return html;
+    }
+
+    // ==========================================
+    // MODAL TAB SWITCHING
+    // ==========================================
+    function switchModalTab(tabName) {
+        document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.modal-tab-panel').forEach(p => {
+            p.classList.remove('active');
+            p.style.display = 'none';
+        });
+        document.querySelector(`.modal-tab[data-tab="${tabName}"]`).classList.add('active');
+        const panel = document.getElementById(`panel-${tabName}`);
+        if (panel) {
+            panel.classList.add('active');
+            panel.style.display = 'block';
+        }
+    }
+
+    // ==========================================
+    // CLOSE MODAL
+    // ==========================================
+    function closeModal(event) {
+        if (event.target === document.getElementById('plantModal')) {
+            closeModalDirect();
+        }
+    }
+
+    function closeModalDirect() {
+        document.getElementById('plantModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        SoundManager.close();
+        // Stop any speech
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModalDirect();
+    });
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    SoundManager.init();
+    loadPlants();
+    </script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/progress.js"></script>
+</body>
+</html>

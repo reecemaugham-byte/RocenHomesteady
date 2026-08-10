@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Games — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+    <link rel="stylesheet" href="/static/css/farm.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games" class="nav-active">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+<main class="farm-page">
+        <h1 class="page-title">🚜 Farm Games</h1>
+        <p class="page-subtitle">Grow crops, raise animals, and master companion planting!</p>
+
+        <!-- Tab Navigation -->
+        <div class="game-tabs">
+            <button class="tab-btn active" data-tab="farm-tycoon" onclick="switchFarmTab('farm-tycoon')">🚜 Farm Tycoon</button>
+            <button class="tab-btn" data-tab="market-garden" onclick="switchFarmTab('market-garden')">🌱 Market Garden</button>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- FARM TYCOON                           -->
+        <!-- ══════════════════════════════════════ -->
+<section id="farm-tycoon" class="game-container active">
+    <div class="game-header">
+        <h2>🚜 Farm Tycoon</h2>
+        <p class="game-caption">Build your farm from the ground up. Grow crops, raise animals, buy the Manor to win!</p>
+    </div>
+
+    <details class="htp-section">
+        <summary>📖 Guide &amp; Progression</summary>
+        <div class="htp-content">
+            <ol>
+                <li><strong>📅 Seasons:</strong> Each season lasts 30 days (120 days = 1 Year). Animals unlock in Year 2.</li>
+                <li><strong>🌱 Farming:</strong> Crops take 3 days to grow (Seed → Growing → Ready). Empty plots regenerate +5 soil health/day.</li>
+                <li><strong>📦 Feed:</strong> Animals eat Feed Bags. Recipe: 1 Wheat + 1 Carrot + 1 Corn = 5 Feed.</li>
+                <li><strong>🦅 Scarecrow:</strong> +1 yield to adjacent ready crops.</li>
+                <li><strong>📉 Market:</strong> Selling &gt;10 of one item crashes the price by 20%. Random surges double prices!</li>
+                <li><strong>❄️ Winter:</strong> Crops die (unless Cold Frame built). Fish still available.</li>
+            </ol>
+        </div>
+    </details>
+
+    <div id="ft-win-banner" class="hidden"></div>
+    <div class="stats-ledger">
+        <div id="ft-stats" class="stats-row"></div>
+    </div>
+    <details class="farm-ledger-section">
+        <summary>📊 Farm Ledger</summary>
+        <div id="ft-ledger"></div>
+    </details>
+    <div id="ft-event"></div>
+    <div id="ft-warning"></div>
+    <div id="ft-inventory"></div>
+    <div id="ft-feed-status"></div>
+
+    <!-- Sub-tabs -->
+    <div class="sub-tabs">
+        <button class="sub-tab active" onclick="ftSwitchSubTab('farm', this)">🚜 Farm</button>
+        <button class="sub-tab" onclick="ftSwitchSubTab('view', this)">🏞️ Rocen Farm</button>
+    </div>
+
+    <!-- Farm tab — all your existing game content -->
+    <div id="ft-tab-farm" class="sub-tab-content active">
+
+        <hr class="game-divider">
+        <div id="ft-tool-panel" class="tool-panel"></div>
+        <div id="ft-placing-banner" class="placing-banner hidden"></div>
+
+        <div id="ft-farm-scene" class="farm-scene season-spring">
+            <div id="ft-weather-particles" class="weather-particles"></div>
+            <div id="ft-day-overlay" class="day-overlay midday"></div>
+            <h3 class="section-title">🗺️ Your Farm</h3>
+            <div id="ft-grid" class="farm-grid fenced"></div>
+            <div id="ft-legend" class="legend-bar"></div>
+        </div>
+
+        <hr class="game-divider">
+
+        <div id="ft-feed-production"></div>
+
+        <hr class="game-divider">
+
+        <div class="day-advance-area">
+            <button class="btn-primary btn-full" onclick="farmTycoon.advanceDay()">⏭️ Advance Day</button>
+        </div>
+
+        <hr class="game-divider">
+
+        <div class="market-stall">
+            <h3 class="section-title">💰 Market</h3>
+            <div id="ft-market" class="market-grid"></div>
+        </div>
+
+        <hr class="game-divider">
+        <h3 class="section-title">📜 Contracts</h3>
+        <div id="ft-contracts"></div>
+
+        <hr class="game-divider">
+        <details class="achievements-section">
+            <summary>🏅 Farm Achievements</summary>
+            <div id="ft-achievements" class="achievements-grid"></div>
+        </details>
+
+        <details class="achievements-section">
+            <summary>🔄 Reset Farm</summary>
+            <div style="padding: 1rem;">
+                <p style="color: var(--danger);">⚠️ This will delete your entire farm progress!</p>
+                <button class="btn-danger" onclick="farmTycoon.reset()">🗑️ Reset Farm Tycoon</button>
+            </div>
+        </details>
+
+    </div>
+
+    <!-- Rocen Farm view tab -->
+    <div id="ft-tab-view" class="sub-tab-content">
+        <div id="ft-village-view"></div>
+        <div id="ft-scene-info" style="margin-top: 0.8rem;"></div>
+        <p style="text-align: center; color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.8rem; background: var(--bg-card); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            💡 Switch to the 🚜 Farm tab to plant, harvest, and manage your crops and buildings.
+        </p>
+    </div>
+
+</section>
+
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- MARKET GARDEN                         -->
+        <!-- ══════════════════════════════════════ -->
+        <section id="market-garden" class="game-container">
+            <div class="game-header">
+                <h2>🌱 Market Garden</h2>
+                <p class="game-caption">📚 Companion planting, crop rotation, and soil health!</p>
+            </div>
+
+            <details class="htp-section">
+                <summary>📖 How to Play</summary>
+                <div class="htp-content">
+                    <ol>
+                        <li><strong>🖱️ Plant:</strong> Select a crop and click an empty bed.</li>
+                        <li><strong>💧 Water:</strong> Water crops each day (50p/bed) or wait for rain (free!).</li>
+                        <li><strong>🤝 Companion Planting:</strong> Good companions give yield bonuses. Bad companions reduce yield.</li>
+                        <li><strong>🔄 Crop Rotation:</strong> Same family in same bed = -30% yield. Legumes ADD nitrogen!</li>
+                        <li><strong>🌟 Golden Crops:</strong> 1 in 100 chance when harvesting! Worth 10x the price.</li>
+                        <li><strong>❄️ Winter:</strong> Crops die (except Herbs). Plan ahead!</li>
+                    </ol>
+                </div>
+            </details>
+
+            <div class="stats-ledger">
+                <div id="mg-stats" class="stats-row"></div>
+            </div>
+            <details class="farm-ledger-section">
+                <summary>📊 Garden Ledger</summary>
+                <div id="mg-ledger"></div>
+            </details>
+            <div id="mg-golden"></div>
+            <div id="mg-events"></div>
+            <div id="mg-weather"></div>
+
+            <!-- Sub-tabs: Garden / Catalogue -->
+            <div class="sub-tabs">
+                <button class="sub-tab active" data-tab="garden" onclick="mgSwitchSubTab('garden', this)">🌱 Garden</button>
+                <button class="sub-tab" data-tab="scene" onclick="mgSwitchSubTab('scene', this)">🏞️ Rocen Garden</button>
+                <button class="sub-tab" data-tab="catalogue" onclick="mgSwitchSubTab('catalogue', this)">📖 Seed Catalogue</button>
+                <button class="sub-tab" data-tab="tools" onclick="mgSwitchSubTab('tools', this)">🛠️ Tools & Upgrades</button>
+            </div>
+
+            <div id="mg-tab-scene" class="sub-tab-content">
+                <div id="mg-village-view"></div>
+            </div>
+
+            <div id="mg-tab-garden" class="sub-tab-content active">
+                <div id="mg-crop-select"></div>
+                <div id="mg-companion-info"></div>
+
+                <!-- Garden Scene -->
+                <div id="mg-garden-scene" class="mg-scene season-spring">
+                    <div id="mg-weather-particles" class="weather-particles"></div>
+                    <div id="mg-day-overlay" class="day-overlay midday"></div>
+                    <h3 class="section-title">🌱 Your Garden (12 Beds)</h3>
+                    <div id="mg-beds" class="mg-beds-grid"></div>
+                </div>
+
+                <hr class="game-divider">
+
+            <!-- Actions & Upgrades (now in sub-tab, this is hidden fallback) -->
+            <div id="mg-actions" class="actions-grid" style="display: none;"></div>
+
+            </div>
+
+            <div id="mg-tab-catalogue" class="sub-tab-content">
+                <div id="mg-catalogue"></div>
+            </div>
+
+            <div id="mg-tab-tools" class="sub-tab-content">
+                <h3 class="section-title">🛠️ Tools & Upgrades</h3>
+                <div id="mg-tools-content"></div>
+            </div>
+
+
+            <hr class="game-divider">
+
+            <!-- Market Stall -->
+            <div class="market-stall">
+                <h3 class="section-title">💰 Farmers' Market</h3>
+                <div id="mg-market"></div>
+            </div>
+
+            <hr class="game-divider">
+
+            <!-- Day Info & Advance -->
+            <div id="mg-day-info"></div>
+            <div class="day-advance-area">
+                <button class="btn-primary btn-full" onclick="marketGarden.advanceDay()">⏭️ Advance Day</button>
+            </div>
+
+            <!-- Achievements -->
+            <hr class="game-divider">
+            <details class="achievements-section">
+                <summary>🏅 Garden Achievements</summary>
+                <div id="mg-achievements" class="achievements-grid"></div>
+            </details>
+
+            <details class="achievements-section">
+                <summary>🔄 Reset Garden</summary>
+                <div style="padding: 1rem;">
+                    <p style="color: var(--danger);">⚠️ This will delete your garden progress!</p>
+                    <button class="btn-danger" onclick="marketGarden.reset()">🗑️ Reset Market Garden</button>
+                </div>
+            </details>
+        </section>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="/static/js/farm.js"></script>
+        <script>
+        // Auto-switch tab if navigated from a direct game link
+        (function() {
+            var activeGame = "{{ active_game | default('') }}";
+            if (activeGame === 'market-garden') {
+                switchFarmTab('market-garden');
+            }
+            // Default is farm-tycoon, which is already active
+        })();
+    </script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>

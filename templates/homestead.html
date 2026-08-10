@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homestead — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/homestead.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games" class="nav-active">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <main class="homestead-page">
+        <h1 class="page-title">🏘️ Homestead Games</h1>
+
+        <!-- Tab Navigation -->
+        <div class="game-tabs">
+            <button class="tab-btn active" data-tab="eco-village" onclick="switchHomesteadTab('eco-village')">🏘️ Eco-Village</button>
+            <button class="tab-btn" data-tab="wild-kitchen" onclick="switchHomesteadTab('wild-kitchen')">🍳 The Wild Kitchen</button>
+        </div>
+
+
+
+        <!-- ECO-VILLAGE -->
+        <section id="eco-village" class="game-container active">
+            <div id="ev-particles" class="ev-particles"></div>
+            <div id="ev-day-transition" class="ev-day-transition hidden"></div>
+            <div class="game-header">
+                <h2>🏘️ Eco-Village Builder</h2>
+            </div>
+
+            <details class="htp-section">
+                <summary>📖 How to Play</summary>
+                <div class="htp-content">
+                    <ol>
+                        <li><strong>Forage:</strong> Gather resources from the woods or sell items from Foraging Games. Rainy weather boosts forage yields!</li>
+                        <li><strong>Build:</strong> Place buildings on your land to produce resources.</li>
+                        <li><strong>Produce:</strong> Use Production to turn raw goods into valuable items.</li>
+                        <li><strong>Market:</strong> Sell items for money. Processed goods are worth much more!</li>
+                        <li><strong>🌤️ Weather:</strong> Each day has weather that affects production. Storms disable solar/wind, drought reduces water, rain boosts forage yields.</li>
+                        <li><strong>⚠️ Winter:</strong> Solar Panels and Wind Turbines stop. Nature stops growing. <strong>Stockpile food AND wood!</strong></li>
+                        <li><strong>🏠 Heating:</strong> Each House needs 1 Wood/day in Winter (2 in Cold Snaps!). Unheated homes take damage every 2 days!</li>
+                        <li><strong>🫧 Cold Frame:</strong> Produces +3 Food/day even in winter (reduced in drought).</li>
+                        <li><strong>🥓 Smokehouse:</strong> Produces +1 Wood/day (costs Nature). Cook Smoked Fish and Jerky without Power.</li>
+                        <li><strong>🐐 Goat Pen:</strong> Produces 1 Milk/day in any season.</li>
+                        <li><strong>🌱 Greenhouse:</strong> Produces 1-2 random crops (Strawberry, Tomato, Pepper, Cucumber, Lettuce) year-round.</li>
+                        <li><strong>📦 Storage:</strong> Personal inventory holds foraged items. Build a Barn to unlock <strong>Barn Storage</strong> for winter reserves.</li>
+                        <li><strong>🏗️ Barn:</strong> Use → to move items into the Barn. Village operations pull from Barn first. ← takes items back out.</li>
+                    </ol>
+                    <p>💡 <strong>Tip:</strong> Dandelion Tea is worth 25× more than raw Dandelions. Invest in production!</p>
+                    <p>🌧️ <strong>Weather Tip:</strong> Forage on Rainy days for the best yields. Avoid foraging during Storms.</p>
+                </div>
+            </details>
+
+
+            <!-- Stats -->
+            <div id="ev-stats" class="stats-row"></div>
+            <div id="ev-season-bar"></div>
+            <div id="ev-warning"></div>
+
+            <!-- Sub-tabs: Map / Market -->
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="evSwitchSubTab('map')">🗺️ Map</button>
+                <button class="sub-tab" onclick="evSwitchSubTab('village')">🏘️ Village View</button>
+                <button class="sub-tab" onclick="evSwitchSubTab('market')">🎒 Market & Pantry</button>
+</div>
+
+
+            <!-- Map Tab -->
+            <div id="ev-tab-map" class="sub-tab-content active">
+                <div id="ev-placing-banner" class="placing-banner hidden"></div>
+                <h3 class="section-title">🗺️ Your Land</h3>
+                <div id="ev-grid" class="village-grid"></div>
+                <hr class="game-divider">
+                <h3 class="section-title">🛠️ Build</h3>
+                <div id="ev-build-panel" class="build-panel"></div>
+<div class="end-day-sticky">
+<button class="btn-primary btn-full" onclick="ecoVillage.endDay()">⏭️ End Day (Survive)</button>
+</div>
+
+            </div>
+
+            <!-- Village View Tab -->
+            <div id="ev-tab-village" class="sub-tab-content">
+                <div id="ev-village-scene"></div>
+            </div>
+
+            <!-- Market Tab -->
+            <div id="ev-tab-market" class="sub-tab-content">
+                <div class="market-layout">
+                    <div class="market-col" id="ev-actions"></div>
+                    <div class="market-col" id="ev-pantry"></div>
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <hr class="game-divider">
+            <details class="achievements-section">
+                <summary>🏅 Eco-Village Achievements</summary>
+                <div id="ev-achievements" class="achievements-grid"></div>
+            </details>
+
+            <details class="achievements-section">
+                <summary>🔄 Reset Village</summary>
+                <div style="padding: 1rem;">
+                    <p style="color: var(--danger);">⚠️ This will delete your entire village progress!</p>
+                    <button class="btn-danger" onclick="ecoVillage.reset()">🗑️ Reset Eco-Village</button>
+                </div>
+            </details>
+        </section>
+
+        <!-- WILD KITCHEN -->
+        <section id="wild-kitchen" class="game-container">
+            <div class="game-header">
+                <h2>🍳 The Wild Kitchen</h2>
+                <p class="game-caption">📖 Click the book to browse recipes. Click the cauldron to cook.</p>
+            </div>
+
+            <details class="htp-section">
+                <summary>📖 How to Play</summary>
+                <div class="htp-content">
+                    <ol>
+                        <li><strong>Book:</strong> Click the cookbook on the shelf to browse recipes and answer questions.</li>
+                        <li><strong>Cauldron:</strong> After selecting a recipe, click the cauldron to cook it.</li>
+                        <li><strong>Inventory:</strong> Your pantry is filled by Foraging Games. Go foraging first!</li>
+                        <li><strong>Progression:</strong> Unlock 3 Beginner recipes to open the Intermediate chapter.</li>
+                        <li><strong>Sell:</strong> Cooked dishes can be sold in Eco-Village for good money!</li>
+                    </ol>
+                </div>
+            </details>
+
+            <!-- Kitchen Scene -->
+            <div class="kitchen-scene" id="kitchen-scene">
+                <!-- Room Structure -->
+                <div class="ks-wall"></div>
+                <div class="ks-floor"></div>
+                <div class="ks-ceiling"></div>
+                <div class="ks-beam ks-beam-l"></div>
+                <div class="ks-beam ks-beam-c"></div>
+                <div class="ks-beam ks-beam-r"></div>
+                <div class="ks-beam-shadow"></div>
+
+                <!-- Fireplace -->
+                <div class="ks-fp">
+                    <div class="ks-fp-surround"></div>
+                    <div class="ks-fp-opening">
+                        <div class="ks-fp-inner"></div>
+                    </div>
+                    <div class="ks-fp-mantel"></div>
+                    <div class="ks-fp-hearth"></div>
+                    <div class="ks-fire-glow" id="ks-fire-glow"></div>
+                    <div class="ks-fire" id="kitchen-fire">
+                        <div class="ks-flame ks-f1"></div>
+                        <div class="ks-flame ks-f2"></div>
+                        <div class="ks-flame ks-f3"></div>
+                        <div class="ks-flame ks-f4"></div>
+                        <div class="ks-flame ks-f5"></div>
+                    </div>
+                    <div class="ks-embers">
+                        <div class="ks-ember ks-e1"></div>
+                        <div class="ks-ember ks-e2"></div>
+                        <div class="ks-ember ks-e3"></div>
+                        <div class="ks-ember ks-e4"></div>
+                        <div class="ks-ember ks-e5"></div>
+                    </div>
+                    <div class="ks-soot"></div>
+                </div>
+
+                <!-- Cauldron -->
+                <div class="ks-cauldron" id="kitchen-cauldron" onclick="wildKitchen.clickCauldron()">
+                    <div class="ks-cauldron-rim"></div>
+                    <div class="ks-cauldron-body">
+                        <div class="ks-cauldron-liquid" id="cauldron-liquid-mini"></div>
+                    </div>
+                    <div class="ks-cauldron-handle ks-ch-l"></div>
+                    <div class="ks-cauldron-handle ks-ch-r"></div>
+                    <div class="ks-cauldron-rivet ks-rv1"></div>
+                    <div class="ks-cauldron-rivet ks-rv2"></div>
+                    <div class="ks-cauldron-rivet ks-rv3"></div>
+                </div>
+                <div class="ks-cauldron-stand">
+                    <div class="ks-stand-leg ks-stand-l"></div>
+                    <div class="ks-stand-leg ks-stand-r"></div>
+                    <div class="ks-stand-cross"></div>
+                </div>
+                <div class="ks-cauldron-label" id="kitchen-cauldron-label">Click to Cook</div>
+
+                <!-- Window -->
+                <div class="ks-window" id="kitchen-window">
+                    <div class="ks-window-scene" id="window-scene"></div>
+                    <div class="ks-window-bar-h"></div>
+                    <div class="ks-window-bar-v"></div>
+                    <div class="ks-window-sill"></div>
+                </div>
+
+                <!-- Upper Shelf -->
+                <div class="ks-shelf ks-shelf-upper">
+                    <div class="ks-shelf-board"></div>
+                    <div class="ks-shelf-bracket ks-sb-l"></div>
+                    <div class="ks-shelf-bracket ks-sb-r"></div>
+                    <div class="ks-jar ks-jar-1"><div class="ks-jar-lid"></div><div class="ks-jar-content ks-jc-green"></div></div>
+                    <div class="ks-jar ks-jar-2"><div class="ks-jar-lid"></div><div class="ks-jar-content ks-jc-amber"></div></div>
+                    <div class="ks-jar ks-jar-3"><div class="ks-jar-lid ks-jar-lid-sm"></div><div class="ks-jar-content ks-jc-red"></div></div>
+                    <div class="ks-pot-iron"></div>
+                    <div class="ks-candle">
+                        <div class="ks-candle-glow"></div>
+                        <div class="ks-candle-flame"></div>
+                        <div class="ks-candle-wick"></div>
+                        <div class="ks-candle-body"></div>
+                        <div class="ks-candle-holder"></div>
+                    </div>
+                </div>
+
+
+                <!-- Lower Shelf -->
+                <div class="ks-shelf ks-shelf-lower">
+                    <div class="ks-shelf-board"></div>
+                    <div class="ks-shelf-bracket ks-sb-l"></div>
+                    <div class="ks-shelf-bracket ks-sb-r"></div>
+                    <div class="ks-book" id="kitchen-book" onclick="wildKitchen.openBook()">
+                        <div class="ks-book-spine"></div>
+                        <div class="ks-book-cover">
+                            <span class="ks-book-title">🍳 Wild<br>Kitchen</span>
+                        </div>
+                    </div>
+                    <div class="ks-jar ks-jar-4"><div class="ks-jar-lid"></div><div class="ks-jar-content ks-jc-gold"></div></div>
+                    <div class="ks-jar ks-jar-5"><div class="ks-jar-lid ks-jar-lid-sm"></div><div class="ks-jar-content ks-jc-clear"></div></div>
+                    <div class="ks-bowl"></div>
+                </div>
+
+                <!-- Herb Rafters -->
+                <div class="ks-herbs" id="kitchen-herbs">
+                    <div class="ks-herb ks-herb-1">
+                        <div class="ks-herb-string"></div>
+                        <div class="ks-herb-bundle"></div>
+                    </div>
+                    <div class="ks-herb ks-herb-2">
+                        <div class="ks-herb-string"></div>
+                        <div class="ks-herb-bundle"></div>
+                    </div>
+                    <div class="ks-herb ks-herb-3">
+                        <div class="ks-herb-string"></div>
+                        <div class="ks-herb-bundle"></div>
+                    </div>
+                    <div class="ks-herb ks-herb-4">
+                        <div class="ks-herb-string"></div>
+                        <div class="ks-herb-bundle"></div>
+                    </div>
+                </div>
+                <!-- Barrel -->
+                <div class="ks-barrel"></div>
+
+
+                <!-- Larder -->
+                <div class="ks-larder" id="kitchen-larder" onclick="wildKitchen.openPantry()">
+                    <div class="ks-larder-door">
+                        <div class="ks-larder-plank ks-lp1"></div>
+                        <div class="ks-larder-plank ks-lp2"></div>
+                        <div class="ks-larder-plank ks-lp3"></div>
+                        <div class="ks-larder-handle"></div>
+                    </div>
+                    <div class="ks-larder-label">🎒 Pantry</div>
+                </div>
+                <!-- Dust Motes -->
+                <div class="ks-dust">
+                    <div class="ks-mote ks-m1"></div>
+                    <div class="ks-mote ks-m2"></div>
+                    <div class="ks-mote ks-m3"></div>
+                    <div class="ks-mote ks-m4"></div>
+                    <div class="ks-mote ks-m5"></div>
+                    <div class="ks-mote ks-m6"></div>
+                    <div class="ks-mote ks-m7"></div>
+                </div>
+
+
+                <!-- Selected Recipe Indicator -->
+                <div class="ks-selected-recipe" id="kitchen-selected-recipe"></div>
+
+                <!-- Hanging Pot -->
+                <div class="ks-hook">
+                    <div class="ks-hook-chain"></div>
+                    <div class="ks-hook-pot"></div>
+                </div>
+            </div>
+
+
+            <!-- Book Overlay -->
+            <div class="book-overlay hidden" id="wk-book-overlay">
+                <div class="book-overlay-backdrop" onclick="wildKitchen.closeBook()"></div>
+                <div class="book-overlay-content">
+                    <button class="book-overlay-close" onclick="wildKitchen.closeBook()">✕ Close Book</button>
+                    <div class="cookbook-layout">
+                        <div class="cookbook">
+                            <div class="book-nav">
+                                <button class="book-nav-btn" id="wk-prev" onclick="wildKitchen.prevPage()" disabled>←</button>
+                                <span class="book-page-info" id="wk-page-info">1 / 1</span>
+                                <button class="book-nav-btn" id="wk-next" onclick="wildKitchen.nextPage()">→</button>
+                            </div>
+                            <div class="book-container">
+                                <div class="book-spine"></div>
+                                <div class="book-page" id="wk-page">
+                                    <div style="text-align:center; color: #8b7355; padding: 3rem;">Loading cookbook...</div>
+                                </div>
+                            </div>
+                            <div class="book-chapters" id="wk-chapters"></div>
+                        </div>
+
+                        <div class="cookbook-sidebar">
+                            <div class="pantry-box">
+                                <div class="pantry-title">🎒 Pantry</div>
+                                <div id="wk-pantry"></div>
+                            </div>
+                            <div class="basics-box">
+                                <div class="basics-title">🔧 Basics (Unlimited)</div>
+                                <div id="wk-basics" class="basics-list"></div>
+                            </div>
+                            <div class="progress-box" id="wk-progress"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cooking Animation Overlay -->
+            <div class="cooking-overlay hidden" id="wk-cooking-overlay">
+                <div class="cooking-scene">
+                    <div class="cooking-fire" id="wk-fire">
+                        <div class="flame flame-1"></div>
+                        <div class="flame flame-2"></div>
+                        <div class="flame flame-3"></div>
+                        <div class="flame flame-4"></div>
+                        <div class="flame flame-5"></div>
+                    </div>
+                    <div class="cooking-pot-wrap">
+                        <div class="cooking-pot">
+                            <div class="pot-rim"></div>
+                            <div class="pot-body">
+                                <div class="pot-liquid" id="wk-liquid"></div>
+                                <div class="pot-bubbles" id="wk-bubbles"></div>
+                            </div>
+                            <div class="pot-handle pot-handle-left"></div>
+                            <div class="pot-handle pot-handle-right"></div>
+                            <div class="pot-leg pot-leg-left"></div>
+                            <div class="pot-leg pot-leg-right"></div>
+                        </div>
+                    </div>
+                    <div class="cooking-steam" id="wk-steam"></div>
+                    <div class="cooking-spoon" id="wk-spoon">
+                        <div class="spoon-handle"></div>
+                        <div class="spoon-bowl"></div>
+                    </div>
+                    <div class="cooking-ingredients" id="wk-ingredients"></div>
+                    <div class="cooking-flash" id="wk-flash"></div>
+                    <div class="cooking-result hidden" id="wk-result">
+                        <div class="cooking-result-icon" id="wk-result-icon"></div>
+                        <div class="cooking-result-text" id="wk-result-text"></div>
+                        <div class="cooking-result-xp" id="wk-result-xp"></div>
+                    </div>
+                    <button class="cooking-skip-btn hidden" id="wk-skip-btn" onclick="wildKitchen.skipAnimation()">Skip →</button>
+                </div>
+            </div>
+
+            <!-- Pantry Overlay -->
+            <div class="pantry-overlay hidden" id="wk-pantry-overlay">
+                <div class="pantry-overlay-backdrop" onclick="wildKitchen.closePantry()"></div>
+                <div class="pantry-overlay-content">
+                    <button class="pantry-overlay-close" onclick="wildKitchen.closePantry()">✕ Close Pantry</button>
+                    <h3 class="pantry-overlay-title">🎒 Pantry</h3>
+                    <div class="pantry-overlay-list" id="wk-pantry-popup"></div>
+                    <div class="pantry-overlay-basics">
+                        <div class="pantry-basics-title">🔧 Basics (Unlimited)</div>
+                        <div id="wk-pantry-basics-popup" class="pantry-basics-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <hr class="game-divider">
+            <details class="achievements-section">
+                <summary>🏅 Kitchen Achievements</summary>
+                <div id="wk-achievements" class="achievements-grid"></div>
+            </details>
+        </section>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script id="season-data" type="application/json">
+        {{ {'HS_ICONS': HS_ICONS | default([]), 'HS_MONTHS': HS_MONTHS | default([]), 'HS_SEASON': HS_SEASON | default('spring')} | tojson | safe }}
+    </script>
+    <script>
+        var HS_SEASON_DATA = JSON.parse(document.getElementById('season-data').textContent || '{}');
+        var HS_ICONS = HS_SEASON_DATA.HS_ICONS || {};
+        var HS_MONTHS = HS_SEASON_DATA.HS_MONTHS || {};
+        var HS_SEASON = HS_SEASON_DATA.HS_SEASON || 'Spring';
+    </script>
+
+    <script src="/static/js/homestead.js"></script>
+        <script>
+        // Auto-switch tab if navigated from a direct game link
+        (function() {
+            var activeGame = "{{ active_game | default('') }}";
+            if (activeGame === 'wild-kitchen') {
+                switchHomesteadTab('wild-kitchen');
+            }
+            // Default is eco-village, which is already active
+        })();
+    </script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/progress.js"></script>
+</body>
+</html>

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Modules — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/learn.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+</head>
+<body id="modulesBody">
+
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/learn/modules" class="nav-active">Modules</a>
+            <a href="/games">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <!-- SOUND TOGGLE -->
+    <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="Toggle sounds">
+        🔊
+    </button>
+
+    <!-- HEADER -->
+    <section class="page-header">
+        <h1>🎓 Learning Modules</h1>
+        <p>Structured learning paths for UK foraging & homesteading — {{ total_modules }} modules across 3 paths</p>
+    </section>
+
+    <!-- XP BAR -->
+    <section class="xp-section">
+        <div class="xp-bar-container">
+            <div class="xp-info">
+                <span id="rankIcon">🟤</span>
+                <span id="rankTitle">Novice Gatherer</span>
+                <span id="xpDisplay">0 XP</span>
+            </div>
+            <div class="xp-bar">
+                <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+            </div>
+            <div class="xp-next" id="xpNext">Next rank: Junior Forager at 50 XP</div>
+        </div>
+    </section>
+
+    <!-- PATH NAV -->
+    <section class="path-nav">
+        {% for path_name, info in path_info.items() %}
+        <a href="#path-{{ info.slug }}" class="path-nav-link path-nav-{{ info.slug }}">
+            {{ info.icon }} {{ path_name }}
+        </a>
+        {% endfor %}
+    </section>
+
+    <!-- RECOMMENDED NEXT -->
+    <section class="recommended-section" id="recommendedNext">
+        <!-- Filled by JS -->
+    </section>
+
+    <!-- MODULE GROUPS BY PATH -->
+    {% for path_name, modules in modules_by_path.items() %}
+    {% set info = path_info[path_name] %}
+    <section class="module-group" id="path-{{ info.slug }}">
+        <div class="group-header">
+            <h2 class="group-title group-title-{{ info.slug }}">
+                {{ info.icon }} {{ path_name }}
+            </h2>
+            <p class="group-desc">{{ info.description }}</p>
+            <div class="group-progress" id="path-progress-{{ info.slug }}">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+        <div class="module-grid">
+            {% for mod in modules %}
+            <div class="module-card module-card-{{ mod.path_slug }}"
+                 data-title="{{ mod.title }}"
+                 data-steps="{{ mod.step_count }}"
+                 data-level="{{ mod.level }}"
+                 data-path="{{ mod.path }}"
+                 data-path-slug="{{ mod.path_slug }}"
+                 id="card-{{ mod.title | replace(' ', '-') }}"
+                 onclick="startModule('{{ mod.title }}')">
+                <div class="module-icon">{{ mod.icon }}</div>
+                <div class="module-info">
+                    <h3>{{ mod.title }}</h3>
+                    <div class="module-badges">
+                        <span class="badge badge-path-{{ mod.path_slug }}">{{ mod.path }}</span>
+                        <span class="badge badge-level badge-level-{{ mod.level | lower }}">{{ mod.level }}</span>
+                    </div>
+                    <div class="module-meta">
+                        <span>👦 Age {{ mod.ks2_age }}</span>
+                        <span>📝 {{ mod.step_count }} steps</span>
+                    </div>
+                </div>
+                <div class="module-card-right">
+                    <div class="module-status" id="status-{{ mod.title | replace(' ', '-') }}">
+                        <!-- Filled by JS -->
+                    </div>
+                    <div class="module-xp" id="xp-{{ mod.title | replace(' ', '-') }}">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+                <div class="module-progress" id="progress-{{ mod.title | replace(' ', '-') }}">
+                    <div class="module-progress-fill"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+
+    <!-- LESSON MODAL -->
+    <div id="lessonModal" class="modal" onclick="closeLesson(event)">
+        <div class="modal-content lesson-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeLessonDirect()">&times;</button>
+            <div id="lessonContent"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Rocen Homesteady LTD. All Rights Reserved. Educational Use Only.</p>
+    </footer>
+
+    <script id="pathInfoData" type="application/json">{{ path_info | tojson }}</script>
+
+    <script>
+    // ==========================================
+    // PATH & LEVEL CONFIG
+    // ==========================================
+    // eslint-disable-next-line no-undef
+    const PATH_INFO = JSON.parse(document.getElementById('pathInfoData').textContent);
+    const PATH_ORDER = ["Foraging", "Off-Grid Living", "Homesteading"];
+
+    const LEVEL_ORDER = { "Beginner": 0, "Intermediate": 1, "Specialist": 2 };
+
+    // ==========================================
+    // SOUND MANAGER
+    // ==========================================
+    const SoundManager = {
+        ctx: null,
+        enabled: true,
+
+        init() {
+            const saved = localStorage.getItem('rocen_sound');
+            if (saved !== null) this.enabled = saved === 'true';
+            this.updateToggleUI();
+            document.addEventListener('click', () => {
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            }, { once: true });
+        },
+
+        getCtx() {
+            if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            return this.ctx;
+        },
+
+        playTone(freq, dur, type = 'sine', vol = 0.15) {
+            if (!this.enabled) return;
+            try {
+                const ctx = this.getCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = freq;
+                osc.type = type;
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + dur);
+            } catch(e) {}
+        },
+
+        correct() {
+            this.playTone(523.25, 0.12);
+            setTimeout(() => this.playTone(659.25, 0.12), 120);
+            setTimeout(() => this.playTone(783.99, 0.25), 240);
+        },
+
+        incorrect() {
+            this.playTone(220, 0.3, 'sawtooth', 0.1);
+        },
+
+        warning() {
+            this.playTone(440, 0.08);
+            setTimeout(() => this.playTone(440, 0.08), 160);
+        },
+
+        open() {
+            this.playTone(440, 0.06);
+            setTimeout(() => this.playTone(554.37, 0.1), 70);
+        },
+
+        close() {
+            this.playTone(554.37, 0.06);
+            setTimeout(() => this.playTone(440, 0.08), 70);
+        },
+
+        complete() {
+            this.playTone(523.25, 0.15);
+            setTimeout(() => this.playTone(659.25, 0.15), 150);
+            setTimeout(() => this.playTone(783.99, 0.15), 300);
+            setTimeout(() => this.playTone(1046.5, 0.4), 450);
+        },
+
+        speak(text, lang = 'la') {
+            if (!this.enabled || !('speechSynthesis' in window)) return;
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.75;
+            utterance.pitch = 1.0;
+            utterance.volume = 0.8;
+            speechSynthesis.speak(utterance);
+        },
+
+        updateToggleUI() {
+            const btn = document.getElementById('soundToggle');
+            if (!btn) return;
+            btn.textContent = this.enabled ? '🔊' : '🔇';
+            btn.classList.toggle('muted', !this.enabled);
+        }
+    };
+
+    function toggleSound() {
+        SoundManager.enabled = !SoundManager.enabled;
+        localStorage.setItem('rocen_sound', SoundManager.enabled.toString());
+        SoundManager.updateToggleUI();
+        if (SoundManager.enabled) SoundManager.open();
+    }
+
+    // ==========================================
+    // SEASON DETECTION
+    // ==========================================
+    function applySeasonClass() {
+        const month = new Date().getMonth();
+        let season = 'winter';
+        if (month >= 2 && month <= 4) season = 'spring';
+        else if (month >= 5 && month <= 7) season = 'summer';
+        else if (month >= 8 && month <= 10) season = 'autumn';
+        document.body.classList.add('season-' + season);
+    }
+
+    // ==========================================
+    // XP REWARDS PER MODULE
+    // ==========================================
+    const MODULE_XP = {
+        'Introduction to Foraging': 10,
+        'Easy Plants to Identify': 15,
+        'The Carrot Family': 20,
+        'Mushroom Foraging': 25,
+        'The Law of the Land': 15,
+        'The Coastal Code': 20,
+        'Winter Foraging': 25,
+        'The Cabbage Family': 20,
+        'UK Foraging Law: The Complete Guide': 25,
+        'Trees & Hedgerows': 20,
+        'Foraging Through the Seasons': 20,
+        'Medicinal Plants & Herbal Remedies': 25,
+        'Seaweed & Shellfish Foraging': 25,
+        'Foraging in Scotland: Different Rules': 15,
+        'Introduction to Off-Grid Living': 10,
+        'Water: Collection, Filtration & Storage': 20,
+        'Power: Solar, Wind & Alternatives': 20,
+        'Preserving & Storing Food': 20,
+        'Building & Planning: OPD in Wales': 25,
+        'Keeping Chickens': 15,
+        'Ducks & Geese': 20,
+        'Keeping Goats': 20,
+        'Starting an Orchard': 15,
+        'Composting & Soil Health': 15,
+        'Small-Scale Vegetable Growing': 20,
+        'Beekeeping Basics': 25,
+        'Natural Remedies from the Garden': 25
+    };
+
+    function getXPReward(title) {
+        if (MODULE_XP[title] !== undefined) return MODULE_XP[title];
+        const card = document.getElementById('card-' + title.replace(/ /g, '-'));
+        if (card) {
+            const level = card.dataset.level;
+            if (level === 'Beginner') return 10;
+            if (level === 'Intermediate') return 20;
+            if (level === 'Specialist') return 25;
+        }
+        return 15;
+    }
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    let currentLesson = null;
+    let currentStep = 0;
+    let totalSteps = 0;
+    let xp = parseInt(localStorage.getItem('rocen_xp') || '0');
+    let completedModules = JSON.parse(localStorage.getItem('rocen_completed') || '[]');
+    let moduleProgress = JSON.parse(localStorage.getItem('rocen_progress') || '{}');
+
+    const RANKS = [
+        { title: "Novice Gatherer", icon: "🟤", xp: 0 },
+        { title: "Junior Forager", icon: "🔵", xp: 50 },
+        { title: "Expert Gatherer", icon: "🟣", xp: 150 },
+        { title: "Master Forager", icon: "🟡", xp: 300 }
+    ];
+
+    // ==========================================
+    // XP & RANKS
+    // ==========================================
+    function updateXPDisplay() {
+        const currentRank = getCurrentRank();
+        const nextRank = getNextRank();
+
+        document.getElementById('rankIcon').textContent = currentRank.icon;
+        document.getElementById('rankTitle').textContent = currentRank.title;
+        document.getElementById('xpDisplay').textContent = `${xp} XP`;
+
+        if (nextRank) {
+            const progress = ((xp - currentRank.xp) / (nextRank.xp - currentRank.xp)) * 100;
+            document.getElementById('xpFill').style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('xpNext').textContent = `Next: ${nextRank.title} at ${nextRank.xp} XP`;
+        } else {
+            document.getElementById('xpFill').style.width = '100%';
+            document.getElementById('xpNext').textContent = '🏆 Maximum rank achieved!';
+        }
+    }
+
+    function getCurrentRank() {
+        let rank = RANKS[0];
+        for (const r of RANKS) {
+            if (xp >= r.xp) rank = r;
+        }
+        return rank;
+    }
+
+    function getNextRank() {
+        for (const r of RANKS) {
+            if (xp < r.xp) return r;
+        }
+        return null;
+    }
+
+    function addXP(amount) {
+        xp += amount;
+        localStorage.setItem('rocen_xp', xp.toString());
+        updateXPDisplay();
+    }
+
+    // ==========================================
+    // PATH PROGRESS
+    // ==========================================
+    function updatePathProgress() {
+        for (const [pathName, info] of Object.entries(PATH_INFO)) {
+            const slug = info.slug;
+            const container = document.getElementById('path-progress-' + slug);
+            if (!container) continue;
+
+            const cards = document.querySelectorAll(`.module-card[data-path-slug="${slug}"]`);
+            const total = cards.length;
+            let completed = 0;
+            cards.forEach(card => {
+                const title = card.dataset.title;
+                if (completedModules.includes(title)) completed++;
+            });
+
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const pathColour = info.colour;
+
+            container.innerHTML = `
+                <div class="path-progress-bar">
+                    <div class="path-progress-fill" style="width: ${percent}%; background: ${pathColour};"></div>
+                </div>
+                <span class="path-progress-text">${completed}/${total} modules complete (${percent}%)</span>
+            `;
+        }
+    }
+
+    // ==========================================
+    // RECOMMENDED NEXT
+    // ==========================================
+    function updateRecommendedNext() {
+        const container = document.getElementById('recommendedNext');
+        if (!container) return;
+
+        let recommendations = [];
+
+        for (const pathName of PATH_ORDER) {
+            const info = PATH_INFO[pathName];
+            if (!info) continue;
+            const slug = info.slug;
+            const cards = document.querySelectorAll(`.module-card[data-path-slug="${slug}"]`);
+
+            // Find the first module in this path that isn't completed
+            for (const card of cards) {
+                const title = card.dataset.title;
+                if (!completedModules.includes(title)) {
+                    const level = card.dataset.level;
+                    const icon = card.querySelector('.module-icon').textContent.trim();
+                    const progress = moduleProgress[title] || 0;
+                    recommendations.push({
+                        title: title,
+                        path: pathName,
+                        pathSlug: slug,
+                        pathIcon: info.icon,
+                        level: level,
+                        icon: icon,
+                        isInProgress: progress > 0,
+                    });
+                    break; // Only recommend the first uncompleted module per path
+                }
+            }
+        }
+
+        if (recommendations.length === 0) {
+            container.innerHTML = `
+                <h2 class="recommended-title">🏆 All Paths Complete!</h2>
+                <p class="recommended-all-done">Congratulations — you've completed every module. You're a true homesteader!</p>
+            `;
+            return;
+        }
+
+        let html = `<h2 class="recommended-title">🗺️ Continue Your Journey</h2><div class="recommended-grid">`;
+
+        for (const rec of recommendations) {
+            const action = rec.isInProgress ? '📖 Continue' : '▶️ Start';
+            const actionClass = rec.isInProgress ? 'recommended-continue' : 'recommended-start';
+            const escapedTitle = rec.title.replace(/'/g, "\\'");
+            html += `
+                <div class="recommended-card recommended-card-${rec.pathSlug}" onclick="startModule('${escapedTitle}')">
+                    <div class="recommended-icon">${rec.icon}</div>
+                    <div class="recommended-info">
+                        <h3>${rec.title}</h3>
+                        <span class="badge badge-path-${rec.pathSlug}">${rec.path}</span>
+                        <span class="badge badge-level badge-level-${rec.level.toLowerCase()}">${rec.level}</span>
+                    </div>
+                    <div class="recommended-action ${actionClass}">${action}</div>
+                </div>
+            `;
+        }
+
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    // ==========================================
+    // MODULE STATUS & PROGRESS
+    // ==========================================
+    function updateModuleStatuses() {
+        document.querySelectorAll('[id^="status-"]').forEach(el => {
+            const title = el.id.replace('status-', '').replace(/-/g, ' ');
+            const xpReward = getXPReward(title);
+            const isCompleted = completedModules.includes(title);
+            const progress = moduleProgress[title] || 0;
+
+            const cardId = 'card-' + title.replace(/ /g, '-');
+            const card = document.getElementById(cardId);
+            const totalStepsVal = card ? parseInt(card.dataset.steps) : 0;
+
+            if (isCompleted) {
+                el.innerHTML = '<span class="status-complete">✅ Completed</span>';
+            } else if (progress > 0) {
+                el.innerHTML = `<span class="status-progress">📖 Step ${progress + 1}</span>`;
+            } else {
+                el.innerHTML = '<span class="status-start">▶️ Start</span>';
+            }
+
+            // XP badge
+            const xpEl = document.getElementById('xp-' + title.replace(/ /g, '-'));
+            if (xpEl) {
+                if (isCompleted) {
+                    xpEl.innerHTML = '<span class="module-xp-earned">✅ +' + xpReward + ' XP</span>';
+                } else {
+                    xpEl.innerHTML = '<span class="module-xp-reward">+' + xpReward + ' XP</span>';
+                }
+            }
+
+            // Progress bar
+            const progressEl = document.getElementById('progress-' + title.replace(/ /g, '-'));
+            if (progressEl && totalStepsVal > 0) {
+                const fillEl = progressEl.querySelector('.module-progress-fill');
+                if (isCompleted) {
+                    fillEl.style.width = '100%';
+                    fillEl.style.background = 'var(--green-leaf)';
+                    progressEl.classList.add('complete');
+                } else if (progress > 0) {
+                    fillEl.style.width = ((progress / totalStepsVal) * 100) + '%';
+                    fillEl.style.background = 'var(--season-accent)';
+                    progressEl.classList.add('started');
+                } else {
+                    fillEl.style.width = '0%';
+                }
+            }
+
+            // Card completed/started state
+            if (card) {
+                card.classList.toggle('module-completed', isCompleted);
+                card.classList.toggle('module-started', progress > 0 && !isCompleted);
+            }
+        });
+    }
+
+    // ==========================================
+    // START MODULE
+    // ==========================================
+    async function startModule(title) {
+        try {
+            const response = await fetch(`/api/lessons/${encodeURIComponent(title)}`);
+            const data = await response.json();
+
+            if (data.error) {
+                alert('Module not found');
+                return;
+            }
+
+            currentLesson = data;
+            totalSteps = data.total_steps;
+
+            // Resume from saved progress
+            currentStep = moduleProgress[title] || 0;
+
+            // If completed, start from beginning (review mode)
+            if (completedModules.includes(title)) {
+                currentStep = 0;
+            }
+
+            SoundManager.open();
+            renderStep();
+            document.getElementById('lessonModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        } catch (err) {
+            alert('Failed to load module');
+        }
+    }
+
+    // ==========================================
+    // RENDER STEP
+    // ==========================================
+    function renderStep() {
+        if (!currentLesson) return;
+
+        const step = currentLesson.steps[currentStep];
+        const progress = ((currentStep + 1) / totalSteps * 100).toFixed(0);
+        const isReview = completedModules.includes(currentLesson.title);
+        const isLastStep = currentStep >= totalSteps - 1;
+
+        // Path badge in lesson header
+        const pathData = PATH_INFO[currentLesson.path] || PATH_INFO['Foraging'];
+        const pathBadge = `<span class="badge badge-path-${pathData.slug}">${pathData.icon} ${currentLesson.path}</span>`;
+        const levelBadge = `<span class="badge badge-level badge-level-${currentLesson.level.toLowerCase()}">${currentLesson.level}</span>`;
+
+        let html = `
+            <div class="lesson-header">
+                <div class="lesson-title">${currentLesson.icon} ${currentLesson.title}</div>
+                <div class="lesson-meta">
+                    ${pathBadge} ${levelBadge}
+                    📚 ${currentLesson.curriculum.join(' | ')} | 👦 Age: ${currentLesson.ks2_age}
+                    ${isReview ? ' | 🔄 Review Mode' : ''}
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${progress}%"></div>
+                <span class="progress-text">Step ${currentStep + 1} of ${totalSteps}</span>
+            </div>
+        `;
+
+        if (step.type === 'text') {
+            html += `
+                <div class="step-content">${formatMarkdown(step.content)}</div>
+                <div class="step-nav">
+                    ${!isLastStep
+                        ? '<button class="btn btn-primary" onclick="nextStep()">Next ➡️</button>'
+                        : '<div class="step-complete">End of content. Complete the final quiz to finish!</div>'}
+                </div>
+            `;
+        }
+
+        else if (step.type === 'quiz' || step.type === 'final_quiz') {
+            html += `
+                <div class="step-content">
+                    <h3>❓ Quick Check</h3>
+                    <p class="quiz-question">${step.question}</p>
+                    <div class="quiz-options" id="quizOptions">
+                        ${step.options.map((opt, i) => `
+                            <button class="quiz-option" onclick="submitAnswer(${i}, '${step.type}')" id="opt${i}">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                <div id="quizFeedback"></div>
+            `;
+        }
+
+        else if (step.type === 'plant_card') {
+            html += `
+                <div class="step-content">
+                    <h3>🌿 Featured Plant: ${step.plant_name}</h3>
+                    <div id="plantCardInfo">Loading plant data...</div>
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-primary" onclick="nextStep()">Next ➡️</button>
+                </div>
+            `;
+            fetchPlantCard(step.plant_name);
+        }
+
+        if (step.type === 'final_quiz') {
+            const xpReward = getXPReward(currentLesson.title);
+            html += `
+                <div class="final-quiz-badge">
+                    <div style="font-size:2rem;">🏁</div>
+                    <div style="color: var(--green-leaf); font-family: 'Crimson Text', Georgia, serif; font-size:1.3rem; font-weight:700;">Module Complete!</div>
+                    <div style="color: var(--cream-dim); font-size:0.9rem;">Take this final quiz to finish the module and earn ${xpReward} XP.</div>
+                </div>
+            `;
+        }
+
+        document.getElementById('lessonContent').innerHTML = html;
+    }
+
+    // ==========================================
+    // SUBMIT ANSWER
+    // ==========================================
+    async function submitAnswer(optionIndex, stepType) {
+        const step = currentLesson.steps[currentStep];
+        const selectedAnswer = step.options[optionIndex];
+
+        try {
+            const response = await fetch('/api/lessons/check-answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    lesson_title: currentLesson.title,
+                    step_index: currentStep,
+                    answer: selectedAnswer
+                })
+            });
+
+            const result = await response.json();
+
+            document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === optionIndex) {
+                    btn.classList.add(result.correct ? 'correct' : 'incorrect');
+                }
+            });
+
+            if (result.correct) {
+                SoundManager.correct();
+            } else {
+                SoundManager.incorrect();
+            }
+
+            const feedback = document.getElementById('quizFeedback');
+            if (result.correct) {
+                let rewardHtml = '';
+                if (stepType === 'final_quiz' && result.reward) {
+                    rewardHtml = `<div class="xp-earned">+${result.reward} XP earned! 🎉</div>`;
+                    addXP(result.reward);
+
+                    if (!completedModules.includes(currentLesson.title)) {
+                        completedModules.push(currentLesson.title);
+                        localStorage.setItem('rocen_completed', JSON.stringify(completedModules));
+                    }
+
+                    setTimeout(() => SoundManager.complete(), 300);
+                }
+                feedback.innerHTML = `
+                    <div class="feedback correct">
+                        <div style="color: var(--green-leaf); font-weight: 700; font-size: 1.1rem;">✅ Correct!</div>
+                        ${result.feedback ? `<div style="color: var(--cream-dim); margin-top: 0.3rem; font-size: 0.9rem;">${result.feedback}</div>` : ''}
+                        ${rewardHtml}
+                        <button class="btn btn-primary" onclick="nextStep()" style="margin-top: 0.5rem;">
+                            ${stepType === 'final_quiz' ? '🏠 Return to Modules' : 'Next ➡️'}
+                        </button>
+                    </div>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <div class="feedback incorrect">
+                        <div style="color: var(--danger); font-weight: 700;">❌ Incorrect</div>
+                        <div style="color: var(--cream-dim); margin-top: 0.3rem;">
+                            The correct answer was: <b>${result.correct_answer}</b>
+                        </div>
+                        <button class="btn btn-primary" onclick="retryStep()" style="margin-top: 0.5rem;">Try Again</button>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            alert('Error checking answer');
+        }
+    }
+
+    // ==========================================
+    // NAVIGATION
+    // ==========================================
+    function nextStep() {
+        if (currentStep >= totalSteps - 1) {
+            closeLessonDirect();
+            updateModuleStatuses();
+            updatePathProgress();
+            updateRecommendedNext();
+            return;
+        }
+        currentStep++;
+        moduleProgress[currentLesson.title] = currentStep;
+        localStorage.setItem('rocen_progress', JSON.stringify(moduleProgress));
+        renderStep();
+    }
+
+    function retryStep() {
+        renderStep();
+    }
+
+    // ==========================================
+    // PLANT CARD FETCH (with pronunciation)
+    // ==========================================
+    async function fetchPlantCard(plantName) {
+        try {
+            let response = await fetch('/api/plants/edible');
+            let data = await response.json();
+            let plant = data.plants.find(p => p.name === plantName);
+
+            if (!plant) {
+                response = await fetch('/api/plants/poisonous');
+                data = await response.json();
+                plant = data.plants.find(p => p.name === plantName);
+            }
+
+            if (!plant) {
+                document.getElementById('plantCardInfo').innerHTML =
+                    `<p>Plant data for "${plantName}" not found.</p>`;
+                return;
+            }
+
+            const isPoisonous = plant.danger_tips && plant.danger_tips.danger_zone;
+            const icon = isPoisonous ? '☠️' : '🌿';
+
+            let cardHtml = `
+                <div class="plant-detail-card">
+                    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                        <h4 style="margin:0;">${icon} ${plant.name}</h4>
+                        ${plant.latin_name ? `<button class="pronounce-btn" onclick="SoundManager.speak('${plant.latin_name.replace(/'/g, "\\'")}')" title="Listen to Latin pronunciation">🔊</button>` : ''}
+                    </div>
+                    <p class="plant-latin">${plant.latin_name || ''}</p>
+                    <p>${plant.description || ''}</p>
+                    ${plant.habitat ? `<p><strong>Habitat:</strong> ${plant.habitat}</p>` : ''}
+                    ${plant.warnings ? `<p class="warning">⚠️ ${plant.warnings}</p>` : ''}
+                    ${plant.confusion_notes ? `<p class="confusion">🔍 ${plant.confusion_notes}</p>` : ''}
+            `;
+
+            if (plant.id_keys) {
+                cardHtml += `<h5>🔎 How to Identify</h5><ul>`;
+                for (const [key, value] of Object.entries(plant.id_keys)) {
+                    cardHtml += `<li><strong>${key}:</strong> ${value}</li>`;
+                }
+                cardHtml += `</ul>`;
+            }
+
+            if (plant.lookalikes && plant.lookalikes.length > 0) {
+                cardHtml += `<h5>⚠️ Lookalikes</h5>`;
+                for (const la of plant.lookalikes) {
+                    if (typeof la === 'object') {
+                        const dangerLevel = la.danger === 'DEADLY' || la.danger === 'EXTREME' ? '🔴' :
+                                          la.danger === 'HIGH' || la.danger === 'POISONOUS' ? '🟠' : '🟢';
+                        cardHtml += `<p>${dangerLevel} <strong>${la.name}</strong> (${la.danger}): ${la.diff}</p>`;
+                    }
+                }
+            }
+
+            cardHtml += `</div>`;
+            document.getElementById('plantCardInfo').innerHTML = cardHtml;
+
+        } catch (err) {
+            document.getElementById('plantCardInfo').innerHTML =
+                `<p>Could not load plant data.</p>`;
+        }
+    }
+
+    // ==========================================
+    // FORMAT MARKDOWN
+    // ==========================================
+    function formatMarkdown(text) {
+        return text
+            .replace(/## (.+)/g, '<h2>$1</h2>')
+            .replace(/### (.+)/g, '<h3>$1</h3>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            .replace(/^> (.+)/gm, '<blockquote>$1</blockquote>')
+            .replace(/\n\n/g, '<br><br>')
+            .replace(/\n/g, '<br>');
+    }
+
+    // ==========================================
+    // CLOSE MODAL
+    // ==========================================
+    function closeLesson(event) {
+        if (event.target === document.getElementById('lessonModal')) {
+            closeLessonDirect();
+        }
+    }
+
+    function closeLessonDirect() {
+        document.getElementById('lessonModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        currentLesson = null;
+        currentStep = 0;
+        SoundManager.close();
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLessonDirect();
+    });
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    applySeasonClass();
+    SoundManager.init();
+    updateXPDisplay();
+    updateModuleStatuses();
+    updatePathProgress();
+    updateRecommendedNext();
+    </script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/progress.js"></script>
+</body>
+</html>

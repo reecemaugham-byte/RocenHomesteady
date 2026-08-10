@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foraging Quest — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+    <link rel="stylesheet" href="/static/css/foraging-quest.css">   <!-- THIS IS MISSING -->
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games" class="nav-active">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+    
+<main class="games-page fq-page" id="fq-app">
+
+    <!-- ═══ LOADING ═══ -->
+    <div id="fq-loading" class="fq-screen">
+        <div class="fq-loading-box">
+            <div class="fq-loading-icon">🌿</div>
+            <h2>Foraging Quest</h2>
+            <p class="fq-loading-text">Loading the wilderness...</p>
+            <div class="fq-loading-bar"><div class="fq-loading-bar-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- ═══ SCENARIO SELECT ═══ -->
+    <div id="fq-select" class="fq-screen hidden">
+        <div class="fq-popup-box">
+            <h1 class="fq-title">🌿 Foraging Quest</h1>
+            <p class="fq-subtitle">A narrative survival game. Identify real plants. Make life-or-death choices. How long can you survive?</p>
+
+            <div class="fq-how-to">
+                <details>
+                    <summary>📖 How to Play</summary>
+                    <div class="fq-how-to-content">
+                        <ol>
+                            <li><strong>Choose a scenario</strong> — each has different challenges, resources, and plant life.</li>
+                            <li><strong>Survive day by day</strong> — manage your Health, Hunger, Warmth, and Morale.</li>
+                            <li><strong>Choose actions wisely</strong> — you have limited daylight hours each day.</li>
+                            <li><strong>Forage carefully</strong> — identifying plants uses your <em>real</em> foraging knowledge. Correct ID feeds you. Wrong ID can be fatal.</li>
+                            <li><strong>Respond to events</strong> — wildlife, weather, and discoveries. Every choice matters.</li>
+                            <li><strong>Find your way out</strong> — signal for rescue, explore to find civilisation, or thrive in the wild.</li>
+                        </ol>
+                        <p><strong>⚠️ Real Knowledge Required</strong> — the plant identification in this game uses real foraging data. Correctly identifying plants keeps you alive. Mistakes have real consequences — just like in the wild.</p>
+                    </div>
+                </details>
+            </div>
+
+            <h3 class="fq-section-title">Choose Your Scenario</h3>
+            <div id="fq-scenarios" class="fq-scenario-grid"></div>
+
+            <div class="fq-safety-note">
+                <h3>⚠️ Safety Reminder</h3>
+                <p>This game uses <strong>real plant data</strong> for educational purposes. Never eat any wild plant unless you are 100% certain of its identification. When in doubt, leave it out.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ GAME INTRO ═══ -->
+    <div id="fq-intro" class="fq-screen hidden">
+        <div class="fq-popup-box">
+            <div class="fq-intro-header">
+                <span id="fq-intro-icon" class="fq-scenario-icon-large"></span>
+                <h2 id="fq-intro-title"></h2>
+                <p id="fq-intro-tagline" class="fq-tagline"></p>
+            </div>
+
+            <div id="fq-intro-text" class="fq-narrative-box"></div>
+
+            <div id="fq-intro-resources" class="fq-starting-resources"></div>
+
+            <div class="fq-intro-actions">
+                <button class="btn-primary fq-btn-begin" id="fq-begin-btn">🏕️ Begin Survival</button>
+                <button class="btn-danger fq-btn-back" id="fq-back-select-btn">← Back to Scenarios</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ═══ MAIN GAME ═══ -->
+    <div id="fq-game" class="fq-screen hidden">
+
+        <!-- Top Bar -->
+        <div class="fq-top-bar">
+            <div class="fq-top-left">
+                <span id="fq-day-badge" class="fq-badge">Day 1</span>
+                <span id="fq-season-badge" class="fq-badge fq-badge-season">🍂 Autumn</span>
+                <span id="fq-weather-badge" class="fq-badge fq-badge-weather">☁️ Cloudy</span>
+            </div>
+            <div class="fq-top-right">
+                <button class="fq-icon-btn" id="fq-journal-btn" title="Journal">📓</button>
+                <button class="fq-icon-btn" id="fq-save-btn" title="Save">💾</button>
+                <button class="fq-icon-btn" id="fq-menu-btn" title="Menu">☰</button>
+            </div>
+        </div>
+
+        <!-- Weather / Location Bar -->
+        <div id="fq-location-bar" class="fq-location-bar"></div>
+
+        <!-- Resource Bars -->
+        <div id="fq-resources" class="fq-resources"></div>
+
+        <!-- Hours Remaining -->
+        <div id="fq-hours-bar" class="fq-hours-bar"></div>
+
+        <!-- Main Content Area -->
+        <div id="fq-content" class="fq-content">
+
+            <!-- Narrative Text -->
+            <div id="fq-narrative" class="fq-narrative-box"></div>
+
+            <!-- Action Selection -->
+            <div id="fq-actions" class="fq-action-grid"></div>
+
+            <!-- Foraging Challenge -->
+            <div id="fq-foraging" class="fq-panel hidden">
+                <div class="fq-encounter-text" id="fq-encounter-text"></div>
+                <div class="fq-plant-question" id="fq-plant-question"></div>
+                <div class="fq-plant-card" id="fq-plant-card"></div>
+                <div class="fq-options-grid" id="fq-options-grid"></div>
+                <div id="fq-foraging-hint" class="fq-hint"></div>
+            </div>
+
+            <!-- Foraging Result -->
+            <div id="fq-forage-result" class="fq-panel hidden"></div>
+
+            <!-- Event -->
+            <div id="fq-event" class="fq-panel hidden">
+                <div class="fq-event-header" id="fq-event-header"></div>
+                <div class="fq-event-text" id="fq-event-text"></div>
+                <div class="fq-event-choices" id="fq-event-choices"></div>
+            </div>
+
+            <!-- Event Result -->
+            <div id="fq-event-result" class="fq-panel hidden"></div>
+
+            <!-- Action Result (for non-foraging actions) -->
+            <div id="fq-action-result" class="fq-panel hidden"></div>
+
+            <!-- Day End Summary -->
+            <div id="fq-day-end" class="fq-panel hidden">
+                <h3 class="fq-day-end-title">🌙 End of Day <span id="fq-day-end-num">1</span></h3>
+                <div id="fq-day-end-changes" class="fq-changes-list"></div>
+                <div id="fq-day-end-journal" class="fq-journal-entry"></div>
+                <button class="btn-primary fq-btn-continue" id="fq-next-day-btn">☀️ Next Day</button>
+            </div>
+
+            <!-- Location Discovery -->
+            <div id="fq-discovery" class="fq-panel hidden">
+                <div class="fq-discovery-box">
+                    <span id="fq-discovery-icon" class="fq-discovery-icon"></span>
+                    <h3 id="fq-discovery-name"></h3>
+                    <p id="fq-discovery-desc"></p>
+                </div>
+                <button class="btn-primary fq-btn-continue" id="fq-discovery-continue">Continue</button>
+            </div>
+        </div>
+
+        <!-- Inventory Quick Bar -->
+        <div id="fq-inventory-bar" class="fq-inventory-bar"></div>
+
+        <!-- Bottom Actions -->
+        <div id="fq-bottom-actions" class="fq-bottom-actions">
+            <button class="btn-primary" id="fq-continue-btn" style="display:none;">Continue</button>
+        </div>
+    </div>
+
+    <!-- ═══ JOURNAL OVERLAY ═══ -->
+    <div id="fq-journal-overlay" class="fq-overlay hidden">
+        <div class="fq-overlay-box fq-journal-box">
+            <div class="fq-overlay-header">
+                <h3>📓 Survival Journal</h3>
+                <button class="fq-overlay-close" id="fq-journal-close">✕</button>
+            </div>
+            <div id="fq-journal-stats" class="fq-journal-stats"></div>
+            <div id="fq-journal-entries" class="fq-journal-entries"></div>
+            <div id="fq-journal-plants" class="fq-journal-plants"></div>
+        </div>
+    </div>
+
+    <!-- ═══ MENU OVERLAY ═══ -->
+    <div id="fq-menu-overlay" class="fq-overlay hidden">
+        <div class="fq-overlay-box">
+            <div class="fq-overlay-header">
+                <h3>☰ Menu</h3>
+                <button class="fq-overlay-close" id="fq-menu-close">✕</button>
+            </div>
+            <div class="fq-menu-options">
+                <button class="btn-primary" id="fq-menu-resume">▶ Resume</button>
+                <button class="btn-primary" id="fq-menu-journal">📓 Journal</button>
+                <button class="btn-primary" id="fq-menu-save">💾 Save Game</button>
+                <button class="btn-danger" id="fq-menu-quit">🏠 Quit to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ GAME OVER ═══ -->
+    <div id="fq-gameover" class="fq-screen hidden">
+        <div class="fq-gameover-box" id="fq-gameover-box"></div>
+    </div>
+
+</main>
+
+<script src="/static/js/foraging-quest.js"></script>
+
+</body>
+</html>

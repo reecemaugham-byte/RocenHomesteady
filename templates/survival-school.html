@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survival School — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+    <link rel="stylesheet" href="/static/css/survival-school.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games" class="nav-active">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <main class="games-page">
+        <h1 class="page-title">☠️ Survival School</h1>
+        <p class="page-subtitle">Identify plants, spot dangers, and build your foraging knowledge!</p>
+
+        <details class="htp-section">
+            <summary>📖 How to Play</summary>
+            <div class="htp-content">
+                <ol>
+                    <li><strong>Choose a difficulty:</strong> Patrol (no timer), Field Test (30s timer), or Survival (15s timer, 1 life).</li>
+                    <li>Each round presents a <strong>danger identification</strong> (safe vs dangerous) or a <strong>knowledge question</strong> (habitat, season, parts, etc.).</li>
+                    <li><strong>Danger rounds:</strong> Choose the SAFE plant. Wrong = lose a life + see what would happen.</li>
+                    <li><strong>Knowledge rounds:</strong> Answer correctly for XP. Wrong = see why it matters.</li>
+                    <li>Every 5 correct in a row triggers a <strong>Bonus Round</strong> for double points.</li>
+                    <li>Plants you get wrong go into your <strong>review queue</strong> — they'll come back until you learn them.</li>
+                    <li>Fill your <strong>herbarium</strong>: discovered (1×) → learned (3×) → mastered (5×).</li>
+                    <li>Reach Level 2 by solving 5 cases — harder plants and fungi appear!</li>
+                </ol>
+            </div>
+        </details>
+
+        <!-- Plant of the Day -->
+        <div id="ss-potd" class="ss-potd-section">
+            <div id="ss-potd-content" class="ss-potd-card">
+                <div class="ss-loading">Loading today's plant...</div>
+            </div>
+        </div>
+
+        <!-- Weekly Challenge -->
+        <div id="ss-weekly" class="ss-weekly-section">
+            <div id="ss-weekly-content" class="ss-weekly-card">
+                <div class="ss-weekly-header">
+                    <span class="ss-weekly-icon">📅</span>
+                    <div>
+                        <h3 class="ss-weekly-title">Weekly Challenge</h3>
+                        <p class="ss-weekly-sub" id="ss-weekly-week"></p>
+                    </div>
+                </div>
+                <p class="ss-weekly-desc">10 questions, same for everyone this week. No timer, no lives — just learning.</p>
+                <button class="ss-btn-primary" onclick="survivalSchool.startWeeklyChallenge()">Start Challenge</button>
+            </div>
+            <div id="ss-weekly-quiz" class="hidden">
+                <div id="ss-weekly-progress" class="ss-weekly-progress"></div>
+                <div id="ss-weekly-question" class="ss-weekly-question"></div>
+            </div>
+            <div id="ss-weekly-results" class="hidden"></div>
+        </div>
+
+        <!-- Mode Selection Screen -->
+        <div id="ss-mode-select" class="mode-select">
+
+            <h2 class="mode-title">Choose Your Difficulty</h2>
+            <p class="mode-subtitle">How challenging do you want your training?</p>
+            <div class="mode-grid">
+                <button class="mode-btn mode-patrol" onclick="survivalSchool.startGame('patrol')">
+                    <div class="mode-icon ss-mode-icon-patrol"></div>
+                    <div class="mode-name">Patrol</div>
+                    <div class="mode-desc">No timer. Learn at your pace. Detailed explanations.</div>
+                    <div class="mode-meta">3 lives · 1× points</div>
+                </button>
+                <button class="mode-btn mode-field" onclick="survivalSchool.startGame('field_test')">
+                    <div class="mode-icon ss-mode-icon-field"></div>
+                    <div class="mode-name">Field Test</div>
+                    <div class="mode-desc">30-second timer per question. Prove you know it.</div>
+                    <div class="mode-meta">3 lives · 1.5× points</div>
+                </button>
+                <button class="mode-btn mode-survival" onclick="survivalSchool.startGame('survival')">
+                    <div class="mode-icon ss-mode-icon-survival"></div>
+                    <div class="mode-name">Survival</div>
+                    <div class="mode-desc">15-second timer. 1 life. Double points. Expert only.</div>
+                    <div class="mode-meta">1 life · 2× points</div>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Game Area (hidden until mode selected) -->
+        <div id="ss-game-area" class="hidden">
+            <div id="ss-season-buttons" class="season-buttons"></div>
+            <div id="ss-season-display" class="season-display"></div>
+            <div id="ss-mode-badge" class="mode-badge"></div>
+            <div id="ss-stats" class="stats-row"></div>
+            <div id="ss-progress" class="level-progress"></div>
+            <div id="ss-progress-bar"></div>
+
+            <div id="ss-timer" class="timer-container hidden">
+                <div class="timer-label" id="ss-timer-label">30s</div>
+                <div class="timer-bar" id="ss-timer-bar"></div>
+            </div>
+
+            <div id="ss-case-count" style="text-align: center; color: var(--cream-dim); font-size: 0.85rem; margin: 0.5rem 0;"></div>
+            <div id="ss-game-over" class="game-over hidden"></div>
+            <div id="ss-content" class="game-container active"></div>
+        </div>
+
+        <hr class="game-divider">
+
+        <details class="achievements-section">
+            <summary>🏅 Achievements</summary>
+            <div id="ss-achievements" class="achievements-grid"></div>
+        </details>
+
+        <details class="achievements-section">
+            <summary>🌿 Herbarium</summary>
+            <div id="ss-herbarium" class="herbarium-grid"></div>
+            <p id="ss-herbarium-count" style="color: var(--cream-dim); font-size: 0.85rem; margin-top: 0.5rem;"></p>
+        </details>
+
+        <details class="achievements-section">
+            <summary>🔄 Reset Progress</summary>
+            <div style="padding: 1rem;">
+                <div id="ss-reset-confirm" class="hidden">
+                    <p style="color: var(--danger); font-weight: 600; font-size: 1rem;">⚠️ Are you sure? This will permanently delete ALL your progress — herbarium, knowledge, streaks, everything!</p>
+                    <div class="ss-reset-actions">
+                        <button class="btn-danger" onclick="survivalSchool.restart()">Yes, Reset Everything</button>
+                        <button class="btn-secondary" onclick="survivalSchool.cancelRestart()">Cancel</button>
+                    </div>
+                </div>
+                <div id="ss-reset-default">
+                    <p style="color: var(--danger);">⚠️ This will delete your survival training progress!</p>
+                    <button class="btn-danger" onclick="survivalSchool.confirmRestart()">🔄 Restart Training</button>
+                </div>
+            </div>
+        </details>
+
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Streak milestone popup -->
+    <div id="ss-streak-popup" class="streak-popup hidden"></div>
+
+    <!-- Plant Knowledge Modal -->
+    <div id="ss-knowledge-modal" class="ss-knowledge-modal hidden">
+        <div class="ss-knowledge-modal-content">
+            <button class="ss-modal-close" onclick="survivalSchool.closeKnowledgeModal()">&times;</button>
+            <div id="ss-knowledge-modal-body"></div>
+        </div>
+    </div>
+
+
+    <script id="ss-config" type="application/json">{{ {"survival_difficulty": survival_difficulty, "survival_case_count": survival_case_count, "default_season": default_season, "season_icons": season_icons, "edible_count": edible_count, "difficulty_modes": difficulty_modes, "mastery_levels": mastery_levels, "streak_milestones": streak_milestones} | tojson | safe }}</script>
+    <script>
+    // ═══════════════════════════════════════════════════════════════
+    // SURVIVAL SCHOOL — MERGED + ENHANCED
+    // ═══════════════════════════════════════════════════════════════
+
+    var ssConfig = JSON.parse(document.getElementById('ss-config').textContent);
+    var SURVIVAL_DIFFICULTY = ssConfig.survival_difficulty;
+    var SURVIVAL_CASE_COUNT = ssConfig.survival_case_count;
+    var SEASON_ICONS = ssConfig.season_icons;
+    var DEFAULT_SEASON = ssConfig.default_season;
+    var EDIBLE_COUNT = ssConfig.edible_count;
+    var DIFFICULTY_MODES = ssConfig.difficulty_modes;
+    var MASTERY_LEVELS = ssConfig.mastery_levels;
+    var STREAK_MILESTONES = ssConfig.streak_milestones;
+
+    function showToast(msg, dur) { dur = dur || 3000; var t = document.getElementById('toast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(function(){ t.classList.add('hidden'); }, dur); }
+    function saveState(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {} }
+    function loadState(key, defs) { try { var s = localStorage.getItem(key); if (s) return Object.assign({}, defs, JSON.parse(s)); } catch(e) {} return Object.assign({}, defs); }
+    function renderMarkdown(text) { if (!text) return ''; return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); }
+
+    var HABITAT_ICONS = {"Woodlands":"🌲","Hedgerows":"🌿","Coastal cliffs":"🏖️","Riverbanks":"🏞️","Meadows":"🌾","Marshes":"🐸","Moors":"🏔️","Gardens":"🌻","Wasteland":"🏚️","Various":"🌍","Woodland":"🌲","Coastal":"🏖️","Damp":"💧","Rocky":"🪨","Grassland":"🌾","Urban":"🏡"};
+
+    // SVG icon system — field guide style, stroke-based, currentColor
+    var SS_ICONS = {
+        // Plant categories
+        tree: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-6"/><path d="M6 16c-2.5-2-4-5-4-8 0-3.3 4-7 10-7s10 3.7 10 7c0 3-1.5 6-4 8"/><path d="M8 22h8"/></svg>',
+        shrub: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-4 2-7 5-8"/><path d="M20 20c0-4-2-7-5-8"/><path d="M8 20c0-3 1.5-5 4-6 2.5 1 4 3 4 6"/><path d="M12 14v6"/><path d="M6 20h12"/></svg>',
+        plant: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-8"/><path d="M12 14c-3-1-5-4-5-7 3 0 5 2 5 5"/><path d="M12 14c3-1 5-4 5-7-3 0-5 2-5 5"/><path d="M12 8c-2-2-3-5-2-7 2 1 3 4 2 7"/><path d="M12 8c2-2 3-5 2-7-2 1-3 4-2 7"/></svg>',
+        fungi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c0-5.5 3.6-10 8-10s8 4.5 8 10"/><path d="M10 14v7"/><path d="M14 14v7"/><path d="M3 14h18"/><circle cx="9" cy="8" r="1"/><circle cx="15" cy="9" r="1"/><circle cx="12" cy="6" r="1"/></svg>',
+        coastal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20"/><path d="M2 18c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M16 18v-6"/><path d="M14 12l2-6 2 6"/><path d="M14 12h4"/></svg>',
+        seaweed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22c0-4 1-7 2-10"/><path d="M8 12c-1-2 0-4 1-6"/><path d="M12 22c0-5 0-9 1-12"/><path d="M13 10c0-3 1-5 2-7"/><path d="M18 22c0-4-1-7-2-10"/><path d="M16 12c1-2 0-4-1-6"/></svg>',
+        shellfish: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c0-6 3.6-12 8-12s8 6 8 12"/><path d="M4 18h16"/><path d="M12 6v12"/><path d="M8 8c2 3 2 7 0 10"/><path d="M16 8c-2 3-2 7 0 10"/></svg>',
+        flower: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="2.5"/><path d="M12 7.5c0-3-2-5.5-2-5.5s2 1 2 5.5"/><path d="M14.5 10c3 0 5.5-2 5.5-2s-1 2-5.5 2"/><path d="M14.5 12.5c2 2.5 5 3.5 5 3.5s-2.5-1-5-3.5"/><path d="M12 14.5c0 3 2 5.5 2 5.5s-2-1-2-5.5"/><path d="M9.5 12.5c-2 2.5-5 3.5-5 3.5s2.5-1 5-3.5"/><path d="M9.5 10c-3 0-5.5-2-5.5-2s1 2 5.5 2"/><path d="M12 14.5V22"/></svg>',
+        berry: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c-1-2 0-3 0-3s1 1 0 3"/><circle cx="9" cy="10" r="2.5"/><circle cx="15" cy="10" r="2.5"/><circle cx="12" cy="14" r="2.5"/><path d="M7 6c3-1 7-1 10 0"/><path d="M9 22h6"/><path d="M12 16.5V22"/></svg>',
+        root: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v6"/><path d="M12 10c-2-1-5-2-5-2"/><path d="M12 10c2-1 5-2 5-2"/><path d="M12 10c0 4-4 8-6 10"/><path d="M12 10c0 4 4 8 6 10"/><path d="M10 6c-2-2-4-2-4-2"/><path d="M14 6c2-2 4-2 4-2"/></svg>',
+        fruit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c-5 0-8 4-8 8 0 5 3 9 8 9s8-4 8-9c0-4-3-8-8-8z"/><path d="M12 4c-1-2 1-3 1-3"/><path d="M14 4c2-1 4 0 4 0"/></svg>',
+        nut: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12"/><path d="M6 8c-1 4 0 8 6 10 6-2 7-6 6-10"/><path d="M8 8c0-3 1.8-5 4-5s4 2 4 5"/><path d="M8 8h8"/></svg>',
+        leaf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c4-4 7-8 7-14"/><path d="M5 21c0-6 3-10 7-14"/><path d="M8 16c2-2 4-3 6-3"/><path d="M7 12c2-1 4-2 6-1"/><path d="M6 8c2 0 4 0 5 2"/><path d="M12 7c2-2 5-4 7-5"/><path d="M12 7c0 4-2 8-7 14"/></svg>',
+        // Question types
+        danger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="4"/><path d="M8 9v2l1 4h6l1-4V9"/><path d="M10 15l-2 7"/><path d="M14 15l2 7"/><path d="M10 9v1"/><path d="M14 9v1"/></svg>',
+        habitat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V14l3-4 3 3 4-6 3 4 3-2v11"/><path d="M4 14l3-4"/><path d="M10 13l4-6"/></svg>',
+        identification: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M15 15l6 6"/><path d="M10 7v6"/><path d="M7 10h6"/></svg>',
+        lookalike: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+        parts: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-4-4-7-7-7-11a7 7 0 0114 0c0 4-3 7-7 11z"/><path d="M9 8c0 2 1.5 3 3 3s3-1 3-3"/><path d="M15 4c1-1 3-1 3 1"/></svg>',
+        season: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M7 14h2"/><path d="M11 14h2"/><path d="M15 14h2"/><path d="M7 18h2"/><path d="M11 18h2"/></svg>',
+        warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 20h20L12 2z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+        // Game modes
+        patrol: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-10"/><path d="M8 10l4 10"/><path d="M6 15h4"/><path d="M16 20v-8"/><path d="M14 20h4"/><path d="M16 12c-2 0-3-1-3-3s1-3 3-3 3 1 3 3-1 3-3 3z"/><path d="M16 6V4"/></svg>',
+        fieldTest: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M12 8v8"/><path d="M8 12h8"/><path d="M12 6l2 2-2 2"/><path d="M12 14l2 2-2 2"/></svg>',
+        survival: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 013 3c0 1.5-1 3-3 5-2-2-3-3.5-3-5a3 3 0 013-3z"/><path d="M6 10h12"/><path d="M7 10v7"/><path d="M17 10v7"/><path d="M10 10v5"/><path d="M14 10v5"/><path d="M7 17l-2 5"/><path d="M17 17l2 5"/><path d="M10 15l-1 3"/><path d="M14 15l1 3"/></svg>',
+        bonus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'
+    };
+
+    // Knowledge types and their display info
+    var KNOWLEDGE_TYPES = {
+        survival: { icon: 'danger', label: 'Danger ID', color: '#ff5252' },
+        habitat: { icon: 'habitat', label: 'Habitat', color: '#4CAF50' },
+        identification: { icon: 'identification', label: 'Identification', color: '#2196F3' },
+        lookalike: { icon: 'lookalike', label: 'Lookalikes', color: '#FF8F00' },
+        parts: { icon: 'parts', label: 'Edible Parts', color: '#FFC107' },
+        season: { icon: 'season', label: 'Season', color: '#FF8F00' },
+        warning: { icon: 'warning', label: 'Warnings', color: '#9C27B0' }
+    };
+
+    // Map backend question types to knowledge types
+    var QUESTION_TYPE_TO_KNOWLEDGE = {
+        survival: 'survival',
+        habitat: 'habitat',
+        identification: 'identification',
+        lookalike: 'lookalike',
+        parts: 'parts',
+        season: 'season',
+        warning: 'warning',
+        bonus: 'parts'
+    };
+
+    // Category to SVG icon key mapping
+    var CATEGORY_ICON_MAP = {
+        'Tree': 'tree', 'Shrub': 'shrub', 'Plant': 'plant', 'Herb': 'plant',
+        'Fungi': 'fungi', 'Coastal': 'coastal', 'Seaweed': 'seaweed',
+        'Shellfish': 'shellfish', 'Flower': 'flower', 'Berry': 'berry',
+        'Root': 'root', 'Tuber': 'root', 'Fruit': 'fruit', 'Nut': 'nut',
+        'Leaf': 'leaf'
+    };
+
+    function ssIcon(name, size) {
+        size = size || 24;
+        var svg = SS_ICONS[name] || SS_ICONS.plant;
+        return '<span class="ss-icon" style="width:' + size + 'px;height:' + size + 'px;display:inline-flex;align-items:center;justify-content:center;">' + svg + '</span>';
+    }
+
+    var survivalSchool = {
+        defaults: {
+            score: 0,
+            lives: 3,
+            level: 1,
+            streak: 0,
+            bestStreak: 0,
+            correctCount: 0,
+            casesSolved: 0,
+            totalPlantsIdentified: 0,
+            currentQuestion: null,
+            currentQuestionType: null,
+            result: null,
+            seenPlants: [],
+            herbarium: {},
+            season: null,
+            seasonBadges: [],
+            bonusRound: false,
+            difficultyMode: null,
+            reviewQueue: [],
+            plantKnowledge: {},
+            questionStats: {
+                survival: { correct: 0, total: 0 },
+                habitat: { correct: 0, total: 0 },
+                identification: { correct: 0, total: 0 },
+                lookalike: { correct: 0, total: 0 },
+                parts: { correct: 0, total: 0 },
+                season: { correct: 0, total: 0 },
+                warning: { correct: 0, total: 0 }
+            },
+            sessionPlants: [],
+            sessionCorrect: 0,
+            sessionWrong: 0,
+            sessionBestStreak: 0,
+            achievements: {
+                survival_scout: false,
+                survival_expert: false,
+                survival_detective: false,
+                foraging_novice: false,
+                foraging_botanist: false,
+                foraging_master: false
+            }
+        },
+
+        state: null,
+        timerInterval: null,
+        timerSeconds: null,
+        chainPlant: null,
+
+        // ── Init ──
+        init: function() {
+            this.defaults.season = DEFAULT_SEASON;
+            this.state = loadState('ss_state', this.defaults);
+            // Migrate old saves
+            var keys = ['streak','bestStreak','totalPlantsIdentified','herbarium','season','seasonBadges','bonusRound','currentQuestionType','difficultyMode','reviewQueue','questionStats','sessionPlants','sessionCorrect','sessionWrong','sessionBestStreak'];
+            for (var i = 0; i < keys.length; i++) {
+                if (this.state[keys[i]] === undefined) this.state[keys[i]] = this.defaults[keys[i]];
+            }
+            if (typeof this.state.herbarium !== 'object' || this.state.herbarium === null) this.state.herbarium = {};
+            if (!Array.isArray(this.state.seasonBadges)) this.state.seasonBadges = [];
+            if (!Array.isArray(this.state.reviewQueue)) this.state.reviewQueue = [];
+            if (typeof this.state.plantKnowledge !== 'object' || this.state.plantKnowledge === null) this.state.plantKnowledge = {};
+            if (typeof this.state.questionStats !== 'object' || this.state.questionStats === null) this.state.questionStats = this.defaults.questionStats;
+            var achKeys = ['survival_scout','survival_expert','survival_detective','foraging_novice','foraging_botanist','foraging_master'];
+            for (var j = 0; j < achKeys.length; j++) {
+                if (!(achKeys[j] in this.state.achievements)) this.state.achievements[achKeys[j]] = false;
+            }
+
+            // Determine if we need mode selection
+            if (!this.state.difficultyMode) {
+                this.showModeSelect();
+            } else {
+                document.getElementById('ss-mode-select').classList.add('hidden');
+                document.getElementById('ss-game-area').classList.remove('hidden');
+                this.renderSeasonButtons();
+                this.updateStats();
+                this.updateProgress();
+                this.renderAchievements();
+                this.renderHerbarium();
+                this.renderModeBadge();
+
+                if (this.state.lives <= 0) {
+                    this.showGameOver();
+                } else if (this.state.bonusRound) {
+                    this.fetchBonusQuestion();
+                } else if (this.state.currentQuestion === null) {
+                    this.fetchNextQuestion();
+                } else if (this.state.result !== null) {
+                    this.renderResult();
+                } else {
+                    this.renderCurrentQuestion();
+                }
+            }
+
+            var countEl = document.getElementById('ss-case-count');
+            if (countEl) { countEl.textContent = '📊 ' + SURVIVAL_CASE_COUNT.total + ' unique cases + seasonal knowledge questions'; }
+
+            // Load Plant of the Day
+            this.fetchPlantOfTheDay();
+
+            // Set weekly challenge week display
+            var weeklyWeekEl = document.getElementById('ss-weekly-week');
+            if (weeklyWeekEl) {
+                var now = new Date();
+                var onejan = new Date(now.getFullYear(), 0, 1);
+                var weekNum = Math.ceil((((now - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+                weeklyWeekEl.textContent = 'Week ' + weekNum + ', ' + now.getFullYear();
+            }
+
+            // Inject SVG icons into mode buttons
+            var patrolIcon = document.querySelector('.ss-mode-icon-patrol');
+            var fieldIcon = document.querySelector('.ss-mode-icon-field');
+            var survivalIcon = document.querySelector('.ss-mode-icon-survival');
+            if (patrolIcon) patrolIcon.innerHTML = ssIcon('patrol', 40);
+            if (fieldIcon) fieldIcon.innerHTML = ssIcon('fieldTest', 40);
+            if (survivalIcon) survivalIcon.innerHTML = ssIcon('survival', 40);
+       },
+
+        save: function() { saveState('ss_state', this.state); },
+
+        // ── Mode Selection ──
+        showModeSelect: function() {
+            document.getElementById('ss-mode-select').classList.remove('hidden');
+            document.getElementById('ss-game-area').classList.add('hidden');
+        },
+
+        startGame: function(mode) {
+            var modeConfig = DIFFICULTY_MODES[mode];
+            this.state.difficultyMode = mode;
+            this.state.lives = modeConfig.lives;
+            this.state.score = 0;
+            this.state.streak = 0;
+            this.state.bestStreak = 0;
+            this.state.correctCount = 0;
+            this.state.casesSolved = 0;
+            this.state.totalPlantsIdentified = 0;
+            this.state.currentQuestion = null;
+            this.state.currentQuestionType = null;
+            this.state.result = null;
+            this.state.seenPlants = [];
+            this.state.bonusRound = false;
+            this.state.reviewQueue = [];
+            this.state.questionStats = JSON.parse(JSON.stringify(this.defaults.questionStats));
+            this.state.sessionPlants = [];
+            this.state.sessionCorrect = 0;
+            this.state.sessionWrong = 0;
+            this.state.sessionBestStreak = 0;
+            this.state.level = 1;
+
+            document.getElementById('ss-mode-select').classList.add('hidden');
+            document.getElementById('ss-game-area').classList.remove('hidden');
+
+            this.renderSeasonButtons();
+            this.updateStats();
+            this.updateProgress();
+            this.renderAchievements();
+            this.renderHerbarium();
+            this.renderModeBadge();
+            this.save();
+            this.fetchNextQuestion();
+        },
+
+        renderModeBadge: function() {
+            var badge = document.getElementById('ss-mode-badge');
+            if (!badge) return;
+            var mode = this.state.difficultyMode || 'patrol';
+            var config = DIFFICULTY_MODES[mode];
+            badge.innerHTML = '<span style="background:' + (mode === 'survival' ? '#ff525220' : mode === 'field_test' ? '#FFC10720' : '#4CAF5020') + ';color:' + (mode === 'survival' ? '#ff5252' : mode === 'field_test' ? '#FFC107' : '#4CAF50') + ';border:1px solid ' + (mode === 'survival' ? '#ff525250' : mode === 'field_test' ? '#FFC10750' : '#4CAF5050') + ';padding:0.3rem 0.8rem;border-radius:20px;font-size:0.8rem;font-weight:600;">' + config.name + ' Mode</span>';
+        },
+
+        // ── Season ──
+        renderSeasonButtons: function() {
+            var container = document.getElementById('ss-season-buttons');
+            var seasons = ['Spring','Summer','Autumn','Winter'];
+            var html = '';
+            for (var i = 0; i < seasons.length; i++) {
+                var s = seasons[i];
+                var icon = SEASON_ICONS[s] || '🌸';
+                var badge = this.state.seasonBadges.indexOf(s) !== -1 ? ' 🏅' : '';
+                var active = this.state.season === s ? ' active' : '';
+                html += '<button class="season-btn' + active + '" onclick="survivalSchool.changeSeason(\'' + s + '\')">' + icon + ' ' + s + badge + '</button>';
+            }
+            container.innerHTML = html;
+            var display = document.getElementById('ss-season-display');
+            var sIcon = SEASON_ICONS[this.state.season] || '🌸';
+            display.innerHTML = '<span>' + sIcon + ' Active Season: ' + this.state.season + '</span>';
+        },
+
+        changeSeason: function(season) {
+            this.state.season = season;
+            this.state.currentQuestion = null;
+            this.state.currentQuestionType = null;
+            this.state.result = null;
+            this.state.bonusRound = false;
+            this.save();
+            this.renderSeasonButtons();
+            this.fetchNextQuestion();
+        },
+
+        // ── Stats ──
+        updateStats: function() {
+            var totalFound = Object.keys(this.state.herbarium).length;
+            var hearts = '❤️'.repeat(Math.max(0, this.state.lives));
+            var fires = '🔥'.repeat(Math.min(this.state.streak, 5));
+            document.getElementById('ss-stats').innerHTML =
+                '<div class="stat-box lives"><div class="stat-label">LIVES</div><div class="stat-value">' + (hearts || '💔') + '</div></div>' +
+                '<div class="stat-box score"><div class="stat-label">SCORE</div><div class="stat-value">' + this.state.score + '</div></div>' +
+                '<div class="stat-box streak"><div class="stat-label">STREAK</div><div class="stat-value">' + fires + ' ' + this.state.streak + '</div></div>' +
+                '<div class="stat-box cases"><div class="stat-label">SOLVED</div><div class="stat-value">' + this.state.casesSolved + '</div></div>' +
+                '<div class="stat-box herbarium"><div class="stat-label">HERBARIUM</div><div class="stat-value">' + totalFound + '/' + EDIBLE_COUNT + '</div></div>';
+        },
+
+        updateProgress: function() {
+            var levelName = SURVIVAL_DIFFICULTY[this.state.level] || 'Level 1';
+            var progress = Math.min(this.state.correctCount / 5, 1.0) * 100;
+            document.getElementById('ss-progress').innerHTML =
+                '<span class="level-name">🕵️ ' + levelName + '</span><span class="level-count">Cases to next level: ' + this.state.correctCount + '/5</span>';
+            document.getElementById('ss-progress-bar').innerHTML =
+                '<div class="progress-bar-label">Level ' + this.state.level + ' Progress: ' + this.state.correctCount + '/5</div>' +
+                '<div class="progress-bar"><div class="progress-bar-fill" style="width:' + progress + '%">' + this.state.correctCount + '/5</div></div>';
+        },
+
+        // ── Timer ──
+        startTimer: function(seconds) {
+            this.stopTimer();
+            var mode = this.state.difficultyMode || 'patrol';
+            var config = DIFFICULTY_MODES[mode];
+            if (!config.timer) { document.getElementById('ss-timer').classList.add('hidden'); return; }
+
+            this.timerSeconds = config.timer;
+            var timerEl = document.getElementById('ss-timer');
+            var barEl = document.getElementById('ss-timer-bar');
+            var labelEl = document.getElementById('ss-timer-label');
+            timerEl.classList.remove('hidden');
+            barEl.style.width = '100%';
+            barEl.className = 'timer-bar';
+            labelEl.textContent = this.timerSeconds + 's';
+
+            var self = this;
+            this.timerInterval = setInterval(function() {
+                self.timerSeconds--;
+                if (self.timerSeconds === null) { self.stopTimer(); return; }
+                var pct = Math.max(0, (self.timerSeconds / config.timer) * 100);
+                barEl.style.width = pct + '%';
+                labelEl.textContent = self.timerSeconds + 's';
+
+                if (pct > 50) { barEl.className = 'timer-bar'; }
+                else if (pct > 25) { barEl.className = 'timer-bar warning'; }
+                else { barEl.className = 'timer-bar danger'; }
+
+                if (self.timerSeconds <= 5 && self.timerSeconds > 0) { SFX.tick(); }
+
+                if (self.timerSeconds <= 0) {
+                    self.stopTimer();
+                    self.handleTimeout();
+                }
+            }, 1000);
+        },
+
+
+        stopTimer: function() {
+            if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
+            document.getElementById('ss-timer').classList.add('hidden');
+        },
+
+        handleTimeout: function() {
+            // Time ran out — treat as wrong answer
+            document.querySelectorAll('.answer-btn').forEach(function(b) { b.disabled = true; b.style.pointerEvents = 'none'; });
+
+            var qType = this.state.currentQuestionType;
+            if (qType === 'survival') {
+                this.state.result = 'timeout';
+                this.state.lives -= 1;
+                this.state.correctCount = 0;
+                this.state.streak = 0;
+            } else {
+                this.state.result = 'timeout';
+                this.state.lives -= 1;
+                this.state.streak = 0;
+            }
+
+            this.state.sessionWrong++;
+            this.save();
+            this.updateStats();
+            this.renderResult();
+        },
+
+        // ── Fetching ──
+        fetchNextQuestion: function() {
+            var content = document.getElementById('ss-content');
+            content.innerHTML = '<div class="loading-spinner">🔍 Loading...</div>';
+            document.getElementById('ss-game-over').classList.add('hidden');
+
+            // Check for emergency scenario (12% chance)
+            if (Math.random() < 0.12 && !this.state.bonusRound) {
+                this.fetchAndShowScenario();
+                return;
+            }
+
+            // Check for knowledge chain (15% chance after a foraging question)
+            if (this.chainPlant && Math.random() < 0.15 && !this.state.bonusRound) {
+                this.fetchChainQuestion();
+                return;
+            }
+
+            // Decide question type: higher level = more survival cases
+            var survivalChance = this.state.level === 1 ? 0.4 : this.state.level === 2 ? 0.5 : 0.6;
+            if (Math.random() < survivalChance) {
+                this.fetchSurvivalCase();
+            } else {
+                this.fetchForagingQuestion();
+            }
+        },
+
+        fetchAndShowScenario: function() {
+            var self = this;
+            fetch('/api/games/survival-school/scenario?season=' + encodeURIComponent(this.state.season))
+                .then(function(r) { return r.json(); })
+                .then(function(scenario) {
+                    self.showScenarioBanner(scenario);
+                    setTimeout(function() { self.decideQuestionType(); }, 2500);
+                })
+                .catch(function() { self.decideQuestionType(); });
+        },
+
+        showScenarioBanner: function(scenario) {
+            var content = document.getElementById('ss-content');
+            content.innerHTML =
+                '<div class="scenario-banner">' +
+                    '<div class="scenario-icon">🏕️</div>' +
+                    '<div class="scenario-title">EMERGENCY SCENARIO</div>' +
+                    '<div class="scenario-setting">' + scenario.setting + '</div>' +
+                    '<div class="scenario-text">' + scenario.scenario + '</div>' +
+                '</div>';
+        },
+
+        decideQuestionType: function() {
+            var survivalChance = this.state.level === 1 ? 0.4 : this.state.level === 2 ? 0.5 : 0.6;
+            if (Math.random() < survivalChance) {
+                this.fetchSurvivalCase();
+            } else {
+                this.fetchForagingQuestion();
+            }
+        },
+
+        fetchSurvivalCase: function() {
+            var self = this;
+            var content = document.getElementById('ss-content');
+            content.innerHTML = '<div class="loading-spinner">☠️ Loading case...</div>';
+            var exclude = this.state.seenPlants.slice(-10).join(',');
+            var review = this.state.reviewQueue.slice(-5).join(',');
+            var mastered = this.getMasteredPlants().join(',');
+
+            fetch('/api/games/survival-school/case?level=' + this.state.level + '&exclude=' + encodeURIComponent(exclude) + '&review=' + encodeURIComponent(review))
+                .then(function(r) { return r.json(); })
+                .then(function(c) {
+                    self.state.currentQuestion = c;
+                    self.state.currentQuestionType = 'survival';
+                    self.state.result = null;
+                    self.state.seenPlants.push(c.safe_plant);
+                    if (self.state.seenPlants.length > 30) self.state.seenPlants = self.state.seenPlants.slice(-20);
+                    self.save();
+                    self.renderSurvivalCase(c);
+                })
+                .catch(function() {
+                    content.innerHTML = '<p>Could not load case. <button class="btn-secondary" onclick="survivalSchool.fetchNextQuestion()">Try again</button></p>';
+                });
+        },
+
+        fetchForagingQuestion: function() {
+            var self = this;
+            var content = document.getElementById('ss-content');
+            content.innerHTML = '<div class="loading-spinner">🌿 Loading...</div>';
+            var preferredType = this.getWeakestType();
+            var review = this.state.reviewQueue.slice(-5).join(',');
+
+            var url = '/api/games/foraging-quest/question?season=' + encodeURIComponent(this.state.season);
+            if (preferredType) url += '&preferred_type=' + encodeURIComponent(preferredType);
+            if (review) url += '&review=' + encodeURIComponent(review);
+
+            fetch(url)
+                .then(function(r) { return r.json(); })
+                .then(function(q) {
+                    self.state.currentQuestion = q;
+                    self.state.currentQuestionType = 'foraging';
+                    self.state.result = null;
+                    self.save();
+                    self.renderForagingQuestion(q);
+                })
+                .catch(function() {
+                    content.innerHTML = '<p>Could not load question. <button class="btn-secondary" onclick="survivalSchool.fetchNextQuestion()">Try again</button></p>';
+                });
+        },
+
+        fetchChainQuestion: function() {
+            // Knowledge chain: try to get a question about the same plant
+            var self = this;
+            var plantName = this.chainPlant;
+            this.chainPlant = null;
+            var review = plantName;
+            var url = '/api/games/foraging-quest/question?season=' + encodeURIComponent(this.state.season) + '&review=' + encodeURIComponent(review);
+
+            fetch(url)
+                .then(function(r) { return r.json(); })
+                .then(function(q) {
+                    self.state.currentQuestion = q;
+                    self.state.currentQuestionType = 'foraging';
+                    self.state.result = null;
+                    self.save();
+                    // Show chain indicator
+                    self.renderForagingQuestion(q, true);
+                })
+                .catch(function() { self.fetchForagingQuestion(); });
+        },
+
+        fetchBonusQuestion: function() {
+            var self = this;
+            var content = document.getElementById('ss-content');
+            content.innerHTML = '<div class="loading-spinner">⚡ Bonus Round!</div>';
+            fetch('/api/games/foraging-quest/bonus?season=' + encodeURIComponent(this.state.season))
+                .then(function(r) { return r.json(); })
+                .then(function(q) {
+                    self.state.currentQuestion = q;
+                    self.state.currentQuestionType = 'bonus';
+                    self.state.result = null;
+                    self.save();
+                    self.renderBonusQuestion(q);
+                })
+                .catch(function() {
+                    self.state.bonusRound = false;
+                    self.save();
+                    self.fetchNextQuestion();
+                });
+        },
+
+        // ── Rendering ──
+        renderCurrentQuestion: function() {
+            if (this.state.currentQuestionType === 'survival') {
+                this.renderSurvivalCase(this.state.currentQuestion);
+            } else {
+                this.renderForagingQuestion(this.state.currentQuestion);
+            }
+        },
+
+        renderSurvivalCase: function(c) {
+            var content = document.getElementById('ss-content');
+            document.getElementById('ss-game-over').classList.add('hidden');
+            var caseNum = this.state.casesSolved + 1;
+            var levelLabels = {1:'Beginner',2:'Intermediate',3:'Expert'};
+            var levelColors = {1:'#4CAF50',2:'#FFC107',3:'#ff5252'};
+            var levelLabel = levelLabels[c.level] || 'Beginner';
+            var levelColor = levelColors[c.level] || '#4CAF50';
+            var levelBg = {1:'#4CAF5020',2:'#FFC10720',3:'#ff525220'}[c.level] || '#4CAF5020';
+
+            var options = [
+                {name: c.safe_plant, icon: c.safe_icon, isSafe: true},
+                {name: c.danger_plant, icon: c.danger_icon, isSafe: false}
+            ];
+            for (var i = options.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = options[i]; options[i] = options[j]; options[j] = tmp;
+            }
+
+            content.innerHTML =
+                '<div class="q-type-header" style="border-left-color: #ff5252;">' +
+                    '<div class="q-type-left"><span class="q-type-icon">☠️</span><span class="q-type-name" style="color: #ff5252;">DANGER IDENTIFICATION</span></div>' +
+                    '<span class="q-points" style="background: #ff525220; color: #ff5252; border-color: #ff525250;">+20 XP</span>' +
+                '</div>' +
+                '<div class="case-file"><div class="case-file-header"><h3>📋 Case File #' + caseNum + '</h3>' +
+                    '<span class="case-level-badge ' + levelLabel.toLowerCase() + '" style="background:' + levelBg + ';color:' + levelColor + ';border-color:' + levelColor + '50;">' + levelLabel + '</span></div></div>' +
+                '<div class="case-section" style="background:var(--bg-card);border-left:4px solid var(--green-leaf);border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-bottom:0.8rem;">' +
+                    '<span class="case-label">📍 LOCATION</span><br><span class="case-value">' + c.safe_habitat + '</span></div>' +
+                '<div class="case-observation"><div class="obs-label">🔍 YOUR OBSERVATION</div><div class="obs-text">' + c.clue + '</div></div>' +
+                '<div class="case-rule"><div class="rule-label">⚠️ KEY RULE</div><div class="rule-text">' + renderMarkdown(c.rule) + '</div></div>' +
+                '<hr class="game-divider">' +
+                '<div class="verdict-box"><div class="verdict-title">⚖️ VERDICT</div><div class="verdict-sub">Which is the <strong>SAFE</strong> plant?</div></div>' +
+                '<div class="answer-grid cols-2">' +
+                    '<button class="answer-btn" onclick="survivalSchool.handleSurvivalVerdict(' + options[0].isSafe + ', this)">' + options[0].icon + ' ' + options[0].name + '</button>' +
+                    '<button class="answer-btn" onclick="survivalSchool.handleSurvivalVerdict(' + options[1].isSafe + ', this)">' + options[1].icon + ' ' + options[1].name + '</button>' +
+                '</div>';
+
+            this.startTimer();
+        },
+
+        renderForagingQuestion: function(q, isChain) {
+            var content = document.getElementById('ss-content');
+            document.getElementById('ss-game-over').classList.add('hidden');
+            var plant = q.plant;
+            var isPoisonous = q.type === 'lookalike';
+
+            var keysHtml = '';
+            if (plant.id_keys && Object.keys(plant.id_keys).length > 0) {
+                var entries = Object.entries(plant.id_keys).slice(0, 3);
+                for (var i = 0; i < entries.length; i++) {
+                    keysHtml += '<b>' + entries[i][0] + ':</b> ' + entries[i][1];
+                    if (i < entries.length - 1) keysHtml += '<br>';
+                }
+            } else if (plant.description) {
+                keysHtml = '<i>' + plant.description.substring(0, 150) + '</i>';
+            }
+
+            var optionsHtml = '';
+            if (q.options) {
+                for (var j = 0; j < q.options.length; j++) {
+                    var opt = q.options[j];
+                    var label = opt;
+                    if (q.type === 'habitat') { label = (HABITAT_ICONS[opt] || '❓') + ' ' + opt; }
+                    optionsHtml += '<button class="answer-btn" onclick="survivalSchool.handleForagingAnswer(\'' + encodeURIComponent(opt) + '\', this)">' + label + '</button>';
+                }
+            }
+
+            var chainHtml = isChain ? '<div class="chain-indicator">🔗 Knowledge Chain — same plant, deeper knowledge</div>' : '';
+
+            content.innerHTML =
+                chainHtml +
+                '<div class="q-type-header" style="border-left-color: ' + q.type_color + ';">' +
+                    '<div class="q-type-left"><span class="q-type-icon">' + q.type_icon + '</span><span class="q-type-name" style="color: ' + q.type_color + ';">' + q.type_name + '</span></div>' +
+                    '<span class="q-points" style="background: ' + q.type_color + '20; color: ' + q.type_color + '; border-color: ' + q.type_color + '50;">+' + q.points + ' XP</span>' +
+                '</div>' +
+                '<div class="question-layout"><div>' +
+                    '<div class="plant-card' + (isPoisonous ? ' poisonous' : '') + '">' +
+                        '<div class="plant-icon">' + (plant.emoji || '🌿') + '</div><div class="plant-name">' + plant.name + '</div>' +
+                        '<div class="plant-latin">' + (plant.latin || 'N/A') + '</div>' +
+                        '<div class="plant-keys">' + keysHtml + '</div>' +
+                    '</div>' +
+                '</div><div>' +
+                    (q.clue ? '<div class="clue-box"><div class="clue-label">🕵️ CLUE</div><div class="clue-text">' + q.clue + '</div></div>' : '') +
+                    '<div class="question-text">' + renderMarkdown(q.question) + '</div>' +
+                    '<div class="answer-grid cols-2">' + optionsHtml + '</div>' +
+                '</div></div>';
+
+            this.startTimer();
+        },
+
+        renderBonusQuestion: function(q) {
+            var content = document.getElementById('ss-content');
+            document.getElementById('ss-game-over').classList.add('hidden');
+            var optionsHtml = '';
+            if (q.options) {
+                for (var i = 0; i < q.options.length; i++) {
+                    optionsHtml += '<button class="answer-btn" onclick="survivalSchool.handleBonusAnswer(\'' + encodeURIComponent(q.options[i]) + '\', this)">' + q.options[i] + '</button>';
+                }
+            }
+            content.innerHTML =
+                '<div class="bonus-banner"><div class="bonus-icon">⚡</div><div class="bonus-title">BONUS ROUND!</div><div class="bonus-desc">You\'ve identified 5 in a row! Answer for <strong>Double Points</strong>.</div></div>' +
+                '<div class="question-text">' + renderMarkdown(q.question) + '</div>' +
+                '<div class="answer-grid cols-2">' + optionsHtml + '</div>';
+
+            this.startTimer();
+        },
+
+        // ── Answer Handlers ──
+        handleSurvivalVerdict: function(isSafe, btn) {
+            var c = this.state.currentQuestion;
+            if (!c) return;
+            this.stopTimer();
+            document.querySelectorAll('.answer-btn').forEach(function(b) { b.disabled = true; b.style.pointerEvents = 'none'; });
+
+            if (isSafe) {
+                btn.classList.add('correct');
+                this.state.result = 'correct';
+                var mode = this.state.difficultyMode || 'patrol';
+                var multiplier = DIFFICULTY_MODES[mode].points_multiplier || 1;
+                this.state.score += Math.round(20 * multiplier);
+                this.state.correctCount += 1;
+                this.state.streak += 1;
+                this.state.casesSolved += 1;
+                this.state.totalPlantsIdentified += 1;
+                this.state.herbarium[c.safe_plant] = (this.state.herbarium[c.safe_plant] || 0) + 1;
+                if (this.state.sessionPlants.indexOf(c.safe_plant) === -1) this.state.sessionPlants.push(c.safe_plant);
+                this.state.sessionCorrect++;
+                this.state.questionStats.survival.correct++;
+                this.state.questionStats.survival.total++;
+                this._updatePlantKnowledge(c.safe_plant, 'survival');
+
+                // Remove from review queue if correct
+
+                var idx = this.state.reviewQueue.indexOf(c.safe_plant);
+                if (idx !== -1) this.state.reviewQueue.splice(idx, 1);
+
+                // Check achievements
+                if (!this.state.achievements.survival_scout) { this.state.achievements.survival_scout = true; showToast('🏅 Achievement Unlocked: Scout!'); }
+                if (this.state.casesSolved >= 20 && !this.state.achievements.survival_detective) { this.state.achievements.survival_detective = true; showToast('🏅 Achievement Unlocked: Detective!'); }
+
+                // Set up chain possibility
+                this.chainPlant = null;
+            } else {
+                btn.classList.add('wrong');
+                this.state.result = 'wrong';
+                this.state.lives -= 1;
+                this.state.correctCount = 0;
+                this.state.streak = 0;
+                this.state.sessionWrong++;
+                this.state.questionStats.survival.total++;
+
+                // Add to review queue
+                if (this.state.reviewQueue.indexOf(c.safe_plant) === -1) {
+                    this.state.reviewQueue.push(c.safe_plant);
+                    if (this.state.reviewQueue.length > 10) this.state.reviewQueue.shift();
+                }
+            }
+
+            if (this.state.streak > this.state.bestStreak) this.state.bestStreak = this.state.streak;
+            if (this.state.streak > this.state.sessionBestStreak) this.state.sessionBestStreak = this.state.streak;
+            this.save();
+            this.updateStats();
+            this.checkStreakMilestone();
+            this.renderResult();
+        },
+
+        handleForagingAnswer: function(encodedAnswer, btn) {
+            var answer = decodeURIComponent(encodedAnswer);
+            var q = this.state.currentQuestion;
+            if (!q) return;
+            this.stopTimer();
+            document.querySelectorAll('.answer-btn').forEach(function(b) { b.disabled = true; b.style.pointerEvents = 'none'; });
+
+            var isCorrect = answer === q.correct;
+            if (isCorrect) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.answer-btn').forEach(function(b) {
+                    try { if (decodeURIComponent(b.getAttribute('onclick').match(/'([^']+)'/)[1]) === q.correct) b.classList.add('correct'); } catch(e) {}
+                });
+            }
+
+            var mode = this.state.difficultyMode || 'patrol';
+            var multiplier = DIFFICULTY_MODES[mode].points_multiplier || 1;
+            var qType = q.type || 'identification';
+
+            if (isCorrect) {
+                var streakBonus = this.state.streak * 2;
+                var totalPoints = Math.round((q.points + streakBonus) * multiplier);
+                this.state.result = 'correct';
+                this.state.score += totalPoints;
+                this.state.correctCount += 1;
+                this.state.streak += 1;
+                this.state.casesSolved += 1;
+                this.state.totalPlantsIdentified += 1;
+                this.state.herbarium[q.plant.name] = (this.state.herbarium[q.plant.name] || 0) + 1;
+                if (this.state.sessionPlants.indexOf(q.plant.name) === -1) this.state.sessionPlants.push(q.plant.name);
+                this.state.sessionCorrect++;
+                if (!this.state.seasonBadges.includes(this.state.season)) this.state.seasonBadges.push(this.state.season);
+                this._updatePlantKnowledge(q.plant.name, qType);
+
+                if (this.state.questionStats[qType]) {
+
+                    this.state.questionStats[qType].correct++;
+                    this.state.questionStats[qType].total++;
+                }
+
+                // Remove from review queue
+                var idx = this.state.reviewQueue.indexOf(q.plant.name);
+                if (idx !== -1) this.state.reviewQueue.splice(idx, 1);
+
+                // Check achievements
+                var totalFound = Object.keys(this.state.herbarium).length;
+                if (totalFound >= 1 && !this.state.achievements.foraging_novice) { this.state.achievements.foraging_novice = true; showToast('🏅 Achievement Unlocked: Novice Forager!'); }
+                if (totalFound >= 25 && !this.state.achievements.foraging_botanist) { this.state.achievements.foraging_botanist = true; showToast('🏅 Achievement Unlocked: Botanist!'); }
+                if (this.state.seasonBadges.length >= 4 && !this.state.achievements.foraging_master) { this.state.achievements.foraging_master = true; showToast('🏅 Achievement Unlocked: Seasonal Master!'); }
+
+                // Set up chain possibility
+                this.chainPlant = q.plant.name;
+
+                if (this.state.streak > 0 && this.state.streak % 5 === 0 && !this.state.bonusRound) {
+                    this.state.bonusRound = true;
+                }
+            } else {
+                this.state.result = 'wrong';
+                this.state.lives -= 1;
+                this.state.streak = 0;
+                this.state.sessionWrong++;
+                if (this.state.questionStats[qType]) {
+                    this.state.questionStats[qType].total++;
+                }
+
+                // Add to review queue
+                if (this.state.reviewQueue.indexOf(q.plant.name) === -1) {
+                    this.state.reviewQueue.push(q.plant.name);
+                    if (this.state.reviewQueue.length > 10) this.state.reviewQueue.shift();
+                }
+            }
+
+            if (this.state.streak > this.state.bestStreak) this.state.bestStreak = this.state.streak;
+            if (this.state.streak > this.state.sessionBestStreak) this.state.sessionBestStreak = this.state.streak;
+            this.state.currentQuestion = null;
+            this.save();
+            this.updateStats();
+            this.checkStreakMilestone();
+            this.renderResult();
+        },
+
+        handleBonusAnswer: function(encodedAnswer, btn) {
+            var answer = decodeURIComponent(encodedAnswer);
+            var q = this.state.currentQuestion;
+            if (!q) return;
+            this.stopTimer();
+            document.querySelectorAll('.answer-btn').forEach(function(b) { b.disabled = true; b.style.pointerEvents = 'none'; });
+
+            var isCorrect = answer === q.correct;
+            if (isCorrect) { btn.classList.add('correct'); }
+            else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.answer-btn').forEach(function(b) {
+                    try { if (decodeURIComponent(b.getAttribute('onclick').match(/'([^']+)'/)[1]) === q.correct) b.classList.add('correct'); } catch(e) {}
+                });
+            }
+
+            this.state.bonusRound = false;
+            var mode = this.state.difficultyMode || 'patrol';
+            var multiplier = DIFFICULTY_MODES[mode].points_multiplier || 1;
+
+            if (isCorrect) {
+                this.state.result = 'correct';
+                this.state.score += Math.round(20 * multiplier);
+                this.state.streak = 0;
+                this.state.totalPlantsIdentified += 1;
+                this.state.herbarium[q.plant.name] = (this.state.herbarium[q.plant.name] || 0) + 1;
+                this.state.sessionCorrect++;
+                this._updatePlantKnowledge(q.plant.name, 'bonus');
+                if (this.state.questionStats.bonus) {
+
+                    this.state.questionStats.bonus.correct++;
+                    this.state.questionStats.bonus.total++;
+                }
+            } else {
+                this.state.result = 'wrong';
+                this.state.streak = 0;
+                this.state.sessionWrong++;
+            }
+
+            if (this.state.streak > this.state.bestStreak) this.state.bestStreak = this.state.streak;
+            this.state.currentQuestion = null;
+            this.save();
+            this.updateStats();
+            this.renderResult();
+        },
+
+        // ── Streak Milestones ──
+        checkStreakMilestone: function() {
+            var streak = this.state.streak;
+            for (var i = 0; i < STREAK_MILESTONES.length; i++) {
+                var m = STREAK_MILESTONES[i];
+                if (streak === m.streak) {
+                    this.showStreakPopup(m);
+                    if (m.bonus_xp > 0) {
+                        this.state.score += m.bonus_xp;
+                    }
+                    break;
+                }
+            }
+        },
+
+        showStreakPopup: function(milestone) {
+            var popup = document.getElementById('ss-streak-popup');
+            popup.innerHTML =
+                '<div class="streak-emoji">' + milestone.icon + '</div>' +
+                '<div class="streak-title">' + milestone.title + '</div>' +
+                '<div class="streak-count">' + milestone.streak + ' in a row!</div>' +
+                (milestone.bonus_xp > 0 ? '<div class="streak-bonus">+' + milestone.bonus_xp + ' XP</div>' : '');
+            popup.classList.remove('hidden');
+            setTimeout(function() { popup.classList.add('hidden'); }, 2500);
+        },
+
+        // ── Result Rendering ──
+        renderResult: function() {
+            var content = document.getElementById('ss-content');
+            var isCorrect = this.state.result === 'correct';
+            var qType = this.state.currentQuestionType;
+            var isTimeout = this.state.result === 'timeout';
+
+            // Check for level up
+            var levelUpHtml = '';
+            if (isCorrect && this.state.correctCount >= 5 && this.state.level === 1) {
+                this.state.level = 2;
+                this.state.correctCount = 0;
+                this.save();
+                levelUpHtml = '<div class="level-up-banner"><div class="lu-icon">🏆</div><div class="lu-title">LEVEL UP!</div><div class="lu-text">You\'ve unlocked <b>Level 2: Fungi &amp; Roots</b></div><div class="lu-sub">Cases now include harder plants and fungi.</div></div>';
+                if (!this.state.achievements.survival_expert) { this.state.achievements.survival_expert = true; showToast('🏅 Achievement Unlocked: Graduate!'); }
+            }
+
+            // Build feedback
+            var feedbackClass, feedbackIcon, feedbackText, feedbackDetail;
+            var consequenceHtml = '';
+
+            if (isTimeout) {
+                feedbackClass = 'feedback-wrong';
+                feedbackIcon = '⏰';
+                feedbackText = 'TIME\'S UP!';
+                feedbackDetail = 'You ran out of time. The answer will be revealed below.';
+            } else if (isCorrect) {
+                feedbackClass = 'feedback-correct';
+                feedbackIcon = '✅';
+                if (qType === 'survival') {
+                    feedbackText = 'CASE SOLVED!';
+                    var c = this.state.currentQuestion;
+                    var benefit = (c && c.correct_benefit) ? c.correct_benefit : 'You\'ve correctly identified the safe plant. This knowledge could save your life.';
+                    feedbackDetail = 'Great work, Inspector. +20 points.';
+                    consequenceHtml = '<div class="ss-consequence ss-consequence-good"><div class="ss-consequence-label">💡 WHY THIS MATTERS</div><div class="ss-consequence-text">' + benefit + '</div></div>';
+                } else {
+                    var q = this.state.currentQuestion;
+                    var streakBonus = this.state.streak > 1 ? ' (+' + (this.state.streak - 1) * 2 + ' streak bonus)' : '';
+                    feedbackText = 'CORRECT! +' + (q ? q.points : 10) + ' XP' + streakBonus;
+                    feedbackDetail = q ? renderMarkdown(q.explanation) : '';
+                    var benefit = (q && q.correct_benefit) ? q.correct_benefit : '';
+                    if (benefit) {
+                        consequenceHtml = '<div class="ss-consequence ss-consequence-benefit"><div class="ss-consequence-label">💡 WHY THIS MATTERS</div><div class="ss-consequence-text">' + benefit + '</div></div>';
+                    }
+                }
+            } else {
+                feedbackClass = 'feedback-wrong';
+                feedbackIcon = '☠️';
+                if (qType === 'survival') {
+                    feedbackText = 'DANGER!';
+                    var c = this.state.currentQuestion;
+                    feedbackDetail = 'Wrong choice. The safe plant was <strong>' + (c ? c.safe_plant : '?') + '</strong>.';
+var consequence = (c && c.wrong_consequence) ? c.wrong_consequence : 'This is exactly the kind of mistake that gets foragers into trouble.';
+consequenceHtml = '<div class="ss-consequence ss-consequence-danger"><div class="ss-consequence-label">⚠️ WHAT WOULD HAPPEN</div><div class="ss-consequence-text">' + consequence + '</div></div>';
+                } else {
+                    feedbackText = 'Incorrect';
+                    var q = this.state.currentQuestion;
+                    feedbackDetail = 'The answer was: <strong>' + (q ? q.correct : '?') + '</strong>';
+                    var consequence = (q && q.wrong_consequence) ? q.wrong_consequence : 'Misidentifying plants is the #1 cause of foraging accidents.';
+                    consequenceHtml = '<div class="ss-consequence ss-consequence-danger"><div class="ss-consequence-label">⚠️ WHY THIS MATTERS</div><div class="ss-consequence-text">' + consequence + '</div></div>';
+                }
+
+                // Add review queue notification
+                if (this.state.reviewQueue.length > 0) {
+                    consequenceHtml += '<div class="ss-consequence ss-consequence-review"><div class="ss-consequence-label">📖 ADDED TO REVIEW</div><div class="ss-consequence-text">This plant will appear again soon so you can learn it.</div></div>';
+                }
+            }
+
+            content.innerHTML =
+                '<div class="' + feedbackClass + '">' +
+                    '<div class="feedback-icon">' + feedbackIcon + '</div>' +
+                    '<div class="feedback-text">' + feedbackText + '</div>' +
+                    '<div class="feedback-detail">' + feedbackDetail + '</div>' +
+                '</div>' +
+                consequenceHtml +
+                levelUpHtml;
+
+            // Add comparison cards for survival cases
+            if (qType === 'survival') {
+                var c = this.state.currentQuestion;
+                if (c) {
+                    content.innerHTML +=
+                        '<div class="comparison-grid">' +
+                            '<div class="safe-card"><div class="card-icon">🌿</div><div class="card-name">' + c.safe_plant + '</div><div class="card-status">✅ SAFE TO EAT</div><div style="color:var(--cream-dim);font-size:0.85rem;">' + c.safe_habitat + '</div></div>' +
+                            '<div class="danger-card"><div class="card-icon">☠️</div><div class="card-name">' + c.danger_plant + '</div><div class="card-status">⚠️ DANGEROUS</div><div style="color:var(--cream-dim);font-size:0.85rem;">Do NOT consume</div></div>' +
+                        '</div>' +
+                        '<div class="case-analysis"><div class="analysis-label">📝 Case Analysis</div><div class="analysis-text">' + renderMarkdown(c.fact) + '</div></div>' +
+                        (c.safe_plant_details ? '<details class="learn-more"><summary>📖 Learn more about ' + c.safe_plant + '</summary><div class="learn-more-content">' +
+                            (c.safe_plant_details.lookalikes && c.safe_plant_details.lookalikes.length > 0 ? '<p><strong>Lookalikes:</strong></p><ul>' + c.safe_plant_details.lookalikes.map(function(la){
+                                if(typeof la==='object'){var d=la.danger||'Unknown';var ic=['DEADLY','EXTREME'].includes(d)?'☠️':['POISONOUS','HIGH'].includes(d)?'⚠️':'✅';return '<li>'+ic+' <strong>'+la.name+'</strong> ('+d+'): '+(la.diff||'')+'</li>';} return '';
+                            }).join('') + '</ul>' : '') +
+                            (c.safe_plant_details.warnings ? '<p><strong>⚠️ Warning:</strong> ' + c.safe_plant_details.warnings + '</p>' : '') +
+                            (c.safe_plant_details.confusion_notes ? '<p><strong>🔍 Key ID Note:</strong> ' + c.safe_plant_details.confusion_notes + '</p>' : '') +
+                        '</div></details>' : '');
+                }
+            }
+
+            // Add plant card for foraging questions
+            if (qType === 'foraging' || qType === 'bonus') {
+                var q = this.state.currentQuestion;
+                if (q && q.plant) {
+                    var p = q.plant;
+                    var masteryCount = this.state.herbarium[p.name] || 0;
+                    var masteryLevel = masteryCount >= MASTERY_LEVELS.mastered ? 'mastered' : masteryCount >= MASTERY_LEVELS.learned ? 'learned' : masteryCount >= MASTERY_LEVELS.discovered ? 'discovered' : 'new';
+                    var masteryIcon = masteryLevel === 'mastered' ? '⭐' : masteryLevel === 'learned' ? '✅' : masteryLevel === 'discovered' ? '🌿' : '🆕';
+
+                    content.innerHTML +=
+                        '<div class="plant-reveal-card' + (p.edible === false ? ' poisonous' : '') + '">' +
+                            '<div class="reveal-header">' +
+                                '<span class="reveal-emoji">' + (p.emoji || '🌿') + '</span>' +
+                                '<div><h3 class="reveal-name">' + p.name + '</h3>' +
+                                '<p class="reveal-latin">' + (p.latin || '') + '</p></div>' +
+                            '</div>' +
+                            '<div class="reveal-tags">' +
+                                '<span class="reveal-tag' + (p.edible === false ? ' poisonous' : '') + '">' + (p.edible === false ? '☠️ Poisonous' : '✅ Edible') + '</span>' +
+                                (p.category ? '<span class="reveal-tag">' + p.category + '</span>' : '') +
+                                '<span class="reveal-tag">' + masteryIcon + ' ' + masteryLevel + ' (×' + masteryCount + ')</span>' +
+                            '</div>' +
+                            '<div class="reveal-fact">' + (q.explanation ? renderMarkdown(q.explanation) : '') + '</div>' +
+                        '</div>';
+                }
+            }
+
+            content.innerHTML += '<button class="btn-next-case" onclick="survivalSchool.nextQuestion()">📋 Next Question</button>';
+
+            this.updateProgress();
+            this.renderAchievements();
+            this.renderSeasonButtons();
+            this.renderHerbarium();
+
+            if (this.state.lives <= 0) {
+                setTimeout(function() { survivalSchool.showGameOver(); }, 500);
+            }
+        },
+
+        // ── Navigation ──
+        nextQuestion: function() {
+            this.state.currentQuestion = null;
+            this.state.currentQuestionType = null;
+            this.state.result = null;
+            this.save();
+            if (this.state.bonusRound) {
+                this.fetchBonusQuestion();
+            } else {
+                this.fetchNextQuestion();
+            }
+        },
+
+        // ── Game Over & Session Summary ──
+        showGameOver: function() {
+            this.stopTimer();
+            var content = document.getElementById('ss-content');
+            content.innerHTML = '';
+            var goDiv = document.getElementById('ss-game-over');
+            goDiv.classList.remove('hidden');
+
+            var totalFound = Object.keys(this.state.herbarium).length;
+            var weakestType = this.getWeakestTypeName();
+
+goDiv.innerHTML =
+    '<div class="go-icon">🤕</div>' +
+    '<div class="go-title">Training Ended</div>' +
+    '<div class="go-text">Don\'t worry, even experts make mistakes.</div>' +
+    '<div class="ss-session-report">' +
+        '<h3 class="ss-report-title">📋 Session Report</h3>' +
+        '<div class="ss-report-grid">' +
+            '<div class="ss-report-stat"><span class="ss-report-val">' + this.state.sessionCorrect + '</span><span class="ss-report-lbl">✅ Correct</span></div>' +
+            '<div class="ss-report-stat"><span class="ss-report-val">' + this.state.sessionWrong + '</span><span class="ss-report-lbl">❌ Wrong</span></div>' +
+            '<div class="ss-report-stat"><span class="ss-report-val">' + this.state.sessionBestStreak + '</span><span class="ss-report-lbl">🔥 Best Streak</span></div>' +
+            '<div class="ss-report-stat"><span class="ss-report-val">' + this.state.score + '</span><span class="ss-report-lbl">⭐ Total Score</span></div>' +
+        '</div>' +
+        (this.state.sessionPlants.length > 0 ? '<div class="ss-report-tip"><strong>🌿 Plants discovered this session:</strong> ' + this.state.sessionPlants.slice(0, 8).join(', ') + (this.state.sessionPlants.length > 8 ? '...' : '') + '</div>' : '') +
+        (weakestType ? '<div class="ss-report-tip">💡 <strong>Focus area:</strong> ' + weakestType + ' questions. Practice makes perfect!</div>' : '') +
+        (this.state.reviewQueue.length > 0 ? '<div class="ss-report-review">📖 <strong>Review queue:</strong> ' + this.state.reviewQueue.length + ' plants to review next session.</div>' : '') +
+    '</div>' +
+    '<button class="btn-restart" onclick="survivalSchool.showModeSelect()">🔄 Start New Session</button>';
+        },
+
+        confirmRestart: function() {
+            document.getElementById('ss-reset-default').classList.add('hidden');
+            document.getElementById('ss-reset-confirm').classList.remove('hidden');
+        },
+
+        cancelRestart: function() {
+            document.getElementById('ss-reset-confirm').classList.add('hidden');
+            document.getElementById('ss-reset-default').classList.remove('hidden');
+        },
+
+
+        restart: function() {
+            this.state = Object.assign({}, this.defaults);
+            this.state.herbarium = {};
+            this.state.plantKnowledge = {};
+            this.state.seasonBadges = [];
+            this.state.reviewQueue = [];
+            this.state.questionStats = JSON.parse(JSON.stringify(this.defaults.questionStats));
+            this.state.sessionPlants = [];
+            this.state.sessionCorrect = 0;
+            this.state.sessionWrong = 0;
+            this.state.sessionBestStreak = 0;
+            this.save();
+            document.getElementById('ss-game-over').classList.add('hidden');
+            var resetConfirm = document.getElementById('ss-reset-confirm');
+            var resetDefault = document.getElementById('ss-reset-default');
+            if (resetConfirm) resetConfirm.classList.add('hidden');
+            if (resetDefault) resetDefault.classList.remove('hidden');
+            this.showModeSelect();
+        },
+
+
+        // ── Helpers ──
+        getWeakestType: function() {
+            var stats = this.state.questionStats;
+            var weakest = null;
+            var worstRate = 1;
+            var types = Object.keys(stats);
+            for (var i = 0; i < types.length; i++) {
+                var t = types[i];
+                if (stats[t].total >= 3) {
+                    var rate = stats[t].correct / stats[t].total;
+                    if (rate < worstRate) {
+                        worstRate = rate;
+                        weakest = t;
+                    }
+                }
+            }
+            return weakest;
+        },
+
+        getWeakestTypeName: function() {
+            var typeNames = {
+                survival: 'Danger identification',
+                habitat: 'Habitat knowledge',
+                identification: 'Plant identification',
+                lookalike: 'Lookalike recognition',
+                parts: 'Edible parts',
+                season: 'Seasonal knowledge',
+                warning: 'Safety warnings'
+            };
+            var weakest = this.getWeakestType();
+            return weakest ? typeNames[weakest] || weakest : null;
+        },
+
+        getMasteredPlants: function() {
+            var mastered = [];
+            var herbarium = this.state.herbarium;
+            for (var name in herbarium) {
+                if (herbarium[name] >= MASTERY_LEVELS.mastered) {
+                    mastered.push(name);
+                }
+            }
+            return mastered;
+        },
+
+        // ── Plant of the Day ──
+        potdData: null,
+        potdIndex: 0,
+        potdScore: 0,
+        potdAnswered: false,
+        potdCompleted: false,
+
+        fetchPlantOfTheDay: function() {
+            var self = this;
+            fetch('/api/games/survival-school/plant-of-the-day')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    self.potdData = data;
+                    self.potdIndex = 0;
+                    self.potdScore = 0;
+                    self.potdAnswered = false;
+                    self.potdCompleted = false;
+                    self.renderPlantOfTheDay();
+                })
+                .catch(function() {
+                    document.getElementById('ss-potd-content').innerHTML = '<p style="color:var(--cream-dim);text-align:center;">Could not load today\'s plant.</p>';
+                });
+        },
+
+        renderPlantOfTheDay: function() {
+            if (!this.potdData) return;
+            var plant = this.potdData.plant;
+            var catIcon = CATEGORY_ICON_MAP[plant.category] || 'plant';
+            var iconHtml = ssIcon(catIcon, 32);
+
+            var html =
+                '<div class="ss-potd-header">' +
+                    '<span class="ss-potd-icon">' + iconHtml + '</span>' +
+                    '<div><h3 class="ss-potd-name">' + plant.name + '</h3>' +
+                    '<p class="ss-potd-latin">' + (plant.latin || '') + '</p>' +
+                    '<span class="ss-potd-category">' + (plant.category || 'Plant') + '</span>' +
+                    '<span class="ss-potd-date">' + this.potdData.date + '</span></div>' +
+                '</div>' +
+                '<p class="ss-potd-intro">Test your knowledge of today\'s plant — 3 quick questions!</p>' +
+                '<button class="ss-btn-primary" onclick="survivalSchool.startPotdQuiz()">Start Today\'s Quiz</button>';
+
+            document.getElementById('ss-potd-content').innerHTML = html;
+        },
+
+        startPotdQuiz: function() {
+            this.potdIndex = 0;
+            this.potdScore = 0;
+            this.potdAnswered = false;
+            this.potdCompleted = false;
+            this.renderPotdQuestion();
+        },
+
+        renderPotdQuestion: function() {
+            if (!this.potdData || this.potdIndex >= this.potdData.questions.length) {
+                this.renderPotdResults();
+                return;
+            }
+            var q = this.potdData.questions[this.potdIndex];
+            this.potdAnswered = false;
+
+            var optionsHtml = '';
+            if (q.options) {
+                for (var i = 0; i < q.options.length; i++) {
+                    var opt = q.options[i];
+                    var label = opt;
+                    if (q.type === 'habitat') label = (HABITAT_ICONS[opt] || '❓') + ' ' + opt;
+                    optionsHtml += '<button class="answer-btn" onclick="survivalSchool.handlePotdAnswer(\'' + encodeURIComponent(opt) + '\', this)">' + label + '</button>';
+                }
+            }
+
+            var typeIcon = q.type_icon || '🔍';
+            var typeName = q.type_name || q.type;
+            var typeColor = q.type_color || '#4CAF50';
+
+
+            var html =
+                '<div class="ss-potd-progress">Question ' + (this.potdIndex + 1) + ' of ' + this.potdData.questions.length + '</div>' +
+                '<div class="q-type-header" style="border-left-color: ' + typeColor + ';">' +
+                    '<div class="q-type-left"><span class="q-type-icon">' + typeIcon + '</span><span class="q-type-name" style="color: ' + typeColor + ';">' + typeName + '</span></div>' +
+                '</div>' +
+                '<div class="question-text">' + renderMarkdown(q.question) + '</div>' +
+                '<div class="answer-grid cols-2">' + optionsHtml + '</div>';
+
+            document.getElementById('ss-potd-content').innerHTML = html;
+        },
+
+        handlePotdAnswer: function(encodedAnswer, btn) {
+            if (this.potdAnswered) return;
+            this.potdAnswered = true;
+            var answer = decodeURIComponent(encodedAnswer);
+            var q = this.potdData.questions[this.potdIndex];
+            var isCorrect = answer === q.correct;
+
+            document.querySelectorAll('#ss-potd-content .answer-btn').forEach(function(b) { b.disabled = true; b.style.pointerEvents = 'none'; });
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                this.potdScore++;
+                this._updatePlantKnowledge(q.plant.name, q.type);
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('#ss-potd-content .answer-btn').forEach(function(b) {
+                    try { if (decodeURIComponent(b.getAttribute('onclick').match(/'([^']+)'/)[1]) === q.correct) b.classList.add('correct'); } catch(e) {}
+                });
+            }
+
+            var feedbackClass = isCorrect ? 'feedback-correct' : 'feedback-wrong';
+            var feedbackIcon = isCorrect ? '✅' : '❌';
+            var feedbackText = isCorrect ? 'Correct!' : 'Incorrect — the answer was: ' + q.correct;
+
+            var html =
+                '<div class="' + feedbackClass + '" style="margin:1rem 0">' +
+                    '<div class="feedback-icon">' + feedbackIcon + '</div>' +
+                    '<div class="feedback-text">' + feedbackText + '</div>' +
+                    '<div class="feedback-detail">' + (q.explanation ? renderMarkdown(q.explanation) : '') + '</div>' +
+                '</div>' +
+                '<button class="ss-btn-primary" onclick="survivalSchool.nextPotdQuestion()">Next Question</button>';
+
+            document.getElementById('ss-potd-content').innerHTML = html;
+        },
+
+        nextPotdQuestion: function() {
+            this.potdIndex++;
+            this.potdAnswered = false;
+            if (this.potdIndex >= this.potdData.questions.length) {
+                this.renderPotdResults();
+            } else {
+                this.renderPotdQuestion();
+            }
+        },
+
+        renderPotdResults: function() {
+            this.potdCompleted = true;
+            var total = this.potdData.questions.length;
+            var score = this.potdScore;
+            var plant = this.potdData.plant;
+            var pct = Math.round((score / total) * 100);
+
+            var html =
+                '<div class="ss-potd-results">' +
+                    '<div class="ss-potd-results-icon">' + (score === total ? '🌟' : score > 0 ? '🌿' : '📚') + '</div>' +
+                    '<h3 class="ss-potd-results-title">Today\'s Quiz Complete!</h3>' +
+                    '<div class="ss-potd-results-score">' + score + '/' + total + ' correct</div>' +
+                    '<div class="ss-potd-results-bar"><div class="ss-potd-results-fill" style="width:' + pct + '%"></div></div>' +
+                    (score === total ? '<p class="ss-potd-results-msg">Perfect score! You really know your ' + plant.name + '!</p>' :
+                     score > 0 ? '<p class="ss-potd-results-msg">Good work! Keep learning about ' + plant.name + '.</p>' :
+                     '<p class="ss-potd-results-msg">Time to study up on ' + plant.name + '!</p>') +
+                    '<button class="ss-btn-secondary" onclick="survivalSchool.renderPlantOfTheDay()">Back to Plant</button>' +
+                '</div>';
+
+            document.getElementById('ss-potd-content').innerHTML = html;
+        },
+
+        // ── Weekly Challenge ──
+        weeklyData: null,
+        weeklyIndex: 0,
+        weeklyScore: 0,
+        weeklyAnswered: false,
+        weeklyResults: null,
+
+        startWeeklyChallenge: function() {
+            var self = this;
+            document.getElementById('ss-weekly-content').classList.add('hidden');
+            document.getElementById('ss-weekly-quiz').classList.remove('hidden');
+            document.getElementById('ss-weekly-results').classList.add('hidden');
+
+            if (this.weeklyData) {
+                this.weeklyIndex = 0;
+                this.weeklyScore = 0;
+                this.weeklyAnswered = false;
+                this.weeklyResults = [];
+                this.renderWeeklyQuestion();
+                return;
+            }
+
+            document.getElementById('ss-weekly-question').innerHTML = '<div class="ss-loading">Loading challenge...</div>';
+
+            fetch('/api/games/survival-school/weekly-challenge')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    self.weeklyData = data;
+                    self.weeklyIndex = 0;
+                    self.weeklyScore = 0;
+                    self.weeklyAnswered = false;
+                    self.weeklyResults = [];
+                    document.getElementById('ss-weekly-week').textContent = 'Week: ' + data.week;
+                    self.renderWeeklyQuestion();
+                })
+                .catch(function() {
+                    document.getElementById('ss-weekly-question').innerHTML = '<p style="color:var(--cream-dim)">Could not load challenge.</p>';
+                });
+        },
+
+        renderWeeklyQuestion: function() {
+            if (!this.weeklyData || this.weeklyIndex >= this.weeklyData.questions.length) {
+                this.renderWeeklyResults();
+                return;
+            }
+            var q = this.weeklyData.questions[this.weeklyIndex];
+            this.weeklyAnswered = false;
+
+            var progress = (this.weeklyIndex + 1) + '/' + this.weeklyData.questions.length;
+            document.getElementById('ss-weekly-progress').innerHTML =
+                '<div class="ss-weekly-progress-bar"><div class="ss-weekly-progress-fill" style="width:' + Math.round(((this.weeklyIndex) / this.weeklyData.questions.length) * 100) + '%"></div></div>' +
+                '<span class="ss-weekly-progress-text">Question ' + progress + '</span>';
+
+            var typeIcon = q.type_icon || '🔍';
+            var typeName = q.type_name || q.type;
+            var typeColor = q.type_color || '#4CAF50';
+
+
+            var optionsHtml = '';
+            if (q.options) {
+                for (var i = 0; i < q.options.length; i++) {
+                    optionsHtml += '<button class="answer-btn" onclick="survivalSchool.handleWeeklyAnswer(\'' + encodeURIComponent(q.options[i]) + '\', this)">' + q.options[i] + '</button>';
+                }
+            }
+
+            var html =
+                '<div class="q-type-header" style="border-left-color: ' + typeColor + ';">' +
+                    '<div class="q-type-left"><span class="q-type-icon">' + typeIcon + '</span><span class="q-type-name" style="color: ' + typeColor + ';">' + typeName + '</span></div>' +
+                '</div>' +
+                '<div class="question-text">' + renderMarkdown(q.text || q.question || '') + '</div>' +
+                '<div class="answer-grid cols-2">' + optionsHtml + '</div>';
+
+            document.getElementById('ss-weekly-question').innerHTML = html;
+        },
+
+        handleWeeklyAnswer: function(encodedAnswer, btn) {
+            if (this.weeklyAnswered) return;
+            this.weeklyAnswered = true;
+            var answer = decodeURIComponent(encodedAnswer);
+            var q = this.weeklyData.questions[this.weeklyIndex];
+            var isCorrect = answer === q.correct;
+
+            document.querySelectorAll('#ss-weekly-question .answer-btn').forEach(function(b) { b.disabled = true; b.style.pointerEvents = 'none'; });
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                this.weeklyScore++;
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('#ss-weekly-question .answer-btn').forEach(function(b) {
+                    try { if (decodeURIComponent(b.getAttribute('onclick').match(/'([^']+)'/)[1]) === q.correct) b.classList.add('correct'); } catch(e) {}
+                });
+            }
+
+            this.weeklyResults.push({
+                question: q.text || q.question || '',
+                correct: isCorrect,
+                correctAnswer: q.correct,
+                fact: q.fact || ''
+            });
+
+            var feedbackClass = isCorrect ? 'feedback-correct' : 'feedback-wrong';
+            var feedbackIcon = isCorrect ? '✅' : '❌';
+
+            var html =
+                '<div class="' + feedbackClass + '" style="margin:1rem 0">' +
+                    '<div class="feedback-icon">' + feedbackIcon + '</div>' +
+                    '<div class="feedback-text">' + (isCorrect ? 'Correct!' : 'Incorrect') + '</div>' +
+                    (q.fact ? '<div class="feedback-detail">' + renderMarkdown(q.fact) + '</div>' : '') +
+                '</div>' +
+                '<button class="ss-btn-primary" onclick="survivalSchool.nextWeeklyQuestion()">Next Question</button>';
+
+            document.getElementById('ss-weekly-question').innerHTML = html;
+        },
+
+        nextWeeklyQuestion: function() {
+            this.weeklyIndex++;
+            this.weeklyAnswered = false;
+            if (this.weeklyIndex >= this.weeklyData.questions.length) {
+                this.renderWeeklyResults();
+            } else {
+                this.renderWeeklyQuestion();
+            }
+        },
+
+        renderWeeklyResults: function() {
+            var total = this.weeklyData.questions.length;
+            var score = this.weeklyScore;
+            var pct = Math.round((score / total) * 100);
+
+            var resultsHtml = '';
+            for (var i = 0; i < this.weeklyResults.length; i++) {
+                var r = this.weeklyResults[i];
+                var icon = r.correct ? '✅' : '❌';
+                resultsHtml += '<div class="ss-wr-item' + (r.correct ? ' ss-wr-correct' : ' ss-wr-wrong') + '">' +
+                    '<span class="ss-wr-icon">' + icon + '</span>' +
+                    '<span class="ss-wr-q">' + r.question + '</span>' +
+                    (!r.correct ? '<span class="ss-wr-ans">Answer: ' + r.correctAnswer + '</span>' : '') +
+                '</div>';
+            }
+
+            var shareText = 'I scored ' + score + '/' + total + ' on this week\'s Survival School challenge! Can you beat that?';
+
+            var html =
+                '<div class="ss-wr-header">' +
+                    '<div class="ss-wr-score">' + score + '<span class="ss-wr-total">/' + total + '</span></div>' +
+                    '<div class="ss-wr-pct">' + pct + '%</div>' +
+                '</div>' +
+                '<div class="ss-wr-bar"><div class="ss-wr-bar-fill" style="width:' + pct + '%"></div></div>' +
+                '<div class="ss-wr-list">' + resultsHtml + '</div>' +
+                '<div class="ss-wr-actions">' +
+                    '<button class="ss-btn-primary" onclick="survivalSchool.shareWeeklyResults(\'' + shareText.replace(/'/g, "\\'") + '\')">Share Results</button>' +
+                    '<button class="ss-btn-secondary" onclick="survivalSchool.resetWeeklyChallenge()">Try Again</button>' +
+                '</div>';
+
+            document.getElementById('ss-weekly-quiz').classList.add('hidden');
+            document.getElementById('ss-weekly-results').classList.remove('hidden');
+            document.getElementById('ss-weekly-results').innerHTML = html;
+        },
+
+        shareWeeklyResults: function(text) {
+            if (navigator.share) {
+                navigator.share({ title: 'Survival School — Weekly Challenge', text: text }).catch(function() {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() { showToast('Results copied to clipboard!'); }).catch(function() { showToast('Could not copy results.'); });
+            } else {
+                showToast('Share not supported on this browser.');
+            }
+        },
+
+        resetWeeklyChallenge: function() {
+            this.weeklyData = null;
+            this.weeklyIndex = 0;
+            this.weeklyScore = 0;
+            this.weeklyAnswered = false;
+            this.weeklyResults = null;
+            document.getElementById('ss-weekly-results').classList.add('hidden');
+            document.getElementById('ss-weekly-quiz').classList.add('hidden');
+            document.getElementById('ss-weekly-content').classList.remove('hidden');
+        },
+
+        // ── Achievements ──
+        renderAchievements: function() {
+
+            var container = document.getElementById('ss-achievements');
+            var totalFound = Object.keys(this.state.herbarium).length;
+            var achDefs = [
+                {key:'survival_scout', name:'🕵️ Scout', desc:'Solve your first case', progress: this.state.achievements.survival_scout ? '(Done)' : '(' + this.state.casesSolved + '/1)'},
+                {key:'survival_expert', name:'🎓 Graduate', desc:'Reach Level 2', progress: this.state.achievements.survival_expert ? '(Done)' : '(' + this.state.correctCount + '/5 this level)'},
+                {key:'survival_detective', name:'🔍 Detective', desc:'Solve 20 cases total', progress: this.state.achievements.survival_detective ? '(Done)' : '(' + this.state.casesSolved + '/20)'},
+                {key:'foraging_novice', name:'🌿 Novice Forager', desc:'Identify your first plant', progress: this.state.achievements.foraging_novice ? '(Done)' : '(' + totalFound + '/1)'},
+                {key:'foraging_botanist', name:'📚 Botanist', desc:'Collect 25 unique plants', progress: this.state.achievements.foraging_botanist ? '(Done)' : '(' + totalFound + '/25)'},
+                {key:'foraging_master', name:'🏅 Seasonal Master', desc:'Earn all 4 season badges', progress: this.state.achievements.foraging_master ? '(Done)' : '(' + this.state.seasonBadges.length + '/4)'}
+            ];
+
+            container.innerHTML = achDefs.map(function(a) {
+                var unlocked = survivalSchool.state.achievements[a.key];
+                var bc = unlocked ? 'var(--green-leaf)' : '#444';
+                var bg = unlocked ? 'linear-gradient(135deg, #0a2a0a, #1a3d1a)' : 'var(--bg-card)';
+                var ic = unlocked ? '✅' : '🔒';
+                var nc = unlocked ? 'var(--green-leaf)' : 'var(--cream-dim)';
+                return '<div class="achievement-card' + (unlocked ? ' unlocked' : '') + '" style="background:' + bg + ';border-color:' + bc + ';">' +
+                    '<div><div class="ach-left"><span class="ach-icon">' + ic + '</span><span class="ach-name" style="color:' + nc + ';">' + a.name + '</span></div>' +
+                    '<div class="ach-desc">' + a.desc + '</div></div>' +
+                    '<span class="ach-progress">' + a.progress + '</span></div>';
+            }).join('');
+        },
+
+        // ── Herbarium ──
+        renderHerbarium: function() {
+            var container = document.getElementById('ss-herbarium');
+            var countEl = document.getElementById('ss-herbarium-count');
+            if (!container) return;
+            var totalFound = Object.keys(this.state.herbarium).length;
+            countEl.textContent = 'Plants discovered: ' + totalFound + '/' + EDIBLE_COUNT + ' | Mastery: discovered (1×) → learned (3×) → mastered (5×)';
+
+            if (totalFound === 0) {
+                container.innerHTML = '<p style="color: var(--cream-dim); font-size: 0.9rem;">No plants discovered yet. Start identifying to fill your herbarium!</p>';
+                return;
+            }
+
+            var html = '';
+            var entries = Object.entries(this.state.herbarium);
+            for (var i = 0; i < entries.length; i++) {
+                var name = entries[i][0];
+                var count = entries[i][1];
+                var mastery = count >= MASTERY_LEVELS.mastered ? 'mastered' : count >= MASTERY_LEVELS.learned ? 'learned' : 'discovered';
+                var knowledge = this.state.plantKnowledge[name] || {};
+                var knownCount = Object.values(knowledge).filter(function(v) { return v === true; }).length;
+                var totalTypes = 7;
+
+                html += '<div class="herbarium-card ' + mastery + '" onclick="survivalSchool.showKnowledgeModal(\'' + name.replace(/'/g, "\\'") + '\')">' +
+                    '<span class="hc-name">' + name + '</span>' +
+                    '<span class="hc-mastery">' + (mastery === 'mastered' ? '⭐' : mastery === 'learned' ? '✅' : '🌿') + ' ×' + count + '</span>' +
+                    '<div class="hc-knowledge-bar"><div class="hc-knowledge-fill" style="width:' + Math.round((knownCount / totalTypes) * 100) + '%"></div></div>' +
+                    '<span class="hc-knowledge-count">' + knownCount + '/' + totalTypes + '</span>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+        },
+
+        _updatePlantKnowledge: function(plantName, questionType) {
+            if (!plantName) return;
+            var kType = QUESTION_TYPE_TO_KNOWLEDGE[questionType];
+            if (!kType) return;
+            if (!this.state.plantKnowledge) this.state.plantKnowledge = {};
+            if (!this.state.plantKnowledge[plantName]) this.state.plantKnowledge[plantName] = {};
+            this.state.plantKnowledge[plantName][kType] = true;
+            this.save();
+        },
+
+        showKnowledgeModal: function(plantName) {
+            var count = this.state.herbarium[plantName] || 0;
+            var knowledge = this.state.plantKnowledge[plantName] || {};
+            var knownCount = Object.values(knowledge).filter(function(v) { return v === true; }).length;
+            var totalTypes = 7;
+            var mastery = count >= MASTERY_LEVELS.mastered ? 'Mastered' : count >= MASTERY_LEVELS.learned ? 'Learned' : 'Discovered';
+            var masteryIcon = count >= MASTERY_LEVELS.mastered ? '⭐' : count >= MASTERY_LEVELS.learned ? '✅' : '🌿';
+
+            var knowledgeKeys = Object.keys(KNOWLEDGE_TYPES);
+            var knowledgeHtml = '';
+            for (var i = 0; i < knowledgeKeys.length; i++) {
+                var kType = knowledgeKeys[i];
+                var kInfo = KNOWLEDGE_TYPES[kType];
+                var isKnown = knowledge[kType] === true;
+                var iconHtml = ssIcon(kInfo.icon, 20);
+                if (isKnown) {
+                    knowledgeHtml += '<div class="ss-kn-item ss-kn-known">' +
+                        '<span class="ss-kn-icon" style="color:' + kInfo.color + '">' + iconHtml + '</span>' +
+                        '<span class="ss-kn-label">' + kInfo.label + '</span>' +
+                        '<span class="ss-kn-check">✓</span>' +
+                    '</div>';
+                } else {
+                    knowledgeHtml += '<div class="ss-kn-item ss-kn-locked">' +
+                        '<span class="ss-kn-icon" style="color:var(--cream-dim)">' + iconHtml + '</span>' +
+                        '<span class="ss-kn-label">???</span>' +
+                        '<span class="ss-kn-lock">🔒</span>' +
+                    '</div>';
+                }
+            }
+
+            var progressPct = Math.round((knownCount / totalTypes) * 100);
+            var tip = '';
+            if (knownCount === 0) {
+                tip = 'Start answering questions about ' + plantName + ' to unlock knowledge!';
+            } else if (knownCount < totalTypes) {
+                var unknownTypes = knowledgeKeys.filter(function(k) { return !knowledge[k]; });
+                var nextType = unknownTypes[0];
+                if (nextType) tip = 'Next to unlock: ' + KNOWLEDGE_TYPES[nextType].label + '. Keep answering questions!';
+            } else {
+                tip = 'You have full knowledge of ' + plantName + '! Outstanding work.';
+            }
+
+            var body = document.getElementById('ss-knowledge-modal-body');
+            body.innerHTML =
+                '<div class="ss-kn-header">' +
+                    '<span class="ss-kn-mastery-icon">' + masteryIcon + '</span>' +
+                    '<div><h3 class="ss-kn-plant-name">' + plantName + '</h3>' +
+                    '<p class="ss-kn-mastery-level">' + mastery + ' (×' + count + ')</p></div>' +
+                '</div>' +
+                '<div class="ss-kn-mastery-bar">' +
+                    '<div class="ss-kn-mastery-track"><div class="ss-kn-mastery-fill" style="width:' + progressPct + '%"></div></div>' +
+                    '<span class="ss-kn-mastery-text">Knowledge: ' + knownCount + '/' + totalTypes + '</span>' +
+                '</div>' +
+                '<div class="ss-kn-grid">' + knowledgeHtml + '</div>' +
+                '<div class="ss-kn-tip">' + tip + '</div>';
+
+            document.getElementById('ss-knowledge-modal').classList.remove('hidden');
+        },
+
+        closeKnowledgeModal: function() {
+            document.getElementById('ss-knowledge-modal').classList.add('hidden');
+        },
+
+    };
+
+    // ═══════════════════════════════════════════════════════════
+    // SOUND EFFECTS — paste above DOMContentLoaded
+    // ═══════════════════════════════════════════════════════════
+
+    const SFX = {
+        ctx: null,
+        enabled: true,
+        _getCtx() {
+            if (!this.ctx) {
+                try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+                catch(e) { this.enabled = false; }
+            }
+            return this.ctx;
+        },
+        _play(freq, duration, type, volume, ramp) {
+            if (!this.enabled) return;
+            const ctx = this._getCtx();
+            if (!ctx) return;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            if (ramp) osc.frequency.linearRampToValueAtTime(ramp, ctx.currentTime + duration);
+            gain.gain.setValueAtTime(volume || 0.15, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + duration);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + duration);
+        },
+        _playChord(freqs, duration, type, volume) {
+            if (!this.enabled) return;
+            const ctx = this._getCtx();
+            if (!ctx) return;
+            for (const freq of freqs) {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = type || 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime((volume || 0.08), ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + duration);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + duration);
+            }
+        },
+        correct() { this._playChord([523.25, 659.25, 783.99], 0.35, 'sine', 0.07); },
+        wrong() { this._play(200, 0.35, 'sawtooth', 0.08); setTimeout(() => this._play(160, 0.25, 'sawtooth', 0.06), 100); },
+        timeout() { this._play(300, 0.15, 'square', 0.06); setTimeout(() => this._play(200, 0.3, 'square', 0.05), 150); },
+        streak() { this._play(523.25, 0.12, 'sine', 0.1); setTimeout(() => this._play(659.25, 0.12, 'sine', 0.1), 120); setTimeout(() => this._play(783.99, 0.12, 'sine', 0.1), 240); setTimeout(() => this._play(1046.5, 0.2, 'sine', 0.08), 360); },
+        levelUp() { const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5]; notes.forEach((n, i) => { setTimeout(() => this._play(n, 0.25, 'sine', 0.08), i * 120); }); },
+        bonus() { this._play(880, 0.15, 'sine', 0.08); setTimeout(() => this._play(1046.5, 0.15, 'sine', 0.08), 100); setTimeout(() => this._play(1318.5, 0.25, 'sine', 0.1), 200); },
+        walkAway() { this._play(400, 0.2, 'sine', 0.06); setTimeout(() => this._play(300, 0.3, 'sine', 0.04), 150); },
+        gameOver() { this._play(392, 0.3, 'sine', 0.08); setTimeout(() => this._play(330, 0.3, 'sine', 0.08), 250); setTimeout(() => this._play(262, 0.5, 'sine', 0.06), 500); },
+        tick() { this._play(800, 0.05, 'sine', 0.03); },
+        hint() { this._play(660, 0.12, 'sine', 0.06); setTimeout(() => this._play(880, 0.15, 'sine', 0.06), 100); },
+        click() { this._play(600, 0.04, 'sine', 0.04); }
+    };
+
+    // Wire sounds into survivalSchool methods
+    (function() {
+        const _origVerdict = survivalSchool.handleSurvivalVerdict;
+        survivalSchool.handleSurvivalVerdict = function(isSafe, btn) {
+            if (isSafe) SFX.correct(); else SFX.wrong();
+            _origVerdict.call(this, isSafe, btn);
+        };
+
+        const _origForaging = survivalSchool.handleForagingAnswer;
+        survivalSchool.handleForagingAnswer = function(encodedAnswer, btn) {
+            const answer = decodeURIComponent(encodedAnswer);
+            const q = this.state.currentQuestion;
+            if (q && answer === q.correct) SFX.correct(); else SFX.wrong();
+            _origForaging.call(this, encodedAnswer, btn);
+        };
+
+        const _origBonus = survivalSchool.handleBonusAnswer;
+        survivalSchool.handleBonusAnswer = function(encodedAnswer, btn) {
+            const answer = decodeURIComponent(encodedAnswer);
+            const q = this.state.currentQuestion;
+            if (q && answer === q.correct) SFX.correct(); else SFX.wrong();
+            _origBonus.call(this, encodedAnswer, btn);
+        };
+
+        const _origTimeout = survivalSchool.handleTimeout;
+        survivalSchool.handleTimeout = function() {
+            SFX.timeout();
+            _origTimeout.call(this);
+        };
+
+        const _origStreak = survivalSchool.checkStreakMilestone;
+        survivalSchool.checkStreakMilestone = function() {
+            const milestone = STREAK_MILESTONES.find(m => m.streak === this.state.streak);
+            if (milestone) SFX.streak();
+            _origStreak.call(this);
+        };
+
+        const _origGameOver = survivalSchool.showGameOver;
+        survivalSchool.showGameOver = function() {
+            SFX.gameOver();
+            _origGameOver.call(this);
+        };
+
+        const _origStartGame = survivalSchool.startGame;
+        survivalSchool.startGame = function(mode) {
+            SFX.click();
+            _origStartGame.call(this, mode);
+        };
+
+        const _origFetchBonus = survivalSchool.fetchBonusQuestion;
+        survivalSchool.fetchBonusQuestion = function() {
+            SFX.bonus();
+            _origFetchBonus.call(this);
+        };
+
+        const _origRender = survivalSchool.renderResult;
+        survivalSchool.renderResult = function() {
+            const prevLevel = this.state.level;
+            _origRender.call(this);
+            if (this.state.level > prevLevel) SFX.levelUp();
+        };
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() { survivalSchool.init(); });
+    </script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/progress.js"></script>
+</body>
+</html>

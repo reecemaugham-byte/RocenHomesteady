@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quiz — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+    <link rel="stylesheet" href="/static/css/daily-quiz.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games" class="nav-active">Games</a>
+            <a href="/shop">Shop</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <main class="games-page">
+        <h1 class="page-title">🎲 Daily Quiz</h1>
+        <p class="page-subtitle">Test your plant knowledge across 5 categories!</p>
+
+        <details class="htp-section">
+            <summary>📖 How to Play</summary>
+            <div class="htp-content">
+                <ol>
+                    <li>Choose a category or play <strong>All</strong> for a mix.</li>
+                    <li>Select difficulty: <strong>Beginner</strong> (3 options, 20s), <strong>Intermediate</strong> (3 options, 15s), or <strong>Expert</strong> (4 options, 12s).</li>
+                    <li>Correct answers earn <strong>10 base points</strong>, plus streak and time bonuses. Higher difficulty = higher multiplier!</li>
+                    <li>You have <strong>3 lives</strong> (or 1 in Challenge Mode). Timer runs out = lost life.</li>
+                    <li>Every plant you encounter is added to your <strong>Herbarium</strong> — master them all!</li>
+                    <li>Try the <strong>📅 Daily Challenge</strong> — same questions for everyone, compare scores!</li>
+                </ol>
+            </div>
+        </details>
+
+
+        <div id="dq-settings" class="game-container active" style="max-width:600px;margin:1rem auto;">
+            <div style="background:var(--bg-card);border-radius:12px;padding:1.5rem;">
+                <h3 style="margin:0 0 1rem 0;color:var(--green-light);">⚙️ Quiz Settings</h3>
+                <div class="quiz-settings-grid">
+                    <div class="setting-group">
+                        <label>Category:</label>
+                        <select id="dq-category">
+                            <option value="All">🌍 All Categories</option>
+                            <option value="Identification">🔎 Plant Identification</option>
+                            <option value="Safety">☠️ Safety &amp; Poisoning</option>
+                            <option value="Seasons">📅 Seasons &amp; Habitat</option>
+                            <option value="Culinary">🍳 Culinary Uses</option>
+                            <option value="Law">🏛️ UK Foraging Law</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>Difficulty:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="dq-difficulty" value="Beginner" checked> 🌱 Beginner</label>
+                            <label><input type="radio" name="dq-difficulty" value="Intermediate"> 🌿 Intermediate</label>
+                            <label><input type="radio" name="dq-difficulty" value="Expert"> 🌳 Expert</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting-group" style="margin-bottom:0.8rem;">
+                    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                        <input type="checkbox" id="dq-timer" checked> ⏱️ Timer (20s per question)
+                    </label>
+                </div>
+                <div class="setting-group" style="margin-bottom:0.8rem;">
+                    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                        <input type="checkbox" id="dq-challenge"> ⚔️ Challenge Mode (1 life, 10 questions)
+                    </label>
+                </div>
+                <button class="btn-primary" onclick="dailyQuiz.startGame()" style="font-size:1.1rem;padding:0.8rem;width:100%;">🎲 Start Quiz</button>
+                <button class="btn-daily" onclick="dailyQuiz.startDailyChallenge()">📅 Today's Daily Challenge</button>
+            </div>
+        </div>
+
+
+        <div id="dq-daily-banner" class="hidden"></div>
+        <div id="dq-challenge-banner" class="hidden"></div>
+        <div id="dq-stats" class="stats-row"></div>
+        <div id="dq-timer" class="timer-container hidden"><div id="dq-timer-bar" class="timer-bar"></div></div>
+        <div id="dq-progress-bar"></div>
+        <div id="dq-lives" class="hidden" style="text-align:center;margin:0.5rem 0;"></div>
+        <div id="dq-game-over" class="hidden"></div>
+        <button id="dq-escape-btn" class="btn-danger" onclick="dailyQuiz.restart()" style="display:none;width:100%;margin:0.5rem 0;">✕ Leave Quiz</button>
+        <div id="dq-powerups"></div>
+        <div id="dq-content" style="position:relative;"></div>
+
+        <hr class="game-divider">
+        <details class="achievements-section">
+            <summary>🏅 Quiz Achievements</summary>
+            <div id="dq-achievements" class="achievements-grid"></div>
+        </details>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script>
+        var TOTAL_PLANTS = parseInt('{{ total_plants or 0 }}', 10) || 0;
+    </script>
+        <script>
+    // ── Debug ──
+    window.addEventListener('error', function(e) {
+        console.error('JS Error:', e.message, e.filename, e.lineno);
+        var t = document.getElementById('toast');
+        if (t) { t.textContent = '⚠️ ' + e.message; t.classList.remove('hidden'); setTimeout(function(){ t.classList.add('hidden'); }, 5000); }
+    });
+
+    // ── Utilities ──
+    function showToast(message, duration) {
+        duration = duration || 3000;
+        var toast = document.getElementById('toast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.remove('hidden');
+        setTimeout(function() { toast.classList.add('hidden'); }, duration);
+    }
+    function saveState(key, data) {
+        try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) { console.error('saveState error:', e); }
+    }
+    function loadState(key, defaults) {
+        try {
+            var saved = localStorage.getItem(key);
+            if (saved) return Object.assign({}, defaults, JSON.parse(saved));
+        } catch(e) { console.error('loadState error:', e); }
+        return Object.assign({}, defaults);
+    }
+    function renderMarkdown(text) {
+        if (!text) return '';
+        return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    }
+    function $(id) { return document.getElementById(id); }
+
+    // ── Daily Quiz ──
+    var dailyQuiz = {
+        DIFFICULTY_MULT: { Beginner: 1, Intermediate: 1.5, Expert: 2 },
+        TIMER_SECONDS: { Beginner: 20, Intermediate: 15, Expert: 12, Challenge: 10 },
+        STREAK_MESSAGES: { 3: '🔥 3-Streak!', 5: '🔥🔥 5-STREAK!', 7: '🔥🔥🔥 UNSTOPPABLE!', 10: '⚡ LEGENDARY 10-STREAK!' },
+        CATEGORY_COLORS: { Identification: '#66BB6A', Safety: '#EF5350', Seasons: '#FFA726', Culinary: '#AB47BC', Law: '#42A5F5', All: '#4CAF50', 'Edible Parts': '#FFC107', Season: '#FF8F00', 'Dangerous Lookalike': '#ff5252', 'Safety Check': '#9C27B0' },
+
+        defaults: {
+            score: 0, qNum: 0, maxQuestions: 10, streak: 0, bestStreak: 0,
+            livesRemaining: 3, category: 'All', difficulty: 'Beginner',
+            challengeMode: false, timerEnabled: true, timeRemaining: 20,
+            timerInterval: null, currentQuestion: null, plantsSeen: [], answers: [],
+            totalScore: 0, isDailyChallenge: false, herbarium: {}, dailyCount: 0,
+            frozen: false, skipUsed: false,
+            powerups: { fiftyFifty: 1, freeze: 1, skip: 1 },
+            achievements: {
+                quiz_first_quiz: false, quiz_streak: false, quiz_streak_10: false,
+                quiz_perfect: false, quiz_challenger: false, quiz_category_master: false,
+                quiz_plants_10: false, quiz_plants_25: false, quiz_plants_50: false,
+                quiz_safety_first: false, quiz_daily_7: false, quiz_expert_clear: false
+            },
+            gameActive: false
+        },
+
+        state: null,
+        keyHandler: null,
+
+        init: function() {
+            this.state = loadState('dq_state', this.defaults);
+            for (var key in this.defaults) {
+                if (!(key in this.state)) this.state[key] = this.defaults[key];
+            }
+            for (var akey in this.defaults.achievements) {
+                if (!(akey in this.state.achievements)) this.state.achievements[akey] = false;
+            }
+            if (!this.state.herbarium) this.state.herbarium = {};
+            if (!this.state.answers) this.state.answers = [];
+            if (!this.state.powerups) this.state.powerups = { fiftyFifty: 1, freeze: 1, skip: 1 };
+            if (this.state.timerInterval) { clearInterval(this.state.timerInterval); this.state.timerInterval = null; }
+            this.renderAchievements();
+            if (this.state.gameActive) this.restoreGame();
+
+            // Keyboard shortcuts
+            var self = this;
+            this.keyHandler = function(e) {
+                if (!self.state.gameActive || !self.state.currentQuestion) return;
+                var key = e.key;
+                if (key === '1' || key === '2' || key === '3' || key === '4') {
+                    var idx = parseInt(key) - 1;
+                    var btns = document.querySelectorAll('.answer-btn:not(.eliminated)');
+                    if (btns[idx] && !btns[idx].disabled) {
+                        btns[idx].click();
+                    }
+                }
+                if (key === 'f' || key === 'F') { self.useFiftyFifty(); }
+                if (key === 't' || key === 'T') { self.useFreeze(); }
+                if (key === 's' || key === 'S') { self.useSkip(); }
+            };
+            document.addEventListener('keydown', this.keyHandler);
+        },
+
+        save: function() { saveState('dq_state', this.state); },
+
+        startGame: function() {
+            console.log('[DQ] startGame called');
+            var categoryEl = $('dq-category');
+            var diffEl = document.querySelector('input[name="dq-difficulty"]:checked');
+            var challengeEl = $('dq-challenge');
+            var timerEl = $('dq-timer');
+
+            var category = categoryEl ? categoryEl.value : 'All';
+            var difficulty = diffEl ? diffEl.value : 'Beginner';
+            var challengeMode = challengeEl ? challengeEl.checked : false;
+            var timerEnabled = timerEl ? timerEl.checked : true;
+
+            var preservedAchievements = this.state.achievements || this.defaults.achievements;
+            var preservedHerbarium = this.state.herbarium || {};
+            var preservedDailyCount = this.state.dailyCount || 0;
+
+            this.state = Object.assign({}, this.defaults, {
+                category: category, difficulty: difficulty, challengeMode: challengeMode,
+                timerEnabled: timerEnabled, livesRemaining: challengeMode ? 1 : 3,
+                maxQuestions: 10, gameActive: true, achievements: preservedAchievements,
+                herbarium: preservedHerbarium, dailyCount: preservedDailyCount,
+                isDailyChallenge: false, plantsSeen: [], answers: [],
+                timeRemaining: this.TIMER_SECONDS[challengeMode ? 'Challenge' : difficulty],
+                powerups: { fiftyFifty: 1, freeze: 1, skip: 1 },
+                frozen: false, skipUsed: false
+            });
+            this.save();
+
+            var settings = $('dq-settings');
+            if (settings) settings.style.display = 'none';
+            var dailyBanner = $('dq-daily-banner');
+            if (dailyBanner) dailyBanner.classList.add('hidden');
+            var escapeBtn = $('dq-escape-btn');
+            if (escapeBtn) escapeBtn.style.display = 'block';
+
+            if (challengeMode) {
+                var challengeBanner = $('dq-challenge-banner');
+                if (challengeBanner) {
+                    challengeBanner.classList.remove('hidden');
+                    challengeBanner.innerHTML = '<div class="challenge-banner"><div class="challenge-icon">⚔️</div><div class="challenge-title">CHALLENGE MODE</div><div class="challenge-desc">1 Life · 10 Questions · Can you survive?</div></div>';
+                }
+            }
+
+            this.updateStats();
+            this.fetchQuestion();
+        },
+
+        startDailyChallenge: function() {
+            console.log('[DQ] startDailyChallenge called');
+            var today = new Date().toISOString().split('T')[0];
+            var preservedAchievements = this.state.achievements || this.defaults.achievements;
+            var preservedHerbarium = this.state.herbarium || {};
+            var preservedDailyCount = (this.state.dailyCount || 0);
+
+            this.state = Object.assign({}, this.defaults, {
+                category: 'All', difficulty: 'Expert', challengeMode: false, timerEnabled: true,
+                livesRemaining: 3, maxQuestions: 10, gameActive: true,
+                achievements: preservedAchievements, herbarium: preservedHerbarium,
+                dailyCount: preservedDailyCount, isDailyChallenge: true,
+                plantsSeen: [], answers: [], timeRemaining: 15,
+                dailyDate: today, powerups: { fiftyFifty: 1, freeze: 1, skip: 1 },
+                frozen: false, skipUsed: false
+            });
+            this.save();
+
+            var settings = $('dq-settings');
+            if (settings) settings.style.display = 'none';
+            var dailyBanner = $('dq-daily-banner');
+            if (dailyBanner) {
+                dailyBanner.classList.remove('hidden');
+                dailyBanner.innerHTML = '<div class="daily-challenge-banner"><div class="dc-icon">📅</div><div class="dc-title">DAILY CHALLENGE</div><div class="dc-desc">Same 10 questions for everyone today!</div><div class="dc-date">' + today + '</div></div>';
+            }
+            var escapeBtn = $('dq-escape-btn');
+            if (escapeBtn) escapeBtn.style.display = 'block';
+
+            this.updateStats();
+            this.fetchQuestion();
+        },
+
+        restoreGame: function() {
+            if (!this.state.gameActive) return;
+            var settings = $('dq-settings');
+            if (settings) settings.style.display = 'none';
+            var escapeBtn = $('dq-escape-btn');
+            if (escapeBtn) escapeBtn.style.display = 'block';
+
+            if (this.state.challengeMode) {
+                var challengeBanner = $('dq-challenge-banner');
+                if (challengeBanner) {
+                    challengeBanner.classList.remove('hidden');
+                    challengeBanner.innerHTML = '<div class="challenge-banner"><div class="challenge-icon">⚔️</div><div class="challenge-title">CHALLENGE MODE</div><div class="challenge-desc">1 Life · 10 Questions</div></div>';
+                }
+            }
+            if (this.state.isDailyChallenge) {
+                var dateStr = this.state.dailyDate || new Date().toISOString().split('T')[0];
+                var dailyBanner = $('dq-daily-banner');
+                if (dailyBanner) {
+                    dailyBanner.classList.remove('hidden');
+                    dailyBanner.innerHTML = '<div class="daily-challenge-banner"><div class="dc-icon">📅</div><div class="dc-title">DAILY CHALLENGE</div><div class="dc-desc">Same 10 questions for everyone today!</div><div class="dc-date">' + dateStr + '</div></div>';
+                }
+            }
+            if (this.state.livesRemaining <= 0 || this.state.qNum >= this.state.maxQuestions) {
+                this.showGameOver();
+                return;
+            }
+            this.updateStats();
+            this.fetchQuestion();
+        },
+
+        updateStats: function() {
+            var streakFires = this.state.streak > 0 ? '🔥'.repeat(Math.min(this.state.streak, 5)) : '';
+            var scoreText = this.state.totalScore > 0 ? this.state.totalScore : this.state.score;
+
+            var statsEl = $('dq-stats');
+            if (statsEl) {
+                statsEl.innerHTML =
+                    '<div class="stat-box streak"><div class="stat-label">STREAK</div><div class="stat-value">' + streakFires + ' ' + this.state.streak + '</div></div>' +
+                    '<div class="stat-box score"><div class="stat-label">SCORE</div><div class="stat-value">' + scoreText + '</div></div>' +
+                    '<div class="stat-box question-num"><div class="stat-label">QUESTION</div><div class="stat-value">' + this.state.qNum + '/' + this.state.maxQuestions + '</div></div>';
+            }
+
+            var progress = Math.min(this.state.qNum / this.state.maxQuestions, 1.0) * 100;
+            var progressEl = $('dq-progress-bar');
+            if (progressEl) {
+                progressEl.innerHTML =
+                    '<div class="progress-bar-label">Progress: ' + this.state.qNum + '/' + this.state.maxQuestions + '</div>' +
+                    '<div class="progress-bar"><div class="progress-bar-fill" style="width:' + progress + '%">' + this.state.qNum + '/' + this.state.maxQuestions + '</div></div>';
+            }
+
+            var livesEl = $('dq-lives');
+            if (livesEl && !this.state.challengeMode) {
+                livesEl.classList.remove('hidden');
+                var hearts = '❤️'.repeat(Math.max(0, this.state.livesRemaining));
+                livesEl.innerHTML = '<span class="lives-label">Lives:</span> <span class="lives-hearts">' + (hearts || '💔') + '</span>';
+            } else if (livesEl) {
+                livesEl.classList.add('hidden');
+            }
+        },
+
+        renderPowerups: function() {
+            var container = $('dq-powerups');
+            if (!container) return;
+            var p = this.state.powerups;
+            container.innerHTML =
+                '<div class="powerup-row">' +
+                '<button class="powerup-btn powerup-fifty" onclick="dailyQuiz.useFiftyFifty()" ' + (p.fiftyFifty <= 0 ? 'disabled' : '') + ' title="Remove 2 wrong answers (Key: F)">🔥 50/50 <span class="pu-count">' + p.fiftyFifty + '</span></button>' +
+                '<button class="powerup-btn powerup-freeze" onclick="dailyQuiz.useFreeze()" ' + (p.freeze <= 0 ? 'disabled' : '') + ' title="Add 15 seconds (Key: T)">❄️ +15s <span class="pu-count">' + p.freeze + '</span></button>' +
+                '<button class="powerup-btn powerup-skip" onclick="dailyQuiz.useSkip()" ' + (p.skip <= 0 || this.state.skipUsed ? 'disabled' : '') + ' title="Skip without losing a life (Key: S)">⏭️ Skip <span class="pu-count">' + p.skip + '</span></button>' +
+                '</div>';
+            container.style.display = 'flex';
+        },
+
+        hidePowerups: function() {
+            var container = $('dq-powerups');
+            if (container) container.style.display = 'none';
+        },
+
+        useFiftyFifty: function() {
+            if (this.state.powerups.fiftyFifty <= 0 || !this.state.currentQuestion) return;
+            this.state.powerups.fiftyFifty -= 1;
+            this.save();
+
+            var q = this.state.currentQuestion;
+            var correct = q.correct;
+            var wrongOptions = [];
+            var btns = document.querySelectorAll('.answer-btn');
+
+            btns.forEach(function(btn) {
+                try {
+                    var onclickAttr = btn.getAttribute('onclick');
+                    var match = onclickAttr.match(/'([^']+)'/);
+                    if (match && decodeURIComponent(match[1]) !== correct) {
+                        wrongOptions.push(btn);
+                    }
+                } catch(e) {}
+            });
+
+            // Remove 2 wrong answers (or 1 if only 2 wrong left)
+            var toRemove = Math.min(2, wrongOptions.length - 1);
+            for (var i = 0; i < toRemove; i++) {
+                var idx = Math.floor(Math.random() * wrongOptions.length);
+                wrongOptions[idx].classList.add('eliminated');
+                wrongOptions.splice(idx, 1);
+            }
+
+            this.renderPowerups();
+            showToast('🔥 50/50 used! Two wrong answers removed.');
+        },
+
+        useFreeze: function() {
+            if (this.state.powerups.freeze <= 0) return;
+            this.state.powerups.freeze -= 1;
+            this.state.timeRemaining += 15;
+            this.state.frozen = true;
+            this.save();
+
+            // Visual feedback
+            var timerContainer = $('dq-timer');
+            if (timerContainer) timerContainer.classList.add('freeze-active');
+            setTimeout(function() {
+                if (timerContainer) timerContainer.classList.remove('freeze-active');
+            }, 3000);
+
+            // Update timer display
+            var barEl = $('dq-timer-bar');
+            if (barEl) {
+                var total = this.TIMER_SECONDS[this.state.challengeMode ? 'Challenge' : this.state.difficulty] || 20;
+                var pct = Math.min(100, (this.state.timeRemaining / (total + 15)) * 100);
+                barEl.style.width = pct + '%';
+                barEl.className = 'timer-bar';
+            }
+
+            this.renderPowerups();
+            showToast('❄️ +15 seconds added!');
+        },
+
+        useSkip: function() {
+            if (this.state.powerups.skip <= 0 || this.state.skipUsed) return;
+            this.state.powerups.skip -= 1;
+            this.state.skipUsed = true;
+            this.stopTimer();
+            this.state.qNum += 1;
+            this.state.streak = 0;
+            this.state.plantsSeen.push({ name: this.state.currentQuestion ? this.state.currentQuestion.plant.name : 'Unknown', correct: false, skipped: true });
+            this.state.answers.push({ name: this.state.currentQuestion ? this.state.currentQuestion.plant.name : 'Unknown', correct: false, skipped: true });
+            this.state.currentQuestion = null;
+            this.save();
+
+            var content = $('dq-content');
+            if (content) {
+                content.innerHTML = '<div class="feedback-correct" style="border-color:#AB47BC;"><div class="feedback-icon">⏭️</div><div class="feedback-text" style="color:#CE93D8;">Skipped!</div><div class="feedback-detail">No points gained, no life lost.</div></div>';
+            }
+
+            this.hidePowerups();
+            this.updateStats();
+
+            var self = this;
+            if (this.state.qNum >= this.state.maxQuestions) {
+                content.innerHTML += '<div style="text-align:center;margin-top:1rem;"><button class="btn-primary" onclick="dailyQuiz.showComplete()" style="font-size:1.1rem;padding:0.8rem 2rem;">🎉 See Results</button></div>';
+            } else {
+                content.innerHTML += '<div style="text-align:center;margin-top:1rem;"><button class="btn-next-case" onclick="dailyQuiz.nextQuestion()" style="font-size:1.1rem;padding:0.8rem 2rem;">Next Question →</button></div>';
+            }
+        },
+
+        startTimer: function() {
+            this.stopTimer();
+            var timerContainer = $('dq-timer');
+            var barEl = $('dq-timer-bar');
+
+            if (!this.state.timerEnabled || !timerContainer || !barEl) {
+                if (timerContainer) timerContainer.classList.add('hidden');
+                return;
+            }
+            timerContainer.classList.remove('hidden');
+
+            this.state.timeRemaining = this.TIMER_SECONDS[this.state.challengeMode ? 'Challenge' : this.state.difficulty] || 20;
+            var total = this.state.timeRemaining;
+            barEl.style.width = '100%';
+            barEl.className = 'timer-bar';
+
+            var self = this;
+            this.state.timerInterval = setInterval(function() {
+                self.state.timeRemaining -= 1;
+                var pct = Math.max(0, (self.state.timeRemaining / total) * 100);
+                if (barEl) barEl.style.width = pct + '%';
+
+                if (self.state.timeRemaining <= 5) {
+                    if (barEl) barEl.className = 'timer-bar danger';
+                } else if (self.state.timeRemaining <= 10) {
+                    if (barEl) barEl.className = 'timer-bar warning';
+                } else {
+                    if (barEl) barEl.className = 'timer-bar';
+                }
+
+                if (self.state.timeRemaining <= 0) {
+                    self.stopTimer();
+                    self.handleTimeout();
+                }
+            }, 1000);
+        },
+
+        stopTimer: function() {
+            if (this.state.timerInterval) {
+                clearInterval(this.state.timerInterval);
+                this.state.timerInterval = null;
+            }
+        },
+
+        handleTimeout: function() {
+            var q = this.state.currentQuestion;
+            if (!q) return;
+
+            document.querySelectorAll('.answer-btn').forEach(function(b) {
+                b.disabled = true;
+                b.style.pointerEvents = 'none';
+            });
+            document.querySelectorAll('.answer-btn').forEach(function(b) {
+                try {
+                    var onclickAttr = b.getAttribute('onclick');
+                    var match = onclickAttr.match(/'([^']+)'/);
+                    if (match && decodeURIComponent(match[1]) === q.correct) b.classList.add('correct');
+                } catch(e) {}
+            });
+
+            this.state.streak = 0;
+            this.state.livesRemaining -= 1;
+            this.state.qNum += 1;
+            this.state.plantsSeen.push({ name: q.plant.name, correct: false, timeout: true });
+            this.state.answers.push({ name: q.plant.name, correct: false, timeout: true });
+            this.addHerbariumEntry(q.plant.name);
+            this.state.currentQuestion = null;
+            this.save();
+
+            var content = $('dq-content');
+            if (content) {
+                var feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'feedback-wrong';
+                feedbackDiv.innerHTML =
+                    '<div class="feedback-icon">⏱️</div>' +
+                    '<div class="feedback-text">Time\'s Up!</div>' +
+                    '<div class="feedback-detail">The correct answer was: <strong>' + q.correct + '</strong></div>' +
+                    this.buildPlantReveal(q);
+                content.appendChild(feedbackDiv);
+            }
+
+            this.hidePowerups();
+            this.updateStats();
+            this.addNextButton();
+        },
+
+        addHerbariumEntry: function(plantName) {
+            if (!this.state.herbarium) this.state.herbarium = {};
+            var isNew = !this.state.herbarium[plantName];
+            if (!this.state.herbarium[plantName]) {
+                this.state.herbarium[plantName] = { seen: 0, correct: 0, firstSeen: new Date().toISOString() };
+            }
+            this.state.herbarium[plantName].seen += 1;
+            return isNew;
+        },
+
+        checkAchievements: function() {
+            var a = this.state.achievements;
+            var earned = [];
+            var plantCount = Object.keys(this.state.herbarium || {}).length;
+
+            if (this.state.streak >= 5 && !a.quiz_streak) { a.quiz_streak = true; earned.push('🔥 Quick Wit — 5-Streak!'); }
+            if (this.state.streak >= 10 && !a.quiz_streak_10) { a.quiz_streak_10 = true; earned.push('⚡ On Fire — 10-Streak!'); }
+            if (!a.quiz_first_quiz && this.state.qNum >= this.state.maxQuestions) { a.quiz_first_quiz = true; earned.push('🎯 First Steps!'); }
+            if (plantCount >= 10 && !a.quiz_plants_10) { a.quiz_plants_10 = true; earned.push('🌿 Botanist!'); }
+            if (plantCount >= 25 && !a.quiz_plants_25) { a.quiz_plants_25 = true; earned.push('📚 Plant Scholar!'); }
+            if (plantCount >= 50 && !a.quiz_plants_50) { a.quiz_plants_50 = true; earned.push('🏆 Plant Master!'); }
+
+            this.save();
+            earned.forEach(function(msg) { showToast('🏅 ' + msg, 4000); });
+            if (earned.length > 0) this.renderAchievements();
+        },
+
+        getReviewPlants: function() {
+            // Spaced repetition: plants the user got wrong more often
+            var herbarium = this.state.herbarium || {};
+            var review = [];
+            for (var name in herbarium) {
+                var entry = herbarium[name];
+                if (entry.seen > 0 && entry.correct / entry.seen < 0.6) {
+                    review.push(name);
+                }
+            }
+            return review;
+        },
+
+        fetchQuestion: function() {
+            var self = this;
+            var content = $('dq-content');
+            if (content) content.innerHTML = '<div class="loading-spinner">🎲 Loading...</div>';
+            var gameOver = $('dq-game-over');
+            if (gameOver) gameOver.classList.add('hidden');
+
+            var numOptions = this.state.difficulty === 'Expert' || this.state.challengeMode ? 4 : 3;
+            var url = '/api/games/daily-quiz/question?category=' + encodeURIComponent(this.state.category) + '&num_options=' + numOptions;
+
+            // Spaced repetition: send plants the user struggles with
+            var reviewPlants = this.getReviewPlants();
+            if (reviewPlants.length > 0) {
+                url += '&review=' + encodeURIComponent(reviewPlants.join(','));
+            }
+
+            if (this.state.isDailyChallenge && this.state.dailyDate) {
+                url += '&seed=' + encodeURIComponent(this.state.dailyDate);
+            }
+
+            console.log('[DQ] Fetching:', url);
+
+            fetch(url).then(function(resp) {
+                console.log('[DQ] Response status:', resp.status);
+                return resp.json();
+            }).then(function(q) {
+                console.log('[DQ] Question:', q.type, q.text ? q.text.substring(0, 50) : 'no text');
+                self.state.currentQuestion = q;
+                self.state.frozen = false;
+                self.state.skipUsed = false;
+                self.save();
+                self.renderQuestion(q);
+                self.renderPowerups();
+                self.startTimer();
+            }).catch(function(e) {
+                console.error('[DQ] Fetch error:', e);
+                if (content) content.innerHTML = '<p>Could not load question. <button class="btn-secondary" onclick="dailyQuiz.fetchQuestion()">Try again</button></p>';
+            });
+        },
+
+        renderQuestion: function(q) {
+            var content = $('dq-content');
+            if (!content) { console.error('[DQ] dq-content not found'); return; }
+            content.classList.add('quiz-card-enter');
+            setTimeout(function() { content.classList.remove('quiz-card-enter'); }, 400);
+
+            var catColor = this.CATEGORY_COLORS[q.type_name] || this.CATEGORY_COLORS[this.state.category] || '#4CAF50';
+
+            var optionsHtml = '';
+            if (q.options) {
+                q.options.forEach(function(opt, idx) {
+                    optionsHtml += '<button class="answer-btn" onclick="dailyQuiz.handleAnswer(\'' + encodeURIComponent(opt) + '\', this)" data-idx="' + idx + '">' + (idx + 1) + '. ' + opt + '</button>';
+                });
+            }
+
+            content.innerHTML =
+                '<div class="q-type-header" style="border-left-color:' + catColor + ';">' +
+                '<div class="q-type-left">' +
+                '<span class="q-type-icon">' + (q.type_icon || '❓') + '</span>' +
+                '<span class="q-type-name" style="color:' + catColor + ';">' + (q.type_name || 'Quiz') + '</span>' +
+                '</div>' +
+                '<span style="color:var(--cream-dim);font-size:0.8rem;">Q' + (this.state.qNum + 1) + '/' + this.state.maxQuestions + '</span>' +
+                '</div>' +
+                '<div class="question-text">' + renderMarkdown(q.text || '') + '</div>' +
+                '<div class="answer-grid cols-2">' + optionsHtml + '</div>';
+        },
+
+        handleAnswer: function(encodedAnswer, btn) {
+            var answer = decodeURIComponent(encodedAnswer);
+            var q = this.state.currentQuestion;
+            if (!q) return;
+
+            this.stopTimer();
+            this.hidePowerups();
+
+            document.querySelectorAll('.answer-btn').forEach(function(b) {
+                b.disabled = true;
+                b.style.pointerEvents = 'none';
+            });
+
+            var isCorrect = answer === q.correct;
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.answer-btn').forEach(function(b) {
+                    try {
+                        var onclickAttr = b.getAttribute('onclick');
+                        var match = onclickAttr.match(/'([^']+)'/);
+                        if (match && decodeURIComponent(match[1]) === q.correct) b.classList.add('correct');
+                    } catch(e) {}
+                });
+            }
+
+            var points = 0;
+            if (isCorrect) {
+                var base = 10;
+                var diffMult = this.DIFFICULTY_MULT[this.state.difficulty] || 1;
+                var streakBonus = this.getStreakBonus();
+                var timeBonus = this.getTimeBonus();
+                points = Math.round((base + streakBonus + timeBonus) * diffMult);
+                this.state.score += 1;
+                this.state.totalScore += points;
+                this.state.streak += 1;
+                if (this.state.streak > this.state.bestStreak) this.state.bestStreak = this.state.streak;
+                this.state.plantsSeen.push({ name: q.plant.name, correct: true });
+                this.state.answers.push({ name: q.plant.name, correct: true });
+                if (this.state.herbarium[q.plant.name]) this.state.herbarium[q.plant.name].correct += 1;
+                this.addHerbariumEntry(q.plant.name);
+                this.showScorePopup(points);
+            } else {
+                this.state.streak = 0;
+                this.state.livesRemaining -= 1;
+                this.state.plantsSeen.push({ name: q.plant.name, correct: false });
+                this.state.answers.push({ name: q.plant.name, correct: false });
+                this.addHerbariumEntry(q.plant.name);
+            }
+
+            this.state.qNum += 1;
+            this.state.currentQuestion = null;
+            this.save();
+
+            if (isCorrect && this.STREAK_MESSAGES[this.state.streak]) {
+                this.showStreakPopup(this.STREAK_MESSAGES[this.state.streak]);
+            }
+            if (isCorrect && this.state.herbarium[q.plant.name] && this.state.herbarium[q.plant.name].seen === 1) {
+                this.showDiscoveryPopup(q.plant.name, (q.plant && q.plant.emoji) || '🌿');
+            }
+
+            var content = $('dq-content');
+            if (content) {
+                var feedbackDiv = document.createElement('div');
+                if (isCorrect) {
+                    feedbackDiv.className = 'feedback-correct';
+                    feedbackDiv.innerHTML =
+                        '<div class="feedback-icon">✅</div>' +
+                        '<div class="feedback-text">Correct! +' + points + '</div>' +
+                        this.buildPlantReveal(q);
+                } else {
+                    feedbackDiv.className = 'feedback-wrong';
+                    feedbackDiv.innerHTML =
+                        '<div class="feedback-icon">❌</div>' +
+                        '<div class="feedback-text">Incorrect</div>' +
+                        '<div class="feedback-detail">The correct answer was: <strong>' + q.correct + '</strong></div>' +
+                        this.buildPlantReveal(q);
+                }
+                content.appendChild(feedbackDiv);
+            }
+
+            this.updateStats();
+            this.checkAchievements();
+            this.addNextButton();
+        },
+
+        addNextButton: function() {
+            var content = $('dq-content');
+            if (!content) return;
+
+            var nextDiv = document.createElement('div');
+            nextDiv.style.cssText = 'text-align:center;margin-top:1.2rem;';
+
+            if (this.state.livesRemaining <= 0) {
+                nextDiv.innerHTML = '<button class="btn-danger" onclick="dailyQuiz.showGameOver()" style="font-size:1.1rem;padding:0.8rem 2rem;">💀 See Results</button>';
+            } else if (this.state.qNum >= this.state.maxQuestions) {
+                nextDiv.innerHTML = '<button class="btn-primary" onclick="dailyQuiz.showComplete()" style="font-size:1.1rem;padding:0.8rem 2rem;">🎉 See Results</button>';
+            } else {
+                nextDiv.innerHTML = '<button class="btn-next-case" onclick="dailyQuiz.nextQuestion()" style="font-size:1.1rem;padding:0.8rem 2rem;">Next Question →</button>';
+            }
+            content.appendChild(nextDiv);
+        },
+
+        nextQuestion: function() {
+            this.fetchQuestion();
+        },
+
+        getStreakBonus: function() {
+            if (this.state.streak >= 10) return 5;
+            if (this.state.streak >= 7) return 3;
+            if (this.state.streak >= 5) return 2;
+            if (this.state.streak >= 3) return 1;
+            return 0;
+        },
+
+        getTimeBonus: function() {
+            if (!this.state.timerEnabled) return 0;
+            if (this.state.timeRemaining >= 15) return 3;
+            if (this.state.timeRemaining >= 10) return 2;
+            if (this.state.timeRemaining >= 5) return 1;
+            return 0;
+        },
+
+        buildPlantReveal: function(q) {
+            var plant = q.plant || {};
+            var isPoisonous = plant.edible === false;
+            var cardClass = isPoisonous ? 'plant-reveal-card poisonous' : 'plant-reveal-card';
+
+            var tagsHtml = '';
+            if (plant.category) tagsHtml += '<span class="reveal-tag">' + plant.category + '</span>';
+            if (isPoisonous && plant.danger_level) tagsHtml += '<span class="reveal-tag poisonous">' + plant.danger_level + '</span>';
+            if (plant.seasons && plant.seasons.length > 0) tagsHtml += '<span class="reveal-tag">📅 ' + plant.seasons.slice(0, 3).join(', ') + '</span>';
+            if (plant.habitat) tagsHtml += '<span class="reveal-tag">' + plant.habitat + '</span>';
+
+            var tipHtml = isPoisonous
+                ? '<div class="reveal-tip">⚠️ <strong>Safety tip:</strong> This plant is poisonous. Always double-check identification before consuming any wild plant.</div>'
+                : '<div class="reveal-tip">💡 <strong>Tip:</strong> Always be 100% certain of identification before eating any wild plant.</div>';
+
+            return '<div class="' + cardClass + '">' +
+                '<div class="reveal-header">' +
+                '<span class="reveal-emoji">' + (plant.emoji || '🌿') + '</span>' +
+                '<div><p class="reveal-name">' + (plant.name || 'Unknown') + '</p>' +
+                (plant.latin ? '<p class="reveal-latin">' + plant.latin + '</p>' : '') +
+                '</div></div>' +
+                (tagsHtml ? '<div class="reveal-tags">' + tagsHtml + '</div>' : '') +
+                '<p class="reveal-fact">' + renderMarkdown(q.fact || '') + '</p>' +
+                tipHtml + '</div>';
+        },
+
+        showScorePopup: function(points) {
+            var popup = document.createElement('div');
+            popup.className = 'score-popup' + (points >= 25 ? ' bonus' : '');
+            popup.textContent = '+' + points;
+            document.body.appendChild(popup);
+            setTimeout(function() { if (popup.parentNode) popup.remove(); }, 1200);
+        },
+
+        showStreakPopup: function(text) {
+            var content = $('dq-content');
+            if (!content) return;
+            var popup = document.createElement('div');
+            popup.className = 'streak-popup';
+            popup.textContent = text;
+            content.appendChild(popup);
+            setTimeout(function() { if (popup.parentNode) popup.remove(); }, 1800);
+        },
+
+        showDiscoveryPopup: function(name, emoji) {
+            var popup = document.createElement('div');
+            popup.className = 'discovery-popup';
+            popup.innerHTML = '<div class="dp-label">✨ New Discovery!</div><div class="dp-emoji">' + emoji + '</div><div class="dp-name">' + name + '</div><div class="dp-sub">Added to your herbarium</div>';
+            document.body.appendChild(popup);
+            setTimeout(function() {
+                popup.style.animation = 'discovery-disappear 0.3s ease forwards';
+                setTimeout(function() { if (popup.parentNode) popup.remove(); }, 300);
+            }, 1500);
+        },
+
+        showGameOver: function() {
+            this.stopTimer();
+            var content = $('dq-content');
+            if (content) content.innerHTML = '';
+
+            var isChallenge = this.state.challengeMode;
+            var title = isChallenge ? '⚔️ CHALLENGE FAILED' : '🤕 Game Over';
+            var subtitle = isChallenge ? 'You ran out of lives.' : 'Better luck next time!';
+
+            var goDiv = $('dq-game-over');
+            if (!goDiv) return;
+            goDiv.classList.remove('hidden');
+            goDiv.className = 'game-over';
+            goDiv.innerHTML =
+                '<div class="go-icon">' + (isChallenge ? '⚔️' : '🤕') + '</div>' +
+                '<div class="go-title">' + title + '</div>' +
+                '<div class="go-text">' + subtitle + '</div>' +
+                '<div class="go-score">Score: <strong>' + this.state.totalScore + '</strong> | Best streak: <strong>' + this.state.bestStreak + '</strong></div>' +
+                '<button class="btn-restart" onclick="dailyQuiz.restart()">🔄 Try Again</button>';
+            this.hidePowerups();
+        },
+
+        showComplete: function() {
+            this.stopTimer();
+            this.hidePowerups();
+            var content = $('dq-content');
+            if (content) content.innerHTML = '';
+
+            var isChallenge = this.state.challengeMode;
+            var isDaily = this.state.isDailyChallenge;
+            var correctCount = this.state.plantsSeen.filter(function(p) { return p.correct; }).length;
+            var totalCount = this.state.plantsSeen.length;
+            var pct = totalCount > 0 ? correctCount / totalCount : 0;
+
+            if (isChallenge && !this.state.achievements.quiz_challenger) this.state.achievements.quiz_challenger = true;
+            if (correctCount === this.state.maxQuestions && !this.state.achievements.quiz_perfect) this.state.achievements.quiz_perfect = true;
+            if (!this.state.achievements.quiz_first_quiz) this.state.achievements.quiz_first_quiz = true;
+            if (correctCount >= 9 && this.state.category !== 'All' && !this.state.achievements.quiz_category_master) this.state.achievements.quiz_category_master = true;
+            if (this.state.category === 'Safety' && correctCount >= 9 && !this.state.achievements.quiz_safety_first) this.state.achievements.quiz_safety_first = true;
+            if (this.state.difficulty === 'Expert' && this.state.livesRemaining === 3 && !this.state.achievements.quiz_expert_clear) this.state.achievements.quiz_expert_clear = true;
+            if (isDaily) {
+                this.state.dailyCount = (this.state.dailyCount || 0) + 1;
+                if (this.state.dailyCount >= 7 && !this.state.achievements.quiz_daily_7) this.state.achievements.quiz_daily_7 = true;
+            }
+            this.checkAchievements();
+            this.save();
+
+            var ringClass = pct >= 1.0 ? 'perfect' : (pct >= 0.7 ? 'good' : (pct >= 0.4 ? 'okay' : 'poor'));
+            var circumference = 2 * Math.PI * 50;
+            var dashOffset = circumference * (1 - pct);
+            var title = isChallenge ? '⚔️ CHALLENGE COMPLETE!' : (isDaily ? '📅 DAILY COMPLETE!' : '🎉 QUIZ COMPLETE!');
+
+            var answersHtml = (this.state.answers || []).map(function(a, i) {
+                var rowClass = a.timeout ? 'timeout' : (a.skipped ? 'timeout' : (a.correct ? 'correct' : 'wrong'));
+                var icon = a.timeout ? '⏱️' : (a.skipped ? '⏭️' : (a.correct ? '✅' : '❌'));
+                var timeoutTag = a.timeout ? ' <span class="bd-timeout-tag">timeout</span>' : (a.skipped ? ' <span class="bd-timeout-tag">skipped</span>' : '');
+                return '<div class="breakdown-row ' + rowClass + '"><span class="bd-num">' + (i+1) + '</span><span class="bd-name">' + a.name + timeoutTag + '</span><span class="bd-result">' + icon + '</span></div>';
+            }).join('');
+
+            var herbariumHtml = this.buildHerbariumHtml();
+
+            var goDiv = $('dq-game-over');
+            if (!goDiv) return;
+            goDiv.classList.remove('hidden');
+            goDiv.className = 'game-over success';
+            goDiv.innerHTML =
+                '<div class="quiz-results">' +
+                '<div class="results-header">' +
+                '<div class="results-emoji">' + (pct >= 1 ? '🏆' : (pct >= 0.7 ? '🎉' : '👍')) + '</div>' +
+                '<h2 class="results-title">' + title + '</h2>' +
+                '<p class="results-subtitle">' + this.state.difficulty + ' · ' + this.state.category + '</p></div>' +
+                '<div class="results-score-ring"><svg viewBox="0 0 120 120">' +
+                '<circle cx="60" cy="60" r="50" class="ring-bg"/>' +
+                '<circle cx="60" cy="60" r="50" class="ring-fill ' + ringClass + '" stroke-dasharray="' + circumference.toFixed(1) + '" stroke-dashoffset="' + dashOffset.toFixed(1) + '" transform="rotate(-90 60 60)"/>' +
+                '</svg><div class="results-score-center"><span class="results-score-num">' + correctCount + '</span><span class="results-score-of">/' + totalCount + '</span></div></div>' +
+                '<div class="results-stats-grid">' +
+                '<div class="results-stat"><span class="rs-value">' + correctCount + '</span><span class="rs-label">Correct</span></div>' +
+                '<div class="results-stat"><span class="rs-value">' + (totalCount - correctCount) + '</span><span class="rs-label">Wrong</span></div>' +
+                '<div class="results-stat"><span class="rs-value">' + this.state.bestStreak + '🔥</span><span class="rs-label">Best Streak</span></div>' +
+                '<div class="results-stat"><span class="rs-value">' + this.state.totalScore + '</span><span class="rs-label">Total Score</span></div></div>' +
+                '<details class="results-breakdown"><summary>📝 Your Answers</summary><div class="breakdown-list">' + answersHtml + '</div></details>' +
+                herbariumHtml +
+                '<div class="results-actions">' +
+                '<button class="btn-primary" onclick="dailyQuiz.restart()">🔄 Play Again</button>' +
+                '<button class="btn-share" onclick="dailyQuiz.shareResults()">📤 Share</button></div></div>';
+
+            this.renderAchievements();
+        },
+
+        buildHerbariumHtml: function() {
+            var h = this.state.herbarium || {};
+            var keys = Object.keys(h);
+            if (keys.length === 0) return '';
+
+            var cardsHtml = keys.map(function(name) {
+                var entry = h[name];
+                var mastery = '', masteryClass = 'seen';
+                if (entry.correct >= 5) { mastery = '⭐⭐⭐'; masteryClass = 'mastered'; }
+                else if (entry.correct >= 3) { mastery = '⭐⭐'; masteryClass = 'learned'; }
+                else { mastery = '⭐'; }
+                return '<div class="herbarium-card ' + masteryClass + '"><span class="hc-emoji">🌿</span><span class="hc-name">' + name + '</span><span class="hc-mastery">' + mastery + '</span></div>';
+            }).join('');
+
+            return '<details class="herbarium-section"><summary>🌿 Plant Herbarium (' + keys.length + ' discovered)</summary><div class="herbarium-grid">' + cardsHtml + '</div></details>';
+        },
+
+        shareResults: function() {
+            var correct = this.state.plantsSeen.filter(function(p) { return p.correct; }).length;
+            var total = this.state.plantsSeen.length;
+            var text = '🌿 Daily Quiz — ' + correct + '/' + total + ' correct!';
+            if (this.state.totalScore > 0) text += ' Score: ' + this.state.totalScore;
+            if (this.state.bestStreak > 0) text += ' Best streak: ' + this.state.bestStreak;
+            text += ' 🌿 Rocen Homesteady';
+
+            if (navigator.share) {
+                navigator.share({ title: 'Daily Quiz Results', text: text });
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() { showToast('📋 Results copied to clipboard!'); });
+            } else {
+                showToast('Share not supported on this device');
+            }
+        },
+
+        restart: function() {
+            this.stopTimer();
+            var preservedAchievements = this.state.achievements || this.defaults.achievements;
+            var preservedHerbarium = this.state.herbarium || {};
+            var preservedDailyCount = this.state.dailyCount || 0;
+
+            this.state = Object.assign({}, this.defaults, {
+                achievements: preservedAchievements, herbarium: preservedHerbarium, dailyCount: preservedDailyCount
+            });
+            this.save();
+
+            var goDiv = $('dq-game-over');
+            if (goDiv) goDiv.classList.add('hidden');
+            var settings = $('dq-settings');
+            if (settings) settings.style.display = '';
+            var escapeBtn = $('dq-escape-btn');
+            if (escapeBtn) escapeBtn.style.display = 'none';
+            var challengeBanner = $('dq-challenge-banner');
+            if (challengeBanner) challengeBanner.classList.add('hidden');
+            var dailyBanner = $('dq-daily-banner');
+            if (dailyBanner) dailyBanner.classList.add('hidden');
+            var livesEl = $('dq-lives');
+            if (livesEl) livesEl.classList.add('hidden');
+            var timerContainer = $('dq-timer');
+            if (timerContainer) timerContainer.classList.add('hidden');
+            var content = $('dq-content');
+            if (content) content.innerHTML = '';
+            var statsEl = $('dq-stats');
+            if (statsEl) statsEl.innerHTML = '';
+            var progressEl = $('dq-progress-bar');
+            if (progressEl) progressEl.innerHTML = '';
+            this.hidePowerups();
+            this.renderAchievements();
+        },
+
+        renderAchievements: function() {
+            var container = $('dq-achievements');
+            if (!container) return;
+
+            var achDefs = [
+                { key: 'quiz_first_quiz', name: 'First Steps', desc: 'Complete your first quiz', icon: '🎯' },
+                { key: 'quiz_streak', name: 'Quick Wit', desc: '5 correct in a row', icon: '🔥' },
+                { key: 'quiz_streak_10', name: 'On Fire', desc: '10 correct in a row', icon: '⚡' },
+                { key: 'quiz_perfect', name: 'Perfectionist', desc: 'Score 10/10 on any quiz', icon: '💯' },
+                { key: 'quiz_challenger', name: 'Challenger', desc: 'Complete Challenge Mode', icon: '⚔️' },
+                { key: 'quiz_category_master', name: 'Specialist', desc: 'Score 9+ in a single category', icon: '🔬' },
+                { key: 'quiz_plants_10', name: 'Botanist', desc: 'Discover 10 different plants', icon: '🌿' },
+                { key: 'quiz_plants_25', name: 'Plant Scholar', desc: 'Discover 25 different plants', icon: '📚' },
+                { key: 'quiz_plants_50', name: 'Plant Master', desc: 'Discover 50 different plants', icon: '🏆' },
+                { key: 'quiz_safety_first', name: 'Safety First', desc: 'Score 9+ in Safety & Poisoning', icon: '☠️' },
+                { key: 'quiz_daily_7', name: 'Weekly Warrior', desc: 'Complete 7 daily quizzes', icon: '📅' },
+                { key: 'quiz_expert_clear', name: 'Expert Survivor', desc: 'Complete Expert with 3 lives intact', icon: '🌳' }
+            ];
+
+            var plantCount = Object.keys(this.state.herbarium || {}).length;
+            var self = this;
+
+            container.innerHTML = achDefs.map(function(a) {
+                var unlocked = self.state.achievements[a.key];
+                var bc = unlocked ? 'var(--green-leaf)' : '#444';
+                var bg = unlocked ? 'linear-gradient(135deg,#0a2a0a,#1a3d1a)' : 'var(--bg-card)';
+                var ic = unlocked ? '✅' : '🔒';
+                var nc = unlocked ? 'var(--green-leaf)' : 'var(--cream-dim)';
+                var progress = '';
+                if (a.key === 'quiz_streak') progress = unlocked ? '(Done)' : '(' + self.state.streak + '/5)';
+                else if (a.key === 'quiz_streak_10') progress = unlocked ? '(Done)' : '(' + (self.state.bestStreak || 0) + '/10)';
+                else if (a.key === 'quiz_perfect') progress = unlocked ? '(Done)' : '(Score 10/10)';
+                else if (a.key === 'quiz_challenger') progress = unlocked ? '(Done)' : '(Challenge Mode)';
+                else if (a.key === 'quiz_category_master') progress = unlocked ? '(Done)' : '(Score 9+ in category)';
+                else if (a.key === 'quiz_plants_10') progress = unlocked ? '(Done)' : '(' + plantCount + '/10)';
+                else if (a.key === 'quiz_plants_25') progress = unlocked ? '(Done)' : '(' + plantCount + '/25)';
+                else if (a.key === 'quiz_plants_50') progress = unlocked ? '(Done)' : '(' + plantCount + '/50)';
+                else if (a.key === 'quiz_safety_first') progress = unlocked ? '(Done)' : '(Safety 9+)';
+                else if (a.key === 'quiz_daily_7') progress = unlocked ? '(Done)' : '(' + (self.state.dailyCount || 0) + '/7)';
+                else if (a.key === 'quiz_expert_clear') progress = unlocked ? '(Done)' : '(Expert + 3 lives)';
+                else if (a.key === 'quiz_first_quiz') progress = unlocked ? '(Done)' : '(Complete a quiz)';
+                else progress = '';
+
+                return '<div class="achievement-card' + (unlocked ? ' unlocked' : '') + '" style="background:' + bg + ';border-color:' + bc + ';">' +
+                    '<div><div class="ach-left"><span class="ach-icon">' + ic + '</span>' +
+                    '<span class="ach-name" style="color:' + nc + ';">' + a.icon + ' ' + a.name + '</span></div>' +
+                    '<div class="ach-desc">' + a.desc + '</div></div>' +
+                    '<span class="ach-progress">' + progress + '</span></div>';
+            }).join('');
+        }
+    };
+
+    // Clear stuck state
+    (function() {
+        try {
+            var saved = localStorage.getItem('dq_state');
+            if (saved) {
+                var parsed = JSON.parse(saved);
+                if (parsed.gameActive && (parsed.livesRemaining <= 0 || parsed.qNum >= parsed.maxQuestions)) {
+                    parsed.gameActive = false;
+                    localStorage.setItem('dq_state', JSON.stringify(parsed));
+                }
+            }
+        } catch(e) {}
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() { dailyQuiz.init(); });
+    </script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>

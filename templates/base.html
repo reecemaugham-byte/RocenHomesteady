@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rocen Homesteady{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_css %}{% endblock %}
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/" {% if nav_active == 'home' %}class="nav-active"{% endif %}>Home</a>
+            <a href="/learn" {% if nav_active == 'learn' %}class="nav-active"{% endif %}>Learn</a>
+            <a href="/games" {% if nav_active == 'games' %}class="nav-active"{% endif %}>Games</a>
+            <a href="/shop" {% if nav_active == 'shop' %}class="nav-active"{% endif %}>Shop</a>
+            <span id="authArea"><a href="/login">Login</a></span>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <p>© 2026 Rocen Homesteady LTD. All Rights Reserved.</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+    <script src="/static/js/progress.js"></script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>
