@@ -1,0 +1,1408 @@
+{
+    "id": "tropical_island",
+    "name": "Castaway Island",
+    "icon": "🏝️",
+    "tagline": "Shipwrecked on a tropical island. Surrounded by water, abundant plant life, and the relentless sun.",
+    "difficulty": 2,
+    "intro": "The sailing trip was supposed to be fun. A school adventure — learning to crew a boat, navigating by stars, sleeping under canvas on the deck. You remember the instructor shouting, the sails snapping, the feeling that nothing could go wrong.\n\nThen the storm hit.\n\nIt came from nowhere, the way tropical storms do. One minute the sea was calm and blue, the next the sky turned purple and the waves rose like mountains. The boat heeled, the mast cracked, and you were thrown into the water.\n\nYou washed up on this island half a day later. Sand in your mouth, salt in your eyes, and nothing but a water bottle and a first aid kit that somehow stayed strapped to your belt.\n\nThe island is beautiful — palm trees, white sand, crystal-clear water. But you can't drink the ocean. The sun is merciless. And some of the most beautiful plants here are the most deadly.\n\nYou need water. You need food. You need shelter from the sun. And you need to figure out which plants will save your life and which ones will end it.\n\nThe tide is going out. Rock pools are exposed. Better start now.",
+    
+    "start_season": "Dry Season",
+    "hours_per_day": 8,
+    "actions_per_day": 3,
+    "bonus_action_morale": 70,
+    "season_cycle_days": 8,
+
+    "starting": {
+        "health": 100,
+        "hunger": 75,
+        "warmth": 70,
+        "morale": 60,
+        "water": 50
+    },
+    "starting_inventory": ["water_bottle", "bandage"],
+
+    "decay": {
+        "hunger": 6,
+        "warmth": 3,
+        "morale": 5,
+        "water": 5
+    },
+
+    "shelter": [
+        { "name": "No Shelter", "icon": "🏖️", "desc": "Exposed on the beach. Sun, wind, and rain have their way with you.", "warmth_bonus": 0 },
+        { "name": "Palm Lean-to", "icon": "🏝️", "desc": "A basic shelter of palm fronds. Some shade from the sun.", "warmth_bonus": 2 },
+        { "name": "Bamboo Hut", "icon": "🛖", "desc": "A sturdy bamboo structure. Good shelter from tropical weather.", "warmth_bonus": 4 },
+        { "name": "Signal Platform", "icon": "🗼", "desc": "A raised platform near the hilltop. Excellent for signalling and shelter.", "warmth_bonus": 6 }
+    ],
+
+    "locations": [
+        {
+            "id": "beach",
+            "name": "Beach",
+            "icon": "🏖️",
+            "desc": "White sand, palm trees, and the endless blue ocean. Your starting point — and constant reminder of how far from home you are.",
+            "discovered": true,
+            "foraging_quality": 0.4,
+            "shelter_bonus": false,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.05
+        },
+        {
+            "id": "jungle_interior",
+            "name": "Jungle Interior",
+            "icon": "🌴",
+            "desc": "Dense tropical vegetation. Hot, humid, and buzzing with insects. Plants are everywhere — but so are the dangers.",
+            "discovered": false,
+            "foraging_quality": 0.7,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.1
+        },
+        {
+            "id": "rock_pools",
+            "name": "Rock Pools",
+            "icon": "🐙",
+            "desc": "Tide pools revealed at low tide. Shellfish, seaweed, and strange creatures hide in the shallows.",
+            "discovered": false,
+            "foraging_quality": 0.5,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.05,
+            "tide_required": "low"
+        },
+        {
+            "id": "hilltop_signal",
+            "name": "Hilltop Signal Point",
+            "icon": "⛰️",
+            "desc": "The highest point on the island. Perfect for a signal fire, but exposed and a long climb.",
+            "discovered": false,
+            "foraging_quality": 0.1,
+            "shelter_bonus": false,
+            "signal_bonus": 3,
+            "water_source": false,
+            "lose_chance": 0.15
+        },
+        {
+            "id": "lagoon_shipwreck",
+            "name": "Lagoon Shipwreck",
+            "icon": "🚢",
+            "desc": "A half-sunken fishing boat in the lagoon. It has real supplies — shelter, shade, comfort. But it's slowly sinking.",
+            "discovered": false,
+            "foraging_quality": 0.3,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.05,
+            "trap_location": true
+        },
+        {
+            "id": "reef_cave",
+            "name": "Reef Cave",
+            "icon": "🪸",
+            "desc": "A sea cave accessible only at low tide. Could contain supplies, sea creatures, or secrets.",
+            "discovered": false,
+            "foraging_quality": 0.4,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.08,
+            "tide_required": "low"
+        },
+        {
+            "id": "mango_grove",
+            "name": "Mango Grove",
+            "icon": "🥭",
+            "desc": "A grove of mango trees inland. Food is abundant here — if you can identify what's safe.",
+            "discovered": false,
+            "foraging_quality": 0.8,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.05
+        },
+        {
+            "id": "stream_valley",
+            "name": "Stream Valley",
+            "icon": "💦",
+            "desc": "A valley with a fresh water stream. The most reliable water source on the island.",
+            "discovered": false,
+            "foraging_quality": 0.5,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.08
+        },
+        {
+            "id": "cliff_face",
+            "name": "Cliff Face",
+            "icon": "🧗",
+            "desc": "Rocky cliffs on the far side of the island. Aloe grows here, and the views are sweeping — but the climb is dangerous.",
+            "discovered": false,
+            "foraging_quality": 0.2,
+            "shelter_bonus": false,
+            "signal_bonus": 2,
+            "water_source": false,
+            "lose_chance": 0.2
+        },
+        {
+            "id": "fishing_point",
+            "name": "Fishing Point",
+            "icon": "🎣",
+            "desc": "A rocky point extending into the lagoon. Good for fishing, but the water here is deep — and you're not alone in it.",
+            "discovered": false,
+            "foraging_quality": 0.3,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.12
+        }
+    ],
+    
+    "plants": [
+        {
+            "id": "coconut",
+            "name": "Coconut Palm",
+            "icon": "🥥",
+            "is_edible": true,
+            "desc_safe": "One of the most useful survival plants in the tropics. The young coconut provides refreshing water (not the same as the milk), and the white meat inside is rich in fat and calories. The husk provides fibre for cordage, and the shell makes a bowl or cup. Every part of the coconut palm can be used.",
+            "desc_unsafe": "A tall palm tree with large feathery fronds and clusters of green or brown coconuts at the crown. The trunk is smooth and ringed with old leaf scars.",
+            "locations": ["beach", "jungle_interior"],
+            "difficulty": 1,
+            "seasons": ["Wet Season", "Dry Season", "Transition", "Storm Season"],
+            "safe_yield": { "hunger": 12, "water": 10, "morale": 3 },
+            "unsafe_yield": { "health": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You try to knock down a coconut but it falls from height and strikes your shoulder. Painful, but you'll live. The coconut itself is fine.",
+            "loot": ["wood"]
+        },
+        {
+            "id": "cassava",
+            "name": "Cassava",
+            "icon": "🥔",
+            "is_edible": true,
+            "desc_safe": "Cassava is a crucial survival crop — BUT it must be properly prepared. Raw cassava contains cyanogenic compounds that release cyanide. To make it safe: peel the root, grate it, press out the juice, then cook thoroughly. The flour can be made into flatbread. Never eat cassava raw.",
+            "desc_unsafe": "A tall shrub with deeply lobed leaves and thick tuberous roots. The leaves are palmate (hand-shaped) and the stems have a reddish tinge. The roots are brown outside, white inside.",
+            "locations": ["jungle_interior", "stream_valley"],
+            "difficulty": 3,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "hunger": 20, "morale": 5 },
+            "unsafe_yield": { "health": -30, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the cassava root raw. Within minutes, your mouth tingles, your stomach cramps violently, and you begin to vomit. Raw cassava contains cyanide — this is one of the most important plants to prepare correctly in the tropics.",
+            "loot": []
+        },
+        {
+            "id": "oleander",
+            "name": "Oleander",
+            "icon": "🌸",
+            "is_edible": false,
+            "desc_safe": "EXTREMELY POISONOUS. All parts of oleander are toxic — leaves, flowers, stems, and even smoke from burning it can harm you. Identify it only to avoid it. Common in tropical and Mediterranean areas, often planted as decoration. A single leaf can be fatal to a child.",
+            "desc_unsafe": "An attractive shrub with clusters of showy pink, white, or red flowers. The leaves are narrow, leathery, and dark green. It looks like a harmless garden plant — which makes it more dangerous.",
+            "locations": ["beach", "jungle_interior"],
+            "difficulty": 2,
+            "seasons": ["Wet Season", "Dry Season", "Transition", "Storm Season"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -35, "morale": -15 },
+            "unsafe_injury": null,
+            "unsafe_text": "You touch the plant and then rub your eyes, or perhaps you brewed a tea from the leaves. Either way, the toxins hit fast — nausea, irregular heartbeat, dizziness. Oleander is one of the most poisonous plants in the world. Even the honey from its flowers can be toxic.",
+            "loot": []
+        },
+        {
+            "id": "papaya",
+            "name": "Papaya",
+            "icon": "🍈",
+            "is_edible": true,
+            "desc_safe": "Papaya is one of the easiest tropical fruits to identify. The ripe fruit is orange-yellow with sweet pink-orange flesh and black seeds in the centre. Unripe (green) papaya can be cooked as a vegetable. The fruit is rich in vitamins and enzymes that aid digestion.",
+            "desc_unsafe": "A tree with a single straight trunk and large, deeply lobed leaves clustered at the top. The fruit hangs directly from the trunk, green when unripe, turning yellow-orange when ripe.",
+            "locations": ["jungle_interior", "mango_grove"],
+            "difficulty": 1,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "hunger": 15, "morale": 5 },
+            "unsafe_yield": { "hunger": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat an unripe papaya without cooking it. The white latex in green papaya is a skin irritant and can cause stomach pain. It's not deadly, but it's very unpleasant.",
+            "loot": []
+        },
+        {
+            "id": "sea_grape",
+            "name": "Sea Grape",
+            "icon": "🍇",
+            "is_edible": true,
+            "desc_safe": "Sea grapes grow on a coastal shrub with thick, round, leathery leaves. The purple-green grape-like clusters are edible when ripe — they taste slightly sweet with a tangy kick. Very common on tropical beaches, making them a reliable food source for castaways.",
+            "desc_unsafe": "A coastal shrub with large, round, leathery leaves that look like green coins. Clusters of small purple-green fruits hang from the branches, looking like tiny bunches of grapes.",
+            "locations": ["beach"],
+            "difficulty": 1,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "hunger": 10, "morale": 3 },
+            "unsafe_yield": { "hunger": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat sea grapes that aren't fully ripe. They're incredibly astringent and sour, making your mouth pucker and your stomach churn. Not dangerous, but very unpleasant.",
+            "loot": []
+        },
+        {
+            "id": "castor_oil_plant",
+            "name": "Castor Oil Plant",
+            "icon": "🌿",
+            "is_edible": false,
+            "desc_safe": "ONE OF THE MOST POISONOUS PLANTS IN THE WORLD. The seeds contain ricin, a deadly toxin. Just 4-8 seeds can kill an adult. The plant is also used commercially — castor oil is safe after processing, but the raw seeds are lethal. Identify it only to avoid it. Do not touch the seeds.",
+            "desc_unsafe": "A tall plant with large, star-shaped leaves that are red-green when young. The seeds are in spiny pods and look like ticks or beans. The plant is striking and tropical-looking — which makes it all the more dangerous.",
+            "locations": ["jungle_interior", "stream_valley"],
+            "difficulty": 3,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -40, "morale": -20 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the seeds. Within hours, violent vomiting and diarrhoea begin, followed by dehydration, convulsions, and organ failure. Castor seeds contain ricin — one of the most toxic natural substances on Earth. This is a life-threatening emergency.",
+            "loot": []
+        },
+        {
+            "id": "pandanus",
+            "name": "Pandanus",
+            "icon": "🍍",
+            "is_edible": true,
+            "desc_safe": "Also called screw pine, this distinctive tree has long, spiky leaves and a fruit that looks like a giant pineapple. The fruit segments can be eaten raw or cooked, but only the soft, yellow-orange parts — the fibrous core is inedible. The leaves are excellent for weaving mats, baskets, and shelter roofing.",
+            "desc_unsafe": "A tree with a single trunk and aerial roots, topped with long, spiky leaves arranged in a spiral (hence 'screw pine'). The fruit is large, segmented, and looks like a cross between a pineapple and a hand grenade.",
+            "locations": ["beach", "jungle_interior"],
+            "difficulty": 2,
+            "seasons": ["Wet Season", "Dry Season", "Transition", "Storm Season"],
+            "safe_yield": { "hunger": 10, "morale": 2 },
+            "unsafe_yield": { "health": -8, "hunger": -5 },
+            "unsafe_injury": "cut",
+            "unsafe_text": "You try to eat the fibrous core of the pandanus fruit. It's like chewing wood and scratches your throat. The sharp leaves cut your hands as you handle it.",
+            "loot": ["cordage"]
+        },
+        {
+            "id": "noni_fruit",
+            "name": "Noni Fruit",
+            "icon": "🫒",
+            "is_edible": true,
+            "desc_safe": "Noni fruit is one of the most important survival foods in the Pacific. The ripe fruit smells terrible — like strong cheese mixed with vomit — but it's packed with nutrients and has been used as medicine for centuries. The taste is an acquired one, but your body needs the vitamins. Hold your nose and eat it.",
+            "desc_unsafe": "A small, irregularly shaped fruit, bumpy and greenish-white when ripe, growing on a small tree with large, glossy leaves. The fruit has a distinctive and very unpleasant smell when ripe.",
+            "locations": ["jungle_interior", "stream_valley"],
+            "difficulty": 2,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "hunger": 8, "health": 5, "morale": -2 },
+            "unsafe_yield": { "hunger": -5, "morale": -8 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat an unripe noni fruit. The astringent, bitter taste makes you gag. Your stomach rebels and you vomit. The ripe fruit is nutritious — but this one wasn't ready.",
+            "loot": []
+        },
+        {
+            "id": "beach_morning_glory",
+            "name": "Beach Morning Glory",
+            "icon": "🌺",
+            "is_edible": true,
+            "desc_safe": "A common coastal plant with large, trumpet-shaped purple-pink flowers and thick, fleshy leaves. The young leaves and stems are edible when cooked — boil them like spinach. The plant also helps stabilise sand dunes, so harvest responsibly. Easy to identify and widely available on tropical beaches.",
+            "desc_unsafe": "A creeping vine with large, heart-shaped leaves and showy purple-pink trumpet flowers. It grows in sprawling mats across the sand, often near the high tide line.",
+            "locations": ["beach", "cliff_face"],
+            "difficulty": 1,
+            "seasons": ["Wet Season", "Dry Season", "Transition", "Storm Season"],
+            "safe_yield": { "hunger": 8, "morale": 2 },
+            "unsafe_yield": { "hunger": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the leaves raw in large quantities. They're mildly laxative when uncooked, and your stomach protests loudly. Cooked is much safer.",
+            "loot": []
+        },
+        {
+            "id": "sago_palm",
+            "name": "Sago Palm",
+            "icon": "🌴",
+            "is_edible": true,
+            "desc_safe": "The sago palm is a vital survival food, but ONLY if prepared correctly. The pith (inner trunk) must be harvested, grated, washed repeatedly to remove toxins, and then cooked. The resulting sago flour can be made into pancakes or porridge. Raw or improperly prepared sago contains dangerous toxins. This is a plant that rewards patience and skill.",
+            "desc_unsafe": "A stocky palm with a thick, rough trunk and large, feathery fronds. It looks similar to other palms but has a distinctive swollen base. The trunk contains starchy pith that can be processed into flour.",
+            "locations": ["jungle_interior", "stream_valley"],
+            "difficulty": 3,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "hunger": 18, "morale": 5 },
+            "unsafe_yield": { "health": -20, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the raw sago pith without processing it. It contains toxins that cause severe stomach pain, nausea, and vomiting. Like cassava, sago MUST be properly prepared — this is a plant that punishes shortcuts.",
+            "loot": ["wood"]
+        },
+        {
+            "id": "poisonous_sea_hare",
+            "name": "Sea Hare",
+            "icon": "🐌",
+            "is_edible": false,
+            "desc_safe": "NOT A PLANT — this is a marine creature found in rock pools. Sea hares are soft-bodied molluscs that release toxic purple ink when disturbed. The ink and the creature itself are poisonous. Identify it only to avoid it. Sea hares are a reminder that danger on a tropical island isn't limited to plants.",
+            "desc_unsafe": "A large, slug-like creature in the rock pool, dark-coloured with flaps along its sides. It releases a cloud of purple ink when touched. It moves slowly and looks harmless — which makes it more dangerous.",
+            "locations": ["rock_pools", "reef_cave"],
+            "difficulty": 2,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -25, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You handle the sea hare and get its toxic ink on your skin. Within minutes, your skin burns and blisters. If you'd eaten it, the toxins could have been lethal. Even touching sea hares is dangerous — their defensive chemicals are potent.",
+            "loot": []
+        },
+        {
+            "id": "turmeric",
+            "name": "Turmeric",
+            "icon": "🟡",
+            "is_edible": true,
+            "desc_safe": "Turmeric is one of nature's most powerful medicines. The bright orange-yellow root contains curcumin, a potent anti-inflammatory. In a survival situation, it can reduce swelling, treat minor wounds when applied as a paste, and boost your immune system. Not a food source itself, but invaluable for healing. Boil the root to make a healing tea or grind it into a poultice.",
+            "desc_unsafe": "A leafy plant with long, oblong leaves and a distinctive orange-yellow root when cut open. The leaves are broad and the flowers are white-yellow. If you break the stem near the root, it stains everything bright yellow-orange.",
+            "locations": ["jungle_interior", "stream_valley"],
+            "difficulty": 1,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "health": 10, "morale": 3 },
+            "unsafe_yield": { "health": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You mistake a different root for turmeric. It tastes bitter and astringent, not warm and earthy. Not dangerous, but not the healing plant you were hoping for.",
+            "loot": ["medicinal_herbs"]
+        },
+        {
+            "id": "aloe_vera",
+            "name": "Aloe Vera",
+            "icon": "🪴",
+            "is_edible": true,
+            "desc_safe": "Aloe vera is a survival essential in tropical heat. The thick, gel-filled leaves are perfect for treating sunburn, minor burns, and skin irritation — just slice open a leaf and apply the cool gel directly. The gel can also be purified with water for a hydrating drink in emergencies. One of the most useful plants you can find on a tropical island.",
+            "desc_unsafe": "A succulent plant with thick, fleshy, pointed leaves that grow in a rosette pattern. The leaves are green with small teeth along the edges and feel thick and spongy. When cut, they leak clear gel.",
+            "locations": ["beach", "cliff_face"],
+            "difficulty": 1,
+            "seasons": ["Wet Season", "Dry Season", "Transition", "Storm Season"],
+            "safe_yield": { "health": 8, "morale": 3 },
+            "unsafe_yield": { "health": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You mistake a similar-looking succulent for aloe. The sap burns your skin on contact. It's not aloe vera — it's a lookalike that causes contact dermatitis. Always check for the clear, soothing gel before applying.",
+            "loot": []
+        },
+        {
+            "id": "frangipani",
+            "name": "Frangipani",
+            "icon": "🌺",
+            "is_edible": false,
+            "desc_safe": "POISONOUS. Frangipani is a beautiful tropical tree with intensely fragrant flowers, but all parts are toxic — especially the milky sap. The flowers look and smell amazing, which makes them tempting. The sap causes skin blistering and, if ingested, severe stomach pain. Identify it to avoid it, and don't use the wood for cooking fires.",
+            "desc_unsafe": "A small tree with thick, fleshy branches and clusters of beautiful white, pink, or yellow flowers with an intoxicating fragrance. The leaves are large and leathery. Broken branches leak a milky white sap.",
+            "locations": ["beach", "jungle_interior", "mango_grove"],
+            "difficulty": 2,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "safe_yield": { "morale": 3 },
+            "unsafe_yield": { "health": -20, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the flowers, drawn by their incredible scent. Within an hour, severe stomach cramps and vomiting begin. The milky sap has irritated your mouth and throat. Beautiful does not mean safe.",
+            "loot": []
+        }
+    ],
+
+    "weather_types": {
+        "clear": { "icon": "☀️", "desc": "Clear skies and blazing sun.", "warmth_mod": 0, "morale_mod": 2, "water_mod": -2 },
+        "hot": { "icon": "🌡️", "desc": "Scorching heat. The sun is merciless.", "warmth_mod": 0, "morale_mod": -3, "water_mod": -5 },
+        "rain": { "icon": "🌧️", "desc": "Tropical rain. A relief from the heat and a chance to collect water.", "warmth_mod": -2, "morale_mod": 1, "water_mod": 8 },
+        "tropical_storm": { "icon": "⛈️", "desc": "Tropical storm! Heavy rain and dangerous winds.", "warmth_mod": -3, "morale_mod": -5, "water_mod": 3 },
+        "humid": { "icon": "💦", "desc": "Thick, humid air. Oppressive and draining.", "warmth_mod": 0, "morale_mod": -1, "water_mod": -3 },
+        "overcast": { "icon": "☁️", "desc": "Cloudy skies. A welcome break from the sun.", "warmth_mod": -1, "morale_mod": 1, "water_mod": 0 }
+    },
+
+    "weather_chances": {
+        "Wet Season": { "clear": 0.15, "hot": 0.1, "rain": 0.35, "tropical_storm": 0.15, "humid": 0.15, "overcast": 0.1 },
+        "Dry Season": { "clear": 0.35, "hot": 0.25, "rain": 0.1, "tropical_storm": 0.05, "humid": 0.15, "overcast": 0.1 },
+        "Transition": { "clear": 0.25, "hot": 0.15, "rain": 0.2, "tropical_storm": 0.1, "humid": 0.15, "overcast": 0.15 },
+        "Storm Season": { "clear": 0.1, "hot": 0.05, "rain": 0.25, "tropical_storm": 0.35, "humid": 0.1, "overcast": 0.15 }
+    },
+
+    "sunstroke_check": {
+        "water_threshold": 25,
+        "health_threshold": 50,
+        "hot_weather_chance": 0.25,
+        "injury": "sunstroke",
+        "message": "The relentless sun beats down on you. Your head pounds and your vision swims. You're getting sunstroke — you need shade and water."
+    },
+
+    "missed_opportunity": {
+        "days_without_signal": 5,
+        "event_id": "ship_on_horizon"
+    },
+
+    "weather_flavour": {
+        "tropical_island": {
+            "day_start": {
+                "clear": "The sun rises hot and bright over the island. Another day of survival begins.",
+                "hot": "The heat hits you before you even open your eyes. The air shimmers. Today will be brutal.",
+                "rain": "Rain drums on the leaves above you. Every drop is fresh water — if you can collect it.",
+                "tropical_storm": "The wind howls and rain drives sideways. The island is showing its fierce side.",
+                "humid": "The air is thick as soup. You're sweating before you even move. Stay hydrated.",
+                "overcast": "Grey clouds give you a rare break from the sun. Make the most of it."
+            }
+        }
+    },
+
+    "day_start": [
+        "You wake to the sound of waves. The rhythm never stops — it's become your clock.",
+        "Dawn breaks over the ocean. The water stretches to the horizon in every direction.",
+        "The heat wakes you early. Another day on the island begins.",
+        "Birds call in the trees above. At least something here is thriving.",
+        "You check your water supply. It's never enough.",
+        "Sand in your shoes, salt on your skin. This is your life now.",
+        "The tide is changing. Rock pools will be exposed soon.",
+        "You open your eyes to blue sky and green leaves. It's beautiful. It's also trying to kill you."
+    ],
+
+    "events": [
+        {
+            "id": "kiri_tackle_box",
+            "name": "📦 Kiri's Tackle Box",
+            "icon": "📦",
+            "text": "Washed up among the rocks, you find a plastic tackle box. It's battered but intact. Inside: fishing hooks, cordage, and a note written in waterproof ink. \"If you find this, head inland. The jungle has what you need. Don't trust the pretty flowers.\" — K.\n\nSomeone else was here. Someone survived long enough to write notes.",
+            "min_day": 2,
+            "max_day": 4,
+            "choices": [
+                {
+                    "icon": "📦",
+                    "text": "Take the supplies and study the note",
+                    "success": 0.95,
+                    "hours": 1,
+                    "success_text": "You pocket the hooks and cordage. The note is written in steady handwriting — whoever K is, they weren't panicking. The advice about the flowers is worth remembering. The jungle has deadly plants disguised as beautiful ones.",
+                    "success_fx": { "morale": 8 },
+                    "success_loot": ["cordage", "wire"]
+                },
+                {
+                    "icon": "🌊",
+                    "text": "Leave it for whoever comes next",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You leave the box where someone else might find it. But you memorise the advice about the flowers. That could save your life.",
+                    "success_fx": { "morale": 3, "islandRespect": 5 }
+                }
+            ]
+        },
+        {
+            "id": "kiri_shelter",
+            "name": "🏠 Kiri's Shelter",
+            "icon": "🏠",
+            "text": "Deep in the jungle, you find a shelter that's too well-built to be natural. Bamboo walls lashed with expert knots, a palm-frond roof that still sheds rain, a fire pit with charcoal remains. Carved into a plank above the entrance are tide charts — low tide times marked with symbols. On another plank: plant notes. \"Cassava — MUST soak and cook. Noni — smells awful but saves lives. Sago — process 3 times.\"\n\nSomeone lived here. Someone who knew this island.",
+            "min_day": 5,
+            "max_day": 7,
+            "condition": { "requires_event": "kiri_tackle_box" },
+            "choices": [
+                {
+                    "icon": "📖",
+                    "text": "Study the notes carefully",
+                    "success": 0.9,
+                    "hours": 2,
+                    "success_text": "You spend hours copying the tide charts and plant notes into your memory. Cassava must be processed. Noni is worth the smell. Sago needs triple washing. This knowledge could save your life — someone already figured it out the hard way.",
+                    "success_fx": { "morale": 10, "islandRespect": 5 }
+                },
+                {
+                    "icon": "🛖",
+                    "text": "Rest here and use the shelter",
+                    "success": 0.8,
+                    "hours": 3,
+                    "success_text": "You rest in Kiri's shelter. It's the best night's sleep you've had since the wreck. The shelter works — proof that survival here is possible.",
+                    "success_fx": { "health": 8, "morale": 10, "warmth": 5 }
+                }
+            ]
+        },
+        {
+            "id": "kiri_signal_fire",
+            "name": "🔥 Kiri's Signal Fire",
+            "icon": "🔥",
+            "text": "On the hilltop, you find the remains of a massive signal fire. It's been built and rebuilt multiple times — layers of charcoal tell the story. There's a reflector made from polished metal, arranged to catch light from any angle. Whoever built this knew what they were doing. They were determined to be seen.\n\nBut if they succeeded, why is their shelter empty?",
+            "min_day": 8,
+            "max_day": 10,
+            "condition": { "requires_event": "kiri_shelter" },
+            "choices": [
+                {
+                    "icon": "📡",
+                    "text": "Add to the signal fire and study its design",
+                    "requires": ["wood"],
+                    "success": 0.9,
+                    "hours": 2,
+                    "success_text": "You add wood to Kiri's signal fire and study how it's constructed. The reflector is genius — it triples the visibility. This person was smart and resourceful. You add your own wood and resolve to keep this fire ready.",
+                    "success_fx": { "morale": 10, "signal_progress": 2 },
+                    "islandRespect": 3
+                },
+                {
+                    "icon": "👀",
+                    "text": "Look for more clues about what happened",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You search around the signal fire. Near the base, you find a carved symbol — a fish with a triangle. Kiri's mark. And scratched into the rock: \"Day 12. Boat came close but didn't see. Must make signal bigger. Keep trying.\"\n\nThey kept trying. For days. That's either hope or desperation — maybe both.",
+                    "success_fx": { "morale": 8, "islandRespect": 3 }
+                }
+            ]
+        },
+        {
+            "id": "kiri_bottle_message",
+            "name": "💌 Kiri's Message",
+            "icon": "💌",
+            "text": "Wedged between rocks in the reef cave, you find a sealed bottle. Inside is a note, still legible despite the salt water that's seeped in:\n\n\"I waited 16 days for rescue. A fishing boat came close on day 12 but didn't see my signal. On day 16, they came back. The key is the hilltop — build your signal fire high and keep it ready. Three green fires means 'need rescue.' Also: the reef cave has supplies I left. And the island provides if you respect it. Good luck. — Kiri Santos, fisher, survivor.\"\n\nShe made it. She actually made it off this island.",
+            "min_day": 11,
+            "condition": { "requires_event": "kiri_signal_fire" },
+            "choices": [
+                {
+                    "icon": "📡",
+                    "text": "Follow Kiri's advice — boost your signal",
+                    "success": 0.85,
+                    "hours": 3,
+                    "success_text": "Kiri's instructions are clear. You head to the hilltop and rebuild the signal fire even higher, using her reflector design. Three green fires for rescue. The island provides if you respect it. You believe her — she earned the right to say that.",
+                    "success_fx": { "morale": 15, "signal_progress": 3, "islandRespect": 5 }
+                },
+                {
+                    "icon": "📦",
+                    "text": "Check the reef cave for Kiri's supplies",
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "In the back of the reef cave, behind a pile of rocks, you find Kiri's emergency stash: cordage, a knife blade, and a length of wire. She left these for whoever came next. That's the kind of person she was.",
+                    "success_fx": { "morale": 10 },
+                    "success_loot": ["cordage", "knife_blade", "wire"]
+                }
+            ]
+        },
+        {
+            "id": "shark_fin_spotted",
+            "name": "🦈 Fin in the Water",
+            "icon": "🦈",
+            "text": "A dark shape glides through the lagoon. A fin cuts the surface — smooth, deliberate, and then gone. It's a reef shark. Small, but big enough to make you think twice about wading in the water.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "👀",
+                    "text": "Watch it carefully from the shore",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You watch the shark patrol the lagoon. It's not interested in you — it's hunting fish near the reef. After a while, it glides out toward deeper water. You note where it goes, in case you need to know later.",
+                    "success_fx": { "morale": -2, "islandRespect": 3 }
+                },
+                {
+                    "icon": "🌊",
+                    "text": "Stay out of the water today",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You decide the water isn't worth the risk. There are other ways to survive on this island. The shark can have the lagoon — for now.",
+                    "success_fx": { "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "shark_circling",
+            "name": "🦈 Circling Shark",
+            "icon": "🦈",
+            "text": "You're wading in shallow water when you see it — the same reef shark, but closer this time. It's circling. Not attacking, not fleeing. Investigating. It brushes past your leg and you feel the sandpaper roughness of its skin. Your heart hammers.",
+            "min_day": 4,
+            "condition": { "requires_event": "shark_fin_spotted" },
+            "choices": [
+                {
+                    "icon": "🧘",
+                    "text": "Stay calm and back away slowly",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You force yourself to stay still. The shark circles once more, then loses interest and swims away. You've heard that sharks respect calmness. Whether that's true or not, it worked this time.",
+                    "success_fx": { "morale": 3, "islandRespect": 5 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Get out of the water fast",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You splash toward shore. The shark doesn't pursue — it was just checking you out. But the splash might have attracted its attention more than staying still would have.",
+                    "success_fx": { "morale": -5 },
+                    "fail_text": "You panic and thrash toward shore. The shark darts toward the commotion — a test bite. Its teeth graze your calf. Not serious, but a warning.",
+                    "fail_fx": { "health": -15, "morale": -10 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "shark_bump",
+            "name": "🦈 Test Bite",
+            "icon": "🦈",
+            "text": "The shark returns. This time it doesn't just circle — it bumps you. Hard. The impact knocks you off balance in the shallows. Reef sharks sometimes 'test bite' to figure out what things are. The question is whether it liked the answer.",
+            "min_day": 6,
+            "condition": { "requires_event": "shark_circling" },
+            "choices": [
+                {
+                    "icon": "🗡️",
+                    "text": "Push it away firmly with your spear",
+                    "requires": ["spear"],
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You jab your spear at the shark's nose — its most sensitive area. It flinches and veers away. Sharks learn. This one has learned that you're not easy prey.",
+                    "success_fx": { "morale": 5, "islandRespect": 3 }
+                },
+                {
+                    "icon": "👊",
+                    "text": "Punch it on the nose",
+                    "success": 0.5,
+                    "hours": 1,
+                    "success_text": "You ball your fist and punch the shark square on the nose. It twists away violently and disappears into deeper water. Your hand hurts. The shark's nose is sensitive — you've shown it you're not worth the trouble.",
+                    "success_fx": { "health": -3, "morale": 8 },
+                    "fail_text": "You swing at the shark but miss. It bumps you again, harder, and you feel teeth scrape your side. Not a full bite — a test. But it's testing you more aggressively now.",
+                    "fail_fx": { "health": -20, "morale": -15 },
+                    "fail_injury": "cut"
+                },
+                {
+                    "icon": "🌊",
+                    "text": "Get out of the water and don't go back in",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You exit the water and stay on the beach. The shark patrols the lagoon for another hour before moving on. You'll need to be more careful around water from now on.",
+                    "success_fx": { "morale": -3 }
+                }
+            ]
+        },
+        {
+            "id": "shark_aggressive",
+            "name": "🦈 Territorial Shark",
+            "icon": "🦈",
+            "text": "The shark is back, and this time it's not investigating — it's claiming territory. It charges at you in the shallows, snapping its jaws. This reef is its hunting ground, and it's decided you don't belong here. You have seconds to react.",
+            "min_day": 8,
+            "condition": { "requires_event": "shark_bump" },
+            "choices": [
+                {
+                    "icon": "🏹",
+                    "text": "Fight it with your bow or spear",
+                    "requires": ["spear"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You face the shark with your weapon raised. It charges. You strike. The shark thrashes and retreats, a gash along its side. It will think twice before challenging you again. This is your lagoon now.",
+                    "success_fx": { "morale": 10, "islandRespect": -5 },
+                    "fail_text": "You swing your weapon but the shark is too fast. It slams into you, knocking you underwater. You surface, gasping, bleeding from gashes on your arm and leg. The shark circles once more, then leaves. It's made its point.",
+                    "fail_fx": { "health": -30, "morale": -20 },
+                    "fail_injury": "cut"
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Get to shore and stay out of the lagoon",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You scramble onto the beach, heart pounding. The shark patrols the waterline for a long time, as if daring you to come back. You won't. Not until you have a way to deal with it.",
+                    "success_fx": { "morale": -8 },
+                    "fail_text": "You try to get to shore but the shark cuts you off. It slams into your legs, sending you sprawling into the shallows. You manage to crawl to shore, but you're bleeding and shaken.",
+                    "fail_fx": { "health": -25, "morale": -15 },
+                    "fail_injury": "cut"
+                },
+                {
+                    "icon": "🌿",
+                    "text": "Show respect — back away slowly and offer no threat",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You lower your posture and back away without sudden movements. The shark watches. After a long, tense moment, it turns and patrols the reef edge. You've shown it you're not a threat. The island teaches respect.",
+                    "success_fx": { "morale": 5, "islandRespect": 10 }
+                }
+            ]
+        },
+        {
+            "id": "wreck_supplies",
+            "name": "🚢 Supplies in the Wreck",
+            "icon": "🚢",
+            "text": "Inside the half-sunken fishing boat, you find a compartment that's still mostly dry. There are supplies here — a first aid kit, some rope, and tins of food. The wreck is tilted at an angle, water sloshing in the hull, but it's not going anywhere. For now.",
+            "min_day": 2,
+            "max_day": 5,
+            "location": "lagoon_shipwreck",
+            "choices": [
+                {
+                    "icon": "📦",
+                    "text": "Take the supplies",
+                    "success": 0.85,
+                    "hours": 1,
+                    "success_text": "You salvage what you can from the dry compartment. The rope is good quality, the first aid kit has bandages, and the tins of food are sealed. This wreck is a lifesaver.",
+                    "success_fx": { "morale": 10, "hunger": 10 },
+                    "success_loot": ["cordage", "cordage", "bandage"]
+                },
+                {
+                    "icon": "👀",
+                    "text": "Take only what you need and leave the rest",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You take just the essentials — bandages and rope. The rest can wait for someone else, or for when you need it. You feel like you're making the right choice, treating this place with respect.",
+                    "success_fx": { "morale": 8, "islandRespect": 5 },
+                    "success_loot": ["bandage", "cordage"]
+                }
+            ]
+        },
+        {
+            "id": "wreck_comfort",
+            "name": "🚢 The Wreck Feels Safe",
+            "icon": "🚢",
+            "text": "The shipwreck provides real shelter from the sun. The cabin is dry, the deck gives you a view of the lagoon, and there's shade all day. You could get used to this. You could stay here. It's so much better than sleeping on the beach...",
+            "min_day": 3,
+            "location": "lagoon_shipwreck",
+            "choices": [
+                {
+                    "icon": "🛖",
+                    "text": "Stay another night — it's safe here",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The wreck is comfortable. The gentle rocking of the hull, the shade, the sense of protection. It's the closest thing to home you've had since the storm. Nothing wrong with staying somewhere safe.",
+                    "success_fx": { "morale": 5, "warmth": 5, "water": 3 }
+                },
+                {
+                    "icon": "🌅",
+                    "text": "Enjoy it tonight, but plan to move on",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You rest in the wreck, grateful for the shade and comfort. But you remind yourself — this boat is sinking. Slowly, but surely. You can't stay forever.",
+                    "success_fx": { "morale": 3, "warmth": 3 }
+                }
+            ]
+        },
+        {
+            "id": "wreck_creaking",
+            "name": "🚢 The Wreck Shifts",
+            "icon": "🚢",
+            "text": "You're woken by a deep, grinding sound. The wreck shifts under you. The boat groans like a living thing — stress on the hull, water forcing its way into new cracks. It's still afloat, but you can feel it settling lower in the water. Maybe it's time to think about moving on.",
+            "min_day": 5,
+            "location": "lagoon_shipwreck",
+            "condition": { "wreck_days_above": 4 },
+            "choices": [
+                {
+                    "icon": "🚢",
+                    "text": "It's still floating. It'll hold.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The wreck has lasted this long. It'll last a while longer. The sound was probably just the tide shifting things. You go back to sleep. The gentle rocking is almost soothing.",
+                    "success_fx": { "morale": -3 }
+                },
+                {
+                    "icon": "🛖",
+                    "text": "Pack your essentials and sleep on the beach tonight",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You gather your most important supplies and move back to the beach. The wreck is comfortable, but it's not permanent. Better to leave on your own terms than when the boat decides for you.",
+                    "success_fx": { "morale": 5, "islandRespect": 3 }
+                }
+            ]
+        },
+        {
+            "id": "wreck_sinking",
+            "name": "🚢 Water in the Hull",
+            "icon": "🚢",
+            "text": "Water is seeping into the cabin now. The tilt is worse — you can feel it when you stand. The wreck groans and pops constantly. You noticed the waterline has risen since yesterday. This boat is going down. The only question is when.",
+            "min_day": 7,
+            "location": "lagoon_shipwreck",
+            "condition": { "wreck_days_above": 7 },
+            "choices": [
+                {
+                    "icon": "🚢",
+                    "text": "It's still above water. I'll be fine.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You ignore the water and the tilt and the sounds. The wreck is still floating. That's all that matters. You'll leave when you're ready. Not before.",
+                    "success_fx": { "morale": -8 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Get out. Now. This boat is dying.",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You grab what you can and leave the wreck. Standing on the beach, you look back at the tilted boat. It's lower in the water than when you first found it. You made the right call.",
+                    "success_fx": { "morale": 5, "islandRespect": 5 }
+                }
+            ]
+        },
+        {
+            "id": "low_tide_discovery",
+            "name": "🌊 Low Tide Reveals",
+            "icon": "🌊",
+            "text": "The tide goes out further than you've seen before. Rock pools glisten in the sun, and a sandbar stretches toward the reef. You can see things in the shallows — shellfish, seaweed, and movement in every pool.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🐙",
+                    "text": "Explore the rock pools",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "The rock pools are teeming with life. You find shellfish and edible seaweed. Low tide is a gift — you need to remember this rhythm.",
+                    "success_fx": { "hunger": 12, "morale": 5 },
+                    "success_loot": ["medicinal_herbs"]
+                },
+                {
+                    "icon": "🪸",
+                    "text": "Wade out to the reef edge",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You wade carefully across the exposed sandbar. The reef edge is rich with life — you collect shellfish and spot useful plants growing on the rocks.",
+                    "success_fx": { "hunger": 15, "morale": 3 },
+                    "fail_text": "The rocks are slippery. You lose your footing and crash into a coral formation. Sharp coral cuts your hand and leg.",
+                    "fail_fx": { "health": -10, "morale": -5 },
+                    "fail_injury": "cut"
+                },
+                {
+                    "icon": "📡",
+                    "text": "Use the sandbar to build a signal",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "The exposed sandbar would be visible from far out at sea. You arrange rocks and driftwood into a signal pattern. Low tide gives you access you wouldn't otherwise have.",
+                    "success_fx": { "signal_progress": 2, "morale": 3 }
+                }
+            ]
+        },
+        {
+            "id": "rising_tide_trap",
+            "name": "🌊 Caught by the Tide",
+            "icon": "🌊",
+            "text": "You're exploring the rock pools when you notice the water rising. Fast. The tide is coming in, and the sandbar you walked across is disappearing. You have minutes to get back to shore.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Sprint for shore",
+                    "success": 0.75,
+                    "hours": 1,
+                    "success_text": "You splash across the shallows just as the water reaches your waist. You make it to shore, soaked but safe. The tide comes in fast on this island — you'll remember that.",
+                    "success_fx": { "morale": -2, "water": -3 }
+                },
+                {
+                    "icon": "🪸",
+                    "text": "Climb onto the rocks and wait it out",
+                    "success": 0.6,
+                    "hours": 3,
+                    "success_text": "You scramble onto a rock formation above the waterline. The tide rises around you but the rock stays dry. You wait three hours for the tide to recede. Boring, but safe.",
+                    "success_fx": { "morale": -5, "hunger": -5 }
+                },
+                {
+                    "icon": "🏊",
+                    "text": "Swim for it",
+                    "success": 0.45,
+                    "hours": 1,
+                    "success_text": "You plunge into the water and swim hard for shore. The current is strong but manageable. You make it, exhausted but alive.",
+                    "success_fx": { "health": -5, "morale": -3, "water": -5 },
+                    "fail_text": "The current is stronger than you expected. It drags you sideways, and you swallow saltwater. You make it to shore eventually, but you're exhausted and your lungs burn.",
+                    "fail_fx": { "health": -20, "morale": -15, "water": -8 },
+                    "fail_injury": "sunstroke"
+                }
+            ]
+        },
+        {
+            "id": "tropical_rain",
+            "name": "🌧️ Rain Blessing",
+            "icon": "🌧️",
+            "text": "The sky opens up. Warm, tropical rain pours down — and on this island, that's not a problem. It's an opportunity. Every surface becomes a water collector. If you have something to catch it in, this could be a lifesaver.",
+            "min_day": 2,
+            "seasons": ["Wet Season", "Transition", "Storm Season"],
+            "choices": [
+                {
+                    "icon": "💧",
+                    "text": "Set up rain collectors",
+                    "success": 0.85,
+                    "hours": 2,
+                    "success_text": "You rig up containers, palm fronds, and anything that can hold water. The rain fills them steadily. By the time it stops, you have a significant water supply. On a tropical island, rain is a gift.",
+                    "success_fx": { "water": 25, "morale": 8 }
+                },
+                {
+                    "icon": "🛖",
+                    "text": "Just enjoy the rain and rest",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You stand in the rain and let it wash over you. It's the first time since the wreck that you've felt truly clean. The fresh water soaks into your skin. You fill your water bottle and rest.",
+                    "success_fx": { "water": 15, "morale": 10 }
+                }
+            ]
+        },
+        {
+            "id": "heat_exhaustion",
+            "name": "🥵 Heat Exhaustion",
+            "icon": "🥵",
+            "text": "The sun is relentless. Even the shade offers little relief. Your head pounds, your vision swims, and sweat stops coming — your body has run out of water to cool itself. You need shade and water, now.",
+            "min_day": 3,
+            "condition": { "water_below": 30 },
+            "choices": [
+                {
+                    "icon": "🌴",
+                    "text": "Find shade and rest",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You find a palm tree and collapse into its shade. You rest, motionless, until the worst of the heat passes. Your body recovers slowly. You need more water.",
+                    "success_fx": { "health": 5, "water": -5, "morale": -3 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Drink whatever water you have left",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You ration your remaining water carefully, sipping just enough to stabilise. It helps, but you're running low. You must find more water soon.",
+                    "success_fx": { "water": 10, "morale": 2 }
+                },
+                {
+                    "icon": "💪",
+                    "text": "Push through — you don't have time to rest",
+                    "success": 0.35,
+                    "hours": 1,
+                    "success_text": "You force yourself to keep moving. The heat makes everything harder, but you survive the day. Barely.",
+                    "success_fx": { "health": -5, "water": -8, "morale": -5 },
+                    "fail_text": "You push yourself too hard. The world spins and your legs give out. When you come to, you're lying in the sand with a pounding headache. Heat exhaustion. You've lost valuable time.",
+                    "fail_fx": { "health": -20, "water": -15, "morale": -10 },
+                    "fail_injury": "sunstroke"
+                }
+            ]
+        },
+        {
+            "id": "fallen_coconut",
+            "name": "🥥 Fallen Coconut",
+            "icon": "🥥",
+            "text": "You hear a heavy thud and see a coconut has fallen from a palm tree nearby. It's intact and fresh — free food, delivered by the island.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🥥",
+                    "text": "Open it and eat",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You crack open the coconut on a rock. The water inside is cool and sweet, and the meat is soft and fresh. The island just gave you a gift.",
+                    "success_fx": { "hunger": 10, "water": 8, "morale": 3, "islandRespect": 2 }
+                },
+                {
+                    "icon": "🪵",
+                    "text": "Use the husk for cordage and save the shell as a bowl",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You carefully separate the coconut husk for fibres, drink the water, eat the meat, and save the shell as a container. Every part of the coconut is useful.",
+                    "success_fx": { "hunger": 5, "water": 5, "morale": 2 },
+                    "success_loot": ["cordage"]
+                }
+            ]
+        },
+        {
+            "id": "turtle_nest",
+            "name": "🐢 Turtle Nest",
+            "icon": "🐢",
+            "text": "You find a turtle nest on the beach — shallow depression in the sand with leathery eggs. Sea turtle eggs are a rich source of protein. But sea turtles are also endangered, and this island is their home too.",
+            "min_day": 3,
+            "seasons": ["Wet Season", "Dry Season", "Transition"],
+            "choices": [
+                {
+                    "icon": "🥚",
+                    "text": "Take some eggs for food",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You take three eggs and leave the rest. The eggs are rich and nutritious — a survival luxury. But something about it feels wrong. This is their island too.",
+                    "success_fx": { "hunger": 18, "morale": -2, "islandRespect": -10 }
+                },
+                {
+                    "icon": "🐢",
+                    "text": "Leave the nest alone",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You mark the nest location and step away. These turtles were here before you, and they'll be here after. The island provides — you don't need to take everything.",
+                    "success_fx": { "morale": 5, "islandRespect": 10 }
+                }
+            ]
+        },
+        {
+            "id": "washed_up_supplies",
+            "name": "📦 Washed Ashore",
+            "icon": "📦",
+            "text": "Something has washed up on the beach overnight — a sealed container, battered by the waves but still intact. The ocean delivers strange gifts.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "📦",
+                    "text": "Open it carefully",
+                    "success": 0.75,
+                    "hours": 1,
+                    "success_text": "Inside the container, you find useful supplies: rope, a metal container, and sealed food packets. The ocean has given you a lifeline.",
+                    "success_fx": { "morale": 8, "hunger": 5 },
+                    "success_loot": ["cordage", "tin_can"]
+                },
+                {
+                    "icon": "👀",
+                    "text": "Check if it's safe before touching it",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You examine the container from a distance first. No signs of contamination. You open it carefully and find supplies. Cautious, but rewarded.",
+                    "success_fx": { "morale": 8, "hunger": 3 },
+                    "success_loot": ["cordage", "tin_can"]
+                }
+            ]
+        },
+        {
+            "id": "ship_on_horizon",
+            "name": "🚢 Ship on the Horizon",
+            "icon": "🚢",
+            "text": "A ship! On the horizon, moving slowly across the blue. It's distant — maybe too far to see you. But if you had a signal fire ready...",
+            "min_day": 6,
+            "missed_opportunity": true,
+            "condition": { "signal_below": 5 },
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Light your signal fire NOW",
+                    "requires": ["wood"],
+                    "success": 0.45,
+                    "hours": 2,
+                    "success_text": "You scramble to light your signal fire! Smoke billows up — you pray they see it. The ship seems to pause... then it turns! They've seen you! Rescue is coming!",
+                    "success_fx": { "morale": 30 },
+                    "signal_override": 7
+                },
+                {
+                    "icon": "🌊",
+                    "text": "Wave and shout from the beach",
+                    "success": 0.08,
+                    "hours": 1,
+                    "success_text": "Against all odds, someone on the ship spots your waving figure on the beach. They're changing course! Help is coming!",
+                    "success_fx": { "morale": 30 },
+                    "fail_text": "You wave and scream until your voice is raw. The ship passes on the horizon without slowing. They didn't see you. The blue emptiness swallows your hope.",
+                    "fail_fx": { "morale": -20 }
+                }
+            ]
+        },
+        {
+            "id": "plane_overhead",
+            "name": "✈️ Plane Overhead",
+            "icon": "✈️",
+            "text": "The distant drone of an aircraft! You look up and see a small plane crossing the sky. It's high up and moving fast. If your signal fire was built high enough, they might see the smoke...",
+            "min_day": 8,
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Light a signal fire and create smoke",
+                    "requires": ["wood"],
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You get your signal fire blazing and add green leaves to create thick smoke. The plane banks... it's turning! They've seen the smoke! Rescue!",
+                    "success_fx": { "morale": 30 },
+                    "signal_override": 7
+                },
+                {
+                    "icon": "🪵",
+                    "text": "Arrange rocks in an SOS pattern on the beach",
+                    "success": 0.1,
+                    "hours": 1,
+                    "success_text": "You race to arrange bright coral and dark rocks in a giant SOS on the white sand. Miraculously, the plane circles back for another look. They've seen it!",
+                    "success_fx": { "morale": 30 },
+                    "fail_text": "You arrange rocks in an SOS pattern, but the plane is too high. It passes without slowing. You're still alone.",
+                    "fail_fx": { "morale": -15 }
+                }
+            ]
+        },
+        {
+            "id": "storm_warning",
+            "name": "⛈️ Storm Coming",
+            "icon": "⛈️",
+            "text": "The sky darkens early. The wind picks up, carrying salt spray. Clouds pile on the horizon, purple and black and swollen with rain. A tropical storm is coming — and on an island, there's nowhere to hide.",
+            "min_day": 5,
+            "choices": [
+                {
+                    "icon": "🛖",
+                    "text": "Batten down and shelter",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You reinforce your shelter and hunker down. The storm rages overhead — wind screaming, rain hammering, lightning splitting the sky. But your shelter holds. By morning, the island is washed clean and you're still here.",
+                    "success_fx": { "health": -3, "morale": 5 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Set up water collectors before the storm",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You rig every container you have to catch rainwater. The storm is fierce, but your collectors fill quickly. By the time it passes, you have a substantial water supply. Every storm is a gift if you're prepared.",
+                    "success_fx": { "water": 20, "health": -5, "morale": 8 }
+                },
+                {
+                    "icon": "📡",
+                    "text": "Use the storm to boost your signal fire",
+                    "requires": ["wood"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You build up your signal fire before the storm hits. Lightning illuminates the island in stark flashes — and your fire, even in the rain, is visible from far away.",
+                    "success_fx": { "signal_progress": 2, "morale": 5 },
+                    "fail_text": "The storm puts out your fire before it can do any good. You spend a wet, cold night in the dark, cursing the sky.",
+                    "fail_fx": { "health": -10, "morale": -10 }
+                }
+            ]
+        },
+        {
+            "id": "island_spirit_offering",
+            "name": "🌿 The Island Offers",
+            "icon": "🌿",
+            "text": "You find a clearing in the jungle where the light falls in a perfect circle. Fruit hangs from branches at arm's reach. Fresh water pools in natural stone basins. It feels like the island has laid out a table for you. Or perhaps it's testing whether you'll take everything or leave something behind.",
+            "min_day": 4,
+            "condition": { "karma_above": 55 },
+            "choices": [
+                {
+                    "icon": "🙏",
+                    "text": "Take only what you need and leave an offering",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You take some fruit and water, and before you leave, you place a small offering of cordage and herbs in the centre of the clearing. The island provides for those who respect it.",
+                    "success_fx": { "hunger": 12, "water": 10, "morale": 8, "islandRespect": 10 }
+                },
+                {
+                    "icon": "🎒",
+                    "text": "Take everything you can carry",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You load up on fruit and water. There's plenty here, and you need it. But as you leave the clearing, you notice the birds have gone quiet. The island notices everything.",
+                    "success_fx": { "hunger": 18, "water": 15, "morale": -3, "islandRespect": -10 }
+                }
+            ]
+        },
+        {
+            "id": "island_warning",
+            "name": "🌿 The Island Warns",
+            "icon": "🌿",
+            "text": "The jungle feels hostile today. Paths that were clear are now overgrown. Thorns catch at your clothes. A coconut falls from a tree, narrowly missing your head. It could be coincidence. But on this island, you're starting to think nothing is.",
+            "min_day": 5,
+            "condition": { "karma_below": 35 },
+            "choices": [
+                {
+                    "icon": "🙏",
+                    "text": "Stop and make an offering to the island",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You place what you can — some fruit, some cordage — at the base of a large tree and ask the island for forgiveness. The wind shifts. The path ahead seems clearer. Perhaps you were reading too much into it. Perhaps not.",
+                    "success_fx": { "morale": 5, "islandRespect": 15 }
+                },
+                {
+                    "icon": "😤",
+                    "text": "Push through — it's just bad luck",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You force your way through the overgrowth. It's hard going, but you make it. The jungle doesn't make things easy for you though. Everything is harder than it should be.",
+                    "success_fx": { "health": -5, "morale": -5, "islandRespect": -5 },
+                    "fail_text": "The jungle fights you every step. Thorns cut your arms, a branch whips your face, and you trip over roots that seem to grab at your ankles. By the time you give up and turn back, you're scratched, exhausted, and bleeding.",
+                    "fail_fx": { "health": -15, "morale": -10, "islandRespect": -5 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "medicinal_plant_discovery",
+            "name": "🌿 Medicinal Discovery",
+            "icon": "🌿",
+            "text": "While foraging, you spot some useful-looking plants growing near a stream. Turmeric — the orange root — and what appears to be aloe vera. In a survival situation, these could be worth more than food.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🌿",
+                    "text": "Gather the medicinal plants",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You carefully harvest turmeric root and aloe leaves. The turmeric will make a powerful anti-inflammatory tea, and the aloe gel can treat sunburn and skin irritation. Nature's pharmacy.",
+                    "success_fx": { "morale": 3 },
+                    "success_loot": ["medicinal_herbs"]
+                },
+                {
+                    "icon": "👀",
+                    "text": "Mark the location and come back later",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You note the spot carefully. The plants will be here when you need them. No sense gathering more than you can carry.",
+                    "success_fx": { "morale": 1 }
+                }
+            ]
+        },
+        {
+            "id": "crab_trap",
+            "name": "🦀 Crab Trap",
+            "icon": "🦀",
+            "text": "You notice crabs scuttling between rocks near the shore. With some cordage and bait, you could set a trap. Or you could try to catch them by hand.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🪤",
+                    "text": "Set a trap with cordage",
+                    "requires": ["cordage"],
+                    "success": 0.65,
+                    "hours": 2,
+                    "success_text": "You fashion a simple trap from cordage and bait it with fruit scraps. By the end of the day, a crab is caught. It's not much protein, but it's food.",
+                    "success_fx": { "hunger": 12, "morale": 5 }
+                },
+                {
+                    "icon": "✋",
+                    "text": "Try to catch them by hand",
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You stalk the crabs with surprising patience. After several failed grabs, you catch one! It pinches you, but you hold on. Dinner is served.",
+                    "success_fx": { "hunger": 8, "morale": 3 },
+                    "fail_text": "The crabs are too fast. Every time you lunge, they dart into cracks in the rock. After two hours, you have nothing but pinched fingers.",
+                    "fail_fx": { "morale": -5, "health": -3 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "reef_fish_discovery",
+            "name": "🐟 Fish in the Reef",
+            "icon": "🐟",
+            "text": "At low tide, the reef pools are alive with small fish. Some of them look edible, and they're easier to catch here than in open water. If you have a fishing rod or spear, this could be a reliable food source.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🎣",
+                    "text": "Try to catch fish with your fishing rod",
+                    "requires": ["fishing_rod"],
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You cast your line into the reef pool and wait. The fish here are plentiful and not hook-shy. Before long, you pull in a good-sized fish. Protein at last!",
+                    "success_fx": { "hunger": 18, "morale": 8 },
+                    "success_loot": ["raw_meat"]
+                },
+                {
+                    "icon": "🗡️",
+                    "text": "Spear fish in the shallows",
+                    "requires": ["spear"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You wade into the shallows with your spear. It takes patience, but you manage to spear a fish. Reef fishing is hard work but rewarding.",
+                    "success_fx": { "hunger": 15, "morale": 5 },
+                    "success_loot": ["raw_meat"]
+                },
+                {
+                    "icon": "👀",
+                    "text": "Just watch — they're beautiful",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You watch the fish darting between the coral. The colours are incredible — blue, yellow, orange. For a moment, you forget you're stranded and just appreciate the beauty. Then your stomach growls.",
+                    "success_fx": { "morale": 5, "islandRespect": 3 }
+                }
+            ]
+        }
+    ],
+
+    "endings": [
+        {
+            "id": "rescued_boat",
+            "name": "Rescued by Boat",
+            "icon": "🚢",
+            "type": "good",
+            "text": "After {days} days on the island, a fishing boat spots your signal fire. They change course and pull alongside the reef. Hands reach down and pull you aboard. You're going home. The island watches you leave — perhaps with something that might be relief.",
+            "summary": "You signalled for rescue and a boat found you.",
+            "condition": { "signal_progress": 7 }
+        },
+        {
+            "id": "rescued_signal",
+            "name": "Spotted from the Air",
+            "icon": "✈️",
+            "type": "good",
+            "text": "Your signal fire burns bright on the hilltop. A search plane, flying a grid pattern over the area, sees the smoke. Within hours, a rescue helicopter is hovering overhead. You're winched up to safety, looking down at the island that was your home for {days} days. It looks so small from up here.",
+            "summary": "Your signal fire attracted a search plane.",
+            "condition": { "signal_progress": 7 }
+        },
+        {
+            "id": "kiri_rescue",
+            "name": "Kiri's Route",
+            "icon": "💌",
+            "type": "good",
+            "text": "Following Kiri's directions, you build your signal fire high on the hilltop, using her reflector design. On day {days}, a boat appears — the same fishing boat that rescued her. They know this island. They've been watching for signals since Kiri told them someone else might be here. As they pull you aboard, the captain smiles. \"Kiri said you'd be smart enough to follow her notes. She was right.\"",
+            "summary": "You followed Kiri's instructions and were rescued.",
+            "condition": { "requires_event": "kiri_bottle_message", "signal_progress": 5 }
+        },
+        {
+            "id": "survived_14",
+            "name": "Island Survivor",
+            "icon": "🏝️",
+            "type": "good",
+            "text": "After {days} days, you've proven that you can survive on this island. You know which plants are safe, where to find water, how to read the tides. When rescue finally comes — a passing yacht that spots your signal — you're not sure you want to leave. The island has taught you something about yourself. Something you couldn't have learned anywhere else.",
+            "summary": "You survived 14+ days on the island.",
+            "condition": { "days_survived": 14, "min_resources": { "health": 30 } }
+        },
+        {
+            "id": "island_spirit",
+            "name": "One With The Island",
+            "icon": "🌊",
+            "type": "mythic",
+            "text": "The island has accepted you. You feel it in the way the palm fronds part for you, the way the fish swim close to your hands, the way the rain falls where you need it. You are no longer cast away — you belong here. When the rescue boat comes, you wave them away. This is your home now. The island provides, and you respect it in return. You have become something new.",
+            "summary": "The island accepted you. A mythic ending.",
+            "condition": { "days_survived": 14, "islandRespect_above": 85, "min_resources": { "health": 50 } }
+        },
+        {
+            "id": "one_with_reef",
+            "name": "The Reef's Guardian",
+            "icon": "🪸",
+            "type": "mythic",
+            "text": "You and the reef shark have come to an understanding. When you enter the water, it swims alongside you — not as predator and prey, but as two beings who share the same ocean. The fish rise to your hands. The tides obey your rhythm. The island has made you its guardian, and you will not leave. Some stories don't end with rescue. Some stories end with belonging.",
+            "summary": "You became one with the reef. A mythic ending.",
+            "condition": { "days_survived": 14, "islandRespect_above": 90, "requires_event": "shark_aggressive" }
+        },
+        {
+            "id": "the_wreck",
+            "name": "The Wreck",
+            "icon": "🚢",
+            "type": "bad",
+            "text": "You stopped leaving the shipwreck. It was so comfortable — shade, supplies, the gentle rocking of the hull. The boat tilted further each day, but you told yourself it was fine. The water seeping in was just the tide. The groaning was just the wind. When the wreck finally slipped beneath the surface, you were still inside. The lagoon closed over you as quietly as the ocean closed over your boat.",
+            "summary": "The shipwreck became your tomb.",
+            "condition": { "wreck_days_above": 10 }
+        },
+        {
+            "id": "death_sunstroke",
+            "name": "Sunstroke",
+            "icon": "☀️",
+            "type": "bad",
+            "text": "The sun won. You pushed through the heat one too many times, and your body couldn't cool itself anymore. On a tropical island surrounded by water, you died of heat. The irony is not lost on anyone who finds you. The island is beautiful. The island is deadly.",
+            "summary": "You died from sunstroke and heat exhaustion.",
+            "condition": { "cause": "sunstroke" }
+        },
+        {
+            "id": "death_dehydration",
+            "name": "Dehydration",
+            "icon": "💀",
+            "type": "bad",
+            "text": "Surrounded by water you couldn't drink. The irony is cruel. Your body consumed itself searching for moisture that wasn't there. The ocean stretched to the horizon in every direction — a million million litres of water, and not a drop to drink. The island couldn't save you. Perhaps nothing could.",
+            "summary": "You died of dehydration.",
+            "condition": { "cause": "dehydration" }
+        },
+        {
+            "id": "death_shark",
+            "name": "Shark Attack",
+            "icon": "🦈",
+            "type": "bad",
+            "text": "The reef shark was defending its territory. You knew it was there. But you needed the water, the fish, the reef. In the end, the shark was faster, stronger, and more at home in the water than you could ever be. The ocean takes what it needs.",
+            "summary": "You were killed by a reef shark.",
+            "condition": { "cause": "shark" }
+        },
+        {
+            "id": "death_drowning",
+            "name": "Drowning",
+            "icon": "🌊",
+            "type": "bad",
+            "text": "The tide came in faster than you expected. The ocean that brought you to this island took you back. It doesn't care about your plans or your hope. It is vast and indifferent and final.",
+            "summary": "You drowned.",
+            "condition": { "cause": "drowning" }
+        },
+        {
+            "id": "death_starvation",
+            "name": "Starvation",
+            "icon": "💀",
+            "type": "bad",
+            "text": "The island had food everywhere — coconuts, papayas, fish, shellfish. But you couldn't tell the safe from the deadly, or you couldn't reach what you needed. Plants that looked inviting hid poison behind bright colours. Day by day, your body consumed itself. The island provides, but only for those who know how to ask.",
+            "summary": "You starved to death.",
+            "condition": { "cause": "starvation" }
+        },
+        {
+            "id": "island_rejected",
+            "name": "The Island Rejected You",
+            "icon": "🥀",
+            "type": "bad",
+            "text": "You took too much. You killed the turtle, stripped the plants, polluted the water, and showed no respect for the island that was keeping you alive. The paths closed. The water dried up. The food moved away. The island decided you didn't belong, and it pushed you out the only way it could. You don't die from any single thing. You die because the island has stopped keeping you alive.",
+            "summary": "The island turned against you.",
+            "condition": { "islandRespect_below": 15 }
+        },
+        {
+            "id": "castaway_forever",
+            "name": "Castaway",
+            "icon": "🏝️",
+            "type": "bittersweet",
+            "text": "You survived. You learned the island's rhythms — the tides, the seasons, the plants, the shark's patrol routes. You built a life here. But no boat ever came, no plane ever spotted your signal. The island is your world now. It's beautiful and it's home, but it's not where you started. Part of you will always look at the horizon and wonder what might have been.",
+            "summary": "You survived but were never rescued.",
+            "condition": { "days_survived": 20, "signal_progress_below": 5, "min_resources": { "health": 40 } }
+        },
+        {
+            "id": "death_health",
+            "name": "The Island Claims You",
+            "icon": "🪦",
+            "type": "bad",
+            "text": "Your body can no longer endure. The sun, the plants, the ocean, the isolation — something finally won. The island is beautiful, and the island is patient, and the island always wins in the end.",
+            "summary": "Your health reached zero.",
+            "condition": { "health": 0 }
+        }
+    ],
+
+    "seasons": ["Wet Season", "Dry Season", "Transition", "Storm Season"],
+    "seasonIcons": {
+        "Wet Season": "🌧️",
+        "Dry Season": "☀️",
+        "Transition": "🌤️",
+        "Storm Season": "⛈️"
+    },
+    "seasonMonths": {
+        "Wet Season": "Nov–Jan",
+        "Dry Season": "May–Jul",
+        "Transition": "Feb–Apr",
+        "Storm Season": "Aug–Oct"
+    }
+}

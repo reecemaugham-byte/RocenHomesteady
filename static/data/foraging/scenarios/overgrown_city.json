@@ -1,0 +1,1588 @@
+{
+    "id": "overgrown_city",
+    "name": "Overgrown City",
+    "icon": "🏚️",
+    "tagline": "The war took everything. Now nature is taking it back. And you're not alone.",
+    "difficulty": 3,
+    "intro": "You were on a school trip to the museum when the bombs hit.\n\nYou don't remember much after that. The noise. The dust. Mrs. Chen shouting everyone into the basement. The shaking that went on forever.\n\nWhen you finally came back up, the city was wrong. Trees growing through car windows. Vines covering the motorway. Moss turning roads into green rivers. No electricity. No phones. No people — at least, none you could see.\n\nThat was days ago. You've been surviving in the museum basement since then, eating what you can find, drinking rainwater collected in buckets. The other kids from the trip are gone — evacuated, maybe, or worse. You don't know.\n\nBut you're not alone in this city. You've heard dogs barking in the distance — not pets, something wilder. And yesterday, you thought you saw smoke from a building across the park. Someone else is out there.\n\nYou need to find them. You need to build something — a community, a base, a reason to keep going. Because winter is coming, the dogs are getting bolder, and the city isn't getting any less dangerous.\n\nThe plants, at least, are thriving. Some of them might even keep you alive.",
+    "start_season": "Summer",
+    "hours_per_day": 8,
+    "actions_per_day": 3,
+    "bonus_action_morale": 70,
+    "season_cycle_days": 10,
+    "starting": {
+        "health": 100,
+        "hunger": 70,
+        "warmth": 75,
+        "morale": 60,
+        "water": 60
+    },
+    "starting_inventory": ["compass", "water_bottle"],
+    "decay": {
+        "hunger": 8,
+        "warmth": 4,
+        "morale": 5,
+        "water": 4
+    },
+    "shelter": [
+        {
+            "name": "No Shelter",
+            "icon": "🏚️",
+            "desc": "Exposed in the ruins. No protection from weather or wildlife.",
+            "warmth_bonus": 0
+        },
+        {
+            "name": "Barricaded Room",
+            "icon": "🚪",
+            "desc": "A room with furniture pushed against the door. Minimal protection.",
+            "warmth_bonus": 2
+        },
+        {
+            "name": "Fortified Hideout",
+            "icon": "🏗️",
+            "desc": "Reinforced walls, proper door, and a lookout spot. Decent shelter.",
+            "warmth_bonus": 5
+        },
+        {
+            "name": "Community Base",
+            "icon": "🏠",
+            "desc": "A proper base with rooms, storage, and defences. Home.",
+            "warmth_bonus": 8
+        }
+    ],
+    "locations": [
+        {
+            "id": "museum_basement",
+            "name": "Museum Basement",
+            "icon": "🏛️",
+            "desc": "Your starting shelter. Thick walls, some supplies, but the food is running out.",
+            "discovered": true,
+            "foraging_quality": 0.2,
+            "scavenging_quality": 0.6,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.02
+        },
+        {
+            "id": "rooftop_garden",
+            "name": "Rooftop Garden",
+            "icon": "🌿",
+            "desc": "Someone grew vegetables on this rooftop. The plants have gone wild, but some are edible.",
+            "discovered": false,
+            "foraging_quality": 0.8,
+            "scavenging_quality": 0.3,
+            "shelter_bonus": false,
+            "signal_bonus": 3,
+            "water_source": false,
+            "lose_chance": 0.08
+        },
+        {
+            "id": "abandoned_supermarket",
+            "name": "Abandoned Supermarket",
+            "icon": "🛒",
+            "desc": "Still mostly intact. Canned food, bottled water, solid walls. It feels too safe.",
+            "discovered": false,
+            "foraging_quality": 0.1,
+            "scavenging_quality": 0.9,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.02,
+            "is_trap": true
+        },
+        {
+            "id": "park_overgrown",
+            "name": "Park Overgrown",
+            "icon": "🌳",
+            "desc": "The park has become a jungle. Trees, bushes, and wildflowers everywhere. Good foraging.",
+            "discovered": false,
+            "foraging_quality": 0.9,
+            "scavenging_quality": 0.1,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.05
+        },
+        {
+            "id": "hospital_ruins",
+            "name": "Hospital Ruins",
+            "icon": "🏥",
+            "desc": "The hospital is partially collapsed but still has medical supplies. The structure groans in the wind.",
+            "discovered": false,
+            "foraging_quality": 0.2,
+            "scavenging_quality": 0.7,
+            "shelter_bonus": true,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.12,
+            "has_stability": true
+        },
+        {
+            "id": "underground_station",
+            "name": "Underground Station",
+            "icon": "🚇",
+            "desc": "The tube station is dark and echoes with dripping water. Shelter from weather, but claustrophobic.",
+            "discovered": false,
+            "foraging_quality": 0.1,
+            "scavenging_quality": 0.5,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.06,
+            "has_stability": true
+        },
+        {
+            "id": "school_gym",
+            "name": "School Gym",
+            "icon": "🏫",
+            "desc": "A school gymnasium with a intact roof. Large, defensible space. Reminds you of before.",
+            "discovered": false,
+            "foraging_quality": 0.1,
+            "scavenging_quality": 0.4,
+            "shelter_bonus": true,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.04,
+            "has_stability": true
+        },
+        {
+            "id": "water_tower",
+            "name": "Water Tower",
+            "icon": "💧",
+            "desc": "The old water tower still has a tank. If you can get up there, excellent views for signalling.",
+            "discovered": false,
+            "foraging_quality": 0.3,
+            "scavenging_quality": 0.2,
+            "shelter_bonus": false,
+            "signal_bonus": 4,
+            "water_source": true,
+            "lose_chance": 0.1
+        },
+        {
+            "id": "library",
+            "name": "Library",
+            "icon": "📚",
+            "desc": "Books everywhere, but also dry wood, quiet spaces, and a second floor with views.",
+            "discovered": false,
+            "foraging_quality": 0.2,
+            "scavenging_quality": 0.4,
+            "shelter_bonus": true,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.03
+        },
+        {
+            "id": "construction_site",
+            "name": "Construction Site",
+            "icon": "🏗️",
+            "desc": "Half-built buildings, scaffolding, and loose materials. Dangerous but rich in supplies.",
+            "discovered": false,
+            "foraging_quality": 0.1,
+            "scavenging_quality": 0.7,
+            "shelter_bonus": false,
+            "signal_bonus": 2,
+            "water_source": false,
+            "lose_chance": 0.15,
+            "has_stability": true
+        }
+    ],
+    "plants": [
+        {
+            "id": "dandelion",
+            "name": "Dandelion",
+            "icon": "🌼",
+            "is_edible": true,
+            "desc_safe": "One of the most recognisable wild plants. Every part is edible — leaves raw in salad, flowers for tea, roots roasted. Rich in vitamins A and C. A survival staple.",
+            "desc_unsafe": "A low-growing plant with jagged leaves and bright yellow flowers that turn into white seed heads. The stem oozes milky sap when broken.",
+            "locations": ["museum_basement", "rooftop_garden", "park_overgrown", "school_gym", "library"],
+            "difficulty": 1,
+            "safe_yield": { "hunger": 8 },
+            "unsafe_yield": { "hunger": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the leaves without checking properly. They're incredibly bitter and make your mouth feel like you've chewed on chalk. Not dangerous, but unpleasant.",
+            "loot": []
+        },
+        {
+            "id": "nettle",
+            "name": "Nettle",
+            "icon": "🌿",
+            "is_edible": true,
+            "desc_safe": "Stinging nettles are incredibly nutritious once cooked — more iron than spinach, more protein than most vegetables. Must be boiled for at least 2 minutes to destroy the stings. One of the best wild foods available.",
+            "desc_unsafe": "A tall plant with paired oval leaves covered in tiny hairs. Brush against it and you'll feel a burning sting. The stems are fibrous and square.",
+            "locations": ["park_overgrown", "rooftop_garden", "water_tower", "construction_site"],
+            "difficulty": 2,
+            "safe_yield": { "hunger": 12, "morale": 2 },
+            "unsafe_yield": { "health": -8 },
+            "unsafe_injury": "burn",
+            "unsafe_text": "You handle the nettles bare-handed and eat them raw. The stings cover your hands and the inside of your mouth. It feels like you've swallowed fire ants.",
+            "loot": ["cordage"]
+        },
+        {
+            "id": "plantain",
+            "name": "Plantain (Broadleaf)",
+            "icon": "🍃",
+            "is_edible": true,
+            "desc_safe": "Not the banana — the weed! Broadleaf plantain has wide, ribbed leaves that are edible when young. More importantly, crushed leaves make an excellent poultice for cuts, stings, and burns. A medicine chest that grows through cracks in the pavement.",
+            "desc_unsafe": "Low-growing plant with broad, oval leaves that have distinctive parallel veins running from base to tip. The leaves grow in a rosette pattern flat against the ground.",
+            "locations": ["museum_basement", "park_overgrown", "school_gym", "construction_site", "underground_station"],
+            "difficulty": 1,
+            "safe_yield": { "hunger": 6, "morale": 3 },
+            "unsafe_yield": { "hunger": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the leaves without properly identifying the plant. They're tough, stringy, and taste like grass. Not harmful, but you wasted time and energy.",
+            "loot": ["medicinal_herbs"]
+        },
+        {
+            "id": "deadly_nightshade",
+            "name": "Deadly Nightshade",
+            "icon": "☠️",
+            "is_edible": false,
+            "desc_safe": "EXTREMELY POISONOUS. Also called belladonna. Purple bell-shaped flowers and shiny black berries. Even a few berries can be fatal to a child. Identify it only to AVOID it. Every part of this plant is toxic.",
+            "desc_unsafe": "A bushy plant with purple bell-shaped flowers and shiny black berries. The leaves are oval and pointed. The berries look plump and appealing — like tiny black cherries.",
+            "locations": ["park_overgrown", "hospital_ruins", "underground_station", "construction_site"],
+            "difficulty": 3,
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -30, "morale": -20 },
+            "unsafe_injury": "infection",
+            "unsafe_text": "You eat the berries. They taste sweet at first — then your mouth goes dry, your vision blurs, and your heart races erratically. This is deadly nightshade. Even a small amount can be fatal.",
+            "loot": []
+        },
+        {
+            "id": "wild_garlic",
+            "name": "Wild Garlic",
+            "icon": "🧄",
+            "is_edible": true,
+            "desc_safe": "Also called ramsons. Long, broad leaves with a strong garlic smell when crushed. The flowers are white and star-shaped. Leaves, flowers, and bulbs are all edible — delicious in salads or cooked. The strong smell is the key identifier.",
+            "desc_unsafe": "Long, broad, lance-shaped leaves growing from a bulb. They have a strong smell when crushed — but other plants can also smell pungent. White star-shaped flowers in clusters.",
+            "locations": ["park_overgrown", "rooftop_garden", "water_tower", "library"],
+            "difficulty": 2,
+            "safe_yield": { "hunger": 10, "morale": 3 },
+            "unsafe_yield": { "health": -10, "morale": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the leaves thinking it's wild garlic. The pungent smell was similar, but the taste is wrong — bitter and acrid. Your stomach cramps. It was probably lily of the valley, which is poisonous.",
+            "loot": []
+        },
+        {
+            "id": "japanese_knotweed",
+            "name": "Japanese Knotweed",
+            "icon": "🎋",
+            "is_edible": true,
+            "desc_safe": "An invasive plant that's taken over many urban areas. The young shoots in spring are tart and edible, similar to rhubarb. Rich in vitamin C. The plant is actually doing damage to buildings — eating it is practically a public service.",
+            "desc_unsafe": "Tall bamboo-like stems with large oval leaves and clusters of small white flowers. The stems are hollow with regular nodes, green with reddish spots. Young shoots are reddish and look like asparagus.",
+            "locations": ["construction_site", "underground_station", "museum_basement", "park_overgrown"],
+            "difficulty": 2,
+            "safe_yield": { "hunger": 10 },
+            "unsafe_yield": { "hunger": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat mature knotweed stems. They're woody, incredibly bitter, and nearly impossible to chew. You break a tooth on the tough fibre. Only the young shoots are edible.",
+            "loot": ["cordage"]
+        },
+        {
+            "id": "hemlock",
+            "name": "Hemlock (Poison)",
+            "icon": "☠️",
+            "is_edible": false,
+            "desc_safe": "EXTREMELY POISONOUS. Poison hemlock looks similar to wild celery or parsley but is one of the most toxic plants in Britain. Purple-spotted stems are the key identifier. Even handling it can be dangerous. Socrates was executed with this plant. IDENTIFY ONLY TO AVOID.",
+            "desc_unsafe": "A tall plant with finely divided, feathery leaves resembling parsley or wild celery. The stems are smooth with distinctive purple blotches or spots. Small white flowers in umbrella-shaped clusters. Has a distinctive mousey smell when crushed.",
+            "locations": ["park_overgrown", "water_tower", "construction_site", "rooftop_garden"],
+            "difficulty": 3,
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -35, "morale": -25 },
+            "unsafe_injury": "infection",
+            "unsafe_text": "You eat what you think is wild celery. Within minutes, your mouth burns, your legs go numb, and you can't feel your fingers. Your heart slows. This is poison hemlock — the plant that killed Socrates. You need medical help immediately.",
+            "loot": []
+        },
+        {
+            "id": "chickweed",
+            "name": "Chickweed",
+            "icon": "🌱",
+            "is_edible": true,
+            "desc_safe": "A small, sprawling plant with tiny oval leaves and a single line of white hairs running down the stem. One of the most common urban weeds and one of the best for eating raw — mild, slightly sweet, and very nutritious. Rich in vitamins and minerals.",
+            "desc_unsafe": "A low, sprawling plant with small oval leaves in pairs along the stem. Tiny white star-shaped flowers. Has a single line of fine hairs running down one side of the stem — the key identifier.",
+            "locations": ["museum_basement", "park_overgrown", "rooftop_garden", "library", "school_gym"],
+            "difficulty": 1,
+            "safe_yield": { "hunger": 8, "morale": 2 },
+            "unsafe_yield": { "hunger": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the plant without checking the stem carefully. It doesn't have the distinctive line of hairs — this is probably scarlet pimpernel, which is mildly toxic. Your stomach cramps slightly.",
+            "loot": []
+        },
+        {
+            "id": "horse_chestnut",
+            "name": "Horse Chestnut",
+            "icon": "🌰",
+            "is_edible": false,
+            "desc_safe": "NOT to be confused with sweet chestnut! Horse chestnuts (conkers) are mildly poisonous to humans — they cause nausea and vomiting. The tree is distinctive with large palmate leaves and upright candle-like flower spikes. Identify it so you don't mistake it for the edible sweet chestnut.",
+            "desc_unsafe": "A large tree with distinctive hand-shaped leaves with 5-7 pointed leaflets. Upright flower spikes like candles in spring. The nuts are large, round, and glossy brown in a green, spiky casing. Very similar to sweet chestnuts.",
+            "locations": ["park_overgrown", "school_gym", "construction_site", "water_tower"],
+            "difficulty": 2,
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -15, "hunger": -5, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You crack open the nuts and eat them, thinking they're sweet chestnuts. Within an hour, nausea hits like a wave. You vomit repeatedly. These are horse chestnuts — conkers — and they're toxic. Not fatal, but deeply unpleasant.",
+            "loot": []
+        },
+        {
+            "id": "sweet_chestnut",
+            "name": "Sweet Chestnut",
+            "icon": "🌰",
+            "is_edible": true,
+            "desc_safe": "The edible chestnut, NOT to be confused with horse chestnut! Sweet chestnuts grow in clusters inside very prickly casings (much spikier than horse chestnut cases). When roasted, they're delicious and nutritious — rich in carbohydrates and vitamin C. A true survival food.",
+            "desc_unsafe": "A tree with long, serrated leaves. The nuts grow in clusters inside extremely spiky, hedgehog-like casings — this is the key difference from horse chestnut, which has smoother, greener cases. The nuts themselves are flatter and have a pointed tip.",
+            "locations": ["park_overgrown", "rooftop_garden", "water_tower", "library"],
+            "difficulty": 2,
+            "safe_yield": { "hunger": 15, "morale": 5 },
+            "unsafe_yield": { "health": -10, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You're not sure if these are sweet chestnuts or horse chestnuts. You roast them and eat one. The taste is bitter and astringent — these might be horse chestnuts. Your stomach churns. You shouldn't have risked it without being certain.",
+            "loot": ["wood"]
+        },
+        {
+            "id": "yarrow",
+            "name": "Yarrow",
+            "icon": "🌿",
+            "is_edible": false,
+            "desc_safe": "A powerful medicinal plant used for thousands of years. Feathery leaves and flat clusters of small white flowers. Stops bleeding, reduces inflammation, and lowers fever. Not really edible — too bitter — but one of the most useful plants in a survival situation for treating wounds and illness.",
+            "desc_unsafe": "Flat-topped clusters of tiny white or pale yellow flowers above feathery, fern-like leaves. The leaves are finely divided into many small segments, giving a lacy appearance. Strong, aromatic smell when crushed.",
+            "locations": ["park_overgrown", "rooftop_garden", "hospital_ruins", "water_tower"],
+            "difficulty": 2,
+            "safe_yield": { "morale": 3 },
+            "unsafe_yield": { "health": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You try to eat yarrow raw. It's incredibly bitter and makes your mouth feel like you've chewed on a pencil. Not poisonous, but deeply unpleasant. Yarrow should be used as medicine, not food.",
+            "loot": ["medicinal_herbs"]
+        },
+        {
+            "id": "burdock",
+            "name": "Burdock",
+            "icon": "🥬",
+            "is_edible": true,
+            "desc_safe": "A large plant with enormous heart-shaped leaves and purple thistle-like flowers covered in hooked bracts that stick to everything. The root is the prize — long, thick, and edible when cooked. Tastes like artichoke. Very nutritious and worth the effort of digging up.",
+            "desc_unsafe": "Very large leaves — heart-shaped and woolly underneath, up to 50cm across. Purple flower heads in burrs that cling to clothing and animal fur. The root is long and dark brown. The burrs are unmistakable once you've encountered them.",
+            "locations": ["park_overgrown", "construction_site", "underground_station", "museum_basement"],
+            "difficulty": 2,
+            "safe_yield": { "hunger": 14 },
+            "unsafe_yield": { "hunger": -3, "morale": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You dig up and try to eat the root raw. It's woody, bitter, and nearly impossible to chew. You've wasted energy and your hands are covered in mud. Burdock root needs to be cooked.",
+            "loot": ["cordage"]
+        },
+        {
+            "id": "foxglove",
+            "name": "Foxglove",
+            "icon": "💐",
+            "is_edible": false,
+            "desc_safe": "EXTREMELY POISONOUS. Beautiful but deadly. Tall spikes of tubular purple-pink flowers with spotted insides. The source of the heart drug digitalis — eating even a small amount can cause fatal heart problems. Every part is toxic. Identify it only to AVOID it. Common in urban wasteland.",
+            "desc_unsafe": "Tall spikes of beautiful tubular flowers — purple, pink, or white with spotted throats. Large, soft oval leaves form a rosette at the base. The flowers hang downwards like bells or gloves (fox-gloves). Very distinctive and very attractive, which makes them dangerous.",
+            "locations": ["park_overgrown", "rooftop_garden", "hospital_ruins", "water_tower"],
+            "difficulty": 3,
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -40, "morale": -20 },
+            "unsafe_injury": "infection",
+            "unsafe_text": "You make tea from the flowers. It tastes pleasant at first. Then your heart starts racing, then slowing, then racing again. Your vision tunnels. This is foxglove — digitalis poisoning. In small amounts it's a heart medicine. In the amount you just consumed, it could be lethal.",
+            "loot": []
+        },
+        {
+            "id": "mallow",
+            "name": "Mallow",
+            "icon": "🌺",
+            "is_edible": true,
+            "desc_safe": "A tough urban survivor with round, lobed leaves and small pink-purple flowers. The leaves are edible raw or cooked — mild and slightly mucilaginous, like a less slimy okra. The seeds are also edible, tasting like tiny nuts. Very common in cities and surprisingly nutritious.",
+            "desc_unsafe": "Round, slightly lobed leaves on long stalks, covered in soft hairs. Small pinkish-purple flowers with darker veins. The seed heads look like tiny wheels of cheese. Grows low to the ground in disturbed soil and cracks in pavement.",
+            "locations": ["museum_basement", "underground_station", "construction_site", "park_overgrown", "school_gym"],
+            "difficulty": 1,
+            "safe_yield": { "hunger": 8, "morale": 2 },
+            "unsafe_yield": { "hunger": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the leaves but they're old and tough. The texture is unpleasant and slimy. Not harmful, but not worth the effort. Young leaves are much better.",
+            "loot": []
+        }
+    ],
+    "weather_types": {
+        "clear": { "icon": "☀️", "desc": "Clear skies. Warm and bright.", "warmth_mod": 2, "morale_mod": 2, "water_mod": -3 },
+        "overcast": { "icon": "☁️", "desc": "Grey skies. The city looks even more abandoned.", "warmth_mod": 0, "morale_mod": -1, "water_mod": 0 },
+        "rain": { "icon": "🌧️", "desc": "Rain. Good for water collection, bad for morale.", "warmth_mod": -2, "morale_mod": -2, "water_mod": 10 },
+        "thunderstorm": { "icon": "⛈️", "desc": "Thunder and lightning. Dangerous to be on a rooftop.", "warmth_mod": -4, "morale_mod": -4, "water_mod": 15 },
+        "fog": { "icon": "🌫️", "desc": "Thick fog. Hard to see, easy to get lost.", "warmth_mod": -1, "morale_mod": -2, "water_mod": 3 },
+        "cold_snap": { "icon": "🥶", "desc": "Unexpected cold. Frost on the windows.", "warmth_mod": -6, "morale_mod": -3, "water_mod": -2 }
+    },
+    "weather_chances": {
+        "Spring": { "clear": 0.25, "overcast": 0.25, "rain": 0.25, "thunderstorm": 0.1, "fog": 0.1, "cold_snap": 0.05 },
+        "Summer": { "clear": 0.4, "overcast": 0.2, "rain": 0.15, "thunderstorm": 0.15, "fog": 0.05, "cold_snap": 0.05 },
+        "Autumn": { "clear": 0.2, "overcast": 0.3, "rain": 0.25, "thunderstorm": 0.05, "fog": 0.15, "cold_snap": 0.05 },
+        "Winter": { "clear": 0.15, "overcast": 0.25, "rain": 0.15, "thunderstorm": 0.0, "fog": 0.2, "cold_snap": 0.25 }
+    },
+    "weather_flavour": {
+        "overgrown_city": {
+            "day_start": {
+                "clear": "Sunlight breaks through the gaps in the buildings. The plants lean toward it, greedy. You should too.",
+                "overcast": "Grey sky presses down on the ruins. The city looks like a skeleton under a sheet.",
+                "rain": "Rain hammers the overgrown streets. Water cascades from broken gutters into green rivers below.",
+                "thunderstorm": "Lightning cracks across the skyline. Thunder rolls between the towers like the city is groaning.",
+                "fog": "Fog swallows the streets. You can barely see ten metres. Every shadow could be a building, an animal, or worse.",
+                "cold_snap": "The cold bites hard. Frost crystals on every surface. Your breath hangs in the air like smoke from a dead chimney."
+            }
+        }
+    },
+    "cold_snap_check": {
+        "warmth_threshold": 15,
+        "injury_chance": 0.3,
+        "injury": "frostbite",
+        "message": "The cold snap is brutal. Your fingers are going white and numb. Frostbite is setting in."
+    },
+    "disease_check": {
+        "health_threshold": 25,
+        "morale_threshold": 15,
+        "chance": 0.15,
+        "message": "You feel feverish and weak. Something isn't right — you might be getting sick."
+    },
+    "day_start": [
+        "Dawn breaks over the ruins. Another day of survival begins.",
+        "You wake to the sound of birds — real ones, not sirens. That's something.",
+        "The city is quiet except for the wind through broken windows and the rustling of vines.",
+        "Morning light filters through cracks in the ceiling. The plants are growing again today.",
+        "You check your supplies. They won't last forever."
+    ],
+    "events": [
+        {
+            "id": "sam_discovery",
+            "name": "👦 A Voice in the Ruins",
+            "icon": "👦",
+            "text": "You hear something in the rubble — not the wind, not the dogs. A voice, young and scared, calling out. Following the sound, you find a teenager about your age, hiding behind a collapsed wall. They're thin, dirty, and clutching a broken torch like a weapon. 'You're... you're alive?' they say, eyes wide.",
+            "min_day": 2,
+            "max_day": 5,
+            "choices": [
+                {
+                    "icon": "🤝",
+                    "text": "Welcome them into your group",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "'I'm Sam,' they say, shoulders dropping with relief. 'I've been alone for days. I know where to find stuff — I've been scavenging the buildings nearby.' A companion. Someone else who survived. It feels like the first good thing that's happened since the bombs.",
+                    "success_fx": { "morale": 15 },
+                    "companion_join": "sam"
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Tell them where to find water, but stay alone",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You point out the rainwater collection spots and the safer buildings. Sam nods, trying to hide their disappointment. 'Right. Good luck, then.' They disappear into the ruins. You hope they'll be okay.",
+                    "success_fx": { "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "mrs_chen_discovery",
+            "name": "👩‍🏫 Someone in the School",
+            "icon": "👩‍🏫",
+            "text": "Smoke rises from the school gym — controlled smoke, someone cooking. When you approach carefully, a woman's voice calls out: 'I can hear you out there. Come in slowly, hands where I can see them.' Inside, a woman in her fifties has built a surprisingly organised camp. She looks at you with sharp, intelligent eyes. 'Another survivor. How many of us are there?'",
+            "min_day": 4,
+            "max_day": 7,
+            "choices": [
+                {
+                    "icon": "🤝",
+                    "text": "Invite her to join your group",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "Mrs. Chen — she introduces herself properly — shakes your hand with a firm grip. 'I was a teacher. Biology, mainly. I know which plants are safe and which will kill you.' She pauses. 'I also know how to argue. Fair warning.' Her camp has medical supplies. This is a good addition to your group.",
+                    "success_fx": { "morale": 10 },
+                    "companion_join": "mrs_chen"
+                },
+                {
+                    "icon": "🤔",
+                    "text": "Ask what she can offer first",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "She raises an eyebrow. 'Practical. Good.' She gestures to her supplies. 'Medical knowledge. Plant knowledge. Organising skills. And I don't eat much.' She's evaluating you as much as you're evaluating her. 'We could accomplish more together,' she says finally. She's right.",
+                    "success_fx": { "morale": 5 },
+                    "companion_join": "mrs_chen",
+                    "companion_trust": { "mrs_chen": -5 }
+
+                }
+            ]
+        },
+        {
+            "id": "marcus_discovery",
+            "name": "🧔 The Man in the Basement",
+            "icon": "🧔",
+            "text": "You find a man in a basement — locked in, not hiding. The door is jammed. When you help him open it, he's suspicious, not grateful. He's in his thirties, strong, with the calloused hands of someone who worked with tools. 'How do I know you're not going to rob me?' he says, before you've even introduced yourself. His eyes keep darting to your supplies.",
+            "min_day": 6,
+            "max_day": 10,
+            "choices": [
+                {
+                    "icon": "🤝",
+                    "text": "Offer to work together",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "Marcus — that's his name — eventually nods. 'I can build things. Fix things. Reinforce shelters. I was an engineer.' He's useful, you can see that. But there's something in his eyes that doesn't quite trust you. Not yet. 'I'll join you. For now.'",
+                    "success_fx": { "morale": 3 },
+                    "companion_join": "marcus"
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Leave him — something feels off",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You back away. Marcus watches you go with an unreadable expression. 'Your loss,' he calls after you. Maybe. Or maybe you just avoided a problem. Time will tell.",
+                    "success_fx": { "morale": -2 }
+                }
+            ]
+        },
+        {
+            "id": "lily_discovery",
+            "name": "👧 Crying in the Closet",
+            "icon": "👧",
+            "text": "You hear it — a small sound, almost lost under the wind. A child crying. It takes twenty minutes to find the source: a tiny girl, maybe eight years old, curled up in a closet in a collapsed flat. She's clutching a dirty stuffed rabbit. When she sees you, she doesn't scream or run. She just says, in a very small voice: 'Are you a good person?'",
+            "min_day": 5,
+            "max_day": 9,
+            "choices": [
+                {
+                    "icon": "🤝",
+                    "text": "Take her with you — you can't leave a child alone",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You pick her up. She's lighter than she should be. 'I'm Lily,' she whispers. 'My mummy said she'd come back but she didn't.' You hold her tighter. There are things in this city — human and not — that would hurt her. You won't let that happen. She immediately makes everything feel more urgent. More real. You have someone to protect now.",
+                    "success_fx": { "morale": 20 },
+                    "companion_join": "lily"
+                },
+                {
+                    "icon": "🏠",
+                    "text": "Leave supplies and mark the location — you can't take responsibility",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You leave what food you can spare and mark the building clearly. Someone will find her. Someone should find her. As you walk away, the crying starts again. It follows you for a long time.",
+                    "success_fx": { "morale": -15 }
+                }
+            ]
+        },
+        {
+            "id": "pack_howls",
+            "name": "🐕 Howls in the Night",
+            "icon": "🐕",
+            "text": "In the darkness, you hear it — a long, wavering howl. Then another. And another. Not wolves. Dogs. Feral dogs, and there are more than you thought. The sound comes from multiple directions. They're communicating. And they may have picked up your scent.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build up your fire and stay alert",
+                    "requires": ["wood"],
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You feed the fire high and bright. The howling continues, but the dogs keep their distance from the flames. They're smart — they've learned to fear fire. For now.",
+                    "success_fx": { "morale": -2, "warmth": 2 }
+                },
+                {
+                    "icon": "🏗️",
+                    "text": "Barricade your shelter entrance",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You drag furniture and debris across the entrance. It won't stop a determined pack, but it might slow them down enough to give you time. The howling moves closer, then fades. They're testing you.",
+                    "success_fx": { "morale": -3 }
+                },
+                {
+                    "icon": "👀",
+                    "text": "Stay quiet and hope they pass",
+                    "success": 0.5,
+                    "hours": 0,
+                    "success_text": "You huddle in the dark, barely breathing. The howling circles closer, then further, then closer again. They're triangulating your position. Eventually, they move on. This time.",
+                    "success_fx": { "morale": -5 },
+                    "fail_text": "Your silence doesn't fool them. Scratching at the door. Growling. You have to drive them away with fire and noise. They retreat, but they'll be back.",
+                    "fail_fx": { "health": -5, "morale": -10 }
+                }
+            ]
+        },
+        {
+            "id": "pack_kills",
+            "name": "🦴 Found Remains",
+            "icon": "🦴",
+            "text": "You find what's left of a deer — or maybe it was a large dog once. It's hard to tell. Whatever it was, the pack got to it. The bones are picked clean, scattered across the overgrown pavement. This is their territory now. And you're walking through it.",
+            "min_day": 5,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Mark this area as dangerous and move on",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You note the location and choose a different route. The pack has established a hunting ground here. Smart to avoid it.",
+                    "success_fx": { "morale": -2 }
+                },
+                {
+                    "icon": "🪤",
+                    "text": "Set traps around your shelter",
+                    "requires": ["snare"],
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You set snares around the approaches to your shelter. If the dogs come sniffing around at night, they'll regret it. A perimeter defence gives you a bit more peace of mind.",
+                    "success_fx": { "morale": 5 }
+                },
+                {
+                    "icon": "🦴",
+                    "text": "Take some bones — useful for tools",
+                    "success": 0.5,
+                    "hours": 1,
+                    "success_text": "You pocket a couple of the larger bones. They can be sharpened into tools. Waste not, want not.",
+                    "success_fx": { "morale": -3 },
+                    "success_loot": ["knife_blade"]
+                }
+            ]
+        },
+        {
+            "id": "pack_surround",
+            "name": "🐕 Surrounded",
+            "icon": "🐕",
+            "text": "They're here. You can see the eyes reflecting your fire — five, maybe six dogs in a loose ring around your shelter. Not attacking, not leaving. Waiting. The leader is a big mutt with a scarred face. He watches you like you're a problem to be solved. You are. You're competition for food in their territory.",
+            "min_day": 7,
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Drive them off with fire and noise",
+                    "requires": ["wood"],
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You brandish burning wood and shout. The dogs flinch but don't run. You advance, screaming, waving fire. The leader barks once — a command — and they melt into the darkness. They'll be back, but you've shown them you're not easy prey.",
+                    "success_fx": { "morale": -3, "warmth": 2 }
+                },
+                {
+                    "icon": "🍖",
+                    "text": "Throw food to distract them",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You toss some of your food supply away from your shelter. The dogs go for it immediately. While they eat, you reinforce your entrance. They're still dangerous, but at least they're not hungry tonight.",
+                    "success_fx": { "hunger": -10, "morale": -2 }
+                },
+                {
+                    "icon": "🗡️",
+                    "text": "Stand your ground with a weapon",
+                    "requires": ["spear"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You grip your spear and face the pack. The leader growls. You growl back. Something primitive in you refuses to show fear. The dogs back off — not because they're scared, but because there's easier prey elsewhere. For now.",
+                    "success_fx": { "morale": 5 },
+                    "fail_text": "You face the pack with your spear. The leader doesn't flinch. He charges. You get a kick in before they overwhelm you, but teeth tear into your arm before you can drive them off.",
+                    "fail_fx": { "health": -20, "morale": -15 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "pack_attack",
+            "name": "🐕 The Pack Attacks",
+            "icon": "🐕",
+            "text": "It happens fast. A growl, then teeth. The pack has decided you're prey. Three dogs rush your shelter while others circle. The leader watches from the shadows, directing them. They're organised. They've done this before.",
+            "min_day": 10,
+            "condition": { "pack_above": 3 },
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Fire barrier — hold the line",
+                    "requires": ["wood"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You create a wall of fire between you and them. The dogs whine and circle. One gets too close and yelps. The leader barks — retreat. They vanish into the ruins. You survived. Barely.",
+                    "success_fx": { "health": -5, "morale": -5, "warmth": 3 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Run for higher ground",
+                    "success": 0.35,
+                    "hours": 2,
+                    "success_text": "You bolt for the nearest climbable building, scrambling up a drainpipe. The dogs snap at your heels. One gets your shoe. But you make it up. They circle below, barking, but they can't follow. You're safe. For now.",
+                    "success_fx": { "health": -10, "morale": -10 },
+                    "fail_text": "You run, but the dogs are faster. Teeth sink into your leg. You scream. Something hard connects with a dog skull — a brick, a rock, anything. You fight your way to shelter, bleeding, shaking, alive.",
+                    "fail_fx": { "health": -30, "morale": -20 },
+                    "fail_injury": "cut"
+                },
+                {
+                    "icon": "👥",
+                    "text": "Group defence — everyone together",
+                    "success": 0.75,
+                    "hours": 2,
+                    "condition_has_companions": 2,
+                    "success_text": "You and your companions form a circle, weapons and fire at the ready. The pack probes for weakness but finds none. Outnumbered by coordinated humans, they retreat into the darkness. Together, you're stronger than alone.",
+                    "success_fx": { "morale": 5 },
+                    "fail_text": "The pack is relentless. Even together, you barely drive them off. Everyone takes injuries. But you survived. Together.",
+                    "fail_fx": { "health": -15, "morale": -10 }
+                }
+            ]
+        },
+        {
+            "id": "supermarket_allure",
+            "name": "🛒 The Supermarket",
+            "icon": "🛒",
+            "text": "It's almost untouched. Canned food on the shelves. Bottled water. Clean floors. Working doors. The fluorescent lights are dead, of course, but sunlight streams through the glass front. It feels... normal. Like the world before. You could stay here. It's so much better than the basement.",
+            "min_day": 3,
+            "location": "abandoned_supermarket",
+            "choices": [
+                {
+                    "icon": "🏠",
+                    "text": "Stay the night — it's so much better here",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The beds in the back office are still intact. Real mattresses. The temperature is regulated by the thick walls. You sleep better than you have in days. Maybe you could stay longer...",
+                    "success_fx": { "morale": 10, "warmth": 5, "hunger": -3 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Take supplies and leave — don't get comfortable",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You fill your bag with canned food and water bottles. It feels wrong to leave this place, like walking out of paradise into the rain. But you know — getting comfortable is how you stop paying attention.",
+                    "success_fx": { "morale": -3 },
+                    "success_loot": ["canned_food", "water_bottle"]
+                }
+            ]
+        },
+        {
+            "id": "supermarket_comfort",
+            "name": "🛒 The Supermarket Calls",
+            "icon": "🛒",
+            "text": "You find yourself thinking about the supermarket. The clean floors. The canned food. The way the sun came through the glass. Your current shelter is cold and damp by comparison. Maybe you should go back. Just for a night or two. What could it hurt?",
+            "min_day": 1,
+            "condition": { "supermarket_days_above": 3 },
+            "choices": [
+                {
+                    "icon": "🏠",
+                    "text": "Return to the supermarket",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The doors slide open and the familiar smell of preserved food and clean floors welcomes you back. It feels like coming home. That should worry you, but it doesn't. Not anymore.",
+                    "success_fx": { "morale": 5, "warmth": 3 }
+                },
+                {
+                    "icon": "💪",
+                    "text": "Resist the pull — stay where you are",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You shake off the thought. The supermarket is comfortable, but comfort isn't survival. You need to keep moving, keep searching, keep building. The outside world is where the answers are.",
+                    "success_fx": { "morale": 3 }
+                }
+            ]
+        },
+        {
+            "id": "supermarket_forgotten",
+            "name": "🛒 Outside World",
+            "icon": "🛒",
+            "text": "You step outside and the light hurts your eyes. When did the city get so bright? So loud? So... much? The supermarket was quiet. Safe. You remember there were other places — a park, a rooftop, something — but the details feel fuzzy. The supermarket has everything you need. Doesn't it?",
+            "min_day": 1,
+            "condition": { "supermarket_days_above": 7 },
+            "choices": [
+                {
+                    "icon": "🚪",
+                    "text": "Go back inside — it's safer there",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The automatic doors close behind you with a gentle hiss. The outside world can wait. It'll still be there tomorrow. Probably. Maybe. It doesn't matter. The supermarket has beans.",
+                    "success_fx": { "morale": 5 }
+                },
+                {
+                    "icon": "☀️",
+                    "text": "Force yourself to stay outside — remember why you left",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You stand in the sunlight and force yourself to remember. Other survivors. The pack. The need to find people and build something real. The supermarket isn't a community. It's a prison with comfortable walls. You walk away, and every step gets easier.",
+                    "success_fx": { "morale": 10 },
+                    "companion_trust_all": 5
+                }
+            ]
+        },
+        {
+            "id": "amara_greenhouse",
+            "name": "🌿 Rooftop Garden - Someone's Been Here",
+            "icon": "🌿",
+            "text": "You climb to the rooftop garden and find something unexpected — the plants here are organised. Not wild, but cultivated. Tomato plants staked up. Herbs in neat rows. Someone has been caring for this garden. You find a handwritten label stuck in the soil: 'Dr. A. Amara — Trial Plot 7.' Someone else is alive. Someone who knows plants.",
+            "min_day": 2,
+            "max_day": 5,
+            "choices": [
+                {
+                    "icon": "🌿",
+                    "text": "Gather some plants and leave a note",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You carefully harvest some of the herbs — they're clearly being cultivated, but you're clearly in need. You leave a note scratched onto a piece of wall: 'Found your garden. Thank you. I'm at the museum. — S' Maybe they'll find it. Maybe they'll come.",
+                    "success_fx": { "hunger": 10, "morale": 8 },
+                    "success_loot": ["medicinal_herbs"],
+                    "amara_phase": 1
+                },
+                {
+                    "icon": "👀",
+                    "text": "Just observe — don't take anything",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You study the garden. Whoever planted this knows what they're doing. The arrangement, the selection — this is a scientist. A botanist, maybe. You memorise the layout and the name. This person could be the most important find in the city.",
+                    "success_fx": { "morale": 5 },
+                    "amara_phase": 1
+                }
+            ]
+        },
+        {
+            "id": "amara_lab",
+            "name": "🔬 Research in the Ruins",
+            "icon": "🔬",
+            "text": "In the hospital ruins, you find a room that's been recently used. Not just sheltered in — used. There are samples of plants pressed between book pages, notes in neat handwriting, and a battered backpack with 'AMARA' written on the strap. The notes mention soil pH, pollination rates, and nutritional content. This person isn't just surviving — they're studying. And they've moved on recently. The trail leads toward the park.",
+            "min_day": 5,
+            "max_day": 8,
+            "condition": { "requires_event": "amara_greenhouse" },
+            "choices": [
+                {
+                    "icon": "🎒",
+                    "text": "Take the research notes — they'll be useful",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "The notes are dense but readable. Plant identification guides, nutritional analyses, even which plants to avoid. This is survival gold. You pack the notes carefully. If you find Dr. Amara, you can return them. If not, they might save your life.",
+                    "success_fx": { "morale": 5 },
+                    "success_loot": ["research_notes"],
+                    "amara_phase": 2
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Follow the trail to the park immediately",
+                    "success": 0.6,
+                    "hours": 3,
+                    "success_text": "You follow the trail — broken branches, footprints in soft earth, a discarded seed packet. It leads toward the park. But by the time you reach the edge, the trail is cold. Dr. Amara is careful. She moves. But you're getting closer.",
+                    "success_fx": { "morale": 8, "health": -3 },
+                    "fail_text": "You follow the trail but lose it in the dense overgrowth. The park is huge, and someone who doesn't want to be found can stay hidden. You'll need a different approach.",
+                    "fail_fx": { "morale": -3, "health": -5 },
+                    "amara_phase": 2
+                }
+            ]
+        },
+        {
+            "id": "amara_camp",
+            "name": "⛺ Camp in the Park",
+            "icon": "⛺",
+            "text": "In the deepest part of the overgrown park, you find it — a camp. Small, efficient, well-hidden. A tent made from salvaged materials. A rainwater collection system. And rows of plants in containers, each carefully labelled. This is where she's been living. A cold camp — the fire pit is old. She's moved on again. But there's a message scratched into a rock: 'For the person reading this — I'm heading to the water tower. Good luck. — A.A.'",
+            "min_day": 8,
+            "max_day": 11,
+            "condition": { "requires_event": "amara_lab" },
+            "choices": [
+                {
+                    "icon": "🌱",
+                    "text": "Take some of the cultivated plants",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "The plants in containers are hardy — bred or selected for survival. You take a few cuttings and some seeds. If Dr. Amara found you, she'd understand. These plants could feed people. That's the point. The notes here are even more detailed than the lab. She's been tracking which plants grow best in urban soil.",
+                    "success_fx": { "hunger": 12, "morale": 5 },
+                    "amara_phase": 3
+                },
+                {
+                    "icon": "🗼",
+                    "text": "Head to the water tower immediately",
+                    "success": 0.5,
+                    "hours": 3,
+                    "success_text": "You push through the overgrown paths toward the water tower. You're so close. But the park is a maze, and the tower is on the far side. By the time you reach it, there's no one there. Just another empty camp. She's always one step ahead.",
+                    "success_fx": { "morale": 3, "health": -5 },
+                    "fail_text": "You get lost in the park. The paths loop back on themselves, and the undergrowth is thick. By the time you find your way out, you've wasted hours and you're no closer to finding Dr. Amara.",
+                    "fail_fx": { "morale": -5, "health": -3 },
+                    "amara_phase": 3
+                }
+            ]
+        },
+        {
+            "id": "amara_herself",
+            "name": "👩‍🔬 Dr. Amara",
+            "icon": "👩‍🔬",
+            "text": "She's standing on the roof of the water tower, looking out over the city like she's surveying a kingdom of green. A woman in her forties with grey-streaked hair, practical clothes, and the calmest expression you've seen on anyone since the bombs. 'You found my notes,' she says, without turning around. 'I wondered if anyone would follow the trail.' She turns to face you. 'I'm Dr. Osei Amara. Botanist. And I have a proposal for you.'",
+            "min_day": 11,
+            "condition": { "requires_event": "amara_camp" },
+            "choices": [
+                {
+                    "icon": "🤝",
+                    "text": "Accept — you need her knowledge",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "Dr. Amara climbs down from the tower with surprising agility. 'I've been watching the plant reclamation of this city,' she says. 'Some of these species are edible. Some are medicinal. Most people would starve surrounded by food because they can't tell the difference. I can teach you.' She pauses. 'And I could use someone to watch my back. Deal?'",
+                    "success_fx": { "morale": 20 },
+                    "companion_join": "dr_amara"
+                },
+                {
+                    "icon": "🤔",
+                    "text": "Hear her proposal first",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "'Smart,' she says, nodding approvingly. 'I want to build something. A community garden, a sustainable food source, a place where people can survive long-term. I can identify every plant in this city. But I can't do it alone. I need people who can build, scavenge, protect.' She meets your eyes. 'You've been building a group. I've been watching. Let me join it.'",
+                    "success_fx": { "morale": 15 },
+                    "companion_join": "dr_amara"
+                }
+            ]
+        },
+        {
+            "id": "building_collapse",
+            "name": "🏚️ Building Collapse",
+            "icon": "🏚️",
+            "text": "A deep, grinding groan echoes through the structure. Hairline cracks spider across the wall above you. Dust drifts from the ceiling. This building is not stable. You have seconds to decide.",
+            "min_day": 4,
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Run for the exit immediately",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You bolt for the door as debris begins to fall. A chunk of ceiling crashes down where you were standing seconds ago. You make it outside, gasping, covered in dust. The building groans behind you but holds. For now.",
+                    "success_fx": { "health": -3, "morale": -5 }
+                },
+                {
+                    "icon": "🏗️",
+                    "text": "Brace yourself in a doorway",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You dive into a doorway as the ceiling partially collapses. Dust and debris rain down, but the frame holds. You're trapped for a nerve-wracking hour before you can dig yourself out. But you're alive.",
+                    "success_fx": { "health": -5, "morale": -8 },
+                    "fail_text": "The doorway buckles. Debris slams into your side, pinning you. You struggle for hours before finally freeing yourself. Your leg is badly bruised and you're shaken.",
+                    "fail_fx": { "health": -15, "morale": -15 },
+                    "fail_injury": "sprained_ankle"
+                }
+            ]
+        },
+        {
+            "id": "signal_opportunity",
+            "name": "📡 Working Radio",
+            "icon": "📡",
+            "text": "In the library, behind a collapsed shelf, you find a battery-powered radio. Dead, at first — but when you fiddle with the corroded contacts, static crackles. Then, faintly, a voice. A looped military broadcast: '...all survivors are to proceed to designated evacuation points. Repeat: designated evacuation points. Signal your position for rescue. Message repeats.'",
+            "min_day": 6,
+            "choices": [
+                {
+                    "icon": "📡",
+                    "text": "Build a large signal fire at the water tower",
+                    "requires": ["wood"],
+                    "success": 0.4,
+                    "hours": 3,
+                    "success_text": "You climb to the water tower and build the biggest fire you can. Smoke billows up into the sky. If anyone is watching — military, other survivors, anyone — they'll see it. You can only hope it's the right people who arrive first.",
+                    "success_fx": { "morale": 15 },
+                    "signal_override": 5
+                },
+                {
+                    "icon": "📻",
+                    "text": "Keep listening — learn more about the evacuation points",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You sit with the radio, straining to hear through the static. The message repeats, but there's something else — fragments of other transmissions. Other survivors, out there. You're not alone. The broadcast mentions a location near the coast. If you can build a strong enough signal, they might find you.",
+                    "success_fx": { "morale": 10 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "It could be a trap. Ignore it.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You turn off the radio. In a world like this, broadcasts could be from anyone — military, survivors, or people you don't want to find. You'll find your own way. But the knowledge that others are out there... that's hard to shake.",
+                    "success_fx": { "morale": -3 }
+                }
+            ]
+        },
+        {
+            "id": "hostile_survivor",
+            "name": "🗡️ Hostile Survivor",
+            "icon": "🗡️",
+            "text": "A figure steps out from a doorway, blocking your path. They're older, weathered, and holding a sharpened piece of metal like a knife. 'This is my territory,' they say. 'Everything in these three blocks belongs to me. You want to pass through? Pay the toll.'",
+            "min_day": 5,
+            "choices": [
+                {
+                    "icon": "🍖",
+                    "text": "Give them some food — it's not worth fighting",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You hand over some of your food. They take it, weigh it in their hands, and nod once. 'Smart. You can pass.' They step aside. You've lost food, but you're unhurt. And now you know where their territory begins.",
+                    "success_fx": { "hunger": -10, "morale": -3 }
+                },
+                {
+                    "icon": "🗣️",
+                    "text": "Try to talk them down — you're not a threat",
+                    "success": 0.4,
+                    "hours": 1,
+                    "success_text": "'I'm just passing through. I don't want trouble.' You keep your hands visible. They study you for a long moment. 'Fine. But I'll remember your face.' They step aside. You've made contact — maybe not a friend, but not an enemy either.",
+                    "success_fx": { "morale": 3 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Run — you're faster than them",
+                    "success": 0.5,
+                    "hours": 1,
+                    "success_text": "You sprint past them before they can react. They shout and throw something — a piece of debris clatters off a wall behind you. You keep running until you're sure they're not following. Your heart pounds. But you're free.",
+                    "success_fx": { "health": -3, "morale": -2 },
+                    "fail_text": "You try to run but they're faster than they look. They grab your bag, tearing it open. Some supplies scatter. They take what they want and shove you away. 'I said, pay the toll.'",
+                    "fail_fx": { "health": -10, "morale": -10, "hunger": -15 }
+
+                }
+            ]
+        },
+        {
+            "id": "companion_conflict",
+            "name": "⚠️ Argument",
+            "icon": "⚠️",
+            "text": "Tensions are running high. Your companions are arguing — about food, about direction, about whether to stay or go. Voices are raised. It's the kind of argument that can split a group apart.",
+            "min_day": 5,
+            "condition": { "has_companions_above": 1 },
+            "choices": [
+                {
+                    "icon": "🗣️",
+                    "text": "Mediate — find a compromise",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You step in and listen to both sides. It takes patience, but you help them find common ground. The group is stronger for having worked through it. Maybe that's what leadership is — not making decisions, but helping others make them together.",
+                    "success_fx": { "morale": 8 },
+                    "companion_trust_all": 5
+                },
+                {
+                    "icon": "👊",
+                    "text": "Make an executive decision — you're in charge",
+                    "success": 0.4,
+                    "hours": 0,
+                    "success_text": "You cut through the argument and lay down the law. Some people accept it. Others don't. The decision is made, but the resentment lingers. Leadership isn't just about being decisive.",
+                    "success_fx": { "morale": -3 },
+                    "companion_trust_all": -5,
+                    "fail_text": "Your authority is questioned. The argument gets worse. Someone storms off to cool down, and the group feels smaller and colder.",
+                    "fail_fx": { "morale": -8 },
+                    "companion_trust_all": -10
+                }
+            ]
+        },
+        {
+            "id": "rain_collection",
+            "name": "🌧️ Rain Collection",
+            "icon": "🌧️",
+            "text": "The rain is heavy today. If you set up collection points, you could gather a significant amount of water. Your containers are ready, and the rooftops here drain into predictable spots.",
+            "min_day": 2,
+            "seasons": ["Spring", "Autumn", "Summer"],
+            "choices": [
+                {
+                    "icon": "💧",
+                    "text": "Set up rain collection",
+                    "success": 0.9,
+                    "hours": 2,
+                    "success_text": "You position every container you have under the best drainage spots. By the time the rain eases, you've collected a substantial amount of clean water. Rain is one of the few things in this city you can trust.",
+                    "success_fx": { "water": 25, "morale": 3 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Stay inside — the rain will pass",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You huddle in your shelter and wait. The rain drums on the roof, a sound that's almost peaceful. Almost. You could have collected water, but staying dry matters too.",
+                    "success_fx": { "warmth": 2 }
+                }
+            ]
+        },
+        {
+            "id": "mushroom_patch",
+            "name": "🍄 Mushroom Patch",
+            "icon": "🍄",
+            "text": "In the damp, dark corner of a basement, you find a cluster of mushrooms growing on rotting wood. Some look like field mushrooms — but mushrooms are notoriously dangerous to identify. One wrong choice could be fatal.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🌿",
+                    "text": "Carefully identify them before touching",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You examine them carefully. Pink gills, white cap that bruises yellow, a ring on the stem — these are field mushrooms. Edible, if a bit past their prime. You take the good ones.",
+                    "success_fx": { "hunger": 12, "morale": 3 }
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Leave them alone — not worth the risk",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "Mushrooms are too risky without absolute certainty. You leave them and move on. There will be other food. Hopefully.",
+                    "success_fx": { "morale": -1 }
+                },
+                {
+                    "icon": "🤔",
+                    "text": "Take a small bite to test",
+                    "success": 0.3,
+                    "hours": 1,
+                    "success_text": "You take a tiny bite and wait. Nothing happens. They seem safe. You gather a small handful. They taste like... mushrooms. Good, even.",
+                    "success_fx": { "hunger": 8 },
+                    "fail_text": "You take a tiny bite. Within minutes, your mouth burns and your stomach cramps. These were NOT field mushrooms. You spend the next hour being violently ill. You got lucky — it could have been much worse.",
+                    "fail_fx": { "health": -15, "hunger": -5, "morale": -10 },
+                    "fail_injury": "infection"
+                }
+            ]
+        },
+        {
+            "id": "medicinal_find",
+            "name": "💊 Pharmacy Cache",
+            "icon": "💊",
+            "text": "Behind a collapsed wall in the hospital ruins, you find a partially intact pharmacy cabinet. Most of the medicines are gone or expired, but there might still be something useful in here.",
+            "min_day": 4,
+            "location": "hospital_ruins",
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Search carefully through the debris",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You carefully sift through shattered glass and water-damaged packaging. Under everything, you find a sealed pack of bandages and a tube of antiseptic cream. Not much, but it could save a life.",
+                    "success_fx": { "morale": 5 },
+                    "success_loot": ["bandage", "medicinal_herbs"]
+                },
+                {
+                    "icon": "⚡",
+                    "text": "Grab what you can quickly — this building isn't stable",
+                    "success": 0.4,
+                    "hours": 1,
+                    "success_text": "You work fast, scooping up anything that looks useful. Glass cuts your hand as you reach into the cabinet. But you find bandages and antiseptic. The building groans. Time to leave.",
+                    "success_fx": { "health": -3, "morale": 3 },
+                    "success_loot": ["bandage"],
+                    "fail_text": "You grab at everything, but the cabinet collapses. Glass and debris rain down on you. By the time you extract yourself, you're bleeding and most of the supplies are destroyed.",
+                    "fail_fx": { "health": -10, "morale": -5 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "cold_night",
+            "name": "🥶 Cold Night",
+            "icon": "🥶",
+            "text": "The temperature drops sharply overnight. Frost forms on the windows and your breath hangs in the air. Without better shelter or a fire, this is going to be a long, dangerous night.",
+            "min_day": 3,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Light a fire and stay warm",
+                    "requires": ["wood"],
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "You feed the fire through the night. The flames push back the cold, and you sleep fitfully but safely. In the morning, the frost has retreated and you're still here.",
+                    "success_fx": { "warmth": 10, "morale": 3 }
+                },
+                {
+                    "icon": "🛏️",
+                    "text": "Huddle in your shelter and conserve energy",
+                    "success": 0.5,
+                    "hours": 0,
+                    "success_text": "You wrap yourself in everything you have and wait for dawn. It's the longest night you can remember. But you survive it. Barely.",
+                    "success_fx": { "warmth": -5, "morale": -5, "health": -3 },
+                    "fail_text": "The cold seeps into everything. You shiver uncontrollably. By morning, you're exhausted and your fingers are numb. This can't continue.",
+                    "fail_fx": { "warmth": -15, "morale": -10, "health": -10 },
+                    "fail_injury": "frostbite"
+                }
+            ]
+        },
+        {
+            "id": "city_remembers",
+            "name": "🏛️ The City Remembers",
+            "icon": "🏛️",
+            "text": "You find it in the park — a war memorial, half-hidden by ivy. Names carved in stone, hundreds of them, from a conflict a hundred years ago. The city remembers its dead. Now it has new ones to mourn. The statue at the centre is a winged figure, one arm raised, face turned skyward. Vines have wound through the stone feathers of its wings. It looks like it's trying to fly, even now. Even in ruin.",
+            "min_day": 8,
+            "mythic": true,
+            "choices": [
+                {
+                    "icon": "🕊️",
+                    "text": "Sit with it for a while",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You sit at the base of the memorial and read the names. You don't know any of them, but you feel their absence. The city has lost so much — and yet it's still here. The vines are still growing. The birds are still singing. Life goes on, even in the ruins of everything that was. You feel something shift in your chest. Not hope, exactly. But something next to it. The beginning of purpose.",
+                    "success_fx": { "morale": 15 },
+                    "mythic_complete": "city_remembers"
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Pay your respects and move on",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You touch the stone briefly. Cold under your fingers, warmed by the sun where the vines don't cover it. The names of the dead. The names of the living. The city remembers. And so will you.",
+                    "success_fx": { "morale": 5 },
+                    "mythic_complete": "city_remembers"
+                }
+            ]
+        },
+        {
+            "id": "nature_reclaims",
+            "name": "🌱 Nature Reclaims",
+            "icon": "🌱",
+            "text": "You wake up to find that a vine has grown through the crack in your wall overnight. Not just any vine — it's pushed through mortar, curled around a beam, and is now reaching toward the window. In the distance, you can hear birds singing. Not the frightened birds of the first days after the bombs, but territorial, confident birds establishing their territory. The city isn't dying. It's transforming. And you're part of it now.",
+            "min_day": 12,
+            "mythic": true,
+            "condition": { "min_morale": 40 },
+            "choices": [
+                {
+                    "icon": "🌱",
+                    "text": "Let it grow — the city is alive",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You don't pull the vine out. You water it instead. In a world that's been destroyed, watching something grow is the most radical act of hope. The birds sing louder, or maybe you just notice them more. The city isn't over. It's beginning again. And you're still here to see it.",
+                    "success_fx": { "morale": 20 },
+                    "mythic_complete": "nature_reclaims"
+                },
+                {
+                    "icon": "✂️",
+                    "text": "Trim it back — this is still your shelter",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You trim the vine, but gently, leaving the roots. The city can have the walls. You just need the inside. There's a balance to be found here — between the wild and the safe, between nature and shelter. You're learning it.",
+                    "success_fx": { "morale": 5 },
+                    "mythic_complete": "nature_reclaims"
+                }
+            ]
+        },
+        {
+            "id": "lily_drawing",
+            "name": "👧 Lily's Drawing",
+            "icon": "👧",
+            "text": "Lily tugs at your sleeve and holds up a piece of paper. She's drawn a picture — stick figures standing together in front of a building. The sun is in the corner, improbably large and yellow. Above the stick figures, in wobbly letters, she's written: 'MY FAMiLY'. She looks at you hopefully.",
+            "min_day": 3,
+            "condition": { "has_companion": "lily" },
+            "choices": [
+                {
+                    "icon": "❤️",
+                    "text": "Tell her it's the best drawing you've ever seen",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "It is. You mean it. Something in your chest cracks open, and for a moment the ruins don't seem so dark. You pin the drawing on the wall. Lily beams. 'I can draw you too,' she says. 'So you're always in the picture.'",
+                    "success_fx": { "morale": 15 },
+                    "companion_trust": { "lily": 10 }
+                },
+                {
+                    "icon": "👍",
+                    "text": "Pat her on the head and move on",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You give her a distracted smile. It's a nice drawing, but there's work to do. Later, you find the drawing crumpled in a corner. You smooth it out and put it in your pocket. You'll do better tomorrow.",
+                    "success_fx": { "morale": 3 },
+                    "companion_trust": { "lily": -5 }
+                }
+            ]
+        },
+        {
+            "id": "sam_wants_to_leave",
+            "name": "👦 Sam's Doubts",
+            "icon": "👦",
+            "text": "Sam pulls you aside. Their face is tense, jaw set. 'I'm not sure about this,' they say. 'It feels like we're just surviving, not actually going anywhere. I heard dogs again last night. I don't know if this is worth it.' They look at the door, then back at you. 'Maybe I'd be better off on my own.'",
+            "min_day": 7,
+            "condition": { "has_companion": "sam", "morale_below": 30 },
+            "choices": [
+                {
+                    "icon": "🤝",
+                    "text": "Remind them why they joined — we're stronger together",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You put a hand on their shoulder. 'Remember when you were alone? How long did that last before you almost gave up?' Sam looks away. 'We're building something here. Not just surviving. Building. And we need you.' Sam nods slowly. 'Yeah. Okay. Yeah.'",
+                    "success_fx": { "morale": 5 },
+                    "companion_trust": { "sam": 15 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "If they want to go, they should go",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You shrug. 'Your choice.' Sam stares at you for a long moment, then picks up their bag. At the door, they pause. 'You know what? Never mind.' They set the bag down. 'I'm staying. For now.' But the 'for now' hangs in the air.",
+                    "success_fx": { "morale": -5 },
+                    "companion_trust": { "sam": -10 }
+                }
+            ]
+        },
+        {
+            "id": "marcus_stealing",
+            "name": "🧔 Missing Supplies",
+            "icon": "🧔",
+            "text": "You notice some of your food supplies are missing. Not much — just enough to be suspicious. Then you see Marcus slipping something into his bag when he thinks no one is watching. He sees you see him. His face goes hard. 'I'm taking my share,' he says. 'Nothing wrong with that.'",
+            "min_day": 8,
+            "condition": { "has_companion": "marcus", "trust_below": 30 },
+            "choices": [
+                {
+                    "icon": "🗣️",
+                    "text": "Confront him — we share everything fairly",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You stand your ground. 'We share everything. That's the deal. If you're taking extra, you're taking from all of us.' Marcus holds your gaze for a long moment. Then he pulls the food out of his bag and puts it back. 'Fine,' he says. 'But I'm watching how much everyone else gets, too.'",
+                    "success_fx": { "morale": 3 },
+                    "companion_trust": { "marcus": 10 }
+                },
+                {
+                    "icon": "👀",
+                    "text": "Let it go — he's useful and you don't want trouble",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You look away. Marcus smirks. It's a small thing, the food. But trust is like that — once you start letting the small things go, the big things follow. You can feel the group shift, just slightly, in a direction you don't like.",
+                    "success_fx": { "hunger": -5, "morale": -3 },
+                    "companion_trust": { "marcus": -10 }
+                }
+            ]
+        },
+        {
+            "id": "scavenge_bonus",
+            "name": "🔍 Building Search",
+            "icon": "🔍",
+            "text": "You find a relatively intact building — probably offices or flats before. The ground floor is picked clean, but upper floors might still have useful supplies. The stairs look questionable, but you can see cans through a broken window on the second floor.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "⬆️",
+                    "text": "Climb up to search the upper floors",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "The stairs groan but hold. You find a treasure trove — canned food, a water bottle, even a lighter that still works. This building hasn't been thoroughly searched yet.",
+                    "success_fx": { "morale": 8, "hunger": 10 },
+                    "success_loot": ["canned_food", "water_bottle"]
+                },
+                {
+                    "icon": "🏗️",
+                    "text": "Search the ground floor — safer but less rewarding",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You pick through the debris on the ground floor. Most of it is useless — broken glass, waterlogged papers. But you find a few useful items and some materials that could be used for building.",
+                    "success_fx": { "morale": 3 },
+                    "success_loot": ["wood", "cordage"]
+                }
+            ]
+        },
+        {
+            "id": "thunderstorm_shelter",
+            "name": "⛈️ Caught in the Storm",
+            "icon": "⛈️",
+            "text": "The sky opens up without warning. Rain hammers down so hard you can barely see, and lightning cracks across the sky close enough to make the hair on your arms stand up. You need shelter NOW.",
+            "min_day": 4,
+            "seasons": ["Summer", "Spring", "Autumn"],
+            "choices": [
+                {
+                    "icon": "🏠",
+                    "text": "Find the nearest building and take cover",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You sprint for the nearest intact doorway. The rain soaks you to the skin, but you're inside before the worst of it. Lightning illuminates the flooded streets. You wait it out, dripping but safe.",
+                    "success_fx": { "warmth": -3, "morale": -2 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Set up water collection while it rains",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You rig up every container you have and stay out in the downpour, soaked but determined. By the time the storm passes, you've collected an impressive amount of water. You're cold and wet, but hydrated.",
+                    "success_fx": { "water": 20, "warmth": -8, "morale": 3 },
+                    "fail_text": "You try to collect water but the storm is too intense. Lightning strikes nearby, sending you diving for cover. You're soaked, scared, and not much better off for water.",
+                    "fail_fx": { "warmth": -10, "health": -5, "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "fog_confusion",
+            "name": "🌫️ Lost in the Fog",
+            "icon": "🌫️",
+            "text": "A thick fog rolls in from the river, blanketing the streets. Within minutes, you can barely see your hand in front of your face. Every building looks the same. Every direction could be wrong. The city has erased itself, and you're lost inside it.",
+            "min_day": 5,
+            "seasons": ["Autumn", "Winter", "Spring"],
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Use your compass and navigate carefully",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You pull out your compass and take a bearing. Step by step, feeling your way along walls, you navigate through the fog. It takes twice as long, but you find your way back. The compass hasn't let you down yet.",
+                    "success_fx": { "morale": 3 }
+                },
+                {
+                    "icon": "🏠",
+                    "text": "Stay where you are and wait for it to clear",
+                    "success": 0.6,
+                    "hours": 3,
+                    "success_text": "You find a doorway and settle in to wait. The fog swirls and thickens, then slowly begins to lift. By the time you can see again, hours have passed. But at least you didn't walk in circles.",
+                    "success_fx": { "morale": -2, "warmth": -3 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Press on — you think you know the way",
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You walk confidently into the fog... and immediately get turned around. Buildings you don't recognise loom out of the mist. You wander for an hour before the fog thins enough to orient yourself. You're further from your shelter than when you started.",
+                    "success_fx": { "morale": -3 },
+                    "fail_text": "You push through the fog and quickly lose all sense of direction. Every street looks the same. You stumble through the ruins for hours, eventually finding your way back exhausted and shaken.",
+                    "fail_fx": { "morale": -8, "health": -5, "warmth": -5 }
+                }
+            ]
+        },
+        {
+            "id": "community_meal",
+            "name": "🍲 Community Meal",
+            "icon": "🍲",
+            "text": "Someone in your group has been quietly rationing their food. They suggest pooling what you have and cooking a shared meal. It would use more resources, but eating together... that might matter more than the calories.",
+            "min_day": 5,
+            "condition": { "has_companions_above": 1 },
+            "choices": [
+                {
+                    "icon": "🍲",
+                    "text": "Cook a shared meal",
+                    "requires": ["wood"],
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You gather around the fire — the whole group. The food isn't much, but it's shared. Sam tells a terrible joke. Lily laughs. Even Marcus cracks a smile. For a few minutes, you're not just survivors. You're a community. That matters more than any amount of food.",
+                    "success_fx": { "morale": 15, "hunger": -5 },
+                    "companion_trust_all": 8
+                },
+                {
+                    "icon": "🚫",
+                    "text": "We can't afford it — ration strictly",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You shake your head. Every calorie counts. The group eats their separate rations in silence. It's the practical choice. But something small and important withers in the quiet.",
+                    "success_fx": { "morale": -3 },
+                    "companion_trust_all": -3
+                }
+            ]
+        }
+    ],
+    "endings": [
+        {
+            "id": "military_rescue",
+            "name": "Rescued by Military",
+            "icon": "🚁",
+            "type": "good",
+            "text": "After {days} days, a military helicopter spots your signal. The sound of rotors is the most beautiful thing you've ever heard. As you're lifted away from the overgrown city, you look down at the green tide swallowing the buildings. Nature is taking back what humans built. But you survived. You're going home.",
+            "summary": "You signalled for rescue and the military found you.",
+            "condition": { "signal_progress": 7 }
+        },
+        {
+            "id": "community_signal",
+            "name": "Community Signal",
+            "icon": "👥",
+            "type": "good",
+            "text": "You did it together. Your group built a signal large enough to be seen from the air, and maintained it long enough for someone to notice. When the rescue team arrives, they find not just one survivor, but a community. People who looked after each other when the world fell apart. That's what saved you — not strength, not skill, but each other.",
+            "summary": "Your community built and maintained a rescue signal together.",
+            "condition": { "signal_progress": 5, "companions_above": 2 }
+        },
+        {
+            "id": "amara_radio",
+            "name": "Dr. Amara's Radio",
+            "icon": "📻",
+            "type": "good",
+            "text": "Dr. Amara's knowledge of the city pays off in a way nobody expected. She remembers a working radio in the hospital ruins — a military field unit, still transmitting. It takes three days to reach it, but when you do, the voice on the other end is the most human sound you've heard in weeks. Rescue is coming. And for the first time, you believe it.",
+            "summary": "Dr. Amara's knowledge led you to a working radio and rescue.",
+            "condition": { "requires_event": "amara_herself", "signal_progress": 3 }
+        },
+        {
+            "id": "survived_community",
+            "name": "The New City",
+            "icon": "🏠",
+            "type": "good",
+            "text": "After {days} days, you stopped waiting for rescue and started building. With your companions beside you, you turned the ruins into something new. Gardens on rooftops. Rainwater collection systems. Defensible walls made from car parts and rubble. It's not the city that was. It's something different. Something that grew from the wreckage. The old world ended. The new one started with you, standing in the overgrown streets, deciding that survival wasn't enough. You needed to live.",
+            "summary": "You survived {days} days and built a community of 3+ survivors.",
+            "condition": { "days_survived": 10, "companions_above": 2, "min_resources": { "health": 30, "morale": 40 } }
+        },
+        {
+            "id": "the_supermarket",
+            "name": "The Supermarket",
+            "icon": "🛒",
+            "type": "bad",
+            "text": "The supermarket has everything. Food. Water. Clean floors. Fluorescent lighting that you've learned to recreate with candles in glass jars, and it's almost the same. Almost. You've stopped going outside. There's no need — the shelves still have enough, and the doors lock, and the outside is so loud and green and overgrown and you don't need it. You don't need anyone. The supermarket has everything. Everything except a reason to leave.",
+            "summary": "You stayed in the supermarket for too long and lost yourself.",
+            "condition": { "supermarket_days_above": 10 }
+        },
+        {
+            "id": "the_pack",
+            "name": "The Pack",
+            "icon": "🐕",
+            "type": "bad",
+            "text": "They came at night, as they always did. But this time there were more of them, and you were alone, and the door wasn't strong enough. The pack doesn't hate you. They don't feel anything about you at all. You're food. That's the last thought you have before everything goes dark — that in this new world, you were just another part of the food chain.",
+            "summary": "The feral dog pack overwhelmed you.",
+            "condition": { "cause": "pack_attack" }
+        },
+        {
+            "id": "starvation",
+            "name": "Starvation",
+            "icon": "💀",
+            "type": "bad",
+            "text": "The city is full of plants, and almost none of them are safe to eat. You learned that lesson too late. Your body consumes itself, day by day, until there's nothing left. The greenery grows on without you, indifferent to your hunger. The city feeds itself. It doesn't feed strangers.",
+            "summary": "You starved to death.",
+            "condition": { "cause": "starvation" }
+        },
+        {
+            "id": "building_collapse",
+            "name": "Collapse",
+            "icon": "🏚️",
+            "type": "bad",
+            "text": "The building gives way without warning. One moment you're inside, the next there's nothing but weight and dust and the grinding sound of concrete meeting concrete. The city is collapsing, slowly, one piece at a time. It was never going to wait for you to get out.",
+            "summary": "You were killed in a building collapse.",
+            "condition": { "cause": "building_collapse" }
+        },
+        {
+            "id": "community_leader",
+            "name": "Community Leader",
+            "icon": "👑",
+            "type": "mythic",
+            "text": "After {days} days, something shifted. You stopped being a survivor and started being a leader. Not because you wanted the role — nobody does — but because someone had to make the hard calls, and you were the one who stepped up. The city is still overgrown, the dogs are still out there, and the supermarket is still calling. But you have a community now. People who look to you when the howling starts. People who trust you with their lives. That's not a burden. That's the whole point. The war took the world. But you're building a new one, one day at a time, one person at a time. And the plants? The plants are on your side now.",
+            "summary": "You led your community to stability with 3+ companions and high morale.",
+            "condition": { "days_survived": 14, "companions_above": 3, "min_resources": { "health": 50, "morale": 70 } }
+        },
+        {
+            "id": "betrayed",
+            "name": "Betrayed",
+            "icon": "🗡️",
+            "type": "bad",
+            "text": "You trusted the wrong person. In the end, it wasn't the dogs or the hunger or the cold. It was someone you thought was on your side. They took what they could carry and vanished into the ruins, leaving you with nothing. The city doesn't care about loyalty. Neither, it turns out, do some people.",
+            "summary": "A companion betrayed you and left you for dead.",
+            "condition": { "cause": "betrayed" }
+        },
+        {
+            "id": "disease",
+            "name": "Disease",
+            "icon": "🦠",
+            "type": "bad",
+            "text": "It started with a fever and ended with everything you feared. In a city without medicine, without clean water, without sanitation — disease was always waiting. The plants couldn't save you. Neither could the companions you'd found. In the end, something too small to see brought you down.",
+            "summary": "You died of disease.",
+            "condition": { "cause": "disease" }
+        },
+        {
+            "id": "last_light",
+            "name": "The Last Light",
+            "icon": "🕯️",
+            "type": "bittersweet",
+            "text": "After {days} days, you're still alone. The dogs howl outside, the buildings crumble, and the plants keep growing. But you're here. You've learned which plants will keep you alive and which will kill you. You've learned how to move through the ruins without being seen. You've learned that alone is not the same as defeated. The city tried to swallow you, and you're still standing. But standing alone in an overgrown city is not the same as living. It's surviving. And surviving is not enough. Not forever.",
+            "summary": "You survived {days} days alone.",
+            "condition": { "days_survived": 10, "companions": 0, "min_resources": { "health": 30 } }
+        },
+        {
+            "id": "found_family",
+            "name": "Found Family",
+            "icon": "❤️",
+            "type": "good",
+            "text": "You found them all. Sam, with their scavenging skills and terrible jokes. Mrs. Chen, who argued about everything and was always right. Marcus, who you never quite trusted, but who built the best shelter you've ever seen. Lily, who drew pictures of her family — and you were in them. And Dr. Amara, who could look at any plant and tell you if it would save your life or end it. The war took your real family. The city gave you a new one. Not the family you were born into — the family you chose. And that, you decide, is worth more than any rescue helicopter. This is home now.",
+            "summary": "You found all 5 companions and built a community.",
+            "condition": { "has_all_companions": true, "min_resources": { "health": 30, "morale": 50 } }
+        },
+        {
+            "id": "cold_death",
+            "name": "Frozen",
+            "icon": "❄️",
+            "type": "bad",
+            "text": "The winter came early and it came hard. The buildings that sheltered you in summer became iceboxes. Without enough fuel, without enough layers, the cold seeped in slowly and then all at once. The city, so green and alive in summer, turned into a tomb of ice and silence.",
+            "summary": "You froze to death.",
+            "condition": { "warmth": 0, "cause": "cold" }
+        },
+        {
+            "id": "death_health",
+            "name": "The City Claims You",
+            "icon": "🪦",
+            "type": "bad",
+            "text": "Your body can no longer endure. The overgrown city, so full of life, has no more life to give you. The vines don't mourn. The buildings don't remember. The dogs move on to other prey. You were here, and then you weren't, and the city keeps growing.",
+            "summary": "Your health reached zero.",
+            "condition": { "health": 0 }
+        },
+        {
+            "id": "lily_dies",
+            "name": "Lily's Light Goes Out",
+            "icon": "🕯️",
+            "type": "bittersweet",
+            "text": "Lily doesn't make it. She was too small, too fragile for this world. In the end, it was something ordinary — a fever, a cold, a night that was just one too many. You held her hand through it. You told her stories. You promised her things you couldn't deliver. When it's over, the silence in your shelter is louder than any sound the city has ever made. The group doesn't say much. There's nothing to say. You pin her drawing on the wall, the one with the stick figures and the big yellow sun. MY FAMILY, it says. And it still is. Just smaller now.",
+            "summary": "Lily died while in your group.",
+            "condition": { "companion_died": "lily" }
+        },
+        {
+            "id": "green_city",
+            "name": "The Green City",
+            "icon": "🌿",
+            "type": "mythic",
+            "text": "After {days} days, you realise something has changed. You're no longer fighting the city — you're working with it. Dr. Amara's garden is thriving. Sam's scavenging routes are memorised like the back of your hand. Mrs. Chen has a medical station. Marcus has built actual walls. And Lily's drawing of your family hangs on the wall of a real home, not a shelter. The city is still overgrown. The dogs still howl. But you've planted seeds, and they're growing. Not just the ones in the ground — the ones in each other. The war took the old world. You're building a new one, and this time, the plants are on your side.",
+            "summary": "You achieved a thriving community with all survivors and high morale.",
+            "condition": { "days_survived": 14, "has_all_companions": true, "min_resources": { "morale": 80 } }
+        },
+        {
+            "id": "disease_outbreak",
+            "name": "Disease Outbreak",
+            "icon": "🦠",
+            "type": "bittersweet",
+            "text": "It started with one person coughing. Then another. Then everyone. Living together in close quarters, sharing food and water and air, meant sharing illness too. You did everything right — quarantine, clean water, rest — but sometimes nature wins. The group is smaller now. The survivors are tougher, but also more careful. You've learned that community means vulnerability as much as strength. And you've learned that grief is just love with nowhere to go.",
+            "summary": "A disease spread through your community.",
+            "condition": { "cause": "disease_outbreak" }
+        }
+    ]
+}

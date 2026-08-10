@@ -1,0 +1,1201 @@
+{
+    "id": "desert",
+    "name": "Desert Survival",
+    "icon": "🏜️",
+    "tagline": "Scorched by day, freezing by night. Water is your most precious resource.",
+    "difficulty": 2,
+    "intro": "The tour bus broke down hours ago. The driver went for help and never came back. The sun is relentless — 40°C and not a cloud in the sky. You have half a bottle of water and a packet of crisps. The desert stretches in every direction, vast and indifferent. Somewhere out there is a road, an oasis, or a slow death. Choose wisely.",
+
+    "start_season": "Summer",
+    "hours_per_day": 7,
+    "actions_per_day": 3,
+    "bonus_action_morale": 65,
+    "season_cycle_days": 15,
+
+    "starting": {
+        "health": 90,
+        "hunger": 70,
+        "warmth": 85,
+        "morale": 55,
+        "water": 60
+    },
+    "starting_inventory": ["water_bottle", "tin_can"],
+
+    "decay": {
+        "hunger": 5,
+        "warmth": 3,
+        "morale": 4,
+        "water": 10
+    },
+
+    "shelter": [
+        { "name": "No Shelter", "icon": "☀️", "desc": "Exposed to the blazing sun. Heat and cold will take their toll.", "warmth_bonus": 0 },
+        { "name": "Sun Shade", "icon": "🫧", "desc": "A basic shade structure from cloth and sticks. Protects from the worst of the sun.", "warmth_bonus": 2 },
+        { "name": "Rock Shelter", "icon": "🪨", "desc": "Found or built into rock formations. Decent protection from sun and wind.", "warmth_bonus": 4 },
+        { "name": "Desert Hut", "icon": "🏠", "desc": "A proper desert shelter. Insulated walls, wind protection, and cool interior.", "warmth_bonus": 7 }
+    ],
+
+    "locations": [
+        {
+            "id": "bus_wreck",
+            "name": "Bus Wreck",
+            "icon": "🚌",
+            "desc": "The broken-down bus. Some supplies might still be salvageable.",
+            "discovered": true,
+            "foraging_quality": 0.15,
+            "shelter_bonus": true,
+            "signal_bonus": 2,
+            "water_source": false,
+            "lose_chance": 0.02
+        },
+        {
+            "id": "rock_formation",
+            "name": "Rock Formation",
+            "icon": "🪨",
+            "desc": "Towering red rocks casting shade. A natural landmark visible for miles.",
+            "discovered": false,
+            "foraging_quality": 0.2,
+            "shelter_bonus": true,
+            "signal_bonus": 2,
+            "water_source": false,
+            "lose_chance": 0.05
+        },
+        {
+            "id": "dry_creek",
+            "name": "Dry Creek Bed",
+            "icon": "🏜️",
+            "desc": "A parched creek bed. Sometimes water flows beneath the surface.",
+            "discovered": false,
+            "foraging_quality": 0.3,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.06
+        },
+        {
+            "id": "cactus_field",
+            "name": "Cactus Field",
+            "icon": "🌵",
+            "desc": "Dense cacti as far as the eye can see. Some are edible if you know which ones.",
+            "discovered": false,
+            "foraging_quality": 0.85,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.08
+        },
+        {
+            "id": "oasis",
+            "name": "Oasis",
+            "icon": "🌴",
+            "desc": "A miracle — palm trees around a pool of water. Shade, water, and life.",
+            "discovered": false,
+            "foraging_quality": 0.7,
+            "shelter_bonus": true,
+            "signal_bonus": 1,
+            "water_source": true,
+            "lose_chance": 0.02
+        },
+        {
+            "id": "canyon_passage",
+            "name": "Canyon Passage",
+            "icon": "🏔️",
+            "desc": "A narrow canyon cutting through the rock. Cooler inside, but risk of flash floods.",
+            "discovered": false,
+            "foraging_quality": 0.4,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.12
+        },
+        {
+            "id": "abandoned_mine",
+            "name": "Abandoned Mine",
+            "icon": "⛏️",
+            "desc": "A collapsed mine entrance. Cool inside, possibly dangerous, but there might be supplies.",
+            "discovered": false,
+            "foraging_quality": 0.1,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.15
+        },
+        {
+            "id": "dusty_road",
+            "name": "Dusty Road",
+            "icon": "🛤️",
+            "desc": "A dirt road! It might lead somewhere, or it might be abandoned. But it's a sign of civilisation.",
+            "discovered": false,
+            "foraging_quality": 0.05,
+            "shelter_bonus": false,
+            "signal_bonus": 3,
+            "water_source": false,
+            "lose_chance": 0.03
+        }
+    ],
+
+    "plants": [
+        {
+            "id": "prickly_pear",
+            "name": "Prickly Pear Cactus",
+            "icon": "🌵",
+            "is_edible": true,
+            "desc_safe": "The pads (nopalitos) are edible once de-spined, and the red fruits (tunas) are sweet and hydrating.",
+            "desc_unsafe": "A cactus with flat, paddle-like pads. It has tufts of tiny, hair-like spines (glochids) and larger spines.",
+            "locations": ["cactus_field", "rock_formation", "oasis", "bus_wreck"],
+            "difficulty": 1,
+            "safe_yield": { "hunger": 12, "water": 8 },
+            "unsafe_yield": { "health": -8 },
+            "unsafe_injury": "cut",
+            "unsafe_text": "You try to grab the cactus bare-handed! The tiny glochids embed in your skin like fiberglass. It's incredibly painful.",
+            "loot": []
+        },
+        {
+            "id": "barrel_cactus",
+            "name": "Barrel Cactus",
+            "icon": "🍲",
+            "is_edible": true,
+            "desc_safe": "While often rumored to hold pure water, the pulp inside is actually slightly alkaline and bitter, but it will keep you alive.",
+            "desc_unsafe": "A large, ribbed, barrel-shaped cactus. It looks like it's full of water, but you've heard rumors that some are toxic.",
+            "locations": ["cactus_field", "dry_creek", "rock_formation"],
+            "difficulty": 2,
+            "safe_yield": { "water": 15 },
+            "unsafe_yield": { "health": -12, "water": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You cut it open and drink the fluid eagerly. Immediately, your stomach cramps. The alkaline fluid is burning your insides.",
+            "loot": []
+        },
+        {
+            "id": "yucca",
+            "name": "Yucca Plant",
+            "icon": "🌿",
+            "is_edible": true,
+            "desc_safe": "The stem can be roasted for food, and the tough leaves yield incredibly strong fibers for cordage.",
+            "desc_unsafe": "A plant with long, stiff, sword-like leaves pointing outward from a central stalk. It has clusters of white flowers.",
+            "locations": ["rock_formation", "canyon_passage", "dry_creek", "bus_wreck"],
+            "difficulty": 1,
+            "safe_yield": { "hunger": 8 },
+            "unsafe_yield": { "health": -5 },
+            "unsafe_injury": "cut",
+            "unsafe_text": "You recklessly grab the leaves to harvest them. The sharp tips slice your hand open. You need to be more careful.",
+            "loot": ["cordage"]
+        },
+        {
+            "id": "creosote_bush",
+            "name": "Creosote Bush",
+            "icon": "🌱",
+            "is_edible": false,
+            "desc_safe": "The leaves can be brewed into a strong antiseptic wash for wounds, preventing infection. Do not drink it.",
+            "desc_unsafe": "A dark green bush with waxy, resinous leaves. It has a very strong, medicinal smell, especially when crushed.",
+            "locations": ["rock_formation", "canyon_passage", "dusty_road", "bus_wreck"],
+            "difficulty": 2,
+            "safe_yield": { "morale": 2 },
+            "unsafe_yield": { "morale": -2, "health": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You brew the leaves and drink the tea, hoping for hydration. It tastes like tar and makes you nauseous. This is for wounds, not drinking!",
+            "loot": ["medicinal_herbs"]
+        },
+        {
+            "id": "mesquite_tree",
+            "name": "Mesquite Tree",
+            "icon": "🌳",
+            "is_edible": true,
+            "desc_safe": "The bean pods can be ground into a sweet, nutritious flour. The dead wood is some of the best firewood in the desert.",
+            "desc_unsafe": "A scraggly tree with drooping branches and long, thin bean pods. It seems to offer shade and resources.",
+            "locations": ["dry_creek", "oasis", "dusty_road"],
+            "difficulty": 1,
+            "safe_yield": { "hunger": 10 },
+            "unsafe_yield": { "hunger": -5, "health": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the beans raw and whole. They are incredibly hard and indigestible, causing severe stomach cramps.",
+            "loot": ["wood"]
+        },
+        {
+            "id": "jimsonweed",
+            "name": "Jimsonweed (Devil's Snare)",
+            "icon": "💀",
+            "is_edible": false,
+            "desc_safe": "EXTREMELY POISONOUS. Beautiful but deadly. All parts contain tropane alkaloids that cause delirium, hallucinations, and death. Identify only to avoid.",
+            "desc_unsafe": "A large, leafy plant with trumpet-shaped white or purple flowers and spiky seed pods. It smells foul.",
+            "locations": ["canyon_passage", "bus_wreck", "dusty_road"],
+            "difficulty": 3,
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -30, "morale": -15 },
+            "unsafe_injury": null,
+            "unsafe_text": "You mistake it for an edible herb and ingest it. The world starts spinning, your heart races, and you hallucinate violently. You are severely poisoned.",
+            "loot": []
+        }
+    ],
+
+    "weather_types": {
+        "scorching": { "icon": "🔥", "desc": "Scorching heat. The air shimmers. Stay in the shade.", "warmth_mod": 5, "morale_mod": -5, "water_mod": -5 },
+        "hot": { "icon": "☀️", "desc": "Hot and clear. Manageable if you pace yourself.", "warmth_mod": 2, "morale_mod": -1, "water_mod": -3 },
+        "windy": { "icon": "💨", "desc": "Hot wind blows dust and sand. Unpleasant but not dangerous.", "warmth_mod": 0, "morale_mod": -2, "water_mod": -2 },
+        "sandstorm": { "icon": "🏜️", "desc": "Sandstorm! Visibility near zero. Sand gets in everything.", "warmth_mod": -3, "morale_mod": -8, "water_mod": -4 },
+        "cool_night": { "icon": "🌙", "desc": "The temperature plummets. The desert is cold at night.", "warmth_mod": -6, "morale_mod": -2, "water_mod": 0 },
+        "cloudy": { "icon": "☁️", "desc": "Cloud cover. A rare mercy from the sun.", "warmth_mod": 0, "morale_mod": 2, "water_mod": -1 }
+    },
+
+    "weather_chances": {
+        "Spring": { "scorching": 0.2, "hot": 0.35, "windy": 0.15, "sandstorm": 0.05, "cool_night": 0.15, "cloudy": 0.1 },
+        "Summer": { "scorching": 0.4, "hot": 0.25, "windy": 0.1, "sandstorm": 0.1, "cool_night": 0.05, "cloudy": 0.1 },
+        "Autumn": { "scorching": 0.15, "hot": 0.3, "windy": 0.2, "sandstorm": 0.05, "cool_night": 0.2, "cloudy": 0.1 },
+        "Winter": { "scorching": 0.05, "hot": 0.2, "windy": 0.15, "sandstorm": 0.05, "cool_night": 0.45, "cloudy": 0.1 }
+    },
+
+    "weather_flavour": {
+        "desert": {
+            "day_start": {
+                "scorching": "The heat hits you like a furnace door. The air shimmers above the sand. Drink water now.",
+                "hot": "Another blazing day begins. The sun is already intense and it's only morning.",
+                "windy": "Hot wind whips sand against your skin. Squinting through the dust, you plan your day.",
+                "sandstorm": "A wall of sand approaches! Find shelter immediately or be buried alive.",
+                "cool_night": "The desert night is surprisingly cold. Your breath fogs in the moonlight.",
+                "cloudy": "Clouds! A rare gift. The sun is dimmed and the heat is almost bearable."
+            }
+        }
+    },
+
+    "day_start": [
+        "The sun rises over the dunes. Another day of survival begins.",
+        "You wake with a dry mouth. Water. You need water today.",
+        "Dawn brings a moment of cool relief. It won't last long. Get moving.",
+        "The desert stretches endlessly. You must find water and shelter — or the sand will claim you.",
+        "Heat shimmers above the ground. Today will test everything you've learned.",
+        "Your lips are cracked. Your head pounds. The desert doesn't care about your suffering.",
+        "A lizard watches you from a rock. Even it knows to stay in the shade.",
+        "The driver's face flashes in your mind. You push the thought away and stand up."
+    ],
+
+    "events": [
+        {
+            "id": "sandstorm",
+            "name": "🏜️ Sandstorm",
+            "icon": "🏜️",
+            "text": "The wind picks up rapidly. Sand stings your face. A sandstorm is rolling in — you need shelter NOW.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🏕️",
+                    "text": "Take shelter in your current spot",
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "You huddle behind cover as the sandstorm rages. When it passes, you're shaken but unharmed.",
+                    "success_fx": { "water": -5, "morale": -3 },
+                    "fail_text": "Your shelter isn't enough! Sand gets in everything. You're battered and your water is contaminated.",
+                    "fail_fx": { "water": -15, "health": -10, "morale": -8 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Run for higher ground",
+                    "success": 0.3,
+                    "hours": 1,
+                    "success_text": "You make it to rock cover just in time. From above, you watch the storm rage below.",
+                    "success_fx": { "water": -3, "morale": 2 },
+                    "fail_text": "You're caught in the open! Sand blasts your skin and fills your mouth. Horrifying.",
+                    "fail_fx": { "water": -20, "health": -20, "morale": -10 }
+                }
+            ]
+        },
+                {
+            "id": "ray_jacket",
+            "name": "🧥 The Driver's Jacket",
+            "icon": "🧥",
+            "text": "Draped over a rock, baking in the sun, you find a jacket. It's the driver's — you recognise the company badge. In the pocket: a lighter and a crumpled note. 'Going east for help. Stay by the bus. — Ray' Ray went east. The bus is west. You're somewhere in between.",
+            "min_day": 2,
+            "max_day": 5,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the tracks east",
+                    "success": 0.5,
+                    "hours": 3,
+                    "success_text": "You follow Ray's tracks for an hour. They're erratic — zigzagging, looping back. Ray was disoriented. But the tracks lead east. You mark the direction and head back before you lose your own trail.",
+                    "success_fx": { "morale": 3, "explore_progress": 2, "water": -5 }
+                },
+                {
+                    "icon": "📦",
+                    "text": "Take the lighter and stay put",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You pocket the lighter. Ray went east for help. If help comes, it'll come from that direction. Staying put might be the smart move. But the note is days old now.",
+                    "success_fx": { "morale": -2 },
+                    "success_loot": ["lighter"]
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Note the direction and keep exploring",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "Ray went east. You note the direction. If you find a road, it might be in the same direction Ray was heading.",
+                    "success_fx": { "explore_progress": 1, "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "ray_trail",
+            "name": "🥾 Ray's Trail",
+            "icon": "🥾",
+            "text": "You find footprints in the sand. Boot prints — going east, then curving south, then doubling back north. Ray was walking in circles. Near a sun-bleached rock, you find an empty water bottle and a scrap of paper: 'Day 2. No road. Going south. — R'",
+            "min_day": 4,
+            "max_day": 8,
+            "condition": { "requires_event": "ray_jacket" },
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the tracks south — that's where Ray was heading",
+                    "success": 0.5,
+                    "hours": 3,
+                    "success_text": "You follow Ray's tracks south. They're fresher here. He was heading somewhere with purpose. You find a torn piece of his shirt caught on a cactus. He came this way. The road might be south.",
+                    "success_fx": { "explore_progress": 2, "morale": 3, "water": -5 },
+                    "fail_text": "You follow the tracks but they vanish in soft sand. You've walked for hours and found nothing but heat and thirst.",
+                    "fail_fx": { "water": -8, "morale": -5, "health": -3 }
+                },
+                {
+                    "icon": "📦",
+                    "text": "Take the water bottle and stay on course",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You pick up the empty water bottle. It's a reminder — Ray ran out of water on Day 2. You need to be smarter than that.",
+                    "success_fx": { "morale": -2 },
+                    "success_loot": ["tin_can"]
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Mark the direction and move on",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "Ray went south. You note the direction. The desert keeps its secrets — but footprints don't lie.",
+                    "success_fx": { "explore_progress": 1, "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "ray_camp",
+            "name": "🏕️ Ray's Camp",
+            "icon": "🏕️",
+            "text": "You find what's left of a camp. A sun shelter made from bus seat cushions, lashed together with seatbelt straps. Clever. In the shade, a water bottle — bone dry. And scratched into the dirt with a fingernail: 'DAY 4. ROAD SOUTH. RAY' He was trying to leave a map. He was trying to help whoever came next.",
+            "min_day": 7,
+            "max_day": 12,
+            "condition": { "requires_event": "ray_trail" },
+            "choices": [
+                {
+                    "icon": "📖",
+                    "text": "Study the camp carefully",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You search every inch. Ray was resourceful — the shelter design is clever, using the bus cushions for shade. You find a compass half-buried in sand. Still works. And scratched next to his message: an arrow pointing south. Ray was heading south when he left this camp. The road is south.",
+                    "success_fx": { "morale": -3, "explore_progress": 3 },
+                    "success_loot": ["compass", "cordage"]
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Head south — Ray was right about the direction",
+                    "success": 0.5,
+                    "hours": 3,
+                    "success_text": "You walk south with renewed purpose. The terrain is rough but you push through. Ray's direction was right — you find a clearing with a better view of the landscape.",
+                    "success_fx": { "explore_progress": 3, "morale": -2, "water": -5 },
+                    "fail_text": "You walk south for hours but the desert gives nothing back. Sand, rock, heat. You're running low on water and hope.",
+                    "fail_fx": { "water": -10, "morale": -5, "health": -3 }
+                },
+                {
+                    "icon": "🏚️",
+                    "text": "Salvage the shelter materials and move on",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You take what's useful from Ray's camp — cordage and fabric. Ray was smart. He built this from nothing. You'll need that same resourcefulness.",
+                    "success_fx": { "morale": -2 },
+                    "success_loot": ["cordage", "cordage"]
+                }
+            ]
+        },
+        {
+            "id": "ray_body",
+            "name": "💀 Ray",
+            "icon": "💀",
+            "text": "Under an overhang of rock, half-buried in sand, you find him. Ray. The driver. He's sitting upright, back against the rock, as if he just sat down to rest. His skin is sun-darkened and dry. He's been dead for days. His hand still holds a compass — pointing south. In his other hand, a photo of two kids. They're smiling at a beach.",
+            "min_day": 10,
+            "max_day": 20,
+            "condition": { "requires_event": "ray_camp" },
+            "choices": [
+                {
+                    "icon": "📦",
+                    "text": "Take what you need and say goodbye",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You kneel beside Ray. You tell him you're sorry. Then you take the compass — still pointing south — and the lighter from his pocket. You leave the photo where it is. His kids should know where he is. When you get out, you'll tell them.",
+                    "success_fx": { "morale": -5, "explore_progress": 2 },
+                    "success_loot": ["compass", "lighter"]
+                },
+                {
+                    "icon": "🪦",
+                    "text": "Cover him with rocks and then take supplies",
+                    "success": 0.8,
+                    "hours": 3,
+                    "success_text": "The ground is too hard to dig, but you pile rocks over him. It takes two hours in the blazing sun. When you're done, Ray has a proper cairn. You take the compass. South. That's the way. You'll remember.",
+                    "success_fx": { "morale": 5, "health": -5, "water": -5, "explore_progress": 3, "wildRespect": 5 },
+                    "success_loot": ["compass"]
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Leave him be. Don't take anything.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You stand there for a long time. Ray drove the bus. Ray went for help. Ray didn't make it. The compass in his hand points south. You'll remember that. You don't need to take from a dead man to survive. But his direction — that's worth more than any supplies.",
+                    "success_fx": { "morale": -8, "explore_progress": 2 }
+                }
+            ]
+        },
+        {
+            "id": "mine_sounds",
+            "name": "⛏️ Sounds in the Dark",
+            "icon": "⛏️",
+            "text": "You hear something deep in the mine. A low groan. Or maybe it's the wind through a crack. Or maybe it's the rock settling. It's probably the rock settling. But you can't be sure, and the darkness doesn't help.",
+            "min_day": 5,
+            "location": "abandoned_mine",
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Explore deeper into the mine",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You venture deeper. The sound was nothing — just air moving through rock. But deeper in, you find old mining equipment and a few useful items left behind.",
+                    "success_fx": { "morale": 3 },
+                    "success_loot": ["cordage", "tin_can"]
+                },
+                {
+                    "icon": "☀️",
+                    "text": "Stay near the entrance where the light is",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You stay where you can see the sky. Whatever made that sound can stay in the dark. You've had enough of caves for one day.",
+                    "success_fx": { "morale": -2 }
+                }
+            ]
+        },
+        {
+            "id": "mine_darkness",
+            "name": "⛏️ The Darkness Calls",
+            "icon": "⛏️",
+            "text": "You've been in the mine for days now. The darkness outside — the blinding, killing sun — feels like another world. The mine is cool. The mine is dark. The mine is safe. You catch yourself not wanting to leave. 'Just one more day,' you think. 'It's too hot outside anyway.'",
+            "min_day": 7,
+            "location": "abandoned_mine",
+            "choices": [
+                {
+                    "icon": "☀️",
+                    "text": "Force yourself to go outside",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "The sun hits you like a hammer. It's awful. It's bright and hot and painful. But you're awake. Really awake. The mine will still be there tomorrow.",
+                    "success_fx": { "morale": 5, "water": -3 }
+                },
+                {
+                    "icon": "⛏️",
+                    "text": "Stay in the mine — it's too hot outside",
+                    "success": 0.4,
+                    "hours": 0,
+                    "success_text": "You stay in the darkness. It's cool. It's quiet. The sun can't reach you here. You tell yourself you'll go out tomorrow. You said that yesterday too.",
+                    "success_fx": { "morale": -5, "warmth": 3 }
+                }
+            ]
+        },
+        {
+            "id": "mine_resident",
+            "name": "👤 The Voice in the Dark",
+            "icon": "👤",
+            "text": "In the deepest part of the mine, where the light doesn't reach, you hear a voice. Low, calm, familiar. 'You could stay here,' it says. 'The sun can't find you. The vultures can't see you. It's cool and it's dark and you never have to go back out there.' You blink. The voice is gone. But the cool dark is still here. And it does feel safe. That's what worries you most.",
+            "min_day": 8,
+            "location": "abandoned_mine",
+            "choices": [
+                {
+                    "icon": "☀️",
+                    "text": "Walk toward the light — leave the mine now",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You turn your back on the darkness and walk toward the sliver of light at the mine entrance. The sun is blinding when you emerge. It burns. But it's real. The mine is not your home.",
+                    "success_fx": { "morale": 8, "water": -5 }
+                },
+                {
+                    "icon": "⛏️",
+                    "text": "It's just the wind. Stay.",
+                    "success": 0.3,
+                    "hours": 0,
+                    "success_text": "You close your eyes. The cool dark wraps around you like a blanket. The voice was right — outside is nothing but heat and death. In here, you're safe. You're safe. You're safe...",
+                    "success_fx": { "morale": -10, "warmth": 5 }
+                }
+            ]
+        },
+        {
+            "id": "hallu_rain",
+            "name": "🌧️ Rain",
+            "icon": "🌧️",
+            "text": "You feel it. Drops on your skin. Cool, wet, real. Rain! You look up, mouth open, arms spread — and your face is dry. Your arms are dry. The sky is empty and mercilessly blue. There is no rain. There never was.",
+            "min_day": 4,
+            "condition": { "water_below": 25 },
+            "choices": [
+                {
+                    "icon": "🧠",
+                    "text": "It's not real. You know it's not real.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You lower your arms. The desert doesn't give rain. It takes water. The sooner you accept that, the sooner you focus on what's real.",
+                    "success_fx": { "morale": -5 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Check your water supply — make sure you're not imagining that too",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You check your water. How much is left? Is it enough? The numbers don't lie, even if your mind does. Focus on what you can measure.",
+                    "success_fx": { "morale": -3 }
+                }
+            ]
+        },
+        {
+            "id": "hallu_lights",
+            "name": "🏙️ Lights on the Horizon",
+            "icon": "🏙️",
+            "text": "There. Lights. On the horizon. A town! A city! A petrol station! They twinkle and shimmer in the heat haze. You can almost see buildings, roads, people. You're saved! ...But why are the lights in the same direction as the mirage you saw yesterday?",
+            "min_day": 5,
+            "condition": { "water_below": 20 },
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Walk toward the lights",
+                    "success": 0.1,
+                    "hours": 2,
+                    "success_text": "You walk for two hours. The lights are still there — but they're not getting any closer. And now you realise they're not lights at all. They're the last light of the sun reflecting off distant rocks. You're further from camp, more tired, and more thirsty than before.",
+                    "success_fx": { "water": -8, "health": -5, "morale": -10 }
+                },
+                {
+                    "icon": "🧠",
+                    "text": "Close your eyes. Count to ten. It's not real.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You close your eyes. One, two, three... When you open them, the lights are gone. Just heat haze and empty sand. Your mind is playing tricks. You need water more than ever.",
+                    "success_fx": { "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "hallu_voice",
+            "name": "👤 Someone Calling",
+            "icon": "👤",
+            "text": "Your name. Someone is calling your name. You spin around — there! A figure behind a rock! You can hear them clearly: 'Over here! I found water!' But when you look directly at the figure, it dissolves into heat shimmer and shadow.",
+            "min_day": 6,
+            "condition": { "water_below": 15 },
+            "choices": [
+                {
+                    "icon": "🧠",
+                    "text": "It's not real. Your mind is breaking.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You're dehydrated. Your brain is making things up. The desert doesn't have people calling your name. It has sand, heat, and silence. Focus on what's real.",
+                    "success_fx": { "morale": -5 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Drink whatever water you have left — you need to think clearly",
+                    "success": 0.6,
+                    "hours": 0,
+                    "success_text": "You take a measured sip. The water clears your head slightly. The voice is quieter now. Real or not, you can't afford to chase shadows.",
+                    "success_fx": { "morale": -2 }
+                }
+            ]
+        },
+        {
+            "id": "heat_exhaustion",
+            "name": "🥵 Heat Exhaustion",
+            "icon": "🥵",
+            "text": "The heat is too much. Your vision swims. Your head pounds. You feel like you might be sick. You need shade and water immediately, or this is going to get a lot worse.",
+            "min_day": 3,
+            "seasons": ["Summer"],
+            "condition": { "water_below": 30 },
+            "choices": [
+                {
+                    "icon": "🩹",
+                    "text": "Find shade and rest immediately",
+                    "success": 0.7,
+                    "hours": 3,
+                    "success_text": "You find a sliver of shade and lie still. The world stops spinning. After an hour, you feel well enough to move. Barely.",
+                    "success_fx": { "health": 5, "water": -5, "morale": -3 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Drink water and keep moving",
+                    "requires": ["water_bottle"],
+                    "success": 0.5,
+                    "hours": 1,
+                    "success_text": "You drink what water you have and force yourself onward. The water helps, but the heat is relentless. You need more shade.",
+                    "success_fx": { "water": -8, "morale": -2 },
+                    "fail_text": "Even with water, the heat overwhelms you. You stumble and nearly fall. Your vision goes black for a terrifying moment.",
+                    "fail_fx": { "health": -15, "morale": -10, "water": -8 }
+                },
+                {
+                    "icon": "💪",
+                    "text": "Push through — you can't afford to stop",
+                    "success": 0.2,
+                    "hours": 1,
+                    "success_text": "Somehow, you keep going. Your body screams at you to stop. Your head feels like it's going to split open. But you move. You have no choice.",
+                    "success_fx": { "health": -10, "morale": -5, "water": -5 },
+                    "fail_text": "Your legs give out. The ground rushes up. The last thing you see is the sun, blazing down at you. When you wake, you don't know how long you've been out.",
+                    "fail_fx": { "health": -25, "morale": -15, "water": -10 },
+                    "fail_injury": "sunstroke"
+                }
+            ]
+        },
+        {
+            "id": "flash_flood_warning",
+            "name": "🌧️ Flood Warning",
+            "icon": "🌧️",
+            "text": "The sky darkens. Not with night — with clouds. Dark, heavy clouds rolling in from the mountains. Rain in the desert can mean flash floods. The dry creek beds become raging torrents in minutes. If you're in a canyon, you need to get out NOW.",
+            "min_day": 5,
+            "seasons": ["Spring", "Autumn"],
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Get to high ground immediately",
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "You scramble up the nearest slope just as the first drops fall. Within minutes, the dry creek below is a brown torrent. You're safe on high ground. And the rain means water. Precious water.",
+                    "success_fx": { "water": 10, "morale": 5 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Try to collect the rainwater",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You spread out anything that can hold water. The rain falls hard and fast. You collect what you can before the flash flood forces you to move.",
+                    "success_fx": { "water": 15, "morale": 8 },
+                    "fail_text": "You try to collect water but the rain turns into a torrent. A wall of water rushes through the creek bed. You barely escape to high ground, soaked and shaken.",
+                    "fail_fx": { "water": 5, "health": -10, "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "oasis_mirage_or_real",
+            "name": "🌴 Oasis — Mirage or Real?",
+            "icon": "🌴",
+            "text": "Palm trees. Water. Shade. It shimmers in the distance, and for a moment your heart leaps. But you've been fooled before. Is it real this time? The palm trees seem solid. The water seems to actually reflect the sky. Or is that just what your desperate brain wants you to see?",
+            "min_day": 5,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Walk towards it carefully — verify before you commit",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You approach slowly, cautiously. The palms don't dissolve. The water doesn't vanish. It's real. An actual oasis. You drink deeply and rest in the shade. For the first time in days, you feel something like hope.",
+                    "success_fx": { "water": 30, "morale": 15, "health": 5 }
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Don't trust it — you've been fooled before",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You turn away. Even if it's real, you can't afford to waste energy chasing water that might not exist. The thirst gnaws at you, but your gut says no. You'll find water another way.",
+                    "success_fx": { "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "mine_entrance",
+            "name": "⛏️ The Mine Entrance",
+            "icon": "⛏️",
+            "text": "A dark opening in the hillside. Old timbers frame the entrance, rotted but still holding. Inside, it's cool — noticeably cooler than the blazing sun outside. You can see a few metres in before darkness swallows everything. Old equipment is scattered near the entrance. This could be shelter. Or it could be a tomb.",
+            "min_day": 3,
+            "location": "abandoned_mine",
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Search carefully and set up camp inside",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You check the timbers — they're old but solid enough. The mine goes back further than you can see, but the entrance is stable. You find some old equipment and a few useful items. The cool air is a relief after the killing heat outside.",
+                    "success_fx": { "morale": 8, "warmth": 5, "shelter_progress": 2 },
+                    "success_loot": ["cordage", "tin_can"]
+                },
+                {
+                    "icon": "👀",
+                    "text": "Check the outside and the entrance structure first",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You examine the mine from outside. The timbers look stable. There are scratch marks on the door frame — someone scratched something. You can't quite read it. The mine seems safe enough. For now.",
+                    "success_fx": { "morale": 3, "shelter_progress": 1 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Stay outside — mines are death traps",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You've heard what happens in mines. Cave-ins. Gas. Getting lost in the dark. You'll take your chances with the sun.",
+                    "success_fx": { "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "snake_encounter",
+            "name": "🐍 Snake!",
+            "icon": "🐍",
+            "text": "A snake coils in the shade of a rock — venom warning. It's between you and your path forward.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🚶",
+                    "text": "Give it a wide berth — slowly back away",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You step carefully around the snake. It watches but doesn't strike. Smart move.",
+                    "success_fx": { "morale": -2 }
+                },
+                {
+                    "icon": "🗡️",
+                    "text": "Try to kill it for food",
+                    "requires": ["spear"],
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You strike quickly and precisely. Snake for dinner — tough but nutritious, and it's one less danger.",
+                    "success_fx": { "hunger": 15, "morale": 5 },
+                    "fail_text": "The snake strikes! Your reflexes save your life, but it's a close call. The snake escapes.",
+                    "fail_fx": { "health": -15, "morale": -10 }
+                }
+            ]
+        },
+        {
+            "id": "mirage",
+            "name": "💧 Mirage",
+            "icon": "💧",
+            "text": "In the distance, you see water — a shimmering pool. But is it real, or a desert mirage?",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Walk towards it carefully",
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "Incredibly, it's real! A small pool hidden among the rocks. Fresh water at last!",
+                    "success_fx": { "water": 30, "morale": 15 },
+                    "fail_text": "As you get closer, the shimmer vanishes. A mirage. The disappointment is crushing.",
+                    "fail_fx": { "water": -8, "morale": -10, "hunger": -3 }
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Don't trust it — stay where you are",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You don't waste energy chasing illusions. Smart, but the thirst gnaws at you.",
+                    "success_fx": { "morale": -3 }
+                }
+            ]
+        },
+        {
+            "id": "scorpion_sting",
+            "name": "🦂 Scorpion Sting",
+            "icon": "🦂",
+            "text": "Ow! A scorpion was hiding under a rock you grabbed. Its sting burns like fire.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🩹",
+                    "text": "Treat the sting with a bandage",
+                    "requires": ["bandage"],
+                    "success": 0.85,
+                    "hours": 1,
+                    "success_text": "You clean and bandage the sting. The pain fades to a dull throb. You'll live.",
+                    "success_fx": { "health": -5, "morale": -2 }
+                },
+                {
+                    "icon": "💪",
+                    "text": "Tough it out",
+                    "success": 0.5,
+                    "hours": 0,
+                    "success_text": "The sting hurts but you push through. Desert scorpions are painful but rarely fatal.",
+                    "success_fx": { "health": -10, "morale": -5 },
+                    "fail_text": "The venom spreads. Your hand swells and the pain is intense. You need rest urgently.",
+                    "fail_fx": { "health": -20, "morale": -10 }
+                }
+            ]
+        },
+        {
+            "id": "dust_devil",
+            "name": "🌪️ Dust Devil",
+            "icon": "🌪️",
+            "text": "A spinning column of dust races across the plain. It's not a full storm, but it's disorienting.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Use it as a landmark — note the direction it came from",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "The dust devil's path gives you a sense of wind direction. Helpful for navigation!",
+                    "success_fx": { "explore_progress": 1, "morale": 3 }
+                },
+                {
+                    "icon": "🛡️",
+                    "text": "Shelter and wait for it to pass",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You huddle down. The dust devil passes harmlessly. You lose time but stay safe.",
+                    "success_fx": { "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "vehicle_distant",
+            "name": "🚛 Distant Engine",
+            "icon": "🚛",
+            "text": "You hear a vehicle! Faint, in the distance. If you had a signal fire ready, they might see you...",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Light your signal fire NOW",
+                    "requires": ["wood"],
+                    "success": 0.35,
+                    "hours": 1,
+                    "success_text": "You rush to light your signal fire! Black smoke rises into the sky... The vehicle changes direction! They've seen you!",
+                    "success_fx": { "morale": 30 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Run towards the sound, waving anything",
+                    "success": 0.08,
+                    "hours": 2,
+                    "success_text": "You run, screaming and waving. Miraculously, they spot you!",
+                    "success_fx": { "morale": 30 },
+                    "fail_text": "You run until your lungs burn, but the sound fades. The vehicle never saw you. The silence that follows is the worst sound of all.",
+                    "fail_fx": { "morale": -15, "water": -10, "health": -5 }
+                }
+            ]
+        },
+        {
+            "id": "night_cold",
+            "name": "🌙 Freezing Night",
+            "icon": "🌙",
+            "text": "The desert temperature drops dramatically as the sun sets. Without good shelter, you'll freeze.",
+            "min_day": 1,
+            "seasons": ["Winter", "Autumn"],
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build a fire and huddle close",
+                    "requires": ["wood"],
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "The fire crackles to life, casting warmth across your shelter. The night is long but survivable.",
+                    "success_fx": { "warmth": 8, "morale": 5 },
+                    "fail_text": "The wood is damp and won't catch properly. A feeble flame provides minimal warmth.",
+                    "fail_fx": { "warmth": 3, "morale": -3 }
+                },
+                {
+                    "icon": "🏕️",
+                    "text": "Rely on your shelter and body heat",
+                    "success": 0.4,
+                    "hours": 0,
+                    "success_text": "You curl up tight and make it through the night. Barely.",
+                    "success_fx": { "warmth": -5, "morale": -5 },
+                    "fail_text": "The cold seeps into your bones. You shiver uncontrollably all night.",
+                    "fail_fx": { "warmth": -15, "health": -10, "morale": -8 }
+                }
+            ]
+        },
+        {
+            "id": "cactus_water",
+            "name": "🌵 Barrel Cactus",
+            "icon": "🌵",
+            "text": "You spot a large barrel cactus. Some species store drinkable water inside. But do you know which ones are safe?",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🫗",
+                    "text": "Try to extract water from it",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You carefully cut into the cactus and find watery pulp! It's bitter but it's liquid. Survival in a spiny package.",
+                    "success_fx": { "water": 20, "morale": 5 },
+                    "fail_text": "The cactus contains alkaline fluid that burns your mouth. Not all cactus water is safe to drink. Your mouth and throat are sore.",
+                    "fail_fx": { "health": -8, "morale": -5 }
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Leave it — too risky without proper knowledge",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You resist the temptation. Some barrel cacti are safe, but many will make you sick. Smart choice.",
+                    "success_fx": { "morale": 2 }
+                }
+            ]
+        },
+        {
+            "id": "vultures_circling",
+            "name": "🦅 Vultures",
+            "icon": "🦅",
+            "text": "You notice vultures circling overhead. At first, they're distant — just dark shapes against the bleached sky. Then they get lower. They're not above you yet. But they're watching.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Keep moving — don't give them a reason to wait",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You push forward, head high. The vultures rise on a thermal and drift away. Not today.",
+                    "success_fx": { "morale": -2, "water": -3 }
+                },
+                {
+                    "icon": "🪵",
+                    "text": "Build a signal fire and scare them off",
+                    "requires": ["wood"],
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You light a small fire and wave burning branches at the sky. The smoke and noise drive the vultures higher. They lose interest.",
+                    "success_fx": { "morale": 2, "signal_progress": 1 }
+                }
+            ]
+        },
+        {
+            "id": "vultures_circling_low",
+            "name": "🦅 Vultures Circling Low",
+            "icon": "🦅",
+            "text": "The vultures are circling directly above you now. They've decided you're dying. The question is — are they right?",
+            "min_day": 5,
+            "condition": { "health_below": 40 },
+            "choices": [
+                {
+                    "icon": "💪",
+                    "text": "Stand up. Prove them wrong.",
+                    "success": 0.6,
+                    "hours": 0,
+                    "success_text": "You force yourself to your feet and shout at the sky. The vultures rise, uncertain. You're not dead yet.",
+                    "success_fx": { "morale": 8 }
+                },
+                {
+                    "icon": "💤",
+                    "text": "Rest — you need to conserve energy",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You find what shade you can and rest. The vultures watch. Let them. You'll show them tomorrow.",
+                    "success_fx": { "health": 5, "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "found_bottle",
+            "name": "🏺 Buried Bottle",
+            "icon": "🏺",
+            "text": "Half-buried in sand, you spot the glint of plastic. A water bottle, sealed. It's warm from the sun. It could be clean water — or it could be a bacterial nightmare.",
+            "min_day": 3,
+            "max_day": 9,
+            "choices": [
+                {
+                    "icon": "🫗",
+                    "text": "Drink it — you're desperate",
+                    "success": 0.5,
+                    "hours": 0,
+                    "success_text": "You crack the seal. The water is warm and tastes like plastic, but it's wet. Your body thanks you.",
+                    "success_fx": { "water": 15, "morale": 5 },
+                    "fail_text": "You drink. Within an hour, your stomach cramps violently. The water was contaminated. A cruel irony — the water that was supposed to save you is now making you sick.",
+                    "fail_fx": { "health": -15, "morale": -10, "water": -5 }
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Leave it — not worth the risk",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You stare at the bottle for a long time. Then you walk away. The thirst gnaws at you, but your gut is intact.",
+                    "success_fx": { "morale": -3 }
+                }
+            ]
+        },
+        {
+            "id": "other_passenger",
+            "name": "👜 Abandoned Luggage",
+            "icon": "👜",
+            "text": "Scattered near a cluster of rocks, you find luggage. A suitcase with a broken wheel. A child's backpack. These were your fellow passengers'. Someone else walked this way — but which direction did they go?",
+            "min_day": 2,
+            "max_day": 6,
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Search the luggage carefully",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You find a half-empty water bottle, a packet of crisps, and a small mirror. The mirror could be useful for signalling. You also find a note: 'WENT EAST — RAY'",
+                    "success_fx": { "water": 8, "morale": 5 },
+                    "success_loot": ["cordage"]
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Follow the tracks north",
+                    "success": 0.4,
+                    "hours": 3,
+                    "success_text": "You follow the tracks for an hour. They lead to an abandoned camp — water bottles drained, a fire ring cold for days. Ray didn't make it. But he left a note: 'ROAD IS SOUTH.'",
+                    "success_fx": { "morale": -3, "explore_progress": 2, "water": -5 },
+                    "fail_text": "The tracks fade into nothing. You've walked further from your shelter and found nothing.",
+                    "fail_fx": { "morale": -5, "water": -8 }
+                }
+            ]
+        },
+        {
+            "id": "flash_flood",
+            "name": "🌊 Flash Flood",
+            "icon": "🌊",
+            "text": "You hear it before you see it — a low rumble, like distant thunder. Then the canyon fills with water. A wall of brown water rushes toward you. You have seconds.",
+            "min_day": 4,
+            "location": "canyon_passage",
+            "choices": [
+                {
+                    "icon": "🧗",
+                    "text": "Climb the canyon walls NOW",
+                    "success": 0.65,
+                    "hours": 0,
+                    "success_text": "You scramble up the rock face just as the water roars through below. It passes in minutes, leaving a trail of debris. You're shaken but alive.",
+                    "success_fx": { "morale": -5, "health": -5 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Run downstream ahead of it",
+                    "success": 0.3,
+                    "hours": 1,
+                    "success_text": "You outrun the water by seconds, stumbling onto higher ground. Behind you, the canyon fills. Everything in its path is swept away.",
+                    "success_fx": { "morale": -8, "health": -5 }
+                },
+                {
+                    "icon": "📦",
+                    "text": "Grab your supplies and climb",
+                    "success": 0.45,
+                    "hours": 0,
+                    "success_text": "You grab what you can and climb. Some supplies fall from your pack as you scramble, but you make it to safety.",
+                    "success_fx": { "morale": -3, "health": -3 }
+                }
+            ]
+        },
+        {
+            "id": "dust_reveals",
+            "name": "⛏️ What the Storm Revealed",
+            "icon": "⛏️",
+            "text": "As the last of the sandstorm settles, you notice something glinting in the newly exposed ground. The storm has uncovered... something.",
+            "min_day": 4,
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Investigate the glint",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You dig carefully. It's the rusted frame of an old jeep, half-buried for decades. In the glove compartment: a faded map showing a road 15 miles south. And a working lighter.",
+                    "success_fx": { "morale": 10, "explore_progress": 3 },
+                    "success_loot": ["lighter"]
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Note the direction and move on",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You can't spare the energy to dig. But you note the direction it points — south. South might mean a road.",
+                    "success_fx": { "explore_progress": 1 }
+                }
+            ]
+        }
+    ],
+
+    "endings": [
+        {
+            "id": "rescued_desert",
+            "name": "Rescued!",
+            "icon": "🚁",
+            "type": "good",
+            "text": "After {days} days in the desert, a rescue vehicle finally reaches you. As they hand you cold water, you vow never to take a single drop for granted again. The desert taught you its harshest lesson — water is life.",
+            "summary": "You built a signal fire and were rescued from the desert.",
+            "condition": { "signal_progress": 7 }
+        },
+        {
+            "id": "found_road",
+            "name": "Found the Road",
+            "icon": "🛤️",
+            "type": "good",
+            "text": "After {days} days, your feet touch tarmac. A road. A truck stops for you. The driver can't believe anyone survived out there. You can't either. Ray couldn't. But you did.",
+            "summary": "You explored enough to find a road to civilisation.",
+            "condition": { "explore_progress": 10 }
+        },
+        {
+            "id": "rays_road",
+            "name": "Ray's Road",
+            "icon": "🧭",
+            "type": "good",
+            "text": "After {days} days, you stumble onto a dirt road. Ray was right — the road was south. He just didn't make it. You did. When the truck picks you up, you tell them about Ray. About where he is. About the compass still pointing south in his hand. They find him the next day. His kids get closure. You get out alive. That's what Ray would have wanted.",
+            "summary": "You followed the driver's trail and found the road.",
+            "condition": { "explore_progress": 10, "requires_event": "ray_camp" }
+        },
+        {
+            "id": "survived_7",
+            "name": "Desert Survivor",
+            "icon": "🏜️",
+            "type": "good",
+            "text": "After {days} days, you've learned the desert's rhythms. When to move, when to rest, where to find shade, how to read the sand. A Bedouin saying echoes in your mind: 'The desert teaches those who listen.' You listened. You survived.",
+            "summary": "You survived 7+ days in the desert.",
+            "condition": { "days_survived": 7, "min_resources": { "health": 25, "water": 10 } }
+        },
+        {
+            "id": "oasis_found",
+            "name": "The Oasis",
+            "icon": "🌴",
+            "type": "good",
+            "text": "After {days} days, you found the oasis. Palm trees, shade, and water. Real water. Not a mirage, not a dream. You drank until your stomach hurt, then drank more. You stayed for three days, building strength, before walking out. The desert tried to kill you. The oasis saved you. You'll never forget the taste of that water.",
+            "summary": "You found the oasis and thrived.",
+            "condition": { "days_survived": 7, "min_resources": { "health": 30 } }
+        },
+        {
+            "id": "death_dehydration",
+            "name": "Dehydration",
+            "icon": "💀",
+            "type": "bad",
+            "text": "Your body runs out of water. The desert sun drains you dry. In the end, you simply stop walking. The sand doesn't care. The vultures were right.",
+            "summary": "You died of dehydration.",
+            "condition": { "cause": "dehydration" }
+        },
+        {
+            "id": "death_health",
+            "name": "The Desert Claims You",
+            "icon": "🪦",
+            "type": "bad",
+            "text": "Your body can no longer endure. The desert is patient — it has all the time in the world. You did not.",
+            "summary": "Your health reached zero.",
+            "condition": { "health": 0 }
+        },
+        {
+            "id": "death_heat",
+            "name": "Heat Exhaustion",
+            "icon": "🔥",
+            "type": "bad",
+            "text": "The heat overwhelms you. Your vision blurs, your legs give way. The last thing you feel is the scorching sand beneath you. The desert claimed another.",
+            "summary": "You died of heat exhaustion.",
+            "condition": { "cause": "heat" }
+        },
+        {
+            "id": "the_mine",
+            "name": "The Mine",
+            "icon": "⛏️",
+            "type": "bittersweet",
+            "text": "The mine was cool. The mine was dark. The mine was safe. You stopped leaving. Why would you? Outside was nothing but killing heat and empty sand. Inside, the darkness wrapped around you like a blanket. When the search team finally found you, you were sitting in the back of the mine, staring at nothing. You told them you were waiting for someone. They found no one else in the mine. They found scratches on the walls — your scratches — counting days. Forty-seven marks. You'd been there for forty-seven days. You didn't remember most of them.",
+            "summary": "You stayed in the mine and never left.",
+            "condition": { "days_survived": 14, "max_morale": 25 }
+        },
+        {
+            "id": "sunscarred",
+            "name": "Sunscarred",
+            "icon": "☀️",
+            "type": "bittersweet",
+            "text": "They found you walking along the road, barely standing. Your skin was blistered and peeling. You'd lost the tops of your ears to sunburn and your lips were cracked and bleeding. In the hospital, they counted your injuries — sunstroke, severe dehydration, second-degree burns. You'll carry the scars for the rest of your life. But you'll also carry the knowledge that you walked out of the desert on your own two feet.",
+            "summary": "You survived but the sun left its mark on you forever.",
+            "condition": { "has_injury": "sunstroke", "days_survived": 7 }
+        },
+        {
+            "id": "mirage_mind",
+            "name": "Mirage Mind",
+            "icon": "😵‍💫",
+            "type": "bittersweet",
+            "text": "A truck found you stumbling along the road, muttering about water that wasn't there and buses that dissolved into heat haze. The desert gave you your body back — but it kept part of your mind. You still see the shimmer, even in air-conditioned rooms. You still hear the vultures. You still reach for water that isn't there. The doctors say it'll fade. Maybe. But the desert doesn't forget, and neither do you.",
+            "summary": "You survived but the desert broke your mind.",
+            "condition": { "days_survived": 7, "min_resources": { "health": 10 } }
+        }
+    ]
+}

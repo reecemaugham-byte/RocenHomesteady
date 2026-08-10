@@ -1,0 +1,1587 @@
+{
+    "id": "wild_forest",
+    "name": "Wild Forest",
+    "icon": "🌲",
+    "tagline": "Lost in dense temperate woodland. Rich with plants, but danger hides among the greenery.",
+    "difficulty": 1,
+    "intro": "The school trip was supposed to be a gentle nature walk. But when the group stopped for lunch, you wandered off to photograph a butterfly. Now the path is gone. The trees look the same in every direction. Your phone has no signal. The light is starting to fade, and the forest sounds different at dusk — more rustling, more eyes watching. You have a water bottle and a chocolate bar. It's going to be a long night.",
+
+    "start_season": "Autumn",
+    "hours_per_day": 10,
+    "actions_per_day": 4,
+    "bonus_action_morale": 70,
+    "season_cycle_days": 12,
+
+    "starting": {
+        "health": 100,
+        "hunger": 75,
+        "warmth": 80,
+        "morale": 65,
+        "water": 60
+    },
+    "starting_inventory": ["water_bottle", "compass"],
+
+    "decay": {
+        "hunger": 6,
+        "warmth": 4,
+        "morale": 3,
+        "water": 3
+    },
+
+    "missed_opportunity": {
+        "days_without_signal": 4,
+        "event_id": "distant_voices"
+    },
+
+    "shelter": [
+        { "name": "No Shelter", "icon": "🌧️", "desc": "Exposed to the forest weather. Uncomfortable but manageable.", "warmth_bonus": 0 },
+        { "name": "Leaf Pile", "icon": "🍃", "desc": "A thick pile of dry leaves. Surprisingly warm for such a simple shelter.", "warmth_bonus": 2 },
+        { "name": "Branch Shelter", "icon": "🏕️", "desc": "A lean-to made of fallen branches and moss. Keeps the rain off.", "warmth_bonus": 4 },
+        { "name": "Forest Den", "icon": "🛖", "desc": "A proper woodland shelter. Insulated, weatherproof, and almost comfortable.", "warmth_bonus": 7 }
+    ],
+
+    "locations": [
+        {
+            "id": "forest_clearing",
+            "name": "Forest Clearing",
+            "icon": "🌳",
+            "desc": "A small clearing where you first realised you were lost. Some useful plants nearby. The trees seem to lean in when you're not looking.",
+            "discovered": true,
+            "foraging_quality": 0.6,
+            "shelter_bonus": false,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.03
+        },
+        {
+            "id": "stream_bank",
+            "name": "Stream Bank",
+            "icon": "💧",
+            "desc": "A babbling stream with fresh water. Good foraging along the banks. The water tastes clean and cold.",
+            "discovered": false,
+            "foraging_quality": 0.7,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.05
+        },
+        {
+            "id": "berry_patch",
+            "name": "Berry Patch",
+            "icon": "🫐",
+            "desc": "Dense bushes heavy with berries — but which ones are safe? The bushes rustle even when there's no wind.",
+            "discovered": false,
+            "foraging_quality": 0.9,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.02
+        },
+        {
+            "id": "mushroom_grove",
+            "name": "Mushroom Grove",
+            "icon": "🍄",
+            "desc": "Damp and shady. Fungi grow everywhere — some delicious, some deadly. The air feels thick here. Dreamy. Like the grove doesn't want you to leave.",
+            "discovered": false,
+            "foraging_quality": 0.95,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.04
+        },
+        {
+            "id": "old_campsite",
+            "name": "Old Campsite",
+            "icon": "⛺",
+            "desc": "Remnants of a previous camper. A fire ring, some useful debris, and a strange feeling that someone was here not long ago.",
+            "discovered": false,
+            "foraging_quality": 0.3,
+            "shelter_bonus": true,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.02
+        },
+        {
+            "id": "hilltop",
+            "name": "Hilltop View",
+            "icon": "⛰️",
+            "desc": "A hill rising above the canopy. Excellent for signalling, but exposed to wind. The forest stretches endlessly in every direction.",
+            "discovered": false,
+            "foraging_quality": 0.2,
+            "shelter_bonus": false,
+            "signal_bonus": 3,
+            "water_source": false,
+            "lose_chance": 0.08
+        },
+        {
+            "id": "dense_thicket",
+            "name": "Dense Thicket",
+            "icon": "🌿",
+            "desc": "Impenetrable brambles and thorns. Slow going, but great foraging underneath. The thorns seem to reach for you as you pass.",
+            "discovered": false,
+            "foraging_quality": 0.75,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.07
+        },
+        {
+            "id": "river_crossing",
+            "name": "River Crossing",
+            "icon": "🏞️",
+            "desc": "A wider river with a possible crossing. Risky, but the other side might have a road. The current is strong but the water is clear.",
+            "discovered": false,
+            "foraging_quality": 0.4,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.15
+        },
+        {
+            "id": "fairy_ring",
+            "name": "Fairy Ring",
+            "icon": "✨",
+            "desc": "A perfect circle of mushrooms on the forest floor. The grass inside is greener than anything you've seen. Something hums at the edge of your hearing.",
+            "discovered": false,
+            "foraging_quality": 0.95,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.03
+        },
+        {
+            "id": "standing_stones",
+            "name": "Standing Stones",
+            "icon": "🪨",
+            "desc": "Three ancient stones stand in a triangle, covered in moss so old it's black. The air feels different here. Heavier. Older. Like the forest is listening.",
+            "discovered": false,
+            "foraging_quality": 0.3,
+            "shelter_bonus": false,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.02
+        }
+    ],
+
+    "plants": [
+        {
+            "id": "chanterelle",
+            "name": "Chanterelle Mushroom",
+            "icon": "🍄",
+            "is_edible": true,
+            "desc_safe": "A prized edible mushroom with a fruity, apricot-like aroma. Golden yellow with wavy caps and false gills that look like forked ridges. One of the safest wild mushrooms to identify.",
+            "desc_unsafe": "A mushroom with a golden-yellow, funnel-shaped cap and ridges running down the stem instead of true gills. It has a faint fruity smell.",
+            "locations": ["mushroom_grove", "dense_thicket", "forest_clearing"],
+            "difficulty": 1,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "hunger": 12 },
+            "unsafe_yield": { "health": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You pick what you think is a chanterelle, but the flesh is soft and the smell is wrong. False chanterelles can cause nausea and disturbing hallucinations.",
+            "loot": []
+        },
+        {
+            "id": "elderberry",
+            "name": "Elderberry",
+            "icon": "🫐",
+            "is_edible": true,
+            "desc_safe": "Dark purple-black berries that MUST be cooked before eating — raw elderberries cause nausea. When cooked, they're a rich source of vitamins and can be made into a warming syrup.",
+            "desc_unsafe": "Clusters of small dark berries on a shrub with compound leaves. The stems are slightly woody and the berries have a dusty, grey-purple appearance.",
+            "locations": ["berry_patch", "forest_clearing", "stream_bank"],
+            "difficulty": 2,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "hunger": 8, "morale": 3 },
+            "unsafe_yield": { "health": -12, "morale": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the berries raw by the handful. Within an hour, your stomach cramps and you're violently ill. Elderberries must be cooked to neutralise the toxins.",
+            "loot": ["berries"]
+        },
+        {
+            "id": "wild_garlic",
+            "name": "Wild Garlic",
+            "icon": "🧄",
+            "is_edible": true,
+            "desc_safe": "Also called ramsons. The leaves and bulbs have a strong garlic smell — the easiest identification method. If it doesn't smell strongly of garlic, it ISN'T wild garlic. Delicious in stews.",
+            "desc_unsafe": "Long, broad, lance-shaped leaves growing from the ground in clusters. When crushed, they should smell strongly of garlic. If they don't smell of garlic, they are dangerous.",
+            "locations": ["stream_bank", "dense_thicket", "forest_clearing"],
+            "difficulty": 1,
+            "seasons": ["Spring", "Summer", "Autumn"],
+            "safe_yield": { "hunger": 8 },
+            "unsafe_yield": { "health": -15 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the leaves without checking the smell. They're lily of the valley — toxic and potentially fatal. Your heart races and your vision blurs.",
+            "loot": []
+        },
+        {
+            "id": "foxglove",
+            "name": "Foxglove",
+            "icon": "🌺",
+            "is_edible": false,
+            "desc_safe": "EXTREMELY POISONOUS. Beautiful but deadly. All parts contain digitalis, which affects the heart. Even water from a vase containing foxglove can be lethal. Identify only to avoid.",
+            "desc_unsafe": "A tall plant with a spike of tubular, purple-pink flowers with spotted throats. The leaves are large, soft, and slightly fuzzy. Very common in woodland clearings.",
+            "locations": ["forest_clearing", "berry_patch", "stream_bank"],
+            "difficulty": 2,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -30, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You brew the leaves into tea, thinking it's a medicinal herb. Foxglove contains digitalis — a heart medication that is lethal in the wrong dose. Your heartbeat becomes erratic. This is a medical emergency.",
+            "loot": []
+        },
+        {
+            "id": "hemlock",
+            "name": "Hemlock",
+            "icon": "☠️",
+            "is_edible": false,
+            "desc_safe": "DEADLY POISONOUS. Often mistaken for wild carrot or parsley. Look for purple-spotted stems and a mousey, foul smell. Even small amounts can kill. This is the poison that killed Socrates.",
+            "desc_unsafe": "A tall plant with feathery, fern-like leaves and clusters of small white flowers. The stem has distinctive purple-red spots. It smells musty, like mouse urine, when crushed.",
+            "locations": ["stream_bank", "dense_thicket", "old_campsite"],
+            "difficulty": 3,
+            "seasons": ["Spring", "Summer", "Autumn"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -30, "morale": -15 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat a small amount thinking it's wild parsley. Within minutes, your mouth burns, your limbs go numb, and your breathing becomes laboured. Hemlock poisoning is a horrific way to die.",
+            "loot": []
+        },
+        {
+            "id": "yarrow",
+            "name": "Yarrow",
+            "icon": "🌿",
+            "is_edible": false,
+            "desc_safe": "Not for eating, but one of the most useful medicinal plants. Crushed leaves stop bleeding, and yarrow tea reduces fever and inflammation. Essential wilderness medicine.",
+            "desc_unsafe": "A plant with flat clusters of tiny white flowers and feathery, fern-like leaves. When crushed, it has a distinctive spicy, herbal aroma.",
+            "locations": ["hilltop", "forest_clearing", "stream_bank"],
+            "difficulty": 2,
+            "seasons": ["Spring", "Summer", "Autumn"],
+            "safe_yield": { "morale": 2 },
+            "unsafe_yield": { "morale": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You try to eat yarrow leaves raw. They're incredibly bitter and make your mouth feel numb and strange. Yarrow is for wounds and tea, not eating.",
+            "loot": ["medicinal_herbs"]
+        },
+        {
+            "id": "chicken_of_the_woods",
+            "name": "Chicken of the Woods",
+            "icon": "🍄",
+            "is_edible": true,
+            "desc_safe": "A bright orange, shelf-like fungus growing on hardwood trees. When young, it has the texture and taste of chicken — one of the best wild mushrooms. No dangerous lookalikes if found on hardwood.",
+            "desc_unsafe": "Bright orange, fan-shaped shelves growing in overlapping clusters on tree trunks. The undersurface has tiny pores, not gills. Soft and tender when young, tough when old.",
+            "locations": ["mushroom_grove", "dense_thicket", "old_campsite"],
+            "difficulty": 1,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "hunger": 15, "morale": 3 },
+            "unsafe_yield": { "health": -8 },
+            "unsafe_injury": null,
+            "unsafe_text": "You find an orange shelf mushroom and eat it raw, but it was growing on a conifer tree, not hardwood. Some conifer varieties cause stomach upset and allergic reactions.",
+            "loot": ["wood"]
+        },
+        {
+            "id": "rowan_berries",
+            "name": "Rowan Berries",
+            "icon": "🔴",
+            "is_edible": true,
+            "desc_safe": "Bright red berries in clusters. Too bitter to eat raw, but when cooked they make a tart, nutritious preserve. In old folklore, rowan protects against evil — hang a branch above your door and nothing ill will enter.",
+            "desc_unsafe": "Clusters of bright red berries on a tree with compound leaves. They look like small crabapples and taste extremely bitter when raw.",
+            "locations": ["standing_stones", "hilltop", "forest_clearing"],
+            "difficulty": 1,
+            "seasons": ["Autumn", "Winter"],
+            "safe_yield": { "hunger": 6, "morale": 2 },
+            "unsafe_yield": { "hunger": -3, "morale": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the raw berries. They're so bitter your mouth puckers and your stomach turns. These need to be cooked.",
+            "loot": ["berries"]
+        },
+        {
+            "id": "deadly_nightshade",
+            "name": "Deadly Nightshade",
+            "icon": "☠️",
+            "is_edible": false,
+            "desc_safe": "ONE OF THE MOST POISONOUS PLANTS IN THE FOREST. Also called belladonna. Glossy black berries and purple bell-shaped flowers. Even a few berries can be fatal to a child. Identify only to avoid — never touch.",
+            "desc_unsafe": "A plant with dull green leaves and distinctive purple bell-shaped flowers. It produces glossy black berries that look temptingly like small cherries. The entire plant is toxic.",
+            "locations": ["forest_clearing", "berry_patch", "dense_thicket"],
+            "difficulty": 2,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -35, "morale": -15 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the shiny black berries, thinking they're safe. Within minutes, your vision blurs, your heart races, and your throat feels like it's closing. Deadly nightshade — even a small amount can kill.",
+            "loot": []
+        },
+        {
+            "id": "dandelion",
+            "name": "Dandelion",
+            "icon": "🌼",
+            "is_edible": true,
+            "desc_safe": "One of the most recognisable wild edibles. Every part is edible — leaves in salad, roots as a coffee substitute, flowers for tea. The deeply toothed leaves and yellow flower head make it easy to identify.",
+            "desc_unsafe": "A low-growing plant with deeply lobed, toothed leaves and a bright yellow flower head on a hollow stem. When broken, the stem exudes a white milky sap.",
+            "locations": ["forest_clearing", "hilltop", "stream_bank", "old_campsite"],
+            "difficulty": 1,
+            "seasons": ["Spring", "Summer", "Autumn"],
+            "safe_yield": { "hunger": 6, "water": 3 },
+            "unsafe_yield": { "hunger": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat what you think is dandelion, but the leaves are broader and the stem is solid, not hollow. It's a lookalike — bitter and unpleasant, but thankfully not dangerous.",
+            "loot": []
+        },
+        {
+            "id": "nettle",
+            "name": "Nettle",
+            "icon": "🌿",
+            "is_edible": true,
+            "desc_safe": "Stinging nettles are INCREDIBLY NUTRITIOUS when cooked — more vitamins than spinach! The tiny hairs that sting you become harmless when boiled or dried. Pick with care, cook with confidence.",
+            "desc_unsafe": "A plant with jagged, heart-shaped leaves covered in tiny hairs. Touching it causes an immediate stinging sensation. When cooked, the stingers are destroyed and it becomes safe and nutritious.",
+            "locations": ["stream_bank", "dense_thicket", "forest_clearing", "old_campsite"],
+            "difficulty": 2,
+            "seasons": ["Spring", "Summer", "Autumn"],
+            "safe_yield": { "hunger": 10 },
+            "unsafe_yield": { "health": -5, "morale": -8 },
+            "unsafe_injury": null,
+            "unsafe_text": "You grab the plant bare-handed to forage it. OUCH! The tiny hairs inject irritants into your skin. Your hands are covered in stinging welts. Nettles must be handled with care and cooked before eating.",
+            "loot": []
+        },
+        {
+            "id": "jack_o_lantern",
+            "name": "Jack-o'-Lantern Mushroom",
+            "icon": "🍄",
+            "is_edible": false,
+            "desc_safe": "POISONOUS. Often mistaken for chanterelles. The key differences: true gills (not ridges), grows in clusters on wood (not on the ground), and sometimes glows faintly in the dark. Causes severe stomach illness.",
+            "desc_unsafe": "An orange mushroom with true gills (not the forked ridges of chanterelles) growing in a cluster at the base of a tree. It may have a faint bioluminescent glow in very dark conditions.",
+            "locations": ["mushroom_grove", "dense_thicket"],
+            "difficulty": 3,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -20, "morale": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You confidently identify it as a chanterelle and eat it. Hours later, violent nausea and stomach cramps tell you the truth — it has true gills, not ridges. It's a jack-o'-lantern, and it's poisonous.",
+            "loot": []
+        },
+        {
+            "id": "birch_polypore",
+            "name": "Birch Polypore",
+            "icon": "🍄",
+            "is_edible": false,
+            "desc_safe": "Not for eating, but a valuable medicinal mushroom. Growing on birch trees, it can be used as a plaster for cuts, brewed into tea for stomach problems, and has antibacterial properties. A forager's medicine cabinet.",
+            "desc_unsafe": "A pale brown, hoof-shaped fungus growing on birch tree trunks. The underside has tiny pores and the surface feels slightly velvety. It has a faint mushroomy smell.",
+            "locations": ["forest_clearing", "dense_thicket", "old_campsite"],
+            "difficulty": 1,
+            "seasons": ["Spring", "Summer", "Autumn", "Winter"],
+            "safe_yield": { "morale": 2 },
+            "unsafe_yield": { "morale": -1 },
+            "unsafe_injury": null,
+            "unsafe_text": "You try to eat the birch polypore raw. It's tough, bitter, and completely unpalatable. This mushroom is for medicine, not meals.",
+            "loot": ["medicinal_herbs"]
+        },
+        {
+            "id": "wild_strawberry",
+            "name": "Wild Strawberry",
+            "icon": "🍓",
+            "is_edible": true,
+            "desc_safe": "Tiny but incredibly flavourful — wild strawberries are sweeter than any shop-bought variety. The three-lobed leaves and small red fruit with seeds on the outside are distinctive. A delightful find.",
+            "desc_unsafe": "A low-growing plant with three-toothed leaflets on each leaf and small red berries. The fruit has tiny seeds dotted on the outside. It resembles other wild berries, so check the leaves carefully.",
+            "locations": ["forest_clearing", "berry_patch", "hilltop"],
+            "difficulty": 1,
+            "seasons": ["Spring", "Summer"],
+            "safe_yield": { "hunger": 8, "morale": 5 },
+            "unsafe_yield": { "health": -8, "morale": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the berries eagerly, but the leaves don't have three leaflets — they're from a different plant. Your stomach cramps unpleasantly. Always check the leaves, not just the fruit.",
+            "loot": ["berries"]
+        }
+    ],
+
+    "weather_types": {
+        "clear": { "icon": "☀️", "desc": "Clear skies. Sunlight filters through the canopy. Good foraging weather.", "warmth_mod": 2, "morale_mod": 3, "water_mod": 0 },
+        "cloudy": { "icon": "☁️", "desc": "Overcast. Cool and grey, but dry.", "warmth_mod": -1, "morale_mod": -1, "water_mod": 0 },
+        "rain": { "icon": "🌧️", "desc": "Rain. The forest floor turns muddy and slippery. Streams rise.", "warmth_mod": -3, "morale_mod": -3, "water_mod": 2 },
+        "storm": { "icon": "⛈️", "desc": "Thunderstorm! Lightning cracks through the canopy.", "warmth_mod": -5, "morale_mod": -5, "water_mod": 5 },
+        "fog": { "icon": "🌫️", "desc": "Dense fog. Visibility reduced to metres. Easy to get turned around.", "warmth_mod": -2, "morale_mod": -2, "water_mod": 0 },
+        "mist": { "icon": "🌤️", "desc": "Morning mist. Low visibility but the forest feels alive. Mushrooms thrive.", "warmth_mod": -1, "morale_mod": 1, "water_mod": 1 }
+    },
+
+    "weather_chances": {
+        "Spring": { "clear": 0.35, "cloudy": 0.2, "rain": 0.25, "storm": 0.05, "fog": 0.05, "mist": 0.1 },
+        "Summer": { "clear": 0.45, "cloudy": 0.2, "rain": 0.15, "storm": 0.1, "fog": 0.05, "mist": 0.05 },
+        "Autumn": { "clear": 0.25, "cloudy": 0.25, "rain": 0.25, "storm": 0.05, "fog": 0.1, "mist": 0.1 },
+        "Winter": { "clear": 0.15, "cloudy": 0.3, "rain": 0.15, "storm": 0.1, "fog": 0.15, "mist": 0.15 }
+    },
+
+    "weather_flavour": {
+        "wild_forest": {
+            "day_start": {
+                "clear": "Sunlight filters through the canopy in golden beams. The forest looks almost friendly this morning.",
+                "cloudy": "Grey light seeps through the leaves. The forest is quiet, watchful, as if it's deciding something about you.",
+                "rain": "Rain patters on the leaves above you. Everything is damp. Streams will be fuller today.",
+                "storm": "Thunder rolls across the sky. Rain hammers down through the canopy. Stay under cover!",
+                "fog": "Fog clings to the trees. You can barely see 10 metres. Every direction looks the same. The forest is keeping its secrets.",
+                "mist": "A soft mist hangs between the trees. Dewdrops glisten on every surface. The mushrooms will be plentiful today."
+            }
+        }
+    },
+
+    "day_start": [
+        "The forest wakes around you. Birdsong breaks the silence. Time to get moving.",
+        "You stretch your stiff limbs. Another day of survival. The forest provides — if you know where to look.",
+        "Dawn light cuts through the trees. The dew on the leaves glistens. A new day begins.",
+        "Something woke you in the night. You're not sure what. But you're still here.",
+        "Morning comes reluctantly. Every muscle aches, but lying still won't save you.",
+        "Your phone is dead. Has been for days. You wonder if anyone is looking for you.",
+        "The forest smells different this morning. Wetter. The leaves are starting to turn.",
+        "You dreamt of home last night. Your mum's face. You push the thought away and stand up.",
+        "A bird calls somewhere in the canopy. It sounds almost like a warning. Almost like a greeting.",
+        "The trees seem taller in the morning light. Or maybe you just feel smaller.",
+        "You woke up with the absolute certainty that something was standing over you. By the time your eyes opened, it was gone.",
+        "Mushrooms have appeared overnight near your shelter. The forest is full of surprises — some good, some very bad."
+    ],
+
+    "events": [
+        {
+            "id": "deer_encounter",
+            "name": "🦌 Deer Encounter",
+            "icon": "🦌",
+            "text": "A roe deer steps into a clearing ahead. It freezes, watching you with dark eyes. This could be a rare source of substantial food.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🏹",
+                    "text": "Try to hunt it with your spear",
+                    "requires": ["spear"],
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You stalk forward carefully. With a quick thrust, you bring the deer down! This is significant protein.",
+                    "success_fx": { "hunger": 30, "morale": 15 },
+                    "fail_text": "The deer bolts before you can get close. It vanishes into the undergrowth.",
+                    "fail_fx": { "morale": -3 }
+                },
+                {
+                    "icon": "🪤",
+                    "text": "Set a snare for it",
+                    "requires": ["snare"],
+                    "success": 0.2,
+                    "hours": 3,
+                    "success_text": "Your snare catches the deer's leg! It's a struggle, but you secure your catch.",
+                    "success_fx": { "hunger": 25, "morale": 10 },
+                    "fail_text": "The deer avoids your snare entirely. Too large and too wary.",
+                    "fail_fx": { "morale": -2 }
+                },
+                {
+                    "icon": "👀",
+                    "text": "Watch it go — you're not equipped to hunt",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You watch the deer disappear into the trees. A moment of beauty in the wilderness.",
+                    "success_fx": { "morale": 5 },
+                    "karma_mod": 3
+                }
+            ]
+        },
+        {
+            "id": "fox_visitor",
+            "name": "🦊 Fox Visitor",
+            "icon": "🦊",
+            "text": "A red fox sits at the edge of your camp, watching you curiously. It's bold — or hungry. It might know where food is nearby.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the fox at a distance",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "The fox leads you to a patch of berries you'd never have found on your own. Smart creature.",
+                    "success_fx": { "hunger": 10, "morale": 5 },
+                    "fail_text": "The fox vanishes into the undergrowth. You're further from camp now, and nothing to show for it.",
+                    "fail_fx": { "morale": -2, "health": -2 }
+                },
+                {
+                    "icon": "🪤",
+                    "text": "Try to catch it",
+                    "success": 0.1,
+                    "hours": 2,
+                    "success_text": "Against all odds, you corner the fox! Tough but nutritious.",
+                    "success_fx": { "hunger": 15 },
+                    "fail_text": "The fox is far too quick. It's gone before you can blink.",
+                    "fail_fx": { "morale": -3 },
+                    "karma_mod": -5
+                },
+                {
+                    "icon": "🍂",
+                    "text": "Leave it an offering of berries",
+                    "requires": ["berries"],
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You place a few berries on the ground and step back. The fox sniffs them, eats them, and looks at you. Then it turns and walks slowly toward a thicket, glancing back as if to say 'follow me'. You find edible plants near the thicket.",
+                    "success_fx": { "hunger": 8, "morale": 8 },
+                    "karma_mod": 5
+                }
+            ]
+        },
+        {
+            "id": "poison_ivy",
+            "name": "🌿 Poison Ivy",
+            "icon": "🌿",
+            "text": "You brush against some foliage and feel an immediate itch. Your skin starts to redden and swell. Classic poison ivy.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🩹",
+                    "text": "Wash the area and use a bandage",
+                    "requires": ["bandage"],
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You rinse the area and wrap it with your bandage. The irritation is manageable.",
+                    "success_fx": { "health": -2 }
+                },
+                {
+                    "icon": "💧",
+                    "text": "Wash it in the stream",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "Cold water soothes the worst of it. It'll pass in a few days.",
+                    "success_fx": { "health": -5, "morale": -3 },
+                    "fail_text": "Without a water source nearby, you can't wash it properly. The rash spreads uncomfortably.",
+                    "fail_fx": { "health": -10, "morale": -8 }
+                }
+            ]
+        },
+        {
+            "id": "old_fire_ring",
+            "name": "🔥 Old Fire Ring",
+            "icon": "🔥",
+            "text": "You stumble upon an old campfire ring — blackened stones in a circle. Someone was here before. There might be useful remains.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Search the area for supplies",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You find a half-buried tin can and some wire near the fire ring. Useful!",
+                    "success_fx": { "morale": 5 },
+                    "success_loot": ["tin_can", "wire"]
+                },
+                {
+                    "icon": "🏕️",
+                    "text": "Make camp here — it's a good spot",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "The cleared area makes a natural campsite. You feel safer with signs of previous habitation.",
+                    "success_fx": { "morale": 8, "warmth": 2 }
+                }
+            ]
+        },
+        {
+            "id": "strange_mushroom",
+            "name": "🍄 Strange Mushroom",
+            "icon": "🍄",
+            "text": "You spot a cluster of striking mushrooms — orange caps with white spots. They look like fly agaric. Definitely poisonous... or are they?",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🌿",
+                    "text": "Forage — identify them properly",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You carefully examine the mushrooms. Fly agaric — definitely toxic raw, but they have traditional uses. You note their location but leave them be.",
+                    "success_fx": { "morale": 3 }
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Leave them alone — not worth the risk",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "Smart choice. Some mushrooms can kill with a single bite. You move on safely.",
+                    "success_fx": { "morale": 2 },
+                    "karma_mod": 2
+                }
+            ]
+        },
+        {
+            "id": "bird_flock",
+            "name": "🐦 Startled Birds",
+            "icon": "🐦",
+            "text": "A flock of birds erupts from the canopy, calling in alarm. Something startled them. Something might be nearby — or it could be nothing.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "👀",
+                    "text": "Investigate what scared them",
+                    "success": 0.4,
+                    "hours": 1,
+                    "success_text": "You find where the birds were feeding — a patch of wild berries! Their loss is your gain.",
+                    "success_fx": { "hunger": 12, "morale": 5 },
+                    "fail_text": "You find nothing but disturbed leaves. Whatever scared the birds is gone.",
+                    "fail_fx": { "morale": -2 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Stay put — could be a predator",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You stay alert but don't approach. Better safe than sorry in the wild.",
+                    "success_fx": { "morale": 1 }
+                }
+            ]
+        },
+        {
+            "id": "found_track",
+            "name": "🥾 Human Tracks",
+            "icon": "🥾",
+            "text": "You find a boot print in the mud. A human boot — not yours! Someone else is out here. Or was recently.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the tracks",
+                    "success": 0.5,
+                    "hours": 3,
+                    "success_text": "The tracks lead to an old campsite! There are supplies scattered around. The previous occupant is gone, but they left useful things behind.",
+                    "success_fx": { "morale": 15, "hunger": 5 },
+                    "success_loot": ["cordage", "medicinal_herbs"]
+                },
+                {
+                    "icon": "📡",
+                    "text": "Head to high ground to signal instead",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "From the hilltop, you spot a distant road! The direction is now clear in your mind.",
+                    "success_fx": { "explore_progress": 3, "morale": 10 },
+                    "fail_text": "The hilltop shows nothing but endless forest. But at least you know the lay of the land better.",
+                    "fail_fx": { "explore_progress": 1 }
+                }
+            ]
+        },
+        {
+            "id": "rain_shelter",
+            "name": "🌧️ Sudden Rain",
+            "icon": "🌧️",
+            "text": "The sky darkens and rain starts falling heavily. You need to decide quickly — find shelter or push through.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🏕️",
+                    "text": "Take shelter and wait it out",
+                    "success": 1.0,
+                    "hours": 2,
+                    "success_text": "You huddle under cover as the rain pours. It passes eventually. You stay dry, but lose time.",
+                    "success_fx": { "warmth": -2, "morale": -2 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Push through the rain",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You push through, soaked but determined. You make good progress despite the weather.",
+                    "success_fx": { "warmth": -5, "morale": -3, "explore_progress": 2 },
+                    "fail_text": "The rain soaks you to the bone and you slip in the mud. Cold and miserable.",
+                    "fail_fx": { "warmth": -8, "morale": -8, "health": -5 }
+                }
+            ]
+        },
+                {
+            "id": "search_helicopter",
+            "name": "🚁 Search Helicopter",
+            "icon": "🚁",
+            "text": "The sound of rotor blades! A helicopter is searching the area. If you've prepared a signal, this could be your chance.",
+            "min_day": 4,
+            "condition": { "signal_below": 5 },
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Light your signal fire NOW!",
+                    "requires": ["wood"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You rush to light your signal! Smoke pours into the sky — the helicopter banks! They've seen you! 'STAY WHERE YOU ARE!' a voice crackles over a loudspeaker. 'RESCUE IS ON THE WAY!'",
+                    "success_fx": { "morale": 30 },
+                    "signal_override": 7
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Wave and shout!",
+                    "success": 0.1,
+                    "hours": 1,
+                    "success_text": "You scream and wave. Against all odds, a spotter on the helicopter sees you! They circle and lower a basket. You're saved!",
+                    "success_fx": { "morale": 30 },
+                    "fail_text": "The helicopter passes without slowing. They didn't see you. You scream until your voice is raw, but the sound of the rotors drowns you out. They're gone. The silence that follows is the worst sound you've ever heard.",
+                    "fail_fx": { "morale": -20 }
+                }
+            ]
+        },
+        {
+            "id": "search_dogs",
+            "name": "🐕 Distant Barking",
+            "icon": "🐕",
+            "text": "You hear it — dogs barking in the distance. Search dogs! Someone is looking for you! But the sound is faint and moving away...",
+            "min_day": 5,
+            "max_day": 10,
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Run toward the sound",
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You crash through the undergrowth, shouting. The barking gets louder — then stops. You've found a search team's trail marker! They were here. Recently. Rescue might be close.",
+                    "success_fx": { "morale": 15, "explore_progress": 3 }
+                },
+                {
+                    "icon": "📡",
+                    "text": "Stay put and signal",
+                    "requires": ["wood"],
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You light a small fire and add green leaves for smoke. The barking changes direction. They've seen the smoke! Help is coming!",
+                    "success_fx": { "morale": 20, "signal_progress": 3 }
+                },
+                {
+                    "icon": "📢",
+                    "text": "Shout as loud as you can",
+                    "success": 0.15,
+                    "hours": 1,
+                    "success_text": "You scream. You scream until your throat is raw. For a moment, the barking stops. Then it starts again — further away. They didn't hear you.",
+                    "success_fx": { "morale": -15, "health": -3 }
+                }
+            ]
+        },
+        {
+            "id": "will_o_wisp",
+            "name": "🔮 Will-o'-the-Wisp",
+            "icon": "🔮",
+            "text": "As dusk settles, you see a pale blue light floating between the trees. It bobs gently, as if beckoning you deeper into the forest. It's beautiful. It's also not natural.",
+            "min_day": 3,
+            "mythic": true,
+            "condition": { "karma_above": 40 },
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Follow the light",
+                    "success": 0.55,
+                    "hours": 2,
+                    "success_text": "You follow the light through twisting paths you'd never find on your own. It leads you to a clearing you didn't know existed — rich with plants and shelter. By the time you turn to thank it, the light is gone.",
+                    "success_fx": { "morale": 10, "explore_progress": 3 },
+                    "karma_mod": 5
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Don't trust it — stay put",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You watch the light until it fades. It was beautiful. But the forest doesn't give gifts for free. You're sure of that much.",
+                    "success_fx": { "morale": -2 },
+                    "karma_mod": -3
+                }
+            ]
+        },
+        {
+            "id": "fairy_bargain",
+            "name": "🧚 The Fairy Bargain",
+            "icon": "🧚",
+            "text": "In a clearing lit by impossible golden light, a figure no taller than your knee stands watching you. It tilts its head like a bird. 'Lost one,' it says in a voice like wind chimes. 'I can show you the way out. But you must leave something behind.'",
+            "min_day": 5,
+            "mythic": true,
+            "condition": { "karma_above": 55 },
+            "choices": [
+                {
+                    "icon": "🤝",
+                    "text": "Accept the bargain",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You agree. The figure smiles — too wide, too many teeth — and reaches into your pack. It takes your most valuable crafted item. 'Arms are not the way of the wood,' it whispers. Then it points south. 'The road is there.' The golden light fades. You're alone. But you know the way now.",
+                    "success_fx": { "morale": 5, "explore_progress": 5 },
+                    "karma_mod": 10
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Decline politely",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The figure shrugs and vanishes. The golden light fades. You're alone again, but you feel watched. You always feel watched now.",
+                    "success_fx": { "morale": -5 },
+                    "karma_mod": -5
+                },
+                {
+                    "icon": "🍂",
+                    "text": "Offer the bundle you prepared",
+                    "requires": ["offering_bundle"],
+                    "success": 0.95,
+                    "hours": 1,
+                    "success_text": "You place your offering bundle on the ground. The figure's eyes light up. It takes the berries, the herbs, the wood, and disappears. In its place, a glowing path stretches south. You can feel it — the road is near.",
+                    "success_fx": { "morale": 15, "explore_progress": 7 },
+                    "karma_mod": 15
+                }
+            ]
+        },
+        {
+            "id": "whispering_tree",
+            "name": "🌳 The Whispering Tree",
+            "icon": "🌳",
+            "text": "An ancient oak, wider than three people, stands alone. As you approach, the leaves rustle — but there's no wind. You hear whispers. Advice, maybe. Or warnings.",
+            "min_day": 4,
+            "mythic": true,
+            "condition": { "karma_above": 45 },
+            "choices": [
+                {
+                    "icon": "👂",
+                    "text": "Listen carefully",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You press your ear to the bark. The whispers are clear now. 'The creek ice is thin this year,' it says. 'The red berries on the hill are safe.' Useful. The old tree is helping you.",
+                    "success_fx": { "morale": 8 },
+                    "karma_mod": 5
+                },
+                {
+                    "icon": "🪵",
+                    "text": "Cut a branch for firewood",
+                    "success": 0.4,
+                    "hours": 1,
+                    "success_text": "You cut a branch. The whispers stop immediately. The tree stands silent and cold. You got wood, but you feel like you broke something.",
+                    "success_fx": { "morale": -5 },
+                    "success_loot": ["wood"],
+                    "karma_mod": -15
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Leave it alone — some things aren't for you",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You bow slightly and walk away. The whispers follow you for a moment, then fade. The forest respects caution.",
+                    "success_fx": { "morale": 2 },
+                    "karma_mod": 3
+                }
+            ]
+        },
+        {
+            "id": "standing_stones_event",
+            "name": "🪨 The Standing Stones",
+            "icon": "🪨",
+            "text": "Three tall stones stand in a triangle, covered in moss so old it's black. The air here is different — heavier, older. You feel like you're being watched, but not unkindly. This place is ancient.",
+            "min_day": 5,
+            "mythic": true,
+            "location": "standing_stones",
+            "choices": [
+                {
+                    "icon": "🤚",
+                    "text": "Touch the stones",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "Strange warmth floods through you. Your aches fade. Your mind clears. The stones hum under your fingers, and when you pull away, you feel stronger. Something old looked at you and decided you deserved a gift.",
+                    "success_fx": { "health": 15, "morale": 10 },
+                    "treat_injury": "all",
+                    "karma_mod": 8
+                },
+                {
+                    "icon": "🍂",
+                    "text": "Leave an offering",
+                    "requires": ["medicinal_herbs"],
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You place your herbs at the base of the tallest stone. The forest seems to breathe. For the next few days, your foraging is blessed — plants seem easier to find, berries ripen in your path.",
+                    "success_fx": { "morale": 8 },
+                    "karma_mod": 15
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Walk away slowly",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You back away. Some places aren't for you. The stones watch you go with whatever passes for patience in stone.",
+                    "success_fx": { "morale": -1 },
+                    "karma_mod": 0
+                }
+            ]
+        },
+        {
+            "id": "lost_child_crying",
+            "name": "👶 Crying in the Forest",
+            "icon": "👶",
+            "text": "You hear it — a child's voice, sobbing somewhere deeper in the trees. 'Hello? Is someone there? I'm lost!' It sounds real. It sounds afraid.",
+            "min_day": 3,
+            "max_day": 8,
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Follow the voice",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You push through brambles, calling out. The voice leads you in circles. When you finally reach the clearing where it was coming from, there's no one there. Just a circle of mushrooms and the faint smell of rain. But — you've found a part of the forest you've never seen before.",
+                    "success_fx": { "morale": -3, "explore_progress": 3 },
+                    "karma_mod": 5
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Don't follow it — something feels wrong",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The crying stops. When you look in the direction it came from, the trees seem closer than they were. You walk the other way.",
+                    "success_fx": { "morale": -2 },
+                    "karma_mod": -3
+                }
+            ]
+        },
+        {
+            "id": "hikers_backpack",
+            "name": "🎒 Torn Backpack",
+            "icon": "🎒",
+            "text": "You find a backpack half-buried under leaves. It's torn and weathered, but you can see a journal poking out of the top. Someone else was out here — and they were in trouble.",
+            "min_day": 2,
+            "max_day": 5,
+            "choices": [
+                {
+                    "icon": "📖",
+                    "text": "Read the journal",
+                    "success": 0.9,
+                    "hours": 2,
+                    "success_text": "The journal belongs to someone called Maya. Her notes are detailed — she knew her plants. She mapped the stream, marked where she found berries, and wrote about which mushrooms were safe. The last entry says: 'Following the ridge east. I think I see a road.' This could help you too.",
+                    "success_fx": { "morale": 10, "explore_progress": 2 },
+                    "success_loot": ["cordage", "medicinal_herbs"]
+                },
+                {
+                    "icon": "🔍",
+                    "text": "Search for supplies and move on",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You find some useful items in the pack. The journal can wait — survival comes first.",
+                    "success_fx": { "morale": 3 },
+                    "success_loot": ["cordage", "bandage"]
+                }
+            ]
+        },
+        {
+            "id": "hikers_trail_marks",
+            "name": "🪧 Trail Marks",
+            "icon": "🪧",
+            "text": "Scratched into the bark of three trees, you find small arrow marks. They're deliberate — someone made these. And they point in the same direction: east. Maya's trail?",
+            "min_day": 5,
+            "max_day": 8,
+            "condition": { "requires_event": "hikers_backpack" },
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the trail marks east",
+                    "success": 0.7,
+                    "hours": 3,
+                    "success_text": "The marks lead you through dense forest to a ridge. Below, you can see the glint of water — a river. And on the far side... is that a road? Maya was heading somewhere specific. Her trail gives you hope.",
+                    "success_fx": { "morale": 12, "explore_progress": 3 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Note the direction but don't follow yet",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You memorise the direction. East. Someone went that way. When you're ready, you'll follow. But not now — not unprepared.",
+                    "success_fx": { "morale": 5 }
+                }
+            ]
+        },
+        {
+            "id": "hikers_shelter",
+            "name": "🏕️ Maya's Shelter",
+            "icon": "🏕️",
+            "text": "You find a small shelter made of branches and leaves. It's recent — the leaves are still green. Inside, there's a carved wooden bird and a note: 'Day 6. Headed for the river crossing. If you find this, go east. — M.' Someone survived this long. Maybe you can too.",
+            "min_day": 8,
+            "max_day": 11,
+            "condition": { "requires_event": "hikers_trail_marks" },
+            "choices": [
+                {
+                    "icon": "📋",
+                    "text": "Study the shelter and take supplies",
+                    "success": 0.9,
+                    "hours": 2,
+                    "success_text": "Maya's shelter is well-built. She left some dried plants, a length of cordage, and a rough map scratched onto bark. The map shows the river crossing and what looks like a road beyond it. This is the most useful thing you've found.",
+                    "success_fx": { "morale": 15, "explore_progress": 3 },
+                    "success_loot": ["cordage", "medicinal_herbs", "wood"]
+                },
+                {
+                    "icon": "🏕️",
+                    "text": "Rest here and use the shelter",
+                    "success": 1.0,
+                    "hours": 3,
+                    "success_text": "You rest in Maya's shelter. It's the best night's sleep you've had in days. Whoever she is, she knew what she was doing. You feel stronger.",
+                    "success_fx": { "health": 10, "morale": 10, "warmth": 5 }
+                }
+            ]
+        },
+        {
+            "id": "hikers_note",
+            "name": "📝 Final Note",
+            "icon": "📝",
+            "text": "Tied to a low branch, you find a scrap of fabric with writing in charcoal: 'Made it to the road. Turned LEFT at the river. Follow the water DOWNSTREAM. Good luck, stranger. The forest tests everyone. — Maya' She made it out. She actually made it out.",
+            "min_day": 11,
+            "condition": { "requires_event": "hikers_shelter" },
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow Maya's directions — left at the river, downstream",
+                    "success": 0.7,
+                    "hours": 3,
+                    "success_text": "You follow the river downstream. The trees thin. The ground firms. And then — road. An actual road with tyre tracks. Maya was right. You could kiss her. You're close now.",
+                    "success_fx": { "morale": 20, "explore_progress": 4 }
+                },
+                {
+                    "icon": "🤔",
+                    "text": "Remember the directions but continue your own way",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You memorise Maya's directions. Left at the river. Downstream. If your own path doesn't work out, you know there's a way out.",
+                    "success_fx": { "morale": 10 }
+                }
+            ]
+        },
+        {
+            "id": "watcher_sensing",
+            "name": "🌿 The Forest Notices You",
+            "icon": "🌿",
+            "text": "The birds go quiet. Not all at once — one by one, like a wave of silence rolling through the trees. Then, slowly, the sounds return. But something has changed. The forest knows you're here now. You can feel it watching.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🙏",
+                    "text": "Bow your head and whisper an apology to the forest",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You lower your head and speak to the trees. 'I'm sorry for any harm I've caused. I'm just trying to find my way home.' The silence deepens for a moment — then the birds return. The watching feels less hostile. More curious.",
+                    "success_fx": { "morale": 3 },
+                    "karma_mod": 5
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Keep moving — it's just your imagination",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You shake it off. You're tired, you're stressed, and the forest is just a forest. It can't watch you. Can it?",
+                    "success_fx": { "morale": -1 },
+                    "karma_mod": -2
+                }
+            ]
+        },
+        {
+            "id": "watcher_watching",
+            "name": "👁️ Eyes in the Dark",
+            "icon": "👁️",
+            "text": "As dusk settles, you see them. Pairs of eyes in the undergrowth, reflecting the last light. Not animal eyes — they're too high, too still. And when you look directly at them, they vanish. When you look away, they return. You're being watched.",
+            "min_day": 5,
+            "choices": [
+                {
+                    "icon": "👻",
+                    "text": "Light your foxfire lantern if you have one",
+                    "requires": ["foxfire_lantern"],
+                    "success": 0.95,
+                    "hours": 0,
+                    "success_text": "You hold up your foxfire lantern. Its eerie blue glow pushes the eyes back. They retreat into the darkness, keeping their distance. The lantern hums softly. Whatever watches you, it respects the old light.",
+                    "success_fx": { "morale": 5 },
+                    "karma_mod": 2
+                },
+                {
+                    "icon": "🔥",
+                    "text": "Build up your fire and wait out the night",
+                    "requires": ["wood"],
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You feed the fire until it blazes. The eyes keep their distance, circling at the edge of the light. You don't sleep well, but you survive the night.",
+                    "success_fx": { "morale": -3, "warmth": 3 },
+                    "karma_mod": 0
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Ignore them — they can't hurt you",
+                    "success": 0.3,
+                    "hours": 0,
+                    "success_text": "You turn your back on the eyes. Bad idea. Something scratches at the edge of your shelter all night. By morning, your supplies have been disturbed and your morale is in tatters.",
+                    "success_fx": { "morale": -10, "health": -5 },
+                    "karma_mod": -5
+                }
+            ]
+        },
+        {
+            "id": "watcher_testing",
+            "name": "🔍 The Path Loops",
+            "icon": "🔍",
+            "text": "You've been walking for an hour, but the trees look... familiar. That fallen log. That mossy stone. You've passed this way before. The path is looping back on itself. The forest is testing you — or trapping you.",
+            "min_day": 7,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Use your compass and mark the trees",
+                    "requires": ["compass"],
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "You check your compass every few steps and scratch marks into bark. Slowly, the forest stops fighting you. The path straightens. Whatever was looping you has given up — for now.",
+                    "success_fx": { "morale": 5, "explore_progress": 2 },
+                    "karma_mod": 2
+                },
+                {
+                    "icon": "🍂",
+                    "text": "Leave an offering and ask the forest for guidance",
+                    "requires": ["berries"],
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You place a handful of berries at the base of the largest tree and ask — out loud — for the forest to show you the way. The path ahead seems clearer. The trees lean slightly, as if parting. You find your way forward.",
+                    "success_fx": { "morale": 8, "explore_progress": 2 },
+                    "karma_mod": 8
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Push through forcefully",
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You push through brambles and branches, refusing to be turned around. But the harder you fight, the thicker the forest becomes. You end up exhausted, scratched, and no closer to your destination.",
+                    "success_fx": { "morale": -8, "health": -5 },
+                    "karma_mod": -5
+                }
+            ]
+        },
+        {
+            "id": "helpful_deer",
+            "name": "🦌 The Guiding Deer",
+            "icon": "🦌",
+            "text": "A deer appears on the path ahead. It doesn't run. It watches you with calm, dark eyes, then turns and walks slowly down a side trail. It glances back, as if inviting you to follow.",
+            "min_day": 4,
+            "condition": { "karma_above": 60 },
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the deer",
+                    "success": 0.75,
+                    "hours": 2,
+                    "success_text": "You follow the deer through winding paths you'd never find alone. It leads you to a clearing full of edible plants and a freshwater spring. When you look up to thank it, the deer is gone. As if it was never there.",
+                    "success_fx": { "hunger": 12, "water": 15, "morale": 10 },
+                    "karma_mod": 3
+                },
+                {
+                    "icon": "👀",
+                    "text": "Watch it go — you don't want to scare it",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You watch the deer disappear into the trees. It seemed almost disappointed. But the forest has given you a moment of peace, and that's enough.",
+                    "success_fx": { "morale": 5 },
+                    "karma_mod": 2
+                }
+            ]
+        },
+        {
+            "id": "glowing_path",
+            "name": "✨ Glowing Path",
+            "icon": "✨",
+            "text": "As the light fades, you notice something strange. Tiny mushrooms along the base of a tree are glowing — a faint blue-green light. And they're not random. They seem to form a path, leading between the trees into the darkness.",
+            "min_day": 5,
+            "condition": { "karma_above": 70 },
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the glowing mushrooms",
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "You follow the trail of soft blue light. It leads you through the dark forest safely, around roots and ravines that you'd never have seen. The path ends at a small, clear stream. You can fill your water here. By morning, the glow has faded — but the stream remains.",
+                    "success_fx": { "water": 20, "morale": 12 },
+                    "karma_mod": 3
+                },
+                {
+                    "icon": "🚫",
+                    "text": "Too strange — stay where you are",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You watch the glow fade. Whatever made that path, it's gone now. But you're safe in your shelter. That has to count for something.",
+                    "success_fx": { "morale": 2 },
+                    "karma_mod": -2
+                }
+            ]
+        },
+        {
+            "id": "friendly_fox",
+            "name": "🦊 The Fox's Gift",
+            "icon": "🦊",
+            "text": "A fox sits on a fallen log, watching you. Unlike the foxes you've seen before, this one doesn't bolt. It holds your gaze, then drops something at the base of the log and vanishes into the undergrowth.",
+            "min_day": 3,
+            "condition": { "karma_above": 55 },
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "See what it left",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "At the base of the log, you find a small pile of useful items — medicinal herbs, carefully arranged. Did the fox...? No. Someone must have left them. Or maybe the forest itself. Either way, you're grateful.",
+                    "success_fx": { "morale": 8 },
+                    "success_loot": ["medicinal_herbs", "berries"],
+                    "karma_mod": 3
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Leave it — you don't take gifts from the forest",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You walk past. Whatever the fox left, it's not yours to take. The forest gives, and the forest takes away. You'd rather earn what you need.",
+                    "success_fx": { "morale": -2 },
+                    "karma_mod": -3
+                }
+            ]
+        },
+        {
+            "id": "thorny_path",
+            "name": "🌿 Thorny Path",
+            "icon": "🌿",
+            "text": "Every path you take seems overgrown with thorns today. Branches scratch at your face, brambles catch your clothes, and the undergrowth seems thicker than yesterday. It's like the forest doesn't want you going this way.",
+            "min_day": 4,
+            "condition": { "karma_below": 35 },
+            "choices": [
+                {
+                    "icon": "🪵",
+                    "text": "Hack through with a tool",
+                    "requires": ["knife_blade"],
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You cut your way through. The thorns seem to fight back — cutting you as you pass. But you make it. The forest yields to force, but it remembers.",
+                    "success_fx": { "health": -5, "morale": -3 },
+                    "karma_mod": -8
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Find another way around",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You backtrack and try another route. It takes longer, but you get there eventually. The forest made you work for it.",
+                    "success_fx": { "morale": -3 },
+                    "karma_mod": 2
+                }
+            ]
+        },
+        {
+            "id": "wrong_berries",
+            "name": "🫐 Deceptive Berries",
+            "icon": "🫐",
+            "text": "You find a bush heavy with familiar-looking berries. They look exactly like the safe ones you found before — same colour, same shape. But something about the leaves is different. Are these really the same?",
+            "min_day": 3,
+            "condition": { "karma_below": 30 },
+            "choices": [
+                {
+                    "icon": "🫐",
+                    "text": "They look safe — eat them",
+                    "success": 0.2,
+                    "hours": 1,
+                    "success_text": "They taste... wrong. Bitter instead of sweet. Your stomach cramps within minutes. These weren't the berries you thought they were. The forest is teaching you a lesson about being too trusting.",
+                    "success_fx": { "health": -15, "morale": -8, "hunger": -5 },
+                    "karma_mod": -3
+                },
+                {
+                    "icon": "🔍",
+                    "text": "Check the leaves carefully before eating",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You look closer. The leaves are different — serrated instead of smooth, and the stem has tiny thorns. These are a lookalike. Not deadly, but not pleasant. You leave them alone. Smart choice.",
+                    "success_fx": { "morale": 3 },
+                    "karma_mod": 3
+                }
+            ]
+        },
+        {
+            "id": "eyes_in_dark_event",
+            "name": "👁️ Eyes in the Dark",
+            "icon": "👁️",
+            "text": "You wake in the night to see dozens of eyes surrounding your shelter. They blink in unison. They don't move. They just... watch. The forest has decided you don't belong here, and it wants you to know.",
+            "min_day": 6,
+            "condition": { "karma_below": 25 },
+            "choices": [
+                {
+                    "icon": "👻",
+                    "text": "Use your foxfire lantern",
+                    "requires": ["foxfire_lantern"],
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You hold up your foxfire lantern. The blue light pushes the eyes back. They hiss — a sound like wind through dead leaves — and retreat. The lantern keeps you safe. For now.",
+                    "success_fx": { "morale": 5 }
+                },
+                {
+                    "icon": "🔥",
+                    "text": "Brandish fire at them",
+                    "requires": ["wood"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You light a torch and wave it at the eyes. They withdraw, but slowly. Reluctantly. They don't fear you. They're just giving you space. For now.",
+                    "success_fx": { "morale": -5, "warmth": 2 },
+                    "karma_mod": -3
+                },
+                {
+                    "icon": "😨",
+                    "text": "Hide in your shelter and wait for dawn",
+                    "success": 0.4,
+                    "hours": 3,
+                    "success_text": "You pull your shelter around you and try not to look. The eyes don't leave. They watch you all night. By morning, they're gone — but your nerves are shredded.",
+                    "success_fx": { "morale": -15, "health": -3 },
+                    "karma_mod": -5
+                }
+            ]
+        },
+        {
+            "id": "distant_voices",
+            "name": "📢 Distant Voices",
+            "icon": "📢",
+            "text": "You hear voices — human voices — in the distance. They're calling something. A name? A question? You can't make out the words, but they sound like a search party. This might be your only chance!",
+            "min_day": 5,
+            "missed_opportunity": true,
+            "choices": [
+                {
+                    "icon": "📢",
+                    "text": "Scream and run toward them!",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You scream and crash through the undergrowth. For a moment, the voices get louder. Then a gust of wind, and... silence. You're alone again. But you've marked this direction in your memory.",
+                    "success_fx": { "morale": 5, "explore_progress": 2 }
+                },
+                {
+                    "icon": "📡",
+                    "text": "Signal with fire and sound",
+                    "requires": ["wood"],
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You light a small fire and add green leaves for smoke, then shout toward the voices. For a heart-stopping moment, you hear a response! They're moving this way! But then the wind shifts and the connection is lost. Still — they're out there. They're looking for you.",
+                    "success_fx": { "morale": 15, "signal_progress": 2 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Mark the direction and continue carefully",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You note the direction the voices came from and move toward it steadily. You don't find the searchers, but you cover good ground.",
+                    "success_fx": { "morale": 5, "explore_progress": 1 }
+                }
+            ]
+        },
+        {
+            "id": "grove_allure",
+            "name": "🍄 The Grove Calls",
+            "icon": "🍄",
+            "text": "The mushroom grove feels different today. Warmer. The air is thick with the smell of earth and something sweeter — almost honey-like. You feel a pull to stay, to lie down among the fungi and rest. Just for a while. Just until you feel better.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🛌",
+                    "text": "Rest here — it's so comfortable",
+                    "success": 0.8,
+                    "hours": 3,
+                    "success_text": "You lie down among the mushrooms. The ground is soft. The air is sweet. You sleep deeply and dream of warm, dark places. When you wake, hours have passed. You feel rested but disoriented. The grove doesn't want you to leave.",
+                    "success_fx": { "health": 8, "morale": -5, "warmth": 5 },
+                    "karma_mod": -3
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Shake it off and leave now",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "Something feels wrong about this comfort. You force yourself to stand and walk away. The sweet smell fades as soon as you leave the grove. You made the right choice.",
+                    "success_fx": { "morale": 3 },
+                    "karma_mod": 5
+                }
+            ]
+        },
+        {
+            "id": "grove_deeper",
+            "name": "🍄 Paths That Lead Back",
+            "icon": "🍄",
+            "text": "You try to leave the mushroom grove, but every path curves back to its centre. The mushrooms seem taller than before. The air is thicker. You could swear some of them are watching you. Maybe one more night here won't hurt.",
+            "min_day": 5,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Use your compass and force your way out",
+                    "requires": ["compass"],
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You check your compass and walk in a straight line regardless of what the path does. It takes effort — the forest seems to push back — but you break free. Behind you, the grove looks smaller. Less welcoming. You're free.",
+                    "success_fx": { "morale": 8 },
+                    "karma_mod": 3
+                },
+                {
+                    "icon": "🍄",
+                    "text": "Stay — the grove provides everything you need",
+                    "success": 0.6,
+                    "hours": 3,
+                    "success_text": "You sit back down. The mushrooms are warm and soft. Food is everywhere. Why leave? The outside world is cold and hard. Here, you're safe. Here, you belong. ...A small part of you knows this is wrong. But it's getting quieter.",
+                    "success_fx": { "hunger": 10, "morale": -10 },
+                    "karma_mod": -8
+                },
+                {
+                    "icon": "🍂",
+                    "text": "Leave an offering and ask the way out",
+                    "requires": ["berries"],
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You place berries at the base of the largest mushroom and ask — out loud — for the way out. The path ahead seems to clear. The sweet smell fades. You walk out without looking back.",
+                    "success_fx": { "morale": 5 },
+                    "karma_mod": 8
+                }
+            ]
+        },
+        {
+            "id": "grove_voices",
+            "name": "🍄 The Mushrooms Speak",
+            "icon": "🍄",
+            "text": "The mushrooms are talking. You know they shouldn't be. You know this isn't real. But their voices are warm and kind and they're telling you that you don't need to leave. Ever. The outside world is cold and dangerous. Here, you're safe. Here, you're home.",
+            "min_day": 8,
+            "choices": [
+                {
+                    "icon": "🙏",
+                    "text": "Resist — this isn't real, and you need to leave NOW",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You clamp your hands over your ears and stumble out of the grove. The voices fade. The cold air hits you like a slap. You're shaking, but you're free. The grove will always be there, waiting. But not today.",
+                    "success_fx": { "morale": -5, "health": -3 },
+                    "karma_mod": 5
+                },
+                {
+                    "icon": "🍄",
+                    "text": "Stay — they're right. You're home.",
+                    "success": 0.3,
+                    "hours": 3,
+                    "success_text": "You lie down among the mushrooms. Their voices wrap around you like a blanket. Warm. Safe. Forever. A tiny voice in the back of your head screams that this is wrong, but it's getting harder to hear.",
+                    "success_fx": { "hunger": 15, "morale": -20 },
+                    "karma_mod": -15
+                }
+            ]
+        }
+    ],
+
+    "endings": [
+        {
+            "id": "rescued_search",
+            "name": "Rescued!",
+            "icon": "🚁",
+            "type": "good",
+            "text": "After {days} days alone in the forest, a search helicopter spots your signal. As you're winched to safety, you look down at the green canopy that was your world. The forest gave you life — and nearly took it.",
+            "summary": "You built a signal fire and were found by search and rescue.",
+            "condition": { "signal_progress": 7 }
+        },
+        {
+            "id": "found_road",
+            "name": "Found the Road",
+            "icon": "🛤️",
+            "type": "good",
+            "text": "After {days} days, you push through the last line of trees and see it — a road. An actual road. A car stops when you wave it down. You've never been so happy to see tarmac in your life.",
+            "summary": "You explored enough to find your way to civilisation.",
+            "condition": { "explore_progress": 10 }
+        },
+        {
+            "id": "hikers_path",
+            "name": "Maya's Path",
+            "icon": "📝",
+            "type": "good",
+            "text": "Maya's notes led you to the river, and from there to the road. When you finally stagger out of the forest, the first person you see is a park ranger. You tell them about Maya's trail markers, and they promise to look for her too. You survived because someone else left breadcrumbs. Maybe that's what the forest wanted — for people to help each other.",
+            "summary": "You followed a missing hiker's trail to find your way out.",
+            "condition": { "requires_event": "hikers_note", "explore_progress": 8 }
+        },
+        {
+            "id": "survived_10",
+            "name": "Forest Survivor",
+            "icon": "🌲",
+            "type": "good",
+            "text": "After {days} days, you've adapted to forest life. A hiking group finds your shelter and can't believe someone has been living out here. You've earned every bit of their admiration. The forest tested you, and you passed.",
+            "summary": "You survived 10+ days in the forest.",
+            "condition": { "days_survived": 10, "min_resources": { "health": 25 } }
+        },
+        {
+            "id": "rescued_walker",
+            "name": "The Walker",
+            "icon": "🚶",
+            "type": "good",
+            "text": "A walker finds you on day {days}. Not a search party — just someone out for a hike who took a wrong turn and found something far more important. They share their water and sandwiches and guide you back to the trailhead. Sometimes rescue doesn't come from helicopters. It comes from ordinary people on ordinary paths.",
+            "summary": "The forest guided help to you when you needed it most.",
+            "condition": { "days_survived": 7, "forestKarma_above": 50, "min_resources": { "health": 30 } }
+        },
+        {
+            "id": "forest_kept_you",
+            "name": "The Forest Kept You",
+            "icon": "🌲",
+            "type": "mythic",
+            "text": "When the search party finally found you, you were sitting calmly in a shelter made of things no one could explain — branches that wove themselves, mushrooms that glowed faintly blue. You didn't want to leave. They had to convince you. You never did tell them what spoke to you in the night. And you never stopped listening for it.",
+            "summary": "The forest claimed you — not as prey, but as family.",
+            "condition": { "days_survived": 10, "forestKarma_above": 80, "min_resources": { "health": 30 } }
+        },
+        {
+            "id": "forest_spirit",
+            "name": "Forest Spirit",
+            "icon": "✨",
+            "type": "mythic",
+            "text": "The old stories were true. Every one of them. The forest has a spirit, and it spoke to you — through the mushrooms, through the foxes, through the stones and the trees. When you finally walked out, the trees parted for you like curtains. You carried something out of those woods that no one else could see, but everyone could feel. The forest let you go. But it left its mark on you, and you on it.",
+            "summary": "You earned the forest's deepest trust and witnessed its true nature.",
+            "condition": { "forestKarma_above": 90, "days_survived": 8, "min_resources": { "health": 40 } }
+        },
+        {
+            "id": "one_with_woods",
+            "name": "One With the Woods",
+            "icon": "🍃",
+            "type": "mythic",
+            "text": "You didn't survive the forest. You became part of it. The plants you foraged, the paths you walked, the stones you touched — they knew you. And when you finally emerged, {days} days later, you were different. Quieter. More patient. You could hear the trees breathing, if you listened. The search and rescue team said you were the calmest lost person they'd ever found. You told them you were never lost. The forest knew exactly where you were the whole time.",
+            "summary": "You survived 14+ days injury-free with the forest's blessing.",
+            "condition": { "forestKarma_above": 70, "days_survived": 14, "min_resources": { "health": 50 } }
+        },
+        {
+            "id": "the_grove",
+            "name": "The Grove",
+            "icon": "🍄",
+            "type": "bad",
+            "text": "The mushrooms were right. The outside world is cold and hard and doesn't understand. Here in the grove, you're warm. You're fed. The fungi grow over your legs now, anchoring you to the earth, and you don't mind. The search party will find the clearing eventually. They'll find your pack. They'll find your footprints leading in. But they won't find you. Not really. You belong to the grove now.",
+            "summary": "The mushroom grove claimed you. You never wanted to leave.",
+            "condition": { "cause": "grove" }
+        },
+        {
+            "id": "forest_rejected",
+            "name": "The Forest Rejected You",
+            "icon": "🥀",
+            "type": "bad",
+            "text": "The paths led you in circles. The berries you found were always the wrong kind. Every stream you crossed led to another stream that looked exactly the same. The forest didn't want you dead — it wanted you lost. And lost you stayed, until there was nothing left of you to lose.",
+            "summary": "The forest turned against you. Every path led nowhere.",
+            "condition": { "cause": "starvation", "forestKarma_below": 25 }
+        },
+        {
+            "id": "watched_forever",
+            "name": "Watched Forever",
+            "icon": "👁️",
+            "type": "bad",
+            "text": "The eyes never stopped watching. They followed you into sleep, into dreams, into the cold moments before dawn when the forest held its breath. You became smaller and smaller, until there was nothing left of you but the watching itself. The forest remembers everyone who enters. It just doesn't always let them leave.",
+            "summary": "The forest's judgement was final. You were not welcome.",
+            "condition": { "cause": "health", "forestKarma_below": 15, "min_resources": { "health": 0 } }
+        },
+        {
+            "id": "death_health",
+            "name": "The Forest Claims You",
+            "icon": "🪦",
+            "type": "bad",
+            "text": "Your body gives out. The forest is beautiful, but it doesn't care about you. The trees continue their slow, patient growth. The mushrooms will fruit above you next spring.",
+            "summary": "Your health reached zero.",
+            "condition": { "health": 0 }
+        },
+        {
+            "id": "death_starvation",
+            "name": "Starvation",
+            "icon": "💀",
+            "type": "bad",
+            "text": "Despite the abundance of plant life around you, you couldn't identify enough safe food. The irony is bitter — like the berries you should have left alone.",
+            "summary": "You starved to death.",
+            "condition": { "cause": "starvation" }
+        },
+        {
+            "id": "death_exposure",
+            "name": "Exposure",
+            "icon": "🥶",
+            "type": "bad",
+            "text": "The cold rain and wind took their toll. Without adequate shelter, the forest's beauty turned deadly. You fell asleep under the trees and never woke.",
+            "summary": "You died of exposure.",
+            "condition": { "cause": "cold" }
+        },
+        {
+            "id": "death_dehydration",
+            "name": "Dehydration",
+            "icon": "🏜️",
+            "type": "bad",
+            "text": "The forest is full of water, but you couldn't reach it in time. Streams you'd walked past, rain you'd ignored — water was everywhere, and yet you had none. The trees drip with moisture that will never quench your thirst.",
+            "summary": "You died of dehydration.",
+            "condition": { "cause": "dehydration" }
+        },
+        {
+            "id": "the_cold_night",
+            "name": "The Cold Night",
+            "icon": "🌙",
+            "type": "bad",
+            "text": "The forest can be warm in the day, but the nights are a different story. Without shelter or fire, the cold seeped in slowly. The trees stood watch as the warmth left your body. You dreamed of home, and then you dreamed of nothing.",
+            "summary": "You froze to death in the forest night.",
+            "condition": { "cause": "cold", "forestKarma_below": 35 }
+        }
+    ]
+}
