@@ -155,7 +155,7 @@ async def log_in(username: str, password: str) -> Tuple[bool, dict]:
     if not username or not password:
         return False, {"error": "Please fill in all fields."}
 
-    if not pool:
+    if not db.pool:
         return False, {"error": "Database unavailable. Please try again later."}
 
     try:
