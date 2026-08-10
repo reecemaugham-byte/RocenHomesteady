@@ -1,0 +1,1851 @@
+{
+    "id": "alaska_winter",
+    "name": "Alaska Winter",
+    "icon": "🏔️",
+    "tagline": "Stranded in the Alaskan wilderness as winter closes in. The cold is your greatest enemy.",
+    "difficulty": 3,
+    "intro": "The small Cessna banks hard. Engine failure. You barely have time to brace before the treeline rushes up. When you come to, the wreckage is scattered across a frozen clearing. You're alone, miles from anywhere, and winter is coming. The temperature is dropping fast. You need shelter, warmth, and food — and you need them now.",
+
+    "start_season": "Autumn",
+    "hours_per_day": 8,
+    "actions_per_day": 3,
+    "bonus_action_morale": 75,
+    "season_cycle_days": 10,
+
+    "starting": {
+    "health": 100,
+    "hunger": 80,
+    "warmth": 60,
+    "morale": 70,
+    "water": 50
+},
+"starting_inventory": ["compass", "water_bottle"],
+
+    "decay": {
+    "hunger": 8,
+    "warmth": 10,
+    "morale": 5,
+    "water": 4
+},
+
+    "shelter": [
+        { "name": "No Shelter", "icon": "🌧️", "desc": "Exposed to the elements. No protection from wind or snow.", "warmth_bonus": 0 },
+        { "name": "Lean-to", "icon": "🏕️", "desc": "A simple branch lean-to. Minimal protection, but better than nothing.", "warmth_bonus": 3 },
+        { "name": "Debris Hut", "icon": "🛖", "desc": "Insulated with leaves and moss. Keeps out the worst of the cold.", "warmth_bonus": 6 },
+        { "name": "Log Shelter", "icon": "🏠", "desc": "A sturdy log structure. Real protection from Alaskan winters.", "warmth_bonus": 10 }
+    ],
+
+    "locations": [
+        {
+            "id": "crash_site",
+            "name": "Crash Site",
+            "icon": "✈️",
+            "desc": "The scattered wreckage of your plane. Some supplies may be salvageable.",
+            "discovered": true,
+            "foraging_quality": 0.2,
+            "shelter_bonus": false,
+            "signal_bonus": 2,
+            "water_source": false,
+            "lose_chance": 0.05
+        },
+        {
+            "id": "spruce_grove",
+            "name": "Spruce Grove",
+            "icon": "🌲",
+            "desc": "Dense spruce trees providing wind cover and some foraging.",
+            "discovered": false,
+            "foraging_quality": 0.5,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.08
+        },
+        {
+            "id": "frozen_creek",
+            "name": "Frozen Creek",
+            "icon": "🧊",
+            "desc": "A creek partially frozen over. You might be able to get water here.",
+            "discovered": false,
+            "foraging_quality": 0.3,
+            "shelter_bonus": false,
+            "signal_bonus": 0,
+            "water_source": true,
+            "lose_chance": 0.1
+        },
+        {
+            "id": "ridge_overlook",
+            "name": "Ridge Overlook",
+            "icon": "⛰️",
+            "desc": "A high point with commanding views. Excellent for signalling, but exposed.",
+            "discovered": false,
+            "foraging_quality": 0.1,
+            "shelter_bonus": false,
+            "signal_bonus": 3,
+            "water_source": false,
+            "lose_chance": 0.15
+        },
+        {
+            "id": "dense_woodland",
+            "name": "Dense Woodland",
+            "icon": "🌳",
+            "desc": "Thick forest with good foraging and natural shelter.",
+            "discovered": false,
+            "foraging_quality": 0.7,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.05
+        },
+        {
+            "id": "bear_den",
+            "name": "Bear Den",
+            "icon": "🐻",
+            "desc": "A cave that shows signs of bear activity. Extremely dangerous but rich in resources.",
+            "discovered": false,
+            "foraging_quality": 0.6,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.3
+        },
+        {
+            "id": "abandoned_cabin",
+            "name": "Abandoned Cabin",
+            "icon": "🏚️",
+            "desc": "A trapper's cabin, old but standing. The door hangs open. Something about it feels wrong.",
+            "discovered": false,
+            "foraging_quality": 0.2,
+            "shelter_bonus": true,
+            "signal_bonus": 0,
+            "water_source": false,
+            "lose_chance": 0.08
+        },
+        {
+            "id": "abandoned_village",
+            "name": "Abandoned Village",
+            "icon": "🏘️",
+            "desc": "Three buildings, half-collapsed. Someone lived here once. Supplies might remain, but the structures are unsafe.",
+            "discovered": false,
+            "foraging_quality": 0.15,
+            "shelter_bonus": true,
+            "signal_bonus": 1,
+            "water_source": false,
+            "lose_chance": 0.1
+        },
+        {
+            "id": "coastline",
+            "name": "Coastline",
+            "icon": "🌊",
+            "desc": "The frozen coast stretches before you. Ice meets sea in a jagged line. No shelter, no wood. But if a ship passes, they might see your signal.",
+            "discovered": false,
+            "foraging_quality": 0.05,
+            "shelter_bonus": false,
+            "signal_bonus": 4,
+            "water_source": true,
+            "lose_chance": 0.12
+        }
+    ],
+
+
+    "plants": [
+        {
+            "id": "spruce_tips",
+            "name": "Spruce Tips",
+            "icon": "🌲",
+            "is_edible": true,
+            "desc_safe": "The bright green tips of spruce branches are rich in vitamin C. They can be eaten raw, brewed into tea, or added to stews for a citrusy flavour. One of the most reliable survival foods in the north.",
+            "desc_unsafe": "Bright green, soft growth at the ends of evergreen branches. They look like tiny, tender needles bunched together.",
+            "locations": ["spruce_grove", "dense_woodland", "crash_site"],
+            "difficulty": 1,
+            "seasons": ["Spring", "Summer", "Autumn"],
+            "safe_yield": { "hunger": 8, "warmth": 2 },
+            "unsafe_yield": { "health": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the tips without properly identifying the tree. Some taste incredibly bitter and astringent — these may be yew, which is highly toxic.",
+            "loot": []
+        },
+        {
+            "id": "willow_bark",
+            "name": "Willow Bark",
+            "icon": "🌿",
+            "is_edible": false,
+            "desc_safe": "Willow bark contains salicin, a natural painkiller and fever reducer. It's the original source of aspirin. Brew the inner bark into a bitter but effective tea.",
+            "desc_unsafe": "A tree with long, narrow leaves and distinctive ridged bark. The inner bark can be peeled in strips and has a slightly bitter taste.",
+            "locations": ["frozen_creek", "dense_woodland", "spruce_grove"],
+            "difficulty": 2,
+            "seasons": ["Spring", "Summer", "Autumn", "Winter"],
+            "safe_yield": { "morale": 3 },
+            "unsafe_yield": { "health": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You strip bark from the wrong tree and brew it. It's incredibly bitter and makes your stomach churn violently. Not willow at all.",
+            "loot": ["medicinal_herbs"]
+        },
+        {
+            "id": "labrador_tea",
+            "name": "Labrador Tea",
+            "icon": "🍵",
+            "is_edible": true,
+            "desc_safe": "A low-growing evergreen shrub with fuzzy reddish undersides on its leaves. Makes a warming, medicinal tea that fights cold and fatigue. Do not brew too strong.",
+            "desc_unsafe": "A low shrub with leathery leaves that have fuzzy, rust-coloured undersides. It has a strong herbal smell when crushed.",
+            "locations": ["spruce_grove", "dense_woodland", "ridge_overlook"],
+            "difficulty": 2,
+            "seasons": ["Spring", "Summer", "Autumn", "Winter"],
+            "safe_yield": { "warmth": 5, "morale": 5 },
+            "unsafe_yield": { "health": -10 },
+            "unsafe_injury": null,
+            "unsafe_text": "You brew and drink too much of it. Labrador tea contains ledol, which is toxic in large quantities. Your head pounds and your stomach heaves.",
+            "loot": []
+        },
+        {
+            "id": "fireweed",
+            "name": "Fireweed",
+            "icon": "🌸",
+            "is_edible": true,
+            "desc_safe": "Tall plant with spikes of bright pink-purple flowers. Young shoots and leaves are edible and rich in vitamins A and C. One of the best wild edibles in the north.",
+            "desc_unsafe": "Tall stems topped with spikes of pinkish-purple flowers. The leaves are long and narrow, arranged alternately along the stem.",
+            "locations": ["crash_site", "dense_woodland", "frozen_creek"],
+            "difficulty": 1,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "hunger": 10 },
+            "unsafe_yield": { "hunger": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the mature leaves raw. They're tough, bitter, and cause stomach cramps. The young shoots are what you should have gone for.",
+            "loot": []
+        },
+        {
+            "id": "bearberry",
+            "name": "Bearberry",
+            "icon": "🫐",
+            "is_edible": true,
+            "desc_safe": "A low, trailing evergreen shrub with small red berries. The berries are dry and mealy but edible and rich in energy. Leaves make a medicinal tea for urinary issues.",
+            "desc_unsafe": "A low creeping plant with small, leathery evergreen leaves and bright red berries. The berries are abundant but look dry and unappetising.",
+            "locations": ["spruce_grove", "ridge_overlook", "dense_woodland"],
+            "difficulty": 1,
+            "seasons": ["Summer", "Autumn", "Winter"],
+            "safe_yield": { "hunger": 6, "morale": 2 },
+            "unsafe_yield": { "hunger": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat handfuls of the berries expecting sweetness. They're mealy, dry, and thoroughly unpleasant. Your mouth feels like you've eaten chalk.",
+            "loot": []
+        },
+        {
+            "id": "baneberry",
+            "name": "Baneberry",
+            "icon": "☠️",
+            "is_edible": false,
+            "desc_safe": "EXTREMELY POISONOUS. White or red berries that cause nausea, dizziness, and cardiac arrest. Identify it only to avoid it. All parts are toxic. Even a few berries can be fatal.",
+            "desc_unsafe": "A plant with clusters of white or red berries on thick stalks. The berries look plump and appealing, especially the red variety. The leaves are toothed and divided into threes.",
+            "locations": ["dense_woodland", "bear_den", "frozen_creek"],
+            "difficulty": 3,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -25, "morale": -15 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the berries. Within minutes, your mouth burns, your stomach cramps violently, and your heart races erratically. This is baneberry — one of the most poisonous plants in the north.",
+            "loot": []
+        },
+        {
+            "id": "pine_nuts",
+            "name": "Pine Nuts",
+            "icon": "🥜",
+            "is_edible": true,
+            "desc_safe": "The seeds inside pine cones are small but rich in fat and protein — incredibly valuable in a survival situation. They take effort to extract but are worth every one.",
+            "desc_unsafe": "Large pine cones that might contain edible seeds inside. The cones are woody and tightly sealed, especially in cold weather. You'd need to break them open.",
+            "locations": ["spruce_grove", "crash_site", "dense_woodland"],
+            "difficulty": 2,
+            "seasons": ["Autumn"],
+            "safe_yield": { "hunger": 12 },
+            "unsafe_yield": { "hunger": -3 },
+            "unsafe_injury": "cut",
+            "unsafe_text": "You try to pry open the cone with your bare hands. The sharp scales slice your fingers painfully. Some cones are old and the seeds inside are rancid.",
+            "loot": ["wood"]
+        },
+        {
+            "id": "rose_hips",
+            "name": "Rose Hips",
+            "icon": "🌹",
+            "is_edible": true,
+            "desc_safe": "Bright red-orange hips on wild rose bushes. One of the best sources of vitamin C in the northern wild. They can be eaten raw or brewed into a warming tea. Essential for preventing scurvy on long expeditions.",
+            "desc_unsafe": "Small red fruit on a thorny bush with compound leaves. Some are soft and sweet-smelling, others are hard and seem past their best.",
+            "locations": ["spruce_grove", "ridge_overlook", "crash_site", "dense_woodland"],
+            "difficulty": 1,
+            "seasons": ["Autumn", "Winter"],
+            "safe_yield": { "hunger": 6, "morale": 2 },
+            "unsafe_yield": { "health": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the hips without removing the seeds and hairs inside. The tiny hairs irritate your throat and stomach painfully. Rose hips must be processed carefully — the seeds and hairs inside can cause digestive distress.",
+            "loot": []
+        },
+        {
+            "id": "reindeer_moss",
+            "name": "Reindeer Moss",
+            "icon": "🦌",
+            "is_edible": true,
+            "desc_safe": "A pale, branching lichen that grows on rocks and trees. Caribou eat it by the ton. Humans can too, but it needs to be boiled first to remove the bitter acids. It's not good, but it's food.",
+            "desc_unsafe": "A pale, branching growth on a rock or tree trunk. It looks like moss but isn't. Spongy and dry.",
+            "locations": ["spruce_grove", "ridge_overlook", "dense_woodland"],
+            "difficulty": 1,
+            "seasons": ["Spring", "Summer", "Autumn", "Winter"],
+            "safe_yield": { "hunger": 3 },
+            "unsafe_yield": { "hunger": -3, "health": -5 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the lichen raw. It tastes like cardboard soaked in battery acid. Your stomach cramps immediately. This needs to be boiled to remove the bitter acids — raw, it's barely edible and actively unpleasant.",
+            "loot": []
+        },
+        {
+            "id": "cloudberries",
+            "name": "Cloudberries",
+            "icon": "🟡",
+            "is_edible": true,
+            "desc_safe": "A rare amber-coloured berry found in boggy northern ground. Soft, juicy, and tasting like a cross between a raspberry and a baked apple. The most treasured berry in the north. Finding them feels like finding gold.",
+            "desc_unsafe": "Low-growing plants with maple-shaped leaves and amber-coloured berries. They look like they should be delicious.",
+            "locations": ["ridge_overlook", "frozen_creek", "dense_woodland"],
+            "difficulty": 2,
+            "seasons": ["Summer", "Autumn"],
+            "safe_yield": { "hunger": 8, "morale": 5 },
+            "unsafe_yield": { "hunger": -2, "morale": -1 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the berries eagerly — but they're underripe and astringent. Your mouth puckers and your stomach turns. Cloudberries need to be fully ripe to be enjoyable.",
+            "loot": []
+        },
+        {
+            "id": "wild_celery",
+            "name": "Wild Celery / Water Hemlock",
+            "icon": "☠️",
+            "is_edible": false,
+            "desc_safe": "DEADLY POISONOUS. Water hemlock is one of the most toxic plants in North America. A single mouthful can kill. It grows near water and looks like wild celery — but the stem has purple streaks and it smells unpleasant when crushed. Identify it only to avoid it.",
+            "desc_unsafe": "A tall plant with grooved stems and clusters of small white flowers growing near water. The stems look like celery. The smell is unusual — slightly sharp, almost medicinal.",
+            "locations": ["frozen_creek", "dense_woodland"],
+            "difficulty": 3,
+            "seasons": ["Spring", "Summer"],
+            "safe_yield": { "morale": 5 },
+            "unsafe_yield": { "health": -30, "morale": -15 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat what you think is wild celery. Within minutes, your mouth goes numb, your vision blurs, and your body convulses. This is water hemlock — one of the most poisonous plants in the world. A single plant can kill.",
+            "loot": []
+        },
+        {
+            "id": "cattail",
+            "name": "Cattail",
+            "icon": "🌾",
+            "is_edible": true,
+            "desc_safe": "The ultimate survival plant. The roots can be ground into flour, the young shoots are edible raw, the pollen is protein-rich, and the mature heads produce fluffy insulation. If you can find cattails, you can survive. The leaves also make excellent cordage.",
+            "desc_unsafe": "Tall reed-like plants with brown sausage-shaped flower heads growing near water. Multiple parts look potentially useful.",
+            "locations": ["frozen_creek"],
+            "difficulty": 1,
+            "seasons": ["Spring", "Summer"],
+            "safe_yield": { "hunger": 10 },
+            "unsafe_yield": { "hunger": -3 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat the mature flower head raw. It's full of dense, cotton-like fibres that get stuck in your throat and make you gag. The young shoots and roots are what you should be eating, not the seed head.",
+            "loot": ["cordage"]
+        },
+        {
+            "id": "cranberry",
+            "name": "Cranberry",
+            "icon": "🔴",
+            "is_edible": true,
+            "desc_safe": "Small, tart red berries growing on low creeping vines near bogs and creeks. Too sour to eat in quantity raw, but packed with vitamin C and they keep for weeks. A northern staple. Cooking them makes them much more palatable.",
+            "desc_unsafe": "Small red berries on low vines near water. They're extremely tart.",
+            "locations": ["spruce_grove", "frozen_creek", "dense_woodland"],
+            "difficulty": 1,
+            "seasons": ["Autumn"],
+            "safe_yield": { "hunger": 5, "morale": 2 },
+            "unsafe_yield": { "hunger": -2 },
+            "unsafe_injury": null,
+            "unsafe_text": "You eat handfuls of raw cranberries. They're so sour your face contorts and your stomach protests. A few are fine, but eating them raw in quantity is unpleasant. They need to be cooked or dried.",
+            "loot": []
+        }
+    ],
+
+
+    "weather_types": {
+        "clear": { "icon": "☀️", "desc": "Clear skies. Bitterly cold.", "warmth_mod": 0, "morale_mod": 2, "water_mod": 0 },
+        "cloudy": { "icon": "☁️", "desc": "Overcast. Cold and grey.", "warmth_mod": -1, "morale_mod": -1, "water_mod": 0 },
+        "snow": { "icon": "🌨️", "desc": "Snowfall. Visibility reduced. Very cold.", "warmth_mod": -3, "morale_mod": -2, "water_mod": 0 },
+        "blizzard": { "icon": "❄️", "desc": "Blizzard! Deadly cold and disorienting.", "warmth_mod": -6, "morale_mod": -5, "water_mod": 0 },
+        "freezing_rain": { "icon": "🌧️", "desc": "Freezing rain. Everything turns to ice.", "warmth_mod": -4, "morale_mod": -3, "water_mod": 0 }
+    },
+
+    "weather_chances": {
+        "Spring": { "clear": 0.35, "cloudy": 0.3, "snow": 0.2, "blizzard": 0.05, "freezing_rain": 0.1 },
+        "Summer": { "clear": 0.5, "cloudy": 0.3, "snow": 0.05, "blizzard": 0.0, "freezing_rain": 0.15 },
+        "Autumn": { "clear": 0.3, "cloudy": 0.25, "snow": 0.25, "blizzard": 0.1, "freezing_rain": 0.1 },
+        "Winter": { "clear": 0.15, "cloudy": 0.2, "snow": 0.35, "blizzard": 0.2, "freezing_rain": 0.1 }
+    },
+
+    "frostbite_check": {
+        "warmth_threshold": 20,
+        "injury_chance": 0.3,
+        "injury": "frostbite",
+        "message": "The bitter cold is doing real damage to your extremities. You feel the telltale numbness of frostbite setting in."
+    },
+
+    "hypothermia_check": {
+        "warmth_threshold": 10,
+        "injury_chance": 0.4,
+        "injury": "hypothermia",
+        "message": "Your core temperature is dropping dangerously. You're shivering uncontrollably — this is hypothermia."
+    },
+
+    "missed_opportunity": {
+        "days_without_signal": 5,
+        "event_id": "helicopter_flyover"
+    },
+
+    "weather_flavour": {
+        "alaska_winter": {
+            "day_start": {
+                "clear": "The sky is clear but the cold is biting. Frost clings to everything.",
+                "cloudy": "Grey clouds hang low over the mountains. It feels like snow.",
+                "snow": "Snow falls steadily, muffling the world in white silence.",
+                "blizzard": "A howling blizzard! The wind tears at you. Stay inside if you can.",
+                "freezing_rain": "Freezing rain coats everything in ice. Dangerous conditions."
+            }
+        }
+    },
+
+    "day_start": {
+        "alaska_winter": [
+            "You wake to the sound of wind. Another day of survival begins.",
+            "The cold wakes you before dawn. Your breath hangs in the air like smoke.",
+            "Dawn breaks grey and cold. You must keep moving to survive.",
+            "The silence of the wilderness is deafening. Another day alone.",
+            "You check your supplies. They won't last forever.",
+            "Frost covers everything. Your water bottle is frozen solid.",
+            "The pilot's face flashes in your mind. You push the thought away.",
+            "Somewhere in the distance, a branch snaps. You're not alone out here.",
+            "The cold seeps through everything. Even your thoughts feel sluggish.",
+            "Another sunrise you weren't sure you'd see. You're still here."
+        ]
+    },
+
+    "events": [
+        {
+            "id": "wolf_howl",
+            "name": "🐺 Wolf Howl",
+            "icon": "🐺",
+            "text": "In the distance, a wolf howls. Then another. They're communicating — and they may have picked up your scent.",
+            "min_day": 2,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build up your fire and stay alert",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You keep the fire blazing. The wolves keep their distance. They're smart enough to fear flame.",
+                    "success_fx": { "morale": -3, "warmth": 2 },
+                    "fail_text": "The fire crackles but the wolves are bold tonight. One circles close before you drive it away.",
+                    "fail_fx": { "morale": -10, "health": -5 }
+                },
+                {
+                    "icon": "🗡️",
+                    "text": "Arm yourself and stand ground",
+                    "requires": ["spear"],
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You brandish your spear and shout. The wolves decide you're not worth the trouble and move on.",
+                    "success_fx": { "morale": 5 },
+                    "fail_text": "The wolves test your resolve. One lunges! You fight it off but take injuries.",
+                    "fail_fx": { "health": -20, "morale": -10 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "broken_branch",
+            "name": "🪵 Falling Branch",
+            "icon": "🪵",
+            "text": "A loud crack! A heavy branch falls from above, narrowly missing you.",
+            "min_day": 1,
+            "choices": [
+                {
+                    "icon": "🪵",
+                    "text": "Gather the wood — waste not",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "The branch is dry and solid. You add it to your supplies.",
+                    "success_fx": { "morale": 2 },
+                    "fail_text": "While gathering the branch, you slip and twist your ankle.",
+                    "fail_fx": { "health": -10, "morale": -5 }
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Move camp — this area isn't safe",
+                    "success": 0.85,
+                    "hours": 2,
+                    "success_text": "You find a safer spot. Wise to be cautious.",
+                    "success_fx": { "morale": 3 }
+                }
+            ]
+        },
+        {
+            "id": "plane_passing",
+            "name": "✈️ Plane Passing",
+            "icon": "✈️",
+            "text": "You hear the distant drone of an aircraft! If you had a signal fire ready, they might see you.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Light a signal fire now!",
+                    "requires": ["wood"],
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You rush to light your signal fire! Smoke billows up... The plane banks! They've seen you! Rescue is on the way!",
+                    "success_fx": { "morale": 30 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Wave and shout desperately",
+                    "success": 0.05,
+                    "hours": 1,
+                    "success_text": "Against all odds, someone on the plane spots you. Help is coming!",
+                    "success_fx": { "morale": 30 },
+                    "fail_text": "The plane passes overhead without slowing. They didn't see you. The sound fades into the mountains.",
+                    "fail_fx": { "morale": -15 }
+                }
+            ]
+        },
+        {
+            "id": "injured_ankle",
+            "name": "🦶 Twisted Ankle",
+            "icon": "🦶",
+            "text": "While navigating uneven ground, your foot slips into a hidden hole. A sharp pain shoots up your leg.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🩹",
+                    "text": "Rest and bandage your ankle",
+                    "requires": ["bandage"],
+                    "success": 0.9,
+                    "hours": 2,
+                    "success_text": "You wrap your ankle tightly. The bandage provides support and the pain begins to ease.",
+                    "success_fx": { "health": 5, "morale": 3 }
+                },
+                {
+                    "icon": "💤",
+                    "text": "Just rest — you can't waste supplies",
+                    "success": 0.6,
+                    "hours": 3,
+                    "success_text": "You stay off it as much as possible. The swelling goes down slowly.",
+                    "success_fx": { "health": -5, "morale": -5 },
+                    "fail_text": "Without proper treatment, the ankle doesn't heal. Walking is painful.",
+                    "fail_fx": { "health": -15, "morale": -10 }
+                }
+            ]
+        },
+        {
+            "id": "rabbit_sighting",
+            "name": "🐇 Rabbit Sighting",
+            "icon": "🐇",
+            "text": "A snowshoe hare darts across your path. Quick, but if you have a snare...",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🪤",
+                    "text": "Set a snare trap",
+                    "requires": ["snare"],
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You set your snare and wait. Within hours, you catch a hare! Precious protein.",
+                    "success_fx": { "hunger": 20, "morale": 8 },
+                    "fail_text": "The hare avoids your snare. Clever creature.",
+                    "fail_fx": { "morale": -2 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Try to chase it down",
+                    "success": 0.15,
+                    "hours": 1,
+                    "success_text": "Incredibly, you corner the hare! A lucky catch!",
+                    "success_fx": { "hunger": 15, "morale": 10 },
+                    "fail_text": "The hare is far too quick. You waste energy chasing it.",
+                    "fail_fx": { "hunger": -3, "health": -2, "morale": -3 }
+                }
+            ]
+        },
+        {
+            "id": "aurora",
+            "name": "🌌 Northern Lights",
+            "icon": "🌌",
+            "text": "The sky explodes in ribbons of green, purple, and blue. The aurora borealis dances overhead, casting the snow in an ethereal glow.",
+            "min_day": 4,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "👀",
+                    "text": "Watch and take it in",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "For a moment, the beauty of the wilderness overwhelms the hardship. You're alive. And the sky reminds you why that matters.",
+                    "success_fx": { "morale": 15, "wildRespect": 3 }
+                }
+            ]
+        },
+        {
+            "id": "bear_encounter",
+            "name": "🐻 Bear Encounter",
+            "icon": "🐻",
+            "text": "A massive grizzly bear lumbers into view. It hasn't seen you yet, but the wind could shift at any moment. Your heart hammers against your ribs.",
+            "min_day": 4,
+            "seasons": ["Summer", "Autumn"],
+            "wildlife": { "species": "bear", "loot": ["raw_meat", "raw_meat", "animal_fur"] },
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Back away slowly",
+                    "success": 0.75,
+                    "hours": 1,
+                    "success_text": "You inch backwards without making a sound. The bear sniffs the air but eventually wanders off. You breathe again.",
+                    "success_fx": { "morale": -5 },
+                    "fail_text": "You step on a dry branch. The bear whips around — a brief, terrifying standoff. It bluff-charges and you scramble away, scraping yourself badly.",
+                    "fail_fx": { "health": -15, "morale": -15 },
+                    "fail_injury": "cut"
+                },
+                {
+                    "icon": "🗡️",
+                    "text": "Stand your ground with spear",
+                    "requires": ["spear"],
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "The bear tests you. You hold firm, spear raised. It decides you're not worth the trouble and retreats. You've proven yourself against the wild.",
+                    "success_fx": { "morale": 10 }
+                },
+                {
+                    "icon": "🏹",
+                    "text": "Hunt the bear",
+                    "requires": ["bow"],
+                    "success": 0.25,
+                    "hours": 3,
+                    "success_text": "An incredibly risky shot — but your arrow finds its mark! The bear goes down. You have meat and fur that could save your life.",
+                    "success_fx": { "morale": 15 },
+                    "success_loot": ["raw_meat", "raw_meat", "animal_fur"]
+                }
+            ]
+        },
+        {
+            "id": "wolf_pack",
+            "name": "🐺 Wolf Pack",
+            "icon": "🐺",
+            "text": "Not one wolf — a pack. You can see at least four sets of eyes reflecting in the fading light. They're tracking you. This is far more dangerous than a lone howl.",
+            "min_day": 5,
+            "seasons": ["Autumn", "Winter"],
+            "wildlife": { "species": "wolf", "loot": ["raw_meat", "animal_fur"] },
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build a defensive fire and wait them out",
+                    "requires": ["wood"],
+                    "success": 0.7,
+                    "hours": 3,
+                    "success_text": "You feed the fire high and loud. The wolves circle but won't approach the flames. By dawn, they've moved on.",
+                    "success_fx": { "morale": -3, "warmth": 2 }
+                },
+                {
+                    "icon": "🏹",
+                    "text": "Fire an arrow to scare them off",
+                    "requires": ["bow"],
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You loose an arrow past the lead wolf. It yelps and bolts — the pack follows. Predators respect strength.",
+                    "success_fx": { "morale": 8 },
+                    "fail_text": "Your arrow goes wide. The pack tightens its circle. You scramble up a rocky outcrop and wait, shaking, until they lose interest.",
+                    "fail_fx": { "health": -10, "morale": -15 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Run for the nearest shelter",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You sprint for cover and barely make it. The wolves don't follow you inside. You're shaken but alive.",
+                    "success_fx": { "morale": -5 },
+                    "fail_text": "You run, but the wolves are faster. One snaps at your leg before you reach shelter. The wound is deep.",
+                    "fail_fx": { "health": -25, "morale": -20 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "moose_sighting",
+            "name": "🫎 Moose on the Ridge",
+            "icon": "🫎",
+            "text": "A massive bull moose stands at the treeline, antlers silhouetted against the sky. It's enormous — easily 600 kilograms of protein on the hoof. If you could bring it down...",
+            "min_day": 3,
+            "wildlife": { "species": "moose", "loot": ["raw_meat", "raw_meat", "raw_meat", "animal_fur"] },
+            "choices": [
+                {
+                    "icon": "🏹",
+                    "text": "Hunt the moose with your bow",
+                    "requires": ["bow"],
+                    "success": 0.3,
+                    "hours": 3,
+                    "success_text": "You stalk closer and let an arrow fly. It finds its mark! The moose goes down after a short run. This could feed you for days.",
+                    "success_fx": { "morale": 20 },
+                    "success_loot": ["raw_meat", "raw_meat", "raw_meat", "animal_fur"]
+                },
+                {
+                    "icon": "🪤",
+                    "text": "Set snares along its trail",
+                    "requires": ["snare"],
+                    "success": 0.15,
+                    "hours": 3,
+                    "success_text": "You set your snares and wait. Days later — a smaller moose calf is caught. Not the bull, but still food.",
+                    "success_fx": { "hunger": 25, "morale": 10 },
+                    "success_loot": ["raw_meat", "raw_meat"],
+                    "fail_text": "A moose is far too large for your snare. The trap is destroyed. You've lost cordage.",
+                    "fail_fx": { "morale": -5 },
+                    "fail_consume": ["snare"]
+                },
+                {
+                    "icon": "👀",
+                    "text": "Leave it alone — too dangerous",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "Smart choice. A bull moose in autumn is one of the most dangerous animals in North America. You watch it walk away.",
+                    "success_fx": { "morale": -2 }
+                }
+            ]
+        },
+        {
+            "id": "eagle_overhead",
+            "name": "🦅 Eagle Overhead",
+            "icon": "🦅",
+            "text": "A bald eagle soars above you, its white head catching the light. Magnificent — and it might drop something useful if you're patient.",
+            "min_day": 2,
+            "wildlife": { "species": "eagle", "loot": ["feathers"] },
+            "choices": [
+                {
+                    "icon": "👀",
+                    "text": "Watch and wait near its perch",
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You wait patiently. The eagle lands nearby and eventually takes off, leaving behind a feather. It's beautiful — and useful for signalling.",
+                    "success_fx": { "morale": 3 },
+                    "success_loot": ["feathers"]
+                },
+                {
+                    "icon": "🏹",
+                    "text": "Try to hunt it",
+                    "requires": ["bow"],
+                    "success": 0.2,
+                    "hours": 1,
+                    "success_text": "An improbable shot, but the eagle drops. Some meat and impressive feathers.",
+                    "success_fx": { "hunger": 10, "morale": 5 },
+                    "success_loot": ["feathers", "raw_meat"],
+                    "fail_text": "The eagle is far too high and fast. You waste an arrow and the bird disappears over the ridge.",
+                    "fail_fx": { "morale": -3 }
+                }
+            ]
+        },
+        {
+            "id": "ice_fall",
+            "name": "🧊 Ice Fall",
+            "icon": "🧊",
+            "text": "While crossing a frozen patch, the ice gives way. You slide and twist badly as you hit the ground.",
+            "min_day": 3,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🩹",
+                    "text": "Treat the injury immediately",
+                    "requires": ["bandage"],
+                    "success": 0.85,
+                    "hours": 2,
+                    "success_text": "You bandage your ankle and rest. The swelling goes down quickly with proper treatment.",
+                    "success_fx": { "morale": 3 },
+                    "treat_injury": "sprained_ankle"
+                },
+                {
+                    "icon": "🦴",
+                    "text": "Make a splint",
+                    "requires": ["splint"],
+                    "success": 0.9,
+                    "hours": 2,
+                    "success_text": "The splint stabilises your ankle. You'll recover much faster now.",
+                    "success_fx": { "health": 5, "morale": 5 },
+                    "treat_injury": "sprained_ankle"
+                },
+                {
+                    "icon": "💪",
+                    "text": "Push through the pain",
+                    "success": 0.4,
+                    "hours": 1,
+                    "success_text": "You grit your teeth and keep moving. The ankle protests but holds.",
+                    "success_fx": { "health": -5, "morale": -5 },
+                    "fail_text": "Your ankle gives out completely. The pain is blinding. You can barely walk.",
+                    "fail_fx": { "health": -15, "morale": -10 },
+                    "fail_injury": "sprained_ankle"
+                }
+            ]
+        },
+        {
+            "id": "fire_burn",
+            "name": "🔥 Fire Burn",
+            "icon": "🔥",
+            "text": "Reaching for wood near your fire, your hand connects with a hot coal. The pain is immediate and sharp — you've burned yourself badly.",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🩹",
+                    "text": "Bandage and cool the burn",
+                    "requires": ["bandage"],
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You carefully bandage the burn and hold it in snow. The pain subsides to a manageable throb.",
+                    "success_fx": { "health": 3, "morale": 2 },
+                    "treat_injury": "burn"
+                },
+                {
+                    "icon": "🌿",
+                    "text": "Apply an herbal poultice",
+                    "requires": ["herbal_poultice"],
+                    "success": 0.95,
+                    "hours": 1,
+                    "success_text": "The poultice soothes the burn immediately. It should heal cleanly now.",
+                    "success_fx": { "health": 5, "morale": 5 },
+                    "treat_injury": "burn"
+                },
+                {
+                    "icon": "💪",
+                    "text": "Tough it out",
+                    "success": 0.3,
+                    "hours": 0,
+                    "success_text": "It hurts, but you keep going. Burns are part of survival.",
+                    "success_fx": { "morale": -3 },
+                    "fail_text": "The burn worsens without treatment. It blisters and weeps. Risk of infection is high.",
+                    "fail_fx": { "health": -10, "morale": -8 },
+                    "fail_injury": "burn"
+                }
+            ]
+        },
+        {
+            "id": "frostbite_warning",
+            "name": "🥶 Frostbite Signs",
+            "icon": "🥶",
+            "text": "Your fingers are going white and numb. The cold is doing real damage — this is frostbite. If you don't warm up soon, you could lose digits.",
+            "min_day": 5,
+            "seasons": ["Winter"],
+            "condition": { "warmth_below": 25 },
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build up the fire and warm slowly",
+                    "requires": ["wood"],
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You stoke the fire and carefully warm your hands. The feeling returns painfully — but it returns. You're safe for now.",
+                    "success_fx": { "warmth": 10, "morale": 5 },
+                    "treat_injury": "frostbite"
+                },
+                {
+                    "icon": "🍵",
+                    "text": "Make herbal tea and rest",
+                    "requires": ["herbal_tea"],
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "The warm tea from the inside, the fire from the outside. Your core temperature rises and the frostbite recedes.",
+                    "success_fx": { "warmth": 15, "morale": 8 },
+                    "treat_injury": "frostbite"
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Keep moving to generate heat",
+                    "success": 0.35,
+                    "hours": 1,
+                    "success_text": "You force yourself to keep moving. The circulation returns slowly. Not ideal, but you've stemmed the damage.",
+                    "success_fx": { "hunger": -5, "morale": -3 },
+                    "fail_text": "Moving isn't enough. The frostbite worsens — your fingertips are losing feeling. This is serious.",
+                    "fail_fx": { "health": -15, "warmth": -10, "morale": -10 },
+                    "fail_injury": "frostbite"
+                }
+            ]
+        },
+        {
+            "id": "helicopter_flyover",
+            "name": "🚁 Helicopter!",
+            "icon": "🚁",
+            "text": "The distant thwack of rotor blades! A helicopter is crossing the valley. This could be your chance — if you've prepared.",
+            "min_day": 6,
+            "missed_opportunity": true,
+            "condition": { "signal_below": 5 },
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Light your signal fire NOW",
+                    "requires": ["wood"],
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You scramble to light your signal fire! Smoke billows up — the helicopter banks! They've seen you! Rescue is coming!",
+                    "success_fx": { "morale": 30 },
+                    "signal_override": 7
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Wave and shout desperately",
+                    "success": 0.08,
+                    "hours": 1,
+                    "success_text": "Against all odds, someone spots you from the helicopter! Help is on the way!",
+                    "success_fx": { "morale": 30 },
+                    "fail_text": "The helicopter passes without slowing. They didn't see you. The sound fades into the mountains. You've never felt more alone.",
+                    "fail_fx": { "morale": -20 }
+                }
+            ]
+        },
+        {
+            "id": "crash_site_supplies",
+            "name": "✈️ Salvageable Supplies",
+            "icon": "✈️",
+            "text": "You notice a section of the fuselage you haven't checked yet. Under the snow, there might still be useful supplies.",
+            "min_day": 2,
+            "max_day": 6,
+            "location": "crash_site",
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Search the wreckage carefully",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "Under the twisted metal, you find useful supplies! Wire, a knife blade, and a small stash of cordage.",
+                    "success_fx": { "morale": 8 },
+                    "success_loot": ["wire", "knife_blade", "cordage"]
+                },
+                {
+                    "icon": "⚡",
+                    "text": "Rip through it quickly",
+                    "success": 0.4,
+                    "hours": 1,
+                    "success_text": "You tear into the wreckage and find a few items, but you cut yourself on sharp metal.",
+                    "success_fx": { "morale": 3, "health": -5 },
+                    "success_loot": ["wire", "cordage"],
+                    "fail_text": "The wreckage is mostly empty. You cut your hand on a sharp edge for nothing.",
+                    "fail_fx": { "health": -10, "morale": -5 },
+                    "fail_injury": "cut"
+                }
+            ]
+        },
+        {
+            "id": "frozen_lake_breakthrough",
+            "name": "🧊 Ice Breakthrough",
+            "icon": "🧊",
+            "text": "While crossing a frozen stretch, you hear a deep CRACK. The ice shifts under your feet. You have seconds to react.",
+            "min_day": 3,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🏃",
+                    "text": "Sprint to solid ground",
+                    "success": 0.65,
+                    "hours": 1,
+                    "success_text": "You bolt for the shore just as the ice splinters behind you. Close call. Your heart races for an hour afterwards.",
+                    "success_fx": { "morale": -5 }
+                },
+                {
+                    "icon": "🦶",
+                    "text": "Crawl to distribute your weight",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You drop to your belly and crawl slowly. The ice holds. You reach shore safely, though you're soaked and freezing.",
+                    "success_fx": { "warmth": -10, "morale": -3 },
+                    "fail_text": "The ice gives way! You plunge into freezing water. The cold is like a physical blow. You drag yourself out, hypothermic.",
+                    "fail_fx": { "health": -20, "warmth": -25, "morale": -15 },
+                    "fail_injury": "hypothermia"
+                }
+            ]
+        },
+        {
+            "id": "medicinal_herbs_found",
+            "name": "🌿 Medicinal Herbs",
+            "icon": "🌿",
+            "text": "Among the snow and ice, you spot hardy little plants — willow bark and spruce tips. Known for their medicinal properties. If you gather them carefully...",
+            "min_day": 2,
+            "choices": [
+                {
+                    "icon": "🌿",
+                    "text": "Gather the herbs carefully",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You harvest spruce tips and willow bark — natural pain relief and antiseptics. These could be a lifesaver.",
+                    "success_fx": { "morale": 3 },
+                    "success_loot": ["medicinal_herbs"]
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Not worth the time",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You note the spot but move on. You can always come back.",
+                    "success_fx": { "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "pilots_journal",
+            "name": "📖 Pilot's Journal",
+            "icon": "📖",
+            "text": "Tucked in the wreckage, half-buried in snow, you find the pilot's journal. The last entry is dated two days before the crash. His daughter's birthday is next week. There's also a map showing the nearest road is 80 miles away, not 20.",
+            "min_day": 2,
+            "max_day": 8,
+            "location": "crash_site",
+            "choices": [
+                {
+                    "icon": "📖",
+                    "text": "Read it carefully and keep it",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You tuck the journal into your coat. It gives you something to hold onto — and a map that tells you the truth. The road is far. But at least now you know.",
+                    "success_fx": { "morale": -5, "explore_progress": 2 }
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Tear out the map and leave the rest",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "The map is what matters. You fold it carefully. The journal can stay with the pilot. You know the truth now — and the truth is cold.",
+                    "success_fx": { "morale": -2, "explore_progress": 1 }
+                }
+            ]
+        },
+        {
+            "id": "second_tracks",
+            "name": "🥾 Second Set of Tracks",
+            "icon": "🥾",
+            "text": "In the snow near your shelter, you find boot prints. Not yours. Someone else survived the crash — or was already out here. The tracks lead north, then disappear into drifting snow.",
+            "min_day": 4,
+            "max_day": 10,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the tracks north",
+                    "success": 0.4,
+                    "hours": 3,
+                    "success_text": "You follow the tracks for an hour before they vanish in drifted snow. But along the way, you find a discarded granola bar wrapper. Someone was here. And they were heading somewhere.",
+                    "success_fx": { "morale": 5, "explore_progress": 2, "hunger": 5 },
+                    "fail_text": "The tracks disappear after twenty minutes. The snow has covered any trail. You've gone further from camp and found nothing.",
+                    "fail_fx": { "morale": -5, "warmth": -5 }
+                },
+                {
+                    "icon": "👀",
+                    "text": "Stay put — following tracks in the snow is dangerous",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You note the direction and stay put. Someone else is out here — or was. That's both comforting and disturbing.",
+                    "success_fx": { "morale": -2 }
+                }
+            ]
+        },
+        {
+            "id": "frozen_body",
+            "name": "💀 The Frozen One",
+            "icon": "💀",
+            "text": "In a shallow ravine, you find a body. Frozen solid, curled into itself. A hiker, from the looks of it — died years ago. Around their neck: a compass. In their pack: a tin of matches and a knife blade.",
+            "min_day": 5,
+            "choices": [
+                {
+                    "icon": "📦",
+                    "text": "Take what you can use",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You kneel beside the stranger and take what you need. The compass still works. The matches are dry. The knife blade is sharp. This person can't use them anymore. You can. You whisper an apology and move on.",
+                    "success_fx": { "morale": -3 },
+                    "success_loot": ["compass", "knife_blade"]
+                },
+                {
+                    "icon": "🪦",
+                    "text": "Leave them undisturbed",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You leave them be. Some things shouldn't be touched. You note the location and walk away, but you can't shake the image. That could be you, someday soon.",
+                    "success_fx": { "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "abandoned_cabin_event",
+            "name": "🏚️ The Cabin in the Woods",
+            "icon": "🏚️",
+            "text": "Through the trees, you spot it — a cabin. Wooden walls, a tin roof, a door hanging on one hinge. It looks old. Very old. But it's standing. Someone scratched something on the door frame. You can't quite read it.",
+            "min_day": 4,
+            "location": "abandoned_cabin",
+            "choices": [
+                {
+                    "icon": "🏚️",
+                    "text": "Enter carefully and search it",
+                    "success": 0.8,
+                    "hours": 2,
+                    "success_text": "Inside: a rusted stove, a pile of dry wood, a cot with moth-eaten blankets, and scratched into the wall: 'DON'T STAY AFTER THE FIRST SNOW'. Whatever happened here happened a long time ago. But the shelter is real.",
+                    "success_fx": { "morale": 8, "warmth": 5, "shelter_progress": 2 },
+                    "success_loot": ["wood", "wood"]
+                },
+                {
+                    "icon": "👀",
+                    "text": "Check the outside first",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You circle the cabin. It's solid. No signs of recent occupation. The chimney still looks functional. Whatever warning was scratched on the wall, you'll take your chances.",
+                    "success_fx": { "morale": 3, "shelter_progress": 1 }
+                }
+            ]
+        },
+        {
+            "id": "vultures_overhead",
+            "name": "🦅 Ravens Circling",
+            "icon": "🦅",
+            "text": "A group of ravens circles overhead, their calls echoing across the valley. They're not just passing through — they're interested in something. You.",
+            "min_day": 6,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "💪",
+                    "text": "Shout and wave them off",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You shout at the sky. The ravens scatter with hoarse complaints. They'll be back, but for now, you're not carrion. Not yet.",
+                    "success_fx": { "morale": -2 }
+                },
+                {
+                    "icon": "🏹",
+                    "text": "Try to shoot one down for food",
+                    "requires": ["bow"],
+                    "success": 0.3,
+                    "hours": 1,
+                    "success_text": "You loose an arrow at the lowest raven. It drops! Tough, stringy meat, but protein is protein in the wild.",
+                    "success_fx": { "hunger": 8, "morale": 3 },
+                    "fail_text": "The arrow goes wide. The ravens caw mockingly and rise higher. A reminder of how far down the food chain you've fallen.",
+                    "fail_fx": { "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "pilots_body",
+            "name": "✈️ The Pilot",
+            "icon": "✈️",
+            "text": "In the wreckage, you find what you've been avoiding. The pilot. Still strapped in. The cold preserved everything — the headphones, the jacket, a photo of a young girl tucked into the breast pocket. You know you should search the body. You also know you should bury it.",
+            "min_day": 1,
+            "max_day": 5,
+            "location": "crash_site",
+            "choices": [
+                {
+                    "icon": "📦",
+                    "text": "Search the body respectfully",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You kneel beside the pilot and speak quietly. Then you search carefully — a compass, a lighter, and a small knife. The photo you leave where it is. The pilot doesn't need it anymore, but it feels wrong to take it.",
+                    "success_fx": { "morale": -3 },
+                    "success_loot": ["compass", "lighter", "knife_blade"]
+                },
+                {
+                    "icon": "🪦",
+                    "text": "Bury the pilot first, then search",
+                    "success": 0.9,
+                    "hours": 3,
+                    "success_text": "You dig as best you can in the frozen ground. It takes over an hour and your hands ache from the cold. But the pilot has a proper grave now. You find a compass and a lighter in the cockpit. Someone should know where they are.",
+                    "success_fx": { "morale": 5, "health": -3, "wildRespect": 5 },
+                    "success_loot": ["compass", "lighter"]
+                },
+                {
+                    "icon": "🚶",
+                    "text": "You can't. Walk away.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You turn away. Not yet. Maybe later, when you're stronger. Maybe never. The pilot's face stays with you regardless.",
+                    "success_fx": { "morale": -5 }
+                }
+            ]
+        },
+        {
+            "id": "wolf_tracks",
+            "name": "🐺 Wolf Tracks",
+            "icon": "🐺",
+            "text": "In the snow near your shelter, you find tracks. Big paw prints. Wolf tracks. They circle your camp once, then lead away into the trees. Whatever made these tracks was here while you slept. It was watching.",
+            "min_day": 2,
+            "max_day": 4,
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build up the fire and stay alert",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You bank the fire high and keep wood close. The tracks don't come back. Not tonight.",
+                    "success_fx": { "morale": -2, "warmth": 2 }
+                },
+                {
+                    "icon": "🪤",
+                    "text": "Set snares around the camp perimeter",
+                    "requires": ["snare"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You set snares at the points where the tracks enter and leave your camp. Either you'll catch it, or you'll scare it off. Either way, you feel more in control.",
+                    "success_fx": { "morale": 3 },
+                    "fail_text": "The snares are set, but in the morning one has been torn free. The wolf is bigger than your traps. It's still out there.",
+                    "fail_fx": { "morale": -5 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Note the direction and carry on",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You memorise the track direction and go about your day. But you keep looking over your shoulder.",
+                    "success_fx": { "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "daves_trail",
+            "name": "🥾 Another Survivor's Trail",
+            "icon": "🥾",
+            "text": "You find boot prints in the snow. Not yours — these are deeper, made by someone heavier. They head north. Nearby, half-buried in snow, is a torn backpack strap and a water bottle. Empty and capped. Someone else survived the crash. Someone else is out here.",
+            "min_day": 4,
+            "max_day": 8,
+            "choices": [
+                {
+                    "icon": "🧭",
+                    "text": "Follow the tracks north",
+                    "success": 0.4,
+                    "hours": 3,
+                    "success_text": "You follow the tracks for an hour before they disappear in drifting snow. But along the way, you find a discarded wrapper and a clear footprint pointing south. Whoever this was, they went north first, then turned around. They were lost too.",
+                    "success_fx": { "morale": 3, "explore_progress": 2, "warmth": -3 },
+                    "success_loot": ["cordage"]
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Head south — if they turned around, that must be the way",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You note the direction and walk south instead. The tracks went north and came back — south must be the way out. You don't find the road, but you cover good ground.",
+                    "success_fx": { "morale": 3, "explore_progress": 2 },
+                    "fail_text": "You walk south for an hour but find nothing but more snow and trees. At least you didn't follow the tracks into who-knows-where.",
+                    "fail_fx": { "morale": -2, "warmth": -3 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Stay put — following tracks in the snow is dangerous",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You note the direction and stay put. Someone else is out here. That's both comforting and disturbing. You're not alone. But you don't know if they're friendly.",
+                    "success_fx": { "morale": -1 }
+                }
+            ]
+        },
+        {
+            "id": "daves_camp",
+            "name": "🏕️ Dave's Camp",
+            "icon": "🏕️",
+            "text": "You find a cold campfire ring. Ashes scattered by wind. A makeshift shelter from branches. And a journal, water-stained but readable. The last few entries are short, the handwriting getting worse:\n\nDay 3: Going south tomorrow. Found some berries.\nDay 5: The cold is getting worse. My fingers are numb.\nDay 7: [illegible] ...the road has to be south...\n\nThe final entry just says: 'so cold'",
+            "min_day": 7,
+            "max_day": 12,
+            "condition": { "requires_event": "daves_trail" },
+            "choices": [
+                {
+                    "icon": "📖",
+                    "text": "Read the journal carefully and take it with you",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You tuck the journal into your coat. Dave went north first, then south. The road IS south. That's the most important thing you've learned. You also find a compass and some cordage in the shelter.",
+                    "success_fx": { "morale": -3, "explore_progress": 3 },
+                    "success_loot": ["compass", "cordage"]
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Head south — Dave was right about the direction",
+                    "success": 0.5,
+                    "hours": 3,
+                    "success_text": "You head south with renewed purpose. Dave may not have made it, but his direction was right. You find a clearing with a better view of the landscape.",
+                    "success_fx": { "explore_progress": 3, "morale": -2, "warmth": -5 },
+                    "fail_text": "You head south but the terrain is rough. The cold bites deeper. You don't find the road, but you know you're going the right way. Dave's journal was right about that much.",
+                    "fail_fx": { "warmth": -5, "morale": -3 }
+                },
+                {
+                    "icon": "📦",
+                    "text": "Search the camp for supplies and move on",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You find useful items — some cordage, a knife blade, and half a chocolate bar. Dave won't need them anymore. You take them and move on.",
+                    "success_fx": { "morale": -2 },
+                    "success_loot": ["cordage", "knife_blade"]
+                }
+            ]
+        },
+        {
+            "id": "daves_body",
+            "name": "💀 Dave",
+            "icon": "💀",
+            "text": "Under a rock overhang, curled tight against the cold, you find him. Dave. He's frozen solid, his face peaceful — the cold took him in his sleep. He's been dead for days. His hands are wrapped around a compass, pointing south. He was trying to go the right way. He just didn't make it.",
+            "min_day": 10,
+            "max_day": 20,
+            "condition": { "requires_event": "daves_camp" },
+            "choices": [
+                {
+                    "icon": "📦",
+                    "text": "Take what you need and say goodbye",
+                    "success": 1.0,
+                    "hours": 1,
+                    "success_text": "You kneel beside Dave and speak quietly. You tell him you're sorry. Then you take what you need — the compass still pointing south, a knife, some cordage. You leave the photo of his family where it is. They should know where he is. When you get out, you'll tell them.",
+                    "success_fx": { "morale": -5 },
+                    "success_loot": ["compass", "knife_blade", "cordage"]
+                },
+                {
+                    "icon": "🪦",
+                    "text": "Bury him and then take supplies",
+                    "success": 0.8,
+                    "hours": 3,
+                    "success_text": "The ground is frozen but you find a depression and cover him with rocks. It takes two hours and your hands ache from the cold, but Dave has a proper grave now. You take the compass and the knife. Someone should know where he is. When you get out, you'll tell them.",
+                    "success_fx": { "morale": 5, "health": -5, "warmth": -5, "wildRespect": 5 },
+                    "success_loot": ["compass", "knife_blade"]
+
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Leave him be. Don't take anything.",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You stand there for a long time. Then you walk away. The compass in his hands points south. You'll remember that. You don't need to take from a dead man to survive. But the image of him — curled up, alone, pointing the way — will stay with you.",
+                    "success_fx": { "morale": -8, "explore_progress": 2 }
+                }
+            ]
+        },
+        {
+            "id": "village_search",
+            "name": "🏘️ The Abandoned Village",
+            "icon": "🏘️",
+            "text": "Three buildings, half-collapsed. A cabin, a shed, and something that might have been a store. Snow has filled the doorways. No one has lived here in years. But buildings mean walls. Walls mean shelter. And somewhere in these ruins, there might be supplies.",
+            "min_day": 3,
+            "location": "abandoned_village",
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Search the buildings carefully",
+                    "success": 0.7,
+                    "hours": 2,
+                    "success_text": "You find useful supplies — a tin can, some wire, and cordage. The cabin is structurally sound enough to provide real shelter. This could be a base.",
+                    "success_fx": { "morale": 8, "warmth": 3, "shelter_progress": 2 },
+                    "success_loot": ["tin_can", "wire", "cordage"]
+                },
+                {
+                    "icon": "🏚️",
+                    "text": "Make camp here — the buildings provide shelter",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You clear snow from the cabin doorway and step inside. It's cold but the walls are solid. No wind. No snow. For the first time since the crash, you're properly sheltered. This could be a base.",
+                    "success_fx": { "morale": 10, "warmth": 5, "shelter_progress": 3 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Check the perimeter and move on",
+                    "success": 0.5,
+                    "hours": 1,
+                    "success_text": "You walk around the buildings but don't go inside. Something about this place makes you uneasy. Abandoned places have their own kind of cold.",
+                    "success_fx": { "morale": 2, "explore_progress": 1 }
+                }
+            ]
+        },
+        {
+            "id": "coastline_signal",
+            "name": "🌊 The Frozen Coast",
+            "icon": "🌊",
+            "text": "The trees thin and then vanish. Before you: the frozen coast. Ice meets sea in a jagged line. The wind here is brutal — nothing to block it. But the view is unmatched. If a ship passed, they'd see a signal fire for miles. There's no wood here though. If you want to signal, you'll need to bring everything.",
+            "min_day": 5,
+            "location": "coastline",
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build a signal fire (if you have wood)",
+                    "requires": ["wood"],
+                    "success": 0.5,
+                    "hours": 2,
+                    "success_text": "You build a signal fire on the rocks. The wind whips the flames but also sends the smoke high and wide. If there's a ship within miles, they'll see it. You watch the horizon until the fire burns low. No ship today. But the signal position is excellent.",
+                    "success_fx": { "morale": 5, "signal_progress": 4 },
+                    "fail_text": "The wind tears at your fire. Three times you try to light it, three times it blows out. By the time it catches, you're exhausted and the wood is nearly gone. The smoke rises, but thin and intermittent.",
+                    "fail_fx": { "morale": -3, "signal_progress": 1 }
+                },
+                {
+                    "icon": "👀",
+                    "text": "Watch the horizon for ships",
+                    "success": 0.1,
+                    "hours": 2,
+                    "success_text": "You scan the horizon for two hours. The sea is empty. Endless grey water meets grey sky. But you've found the coast. That's something. If you bring wood next time, you could signal from here.",
+                    "success_fx": { "morale": -3, "signal_progress": 1 },
+                    "fail_text": "You scan the horizon for hours. The cold is brutal — no shelter, no wood, just wind and ice. You need to leave before you freeze.",
+                    "fail_fx": { "morale": -5, "warmth": -10, "health": -5 }
+                },
+                {
+                    "icon": "🧊",
+                    "text": "Check the ice edge for water",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You find a crack in the ice near the shore and chip away until you reach liquid water. Salt water. Undrinkable. But the ice itself is fresh — if you melt it, you have water.",
+                    "success_fx": { "morale": 2 }
+                }
+            ]
+        },
+        {
+            "id": "fire_out",
+            "name": "🔥 Fire Out",
+            "icon": "🔥",
+            "text": "You wake to the smell of cold ash. Sometime in the night, your fire went out. The wind must have got it, or the snow. The cold rushes in like something alive, filling the space where warmth used to be. You need to get warm again. Fast.",
+            "min_day": 3,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🪵",
+                    "text": "Relight the fire immediately (if you have wood)",
+                    "requires": ["wood"],
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "Your fingers are numb but you manage to strike sparks into dry wood. The flame catches, then grows. Warmth floods back. You won't forget this feeling — the relief of fire returning.",
+                    "success_fx": { "warmth": 5, "morale": 5 }
+                },
+                {
+                    "icon": "🏃",
+                    "text": "Stay moving to generate body heat",
+                    "success": 0.4,
+                    "hours": 2,
+                    "success_text": "You jog in place, swing your arms, do anything to keep blood flowing. It helps, but not enough. The cold has teeth and they're deep.",
+                    "success_fx": { "warmth": -5, "health": -3, "morale": -3, "hunger": -3 },
+                    "fail_text": "You try to keep moving but the cold is in your bones. Your body won't cooperate. You stumble and nearly fall. This is getting dangerous.",
+                    "fail_fx": { "warmth": -15, "health": -8, "morale": -5 },
+                    "fail_injury": "hypothermia"
+                },
+                {
+                    "icon": "🛏️",
+                    "text": "Huddle in your shelter and wait",
+                    "success": 0.3,
+                    "hours": 2,
+                    "success_text": "You wrap yourself in everything you have and wait. The cold seeps through. It's a long, miserable wait for dawn, but you survive it.",
+                    "success_fx": { "warmth": -10, "morale": -5 },
+                    "fail_text": "You curl up tight but the cold finds every gap. Your shivering becomes uncontrollable. This is the beginning of hypothermia.",
+                    "fail_fx": { "warmth": -20, "health": -10, "morale": -8 },
+                    "fail_injury": "hypothermia"
+                }
+            ]
+        },
+        {
+            "id": "cabin_night_sounds",
+            "name": "👀 Sounds in the Night",
+            "icon": "👀",
+            "text": "You wake to something outside the cabin. A scraping. A soft thud. Then silence. It could be wind. It could be an animal. It could be nothing at all. But the cabin feels different at night — smaller, like the walls are watching.",
+            "min_day": 3,
+            "location": "abandoned_cabin",
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build up the fire and stay alert",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You feed the fire until it crackles and spits. The sounds don't come back. Probably just the wind. Probably.",
+                    "success_fx": { "morale": -2, "warmth": 3 }
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Check outside",
+                    "success": 0.5,
+                    "hours": 1,
+                    "success_text": "You open the door and peer into the dark. Fresh snow has fallen — and in it, you see tracks. They circle the cabin once and lead away. Animal tracks. Just animal tracks. Probably.",
+                    "success_fx": { "morale": -3, "warmth": -5 },
+                    "fail_text": "You open the door and step out. The cold hits you like a wall. You can't see anything in the dark. After a few minutes of shivering, you go back inside. You saw nothing. But the feeling of being watched doesn't go away.",
+                    "fail_fx": { "morale": -5, "warmth": -8 }
+                },
+                {
+                    "icon": "💤",
+                    "text": "Ignore it and go back to sleep",
+                    "success": 0.7,
+                    "hours": 0,
+                    "success_text": "You pull the blanket tighter and close your eyes. The sounds don't come back. You sleep, but not well.",
+                    "success_fx": { "morale": -2 },
+                    "fail_text": "You try to sleep but every small sound jolts you awake. By morning, you're exhausted and on edge.",
+                    "fail_fx": { "morale": -5, "health": -3 }
+                }
+            ]
+        },
+        {
+            "id": "desperate_wood",
+            "name": "🪵 Desperate for Wood",
+            "icon": "🪵",
+            "text": "The cold is biting and you have no wood for a fire. Without fire, you can't stay warm, cook food, or melt snow for water. Every branch you see looks precious. Every fallen tree looks like a lifeline.",
+            "min_day": 2,
+            "condition": { "no_item": "wood" },
+            "choices": [
+                {
+                    "icon": "🔍",
+                    "text": "Search desperately for anything that burns",
+                    "success": 0.6,
+                    "hours": 2,
+                    "success_text": "You scavenge the area, collecting pine cones, dry bark, dead twigs, and anything else that might catch. It's not much, but it might be enough for a small fire.",
+                    "success_fx": { "morale": 3 },
+                    "success_loot": ["wood"]
+                },
+                {
+                    "icon": "🧊",
+                    "text": "Save your energy and huddle for warmth",
+                    "success": 0.3,
+                    "hours": 1,
+                    "success_text": "You curl up in your shelter and try to conserve body heat. It's a long, cold night. You survive, but barely.",
+                    "success_fx": { "warmth": -8, "morale": -5 },
+                    "fail_text": "Without fire, the cold seeps into everything. You shiver uncontrollably. This is getting dangerous.",
+                    "fail_fx": { "warmth": -15, "health": -8, "morale": -8 }
+                }
+            ]
+        },
+                {
+            "id": "wolf_morning",
+            "name": "🐺 Wolf in the Morning Light",
+            "icon": "🐺",
+            "text": "Dawn breaks and you see it — a grey shape at the treeline, watching your camp. In the pale morning light, the wolf's eyes catch the first rays of sun. It holds your gaze for a long moment, then turns and vanishes into the trees. A reminder: you are not alone out here. And something is deciding what you are to it.",
+            "min_day": 5,
+            "max_day": 15,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build up your fire and stay alert",
+                    "success": 0.9,
+                    "hours": 1,
+                    "success_text": "You feed the fire and watch the treeline. The wolf doesn't return. But you know it will.",
+                    "success_fx": { "morale": -2, "warmth": 2 }
+                },
+                {
+                    "icon": "🧭",
+                    "text": "Mark the direction it went and carry on",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You note the direction and go about your day. The wolf is part of this landscape now. You'd better learn to live with it.",
+                    "success_fx": { "morale": -1, "wildRespect": 2 }
+                }
+            ]
+        },
+        {
+            "id": "deer_carcass",
+            "name": "🦌 Deer Carcass",
+            "icon": "🦌",
+            "text": "Near your camp, you find the remains of a deer. Half-eaten, frozen solid, and very fresh. The kill wasn't made by a human. Wolf tracks circle the carcass — this is the wolf's kill. It's been feeding near your camp. That means it's comfortable being this close to you.",
+            "min_day": 5,
+            "max_day": 20,
+            "seasons": ["Autumn", "Winter"],
+            "choices": [
+                {
+                    "icon": "🥩",
+                    "text": "Take what meat is left",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "You carefully cut away the remaining meat. It's wolf food, but you need it more. The wolf will know you took from its kill. This changes things between you.",
+                    "success_fx": { "hunger": 15, "morale": -3, "wildRespect": -10 },
+                    "success_loot": ["raw_meat"]
+                },
+                {
+                    "icon": "🚶",
+                    "text": "Leave it — it's the wolf's kill",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You back away. Taking from a wolf's kill is how you become its competition. Better to let it eat and move on. You mark the location — if the wolf moves on, you can come back for scraps later.",
+                    "success_fx": { "morale": 2, "wildRespect": 5 }
+                },
+                {
+                    "icon": "🔍",
+                    "text": "Study the tracks — where is the wolf going?",
+                    "success": 0.6,
+                    "hours": 1,
+                    "success_text": "You study the tracks carefully. The wolf comes from the north-east and returns that way after feeding. There's a pattern. This knowledge might help you avoid it — or find it.",
+                    "success_fx": { "morale": 3, "explore_progress": 1, "wildRespect": 3 }
+                }
+            ]
+        },
+        {
+            "id": "cabin_fever",
+            "name": "🏚️ Cabin Fever",
+            "icon": "🏚️",
+            "text": "You've been in the cabin for days now. The walls feel like they're closing in. You catch yourself talking to no one. Your reflection in the window surprises you — you look different. Thinner. Wilder. The fire is warm. The wind outside is not. Why would you ever leave?",
+            "min_day": 5,
+            "location": "abandoned_cabin",
+            "condition": { "has_fire": true },
+            "choices": [
+                {
+                    "icon": "🚶",
+                    "text": "Force yourself to step outside for fresh air",
+                    "success": 0.7,
+                    "hours": 1,
+                    "success_text": "The cold hits you like a wall. It's shocking, but also... clearing. You can think again. The cabin is safe, but safety can become a trap.",
+                    "success_fx": { "morale": 5, "warmth": -5 }
+                },
+                {
+                    "icon": "🔥",
+                    "text": "Stay by the fire — it's too cold outside",
+                    "success": 0.4,
+                    "hours": 0,
+                    "success_text": "You pull the blanket tighter. The fire crackles. The wind howls outside. You're warm. You're safe. That's all that matters... isn't it?",
+                    "success_fx": { "morale": -5, "warmth": 3 },
+                    "fail_text": "You stare at the fire for hours. You don't remember falling asleep. When you wake, you don't know what day it is. The walls seem closer than before.",
+                    "fail_fx": { "morale": -10 }
+                }
+            ]
+        },
+        {
+            "id": "cabin_scratches",
+            "name": "🏚️ Scratches on the Door",
+            "icon": "🏚️",
+            "text": "You wake to a sound outside the cabin. When you check the door, you find fresh scratches on the wood. They look like claw marks. But they could also be from a branch blown against the door by the wind. Probably just the wind. Probably.",
+            "min_day": 7,
+            "location": "abandoned_cabin",
+            "choices": [
+                {
+                    "icon": "🔥",
+                    "text": "Build up the fire and check the door",
+                    "success": 0.85,
+                    "hours": 1,
+                    "success_text": "You stoke the fire and check the door frame. The scratches are deep — too deep for a branch. But whatever made them is gone now. You bar the door and settle in for a long night.",
+                    "success_fx": { "morale": -2, "warmth": 3 }
+                },
+                {
+                    "icon": "🌙",
+                    "text": "Go back to sleep — it's just the wind",
+                    "success": 0.6,
+                    "hours": 0,
+                    "success_text": "You convince yourself it's the wind. You sleep, but your dreams are restless. Something about this cabin doesn't feel right.",
+                    "success_fx": { "morale": -3 },
+                    "fail_text": "You can't sleep. Every sound makes you jump. By morning, you're exhausted and on edge.",
+                    "fail_fx": { "morale": -5, "health": -3 }
+                }
+            ]
+        },
+                {
+            "id": "cabin_resident",
+            "name": "👤 The Cabin Resident",
+            "icon": "👤",
+            "text": "You wake in the night and there's someone sitting across from you by the fire. They look calm. They look like they belong here. You can't quite see their face — the firelight keeps shifting. 'You could stay,' they say. Their voice is warm, like they care about you. 'It's warm here. The door doesn't have to open. Not ever again.' You blink and they're gone. The fire is lower than it was. The door is still closed. Was someone here, or did you imagine it?",
+            "min_day": 8,
+            "location": "abandoned_cabin",
+            "choices": [
+                {
+                    "icon": "🚶",
+                    "text": "Leave the cabin right now",
+                    "success": 0.8,
+                    "hours": 1,
+                    "success_text": "You grab your things and step into the cold. It hits you like a wall — sharp, real, awake. The cabin is behind you now. You're not going back. Whatever that was, it wanted you to stay. You choose the cold.",
+                    "success_fx": { "morale": 8, "warmth": -10 }
+                },
+                {
+                    "icon": "🔥",
+                    "text": "Stay — it's just a dream. The cabin is warm.",
+                    "success": 0.3,
+                    "hours": 0,
+                    "success_text": "You close your eyes. The fire is warm. The walls are solid. There's nothing outside but cold and dark and wolves. In here, you're safe. That's what matters. That's all that matters.",
+                    "success_fx": { "morale": -8 }
+                },
+                {
+                    "icon": "💬",
+                    "text": "Speak to the figure — ask who they are",
+                    "success": 0.5,
+                    "hours": 1,
+                    "success_text": "You ask the question. The figure tilts its head. 'I lived here,' it says. 'A long time ago. Before the snow.' It gestures at the warning scratched above the door. 'I wrote that. I was right. You shouldn't stay.' And then it's gone. The fire flickers. You're alone. But you have an answer.",
+                    "success_fx": { "morale": 5, "wildRespect": 5 }
+                }
+            ]
+        },
+        {
+            "id": "raw_meat_warning",
+            "name": "🥩 Raw Meat",
+            "icon": "🥩",
+            "text": "You're holding raw meat. Your stomach growls. It would be so easy to just eat it now — you're hungry and cooking means finding wood and making a fire. But raw meat is risky. You could get sick. Or you could wait until you can cook it properly.",
+            "min_day": 3,
+            "choices": [
+                {
+                    "icon": "🥩",
+                    "text": "Eat it raw — you're starving",
+                    "success": 0.4,
+                    "hours": 0,
+                    "success_text": "You force down the raw meat. It tastes of iron and cold. Your stomach churns but holds. For now.",
+                    "success_fx": { "hunger": 10, "morale": -3 },
+                    "fail_text": "You eat the raw meat and immediately regret it. Your stomach cramps violently. Raw game can carry parasites and bacteria. You've made a bad situation worse.",
+                    "fail_fx": { "hunger": 5, "health": -15, "morale": -8 },
+                    "fail_injury": "infection"
+                },
+                {
+                    "icon": "🔥",
+                    "text": "Wait until you can cook it properly",
+                    "success": 1.0,
+                    "hours": 0,
+                    "success_text": "You wrap the meat and put it in your pack. You'll cook it when you have fire. Smart choice, even if your stomach disagrees.",
+                    "success_fx": { "morale": -1 }
+                }
+            ]
+        }
+    ],
+
+
+    "endings": [
+        {
+            "id": "aurora_gift",
+            "name": "Aurora's Gift",
+            "icon": "🌌",
+            "type": "mythic",
+            "text": "On day {days}, the aurora appears. Not the usual green — this is something else. Ribbons of light cascade across the sky in colours you've never seen. Purple. Gold. White. They seem to reach down toward you. And then, impossibly, they show you something — a valley, a river, a road. The next morning, you walk in the direction the lights showed you. Three hours later, you find a logging road. The aurora saved you. Or maybe you saved yourself by paying attention. Either way, you're going home.",
+            "summary": "The aurora showed you the way out. The wilderness respected you.",
+            "condition": { "days_survived": 15, "min_resources": { "health": 30 }, "wildRespect_above": 60 }
+        },
+        {
+            "id": "daves_road",
+            "name": "Dave's Road",
+            "icon": "🛤️",
+            "type": "good",
+            "text": "After {days} days, you stumble onto a dirt road. A road. An actual road. You remember Dave's journal — 'the road is south.' He was right. He just didn't make it. You did. When the truck picks you up, you tell them about Dave. About where he is. About the compass in his hands, still pointing south. They find him the next day. His family gets closure. You get out alive. That's what Dave would have wanted.",
+            "summary": "You followed the other survivor's trail and found the road.",
+            "condition": { "explore_progress": 10, "requires_event": "daves_camp" }
+        },
+        {
+            "id": "pilots_burial",
+            "name": "Pilot's Burial",
+            "icon": "🪦",
+            "type": "good",
+            "text": "After {days} days, a rescue helicopter spots your signal. As you're lifted into the sky, you look down at the white wilderness that tested every fibre of your being. You made it. But you also did something that not everyone would — you buried the pilot. In the helicopter, you tell them exactly where to find the body. Someone's family will have closure because you took the time, in the worst conditions imaginable, to do the right thing. The pilot's daughter sends you a letter six months later. It just says: 'Thank you.'",
+            "summary": "You survived and gave the pilot a proper burial.",
+            "condition": { "requires_event": "pilots_body", "signal_progress": 7 }
+        },
+        {
+            "id": "coastline_rescued",
+            "name": "Coastline Rescue",
+            "icon": "🚢",
+            "type": "good",
+            "text": "After {days} days, a coast guard vessel spots your signal fire on the rocks. You built it on the frozen coastline, carrying wood for miles, keeping it dry, waiting for the moment a ship might pass. When the spotlight hits you, you don't cry. You don't wave. You just stand there, because you used every last bit of energy to keep that fire going. The crew pulls you aboard and wraps you in blankets. As the coastline shrinks behind you, you look at the white wilderness one last time. You won.",
+            "summary": "You signalled from the coast and were rescued by sea.",
+            "condition": { "signal_progress": 7, "requires_event": "coastline_signal" }
+        },
+        {
+            "id": "scarred",
+            "name": "Scarred",
+            "icon": "🩹",
+            "type": "good",
+            "text": "After {days} days, you walked out of the wilderness. Not carried. Not rescued. Walked. The search team found you on the road, barely standing, covered in cuts and bruises, limping from a healed sprain. They offered you a blanket. You said you'd rather walk. They gave you a lift anyway. In the hospital, they counted your injuries — each one a story of survival. You'll carry the scars for the rest of your life. But you'll also carry the knowledge that you survived every single one of them.",
+            "summary": "You survived with multiple injuries, each one earned.",
+            "condition": { "days_survived": 14, "injury_count_above": 2, "min_resources": { "health": 20 } }
+        },
+        {
+            "id": "rescued",
+            "name": "Rescued!",
+            "icon": "🚁",
+            "type": "good",
+            "text": "After {days} days of survival, a rescue helicopter spots your signal. As you're lifted to safety, you look back at the wilderness that nearly claimed you. You survived. You're one of the few who can say that.",
+            "summary": "You signalled for rescue and were found.",
+            "condition": { "signal_progress": 7 }
+        },
+        {
+            "id": "explored_out",
+            "name": "Found Civilisation",
+            "icon": "🏘️",
+            "type": "good",
+            "text": "After {days} days, you stumble upon a remote road. A passing truck picks you up. You made it out on your own terms.",
+            "summary": "You explored enough to find your way to safety.",
+            "condition": { "explore_progress": 12 }
+        },
+        {
+            "id": "survived_14",
+            "name": "Wilderness Survivor",
+            "icon": "🏔️",
+            "type": "good",
+            "text": "After {days} days, you've proven you can survive the Alaskan wilderness. A search party finally reaches you, but you'd already made peace with the wild.",
+            "summary": "You survived 14+ days in the wilderness.",
+            "condition": { "days_survived": 14, "min_resources": { "health": 30 } }
+        },
+        {
+            "id": "death_health",
+            "name": "The Wild Claims You",
+            "icon": "🪦",
+            "type": "bad",
+            "text": "Your body can no longer endure. The Alaskan wilderness is indifferent — it simply continues without you.",
+            "summary": "Your health reached zero.",
+            "condition": { "health": 0 }
+        },
+        {
+            "id": "eternal_cold",
+            "name": "The Eternal Cold",
+            "icon": "❄️",
+            "type": "mythic",
+            "text": "The cold took you on day {days}. But not the way you expected. You didn't freeze in your sleep. You walked out into the snow one last time and the aurora was overhead — green and purple and gold, stretching across the entire sky. You stopped walking. You stopped feeling cold. You just... became part of it. The people who found your tracks said they led into the aurora and didn't come back out. Your body was never found. But sometimes, on clear winter nights, if you look up at the green light, you can almost see someone dancing up there.",
+            "summary": "The cold didn't kill you. It took you home.",
+            "condition": { "wildRespect_above": 70, "cause": "cold" }
+        },
+        {
+            "id": "death_cold",
+            "name": "Frozen",
+            "icon": "❄️",
+            "type": "bad",
+            "text": "The cold crept in slowly, then all at once. You couldn't stay warm. The wilderness froze you where you lay.",
+            "summary": "You froze to death.",
+            "condition": { "warmth": 0, "cause": "cold" }
+        },
+        {
+            "id": "death_starvation",
+            "name": "Starvation",
+            "icon": "💀",
+            "type": "bad",
+            "text": "Day by day, your body consumed itself. Without enough food, there was nothing left to burn. The forest took back what it had given.",
+            "summary": "You starved to death.",
+            "condition": { "cause": "starvation" }
+        },
+        {
+            "id": "death_infection",
+            "name": "Infection",
+            "icon": "🦠",
+            "type": "bad",
+            "text": "The wound festered and the infection spread through your body like poison. Without antibiotics, there was nothing you could do. The wilderness claimed you slowly.",
+            "summary": "You died from an untreated infection.",
+            "condition": { "cause": "infection" }
+        },
+        {
+            "id": "death_wildlife",
+            "name": "Prey",
+            "icon": "🐺",
+            "type": "bad",
+            "text": "The Alaskan wilderness has predators that don't hesitate. You fought bravely, but nature is indifferent to courage.",
+            "summary": "You were killed by wildlife.",
+            "condition": { "cause": "wildlife" }
+        },
+        {
+            "id": "long_dark",
+            "name": "The Long Dark",
+            "icon": "🌑",
+            "type": "bad",
+            "text": "They found you curled in your shelter, barely breathing. The frost had taken three fingers and both earlobes. You survived — but the cold never fully left your bones. Some nights, you still dream of the white silence.",
+            "summary": "You survived but with severe cold injuries.",
+            "condition": { "health": 0, "cause": "hypothermia" }
+        },
+        {
+            "id": "wolf_kill",
+            "name": "Prey",
+            "icon": "🐺",
+            "type": "bad",
+            "text": "The wolf pack finally cornered you at dusk. You fought — you fought like hell — but there were too many and you were too tired. The Alaskan wilderness has predators that don't hesitate. The wolves were patient. You were not.",
+            "summary": "You were killed by wolves.",
+            "condition": { "cause": "wolf" }
+        },
+        {
+            "id": "pilots_burial",
+            "name": "Pilot's Burial",
+            "icon": "🪦",
+            "type": "good",
+            "text": "After {days} days, a rescue helicopter spots your signal. As you're lifted into the sky, you look down at the white wilderness that tested every fibre of your being. You made it. But you also did something that not everyone would — you buried the pilot. In the helicopter, you tell them exactly where to find the body. Someone's family will have closure because you took the time, in the worst conditions imaginable, to do the right thing. The pilot's daughter sends you a letter six months later. It just says: 'Thank you.'",
+            "summary": "You survived and gave the pilot a proper burial.",
+            "condition": { "requires_event": "pilots_body" }
+        },
+        {
+            "id": "white_silence",
+            "name": "The White Silence",
+            "icon": "🥶",
+            "type": "bad",
+            "text": "They found you walking along a frozen creek. Your lips were blue. Your fingers were black. You'd lost three toes and both earlobes to frostbite. When they asked you your name, you said it without hesitation. When they asked you what happened, you said: 'The cold taught me to listen.' You survived, but the cold never fully left your bones. Some nights, you still dream of the white silence.",
+            "summary": "You survived but the cold left its mark on you forever.",
+            "condition": { "has_injury": "frostbite", "days_survived": 14 }
+        },
+        {
+            "id": "the_cabin",
+            "name": "The Cabin",
+            "icon": "🏚️",
+            "type": "bad",
+            "text": "The cabin was warm. The cabin was safe. The cabin had walls and a door and a fire that crackled in the hearth. You stopped leaving. Why would you? The world outside was cold and hostile. The world inside was... fine. The search team found you sitting by the fire, staring at the door. You told them someone else lived here. They found no evidence anyone had lived there in thirty years. The warning scratched above the door — DON'T STAY AFTER THE FIRST SNOW — was written by you. You just don't remember writing it.",
+            "summary": "You stayed in the cabin and never left.",
+            "condition": { "days_survived": 14, "max_morale": 25 }
+        }
+    ]
+}
+
+
