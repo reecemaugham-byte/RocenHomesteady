@@ -115,7 +115,14 @@ async def lifespan(app: FastAPI):
 
 
 # CHANGED: Rate limiter
-limiter = Limiter(key_func=get_remote_address)
+def get_client_ip(request: Request):
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "127.0.0.1"
+
+limiter = Limiter(key_func=get_client_ip)
+
 
 app = FastAPI(
     title="Rocen Homesteady API",
