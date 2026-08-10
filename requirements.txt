@@ -1,9 +1,0 @@
-streamlit
-pandas
-openai
-edge-tts
-Pillow
-plotly
-streamlit-extras
-nest-asyncio
-psycopg2-binary==2.9.9
