@@ -227,6 +227,13 @@ nav {
 
 .btn-discord:hover { background: #4752c4; color: #fff; }
 
+.discord-note {
+    font-size: 0.85rem;
+    color: #b0b0b0;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
 .section-link {
     display: inline-block;
     margin-top: 1rem;
