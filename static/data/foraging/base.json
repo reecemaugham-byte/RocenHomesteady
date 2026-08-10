@@ -1,0 +1,430 @@
+{
+    "actions": {
+        "forage": {
+            "name": "Forage for Plants",
+            "icon": "🌿",
+            "desc": "Search for wild plants to identify and gather",
+            "hours": 2
+        },
+        "explore": {
+            "name": "Explore",
+            "icon": "🧭",
+            "desc": "Search the area for new locations and resources",
+            "hours": 3
+        },
+        "build_shelter": {
+            "name": "Build Shelter",
+            "icon": "🏕️",
+            "desc": "Improve your shelter for better warmth and rest",
+            "hours": 4
+        },
+        "gather_wood": {
+            "name": "Gather Wood",
+            "icon": "🪵",
+            "desc": "Collect firewood and building materials",
+            "hours": 2
+        },
+        "signal": {
+            "name": "Signal for Help",
+            "icon": "📡",
+            "desc": "Build a signal fire to attract rescue",
+            "hours": 2
+        },
+        "rest": {
+            "name": "Rest",
+            "icon": "💤",
+            "desc": "Recover health and morale",
+            "hours": 3
+        },
+        "hunt": {
+            "name": "Hunt / Set Traps",
+            "icon": "🪤",
+            "desc": "Set traps or hunt for food",
+            "hours": 3
+        },
+        "find_water": {
+            "name": "Find Water",
+            "icon": "💧",
+            "desc": "Search for a fresh water source",
+            "hours": 2
+        },
+        "scavenge": {
+            "name": "Scavenge",
+            "icon": "🔍",
+            "desc": "Search buildings for supplies and useful items",
+            "hours": 2
+        },
+        "craft": {
+    "name": "Craft Tool",
+    "icon": "🔨",
+    "desc": "Craft useful items from gathered materials",
+    "hours": 2
+},
+"light_fire": {
+    "name": "Light Fire",
+    "icon": "🔥",
+    "desc": "Build a fire for warmth, cooking, and boiling water. Essential for survival.",
+    "hours": 1
+},
+"melt_water": {
+    "name": "Melt Snow for Water",
+    "icon": "🫗",
+    "desc": "Melt snow or ice over a fire for drinking water. Requires a lit fire.",
+    "hours": 1
+}
+    },
+
+    "crafting": {
+        "snare": {
+            "name": "Snare Trap",
+            "icon": "🪤",
+            "desc": "A simple trap to catch small game. Improves hunting success.",
+            "requires": ["wood", "cordage"]
+        },
+        "spear": {
+            "name": "Spear",
+            "icon": "🗡️",
+            "desc": "A sharpened stick for hunting and defence.",
+            "requires": ["wood", "knife_blade"]
+        },
+        "cordage": {
+            "name": "Cordage",
+            "icon": "🧶",
+            "desc": "Plant-fibre rope. Essential for crafting.",
+            "requires": []
+        },
+        "fire_bow": {
+            "name": "Fire Bow",
+            "icon": "🔥",
+            "desc": "A bow drill for starting fires without matches.",
+            "requires": ["wood", "cordage"]
+        },
+        "water_filter": {
+            "name": "Water Filter",
+            "icon": "🫗",
+            "desc": "A basic filter to purify water.",
+            "requires": ["tin_can", "cordage"]
+        },
+        "bandage": {
+            "name": "Bandage",
+            "icon": "🩹",
+            "desc": "Clean bandages to treat wounds and stop bleeding.",
+            "requires": ["cordage"]
+        },
+        "herbal_tea": {
+            "name": "Herbal Tea",
+            "icon": "🍵",
+            "desc": "A warming tea that restores health and morale.",
+            "requires": ["wood", "cordage"],
+            "consumable": true,
+            "use_effects": { "health": 15, "morale": 10, "warmth": 5 }
+        },
+        "cooked_food": {
+    "name": "Cooked Meal",
+    "icon": "🍖",
+    "desc": "Properly cooked meat. Much more nutritious than raw. Requires a lit fire.",
+    "requires": ["raw_meat", "wood"],
+    "consumable": true,
+    "use_effects": { "hunger": 30, "morale": 5, "warmth": 3 },
+    "requires_fire": true
+},
+"hot_tea": {
+    "name": "Hot Tea",
+    "icon": "🍵",
+    "desc": "A warming brew from spruce tips or berries. Restores warmth and morale. Requires a lit fire.",
+    "requires": ["wood"],
+    "consumable": true,
+    "use_effects": { "warmth": 8, "morale": 10 },
+    "requires_fire": true
+},
+        "bow": {
+            "name": "Bow",
+            "icon": "🏹",
+            "desc": "A simple hunting bow. Greatly improves hunting success.",
+            "requires": ["wood", "cordage"]
+        },
+        "fishing_rod": {
+            "name": "Fishing Rod",
+            "icon": "🎣",
+            "desc": "A makeshift fishing rod. Use near water sources to catch fish.",
+            "requires": ["wood", "cordage", "wire"]
+        },
+        "fur_wrap": {
+            "name": "Fur Wrap",
+            "icon": "🧣",
+            "desc": "Animal fur wrapped around you. Provides significant warmth.",
+            "requires": ["animal_fur", "cordage"],
+            "passive_effects": { "warmth_bonus": 5 }
+        },
+        "splint": {
+            "name": "Splint",
+            "icon": "🦴",
+            "desc": "A makeshift splint for sprains. Speeds recovery.",
+            "requires": ["wood", "cordage"],
+            "consumable": true,
+            "treats_injury": "sprained_ankle",
+            "use_effects": { "health": 5 }
+        },
+        "herbal_poultice": {
+            "name": "Herbal Poultice",
+            "icon": "🌿",
+            "desc": "A healing compress from wild herbs. Treats wounds and prevents infection.",
+            "requires": ["medicinal_herbs", "bandage"],
+            "consumable": true,
+            "treats_injury": ["cut", "burn", "frostbite", "infection"],
+            "use_effects": { "health": 8 }
+        },
+        "sun_hat": {
+            "name": "Sun Hat",
+            "icon": "👒",
+            "desc": "A woven hat from yucca fibers. Reduces water loss in scorching heat.",
+            "requires": ["cordage"],
+            "passive_effects": { "water_decay_reduction": 5 },
+            "use_effects": {}
+        },
+        "solar_still": {
+            "name": "Solar Still",
+            "icon": "🫗",
+            "desc": "A condensation trap that collects water from the air. Generates water passively each day.",
+            "requires": ["tin_can", "cordage"],
+            "passive_effects": { "water_bonus": 8 },
+            "use_effects": {}
+        },
+        "foxfire_lantern": {
+            "name": "Foxfire Lantern",
+            "icon": "👻",
+            "desc": "A lantern filled with glowing fungi. Keeps the watching eyes at bay and lifts your spirits. Passive: +5 morale per day.",
+            "requires": ["glowing_fungi", "wood"],
+            "passive_effects": { "morale_bonus": 5 }
+        },
+        "rowan_talisman": {
+            "name": "Rowan Talisman",
+            "icon": "🪬",
+            "desc": "A protective charm made from rowan berries and cordage. Reduces the chance of getting lost while exploring.",
+            "requires": ["berries", "cordage"],
+            "passive_effects": { "lose_chance_reduction": 1 }
+        },
+        "offering_bundle": {
+            "name": "Offering Bundle",
+            "icon": "🍂",
+            "desc": "A bundle of berries, herbs, and wood tied with cordage. An offering for the old things in the forest.",
+            "requires": ["berries", "medicinal_herbs", "wood", "cordage"],
+            "consumable": true,
+            "use_effects": { "forestKarma": 15, "morale": 10 }
+        },
+        "community_meal": {
+            "name": "Community Meal",
+            "icon": "🍲",
+            "desc": "A shared meal for the group. Restores hunger and morale for everyone. Requires a lit fire.",
+            "requires": ["wood", "raw_meat"],
+            "consumable": true,
+            "use_effects": { "hunger": 25, "morale": 15 },
+            "requires_fire": true
+        },
+        "med_kit": {
+            "name": "Medical Kit",
+            "icon": "🏥",
+            "desc": "Assembled from hospital supplies. Treats wounds and prevents infection.",
+            "requires": ["medicinal_herbs", "bandage"],
+            "consumable": true,
+            "treats_injury": ["cut", "burn", "infection"],
+            "use_effects": { "health": 15, "morale": 5 }
+        },
+        "canned_food": {
+            "name": "Canned Food",
+            "icon": "🥫",
+            "desc": "Preserved food scavenged from buildings. High nutrition, no cooking needed.",
+            "requires": [],
+            "consumable": true,
+            "use_effects": { "hunger": 30, "morale": 5 }
+        }
+    },
+
+
+    "injuries": {
+        "sprained_ankle": {
+            "name": "Sprained Ankle",
+            "icon": "🦶",
+            "desc": "Swollen and painful ankle. Movement is difficult.",
+            "severity": "moderate",
+            "daily_effects": { "health": -2, "morale": -3 },
+            "action_modifiers": { "explore": { "hours_penalty": 1 }, "hunt": { "success_penalty": 0.2 } },
+            "duration": 4,
+            "treatments": { "splint": { "days_reduction": 2 }, "rest": { "days_reduction": 1 } }
+        },
+        "cut": {
+            "name": "Cut",
+            "icon": "🩸",
+            "desc": "A painful cut. Risk of infection if untreated.",
+            "severity": "minor",
+            "daily_effects": { "health": -3, "morale": -1 },
+            "action_modifiers": {},
+            "duration": 3,
+            "treatments": { "bandage": { "days_reduction": 2 }, "herbal_poultice": { "days_reduction": 3 } }
+        },
+        "sun_shade": {
+    "name": "Sun Shade",
+    "icon": "⛱️",
+    "desc": "A woven palm shade that protects from the relentless tropical sun. Reduces water loss.",
+    "requires": ["cordage", "wood"],
+    "passive_effects": { "water_decay_reduction": 3 },
+    "use_effects": {}
+},
+"coconut_bowl": {
+    "name": "Coconut Bowl",
+    "icon": "🥥",
+    "desc": "A halved coconut shell. Useful for collecting rainwater and preparing food.",
+    "requires": ["cordage"],
+    "passive_effects": { "water_bonus": 3 },
+    "use_effects": {}
+},
+"tidal_trap": {
+    "name": "Tidal Trap",
+    "icon": "🪤",
+    "desc": "A trap set in rock pools to catch fish and shellfish at low tide. Generates food passively.",
+    "requires": ["cordage", "wood"],
+    "passive_effects": { "hunger_bonus": 4 },
+    "use_effects": {}
+},
+        "frostbite": {
+            "name": "Frostbite",
+            "icon": "🥶",
+            "desc": "Extremities numb and discolored. Serious cold damage.",
+            "severity": "severe",
+            "daily_effects": { "health": -4, "warmth": -5, "morale": -3 },
+            "action_modifiers": { "forage": { "success_penalty": 0.3 }, "explore": { "hours_penalty": 1 } },
+            "duration": 6,
+            "treatments": { "herbal_poultice": { "days_reduction": 2 }, "herbal_tea": { "days_reduction": 1 } }
+        },
+        "burn": {
+            "name": "Burn",
+            "icon": "🔥",
+            "desc": "A painful burn from fire or hot surface.",
+            "severity": "moderate",
+            "daily_effects": { "health": -3, "morale": -2 },
+            "action_modifiers": {},
+            "duration": 4,
+            "treatments": { "bandage": { "days_reduction": 1 }, "herbal_poultice": { "days_reduction": 2 } }
+        },
+        "hypothermia": {
+            "name": "Hypothermia",
+            "icon": "❄️",
+            "desc": "Core temperature dangerously low. Life-threatening.",
+            "severity": "severe",
+            "daily_effects": { "health": -6, "warmth": -8, "morale": -4 },
+            "action_modifiers": { "explore": { "hours_penalty": 2 }, "hunt": { "success_penalty": 0.3 }, "forage": { "success_penalty": 0.2 } },
+            "duration": 5,
+            "treatments": { "herbal_tea": { "days_reduction": 2 } }
+        },
+        "infection": {
+            "name": "Infection",
+            "icon": "🦠",
+            "desc": "A wound has become infected. Getting worse by the day.",
+            "severity": "severe",
+            "daily_effects": { "health": -5, "morale": -4 },
+            "action_modifiers": { "forage": { "success_penalty": 0.2 }, "hunt": { "success_penalty": 0.2 } },
+            "duration": 5,
+            "treatments": { "herbal_poultice": { "days_reduction": 3 } }
+        },
+        "sunstroke": {
+            "name": "Sunstroke",
+            "icon": "🥵",
+            "desc": "Heat exhaustion from the relentless sun. Head pounds, vision swims.",
+            "severity": "moderate",
+            "daily_effects": { "health": -3, "water": -5, "morale": -3 },
+            "action_modifiers": { "explore": { "hours_penalty": 1 }, "forage": { "success_penalty": 0.2 } },
+            "duration": 3,
+            "treatments": { "herbal_tea": { "days_reduction": 2 }, "bandage": { "days_reduction": 1 } }
+        },
+        "hallucination": {
+            "name": "Hallucination",
+            "icon": "😵‍💫",
+            "desc": "The desert plays tricks on your mind. You can't trust what you see.",
+            "severity": "moderate",
+            "daily_effects": { "morale": -5 },
+            "action_modifiers": { "forage": { "success_penalty": 0.3 }, "explore": { "success_penalty": 0.2 } },
+            "duration": 2,
+            "treatments": { "herbal_tea": { "days_reduction": 1 } }
+        }
+    },
+
+    "achievements": {
+        "first_steps":       { "name": "First Steps",      "icon": "👣", "desc": "Survive 3 days",                  "type": "days",        "threshold": 3 },
+        "week_survivor":     { "name": "Week in the Wild",  "icon": "🗓️", "desc": "Survive 7 days",                  "type": "days",        "threshold": 7 },
+        "fortnight":         { "name": "Fortnight",         "icon": "🏔️", "desc": "Survive 14 days",                 "type": "days",        "threshold": 14 },
+        "botanist":          { "name": "Botanist",           "icon": "🌿", "desc": "Identify 5 plants correctly",     "type": "plants",      "threshold": 5 },
+        "expert_forager":    { "name": "Expert Forager",    "icon": "🍄", "desc": "Identify 15 plants correctly",    "type": "plants",      "threshold": 15 },
+        "explorer":          { "name": "Explorer",          "icon": "🧭", "desc": "Discover all locations",         "type": "locations",   "threshold": "all" },
+        "crafter":           { "name": "Crafter",            "icon": "🔨", "desc": "Craft 5 different items",         "type": "crafts",      "threshold": 5 },
+        "healer":            { "name": "Healer",             "icon": "🩹", "desc": "Treat 3 injuries",                "type": "treatments",  "threshold": 3 },
+        "hunter":            { "name": "Hunter",             "icon": "🏹", "desc": "Successfully hunt 3 times",       "type": "hunts",       "threshold": 3 },
+        "signal_fire":       { "name": "Signal Fire",        "icon": "📡", "desc": "Build signal fire to 50%",        "type": "signal",      "threshold": 4 },
+        "unscathed":         { "name": "Unscathed",          "icon": "✨", "desc": "Survive 7 days without injuries", "type": "no_injuries", "threshold": 7 },
+        "master_crafter":    { "name": "Master Crafter",     "icon": "⚒️", "desc": "Craft every available recipe",    "type": "all_crafts",  "threshold": "all" },
+        "warm_and_cozy":     { "name": "Warm & Cozy",        "icon": "🛖", "desc": "Reach max shelter level",         "type": "shelter",     "threshold": "max" },
+        "island_survivor": { "name": "Island Survivor", "icon": "🏝️", "desc": "Survive 7 days on the island", "type": "days", "threshold": 7 },
+"tide_reader": { "name": "Tide Reader", "icon": "🌊", "desc": "Forage at low tide 5 times", "type": "low_tide_forage", "threshold": 5 },
+"shark_whisperer": { "name": "Shark Whisperer", "icon": "🦈", "desc": "Reach island respect above 80", "type": "islandRespect", "threshold": 80 },
+"kiris_legacy": { "name": "Kiri's Legacy", "icon": "💌", "desc": "Complete Kiri's survivor arc", "type": "kiri_arc", "threshold": 4 },
+"castaway_no_more": { "name": "Castaway No More", "icon": "🚢", "desc": "Signal for rescue and escape the island", "type": "signal", "threshold": 7 },
+"first_companion": { "name": "Not Alone", "icon": "🤝", "desc": "Find your first companion", "type": "companions", "threshold": 1 },
+"community_builder": { "name": "Community Builder", "icon": "🏠", "desc": "Find 3 companions", "type": "companions", "threshold": 3 },
+"found_family_ach": { "name": "Found Family", "icon": "❤️", "desc": "Find all 5 companions", "type": "companions", "threshold": 5 },
+"city_survivor": { "name": "City Survivor", "icon": "🏚️", "desc": "Survive 7 days in the Overgrown City", "type": "days", "threshold": 7 }
+    },
+
+
+  
+    "scenarios": {
+"alaska_winter": {
+    "name": "Alaska Winter",
+    "icon": "🏔️",
+    "tagline": "Stranded in the Alaskan wilderness as winter closes in. The cold is your greatest enemy.",
+    "difficulty": 3,
+    "has_water": true
+},
+
+        "wild_forest": {
+            "name": "Wild Forest",
+            "icon": "🌲",
+            "tagline": "Lost in dense temperate woodland. Rich with plants, but danger hides among the greenery.",
+            "difficulty": 1,
+            "has_water": true
+        },
+        "desert": {
+            "name": "Desert Survival",
+            "icon": "🏜️",
+            "tagline": "Scorched by day, freezing by night. Water is your most precious resource.",
+            "difficulty": 2,
+            "has_water": true
+        },
+        "tropical_island": {
+    "name": "Castaway Island",
+    "icon": "🏝️",
+    "tagline": "Shipwrecked on a tropical island. Surrounded by water, abundant plant life, and the relentless sun.",
+    "difficulty": 2,
+    "has_water": true
+},
+        "overgrown_city": {
+    "name": "Overgrown City",
+    "icon": "🏚️",
+    "tagline": "The war took everything. Now nature is taking it back. And you're not alone.",
+    "difficulty": 3,
+    "has_water": true
+}
+    },
+
+    "seasonIcons": {
+        "Spring": "🌸",
+        "Summer": "☀️",
+        "Autumn": "🍂",
+        "Winter": "❄️"
+    },
+
+    "seasonMonths": {
+        "Spring": "Mar–May",
+        "Summer": "Jun–Aug",
+        "Autumn": "Sep–Nov",
+        "Winter": "Dec–Feb"
+    }
+}
