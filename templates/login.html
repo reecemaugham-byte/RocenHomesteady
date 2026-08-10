@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Rocen Homesteady</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="icon" href="/static/images/Blogo.png" type="image/png">
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/static/images/Blogo.png" alt="Rocen Homesteady" class="nav-logo-img">
+            Rocen Homesteady
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
+            <a href="/games">Games</a>
+            <a href="/shop">Shop</a>
+            <span id="authArea"><a href="/login" class="nav-active">Login</a></span>
+        </div>
+    </nav>
+
+    <!-- AUTH CONTAINER -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Log in or create an account to save your progress across devices.</p>
+            </div>
+
+            <!-- TABS -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">🔑 Log In</button>
+                <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">📝 Create Account</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter your username" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password" required>
+                </div>
+                <div id="loginError" class="auth-message error" style="display:none;"></div>
+                <div id="loginSuccess" class="auth-message success" style="display:none;"></div>
+                <button type="submit" class="btn btn-auth btn-login" id="loginBtn">🔑 Log In</button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)" style="display:none;">
+                <div class="form-group">
+                    <label for="regUsername">Choose a Username</label>
+                    <input type="text" id="regUsername" placeholder="At least 3 characters" autocomplete="username" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Choose a Password</label>
+                    <input type="password" id="regPassword" placeholder="At least 4 characters" autocomplete="new-password" required minlength="4">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword2">Confirm Password</label>
+                    <input type="password" id="regPassword2" placeholder="Re-enter your password" autocomplete="new-password" required>
+                </div>
+                <div id="regError" class="auth-message error" style="display:none;"></div>
+                <div id="regSuccess" class="auth-message success" style="display:none;"></div>
+                <button type="submit" class="btn btn-auth btn-register" id="regBtn">📝 Create Account</button>
+            </form>
+
+            <!-- INFO -->
+            <div class="auth-info">
+                <p>🔒 Your data is stored securely. Passwords are encrypted with bcrypt.</p>
+                <p>📊 Logging in lets you save game progress, track XP, and sync across devices.</p>
+            </div>
+        </div>
+    </div>
+
+<footer>
+    <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/learn">Learn</a>
+        <a href="/games">Games</a>
+        <a href="/shop">Shop</a>
+<a href="https://discord.gg/FvguCxvs" target="_blank" rel="noopener">Discord</a>
+    </div>
+    <p>© 2026 Rocen Homesteady LTD. All Rights Reserved. Educational Use Only.</p>
+    <p>📧 Support@RocenHomesteady.co.uk</p>
+</footer>
+
+    <script>
+        // ==========================================
+        // AUTH STATE
+        // ==========================================
+        let isSubmitting = false;
+
+        // Check if already logged in — redirect home if so
+        (function() {
+            const user = localStorage.getItem('rocen_user');
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData && userData.username) {
+                        fetch('/api/auth/me')
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.authenticated) {
+                                    window.location.href = '/';
+                                }
+                            })
+                            .catch(() => {});
+                    }
+                } catch(e) {
+                    localStorage.removeItem('rocen_user');
+                }
+            }
+        })();
+
+        // ==========================================
+        // TAB SWITCHING
+        // ==========================================
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+            }
+
+            hideMessages();
+        }
+
+        function hideMessages() {
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('loginSuccess').style.display = 'none';
+            document.getElementById('regError').style.display = 'none';
+            document.getElementById('regSuccess').style.display = 'none';
+        }
+
+        function showMessage(elementId, text, isError) {
+            const el = document.getElementById(elementId);
+            el.textContent = text;
+            el.className = isError ? 'auth-message error' : 'auth-message success';
+            el.style.display = 'block';
+        }
+
+        // ==========================================
+        // LOGIN
+        // ==========================================
+        async function handleLogin(event) {
+            event.preventDefault();
+            if (isSubmitting) return;
+
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showMessage('loginError', 'Please fill in all fields.', true);
+                return;
+            }
+
+            isSubmitting = true;
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('rocen_user', JSON.stringify({
+                        username: data.username
+                    }));
+                    // Clear the merged flag so ProgressManager re-checks on next page
+                    sessionStorage.removeItem('rocen_merged');
+
+                    showMessage('loginSuccess', 'Welcome back! Redirecting...', false);
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 500);
+                } else {
+                    showMessage('loginError', data.error || 'Login failed.', true);
+                }
+            } catch (err) {
+                showMessage('loginError', 'Connection error. Please try again.', true);
+            } finally {
+                isSubmitting = false;
+                btn.disabled = false;
+                btn.textContent = '🔑 Log In';
+            }
+        }
+
+        // ==========================================
+        // REGISTER — now auto-logs in
+        // ==========================================
+        async function handleRegister(event) {
+            event.preventDefault();
+            if (isSubmitting) return;
+
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const password2 = document.getElementById('regPassword2').value;
+
+            if (!username || !password || !password2) {
+                showMessage('regError', 'Please fill in all fields.', true);
+                return;
+            }
+
+            if (username.length < 3) {
+                showMessage('regError', 'Username must be at least 3 characters.', true);
+                return;
+            }
+
+            if (password.length < 4) {
+                showMessage('regError', 'Password must be at least 4 characters.', true);
+                return;
+            }
+
+            if (password !== password2) {
+                showMessage('regError', "Passwords don't match.", true);
+                return;
+            }
+
+            isSubmitting = true;
+            const btn = document.getElementById('regBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Register endpoint now auto-logs in (sets JWT cookie)
+                    localStorage.setItem('rocen_user', JSON.stringify({
+                        username: data.username
+                    }));
+                    // Clear the merged flag so ProgressManager re-checks on next page
+                    sessionStorage.removeItem('rocen_merged');
+
+                    showMessage('regSuccess', 'Account created! Redirecting...', false);
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    showMessage('regError', data.error || 'Registration failed.', true);
+                }
+            } catch (err) {
+                showMessage('regError', 'Connection error. Please try again.', true);
+            } finally {
+                isSubmitting = false;
+                btn.disabled = false;
+                btn.textContent = '📝 Create Account';
+            }
+        }
+
+        // Allow Enter key in password fields
+        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin(e);
+        });
+        document.getElementById('regPassword2').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleRegister(e);
+        });
+    </script>
+    <script src="/static/js/progress.js"></script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>
