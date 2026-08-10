@@ -1,0 +1,3563 @@
+/* ═══════════════════════════════════════════
+   FARM GAMES PAGE STYLES
+   ═══════════════════════════════════════════
+
+   TABLE OF CONTENTS
+   ────────────────
+   §1   Page Layout & Variables
+   §2   Farm Scene & Seasonal Backgrounds
+   §3   Day/Night Overlay
+   §4   Weather Effects
+   §5   Farm Grid & Tiles
+   §6   Tile Action Buttons
+   §7   Tile Type Variations & Growth Animations
+   §8   Animal Animations
+   §9   Legend Bar
+   §10  Tool Panel
+   §11  Sub-tabs
+   §12  Season Bar
+   §13  Warning Boxes
+   §14  Feed Production & Status
+   §15  Market Grid & Stall
+   §16  Market Garden Scene & Beds
+   §17  Actions Grid
+   §18  Crop Select
+   §19  Companion Info
+   §20  Catalogue & Seed Packets
+   §21  Banners (Win & Placing)
+   §22  Stats Ledger & Stat Boxes
+   §23  Inventory Bar
+   §24  Fence Border
+   §25  Responsive
+   §26  Additional Feature Styles
+   §27  Decorative Farm Elements
+   §28  Farm Village Scene View
+   §29  MARKET GARDEN SCENE VIEW
+   ═══════════════════════════════════════════ */
+
+
+/* ── §1  Page Layout & Variables ── */
+
+.farm-page {
+    --cream: #f4e8d1;
+    --cream-dim: #b8a88a;
+    --green-leaf: #4CAF50;
+    --green-light: #81C784;
+    --green-dark: #2E7D32;
+    --amber: #FFB300;
+    --amber-light: #FFD54F;
+    --amber-dark: #FF8F00;
+    --danger: #c62828;
+    --danger-bg: #2a1010;
+    --info-bg: #0a1a2e;
+    --bg-card: #2a1a10;
+    --bg-deep: #1a0f08;
+
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+
+/* ── §2  Farm Scene & Seasonal Backgrounds ── */
+
+.farm-scene {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 1.5rem 1rem 1rem;
+    border: 3px solid #5D4037;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3),
+                inset 0 -20px 40px rgba(0,0,0,0.15);
+}
+
+/* Sky layer */
+.farm-scene::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ground layer */
+.farm-scene::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 65%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.farm-scene.season-spring {
+    background: linear-gradient(180deg,
+        #87CEEB 0%, #B8E6B8 25%,
+        #4a7c3f 28%, #3d6b34 30%,
+        #5D4037 32%, #4E342E 34%,
+        #3E2723 40%, #2C1810 100%);
+}
+
+.farm-scene.season-spring::before {
+    background: linear-gradient(180deg, rgba(135,206,235,0.3) 0%, transparent 100%);
+}
+
+.farm-scene.season-summer {
+    background: linear-gradient(180deg,
+        #FFD54F 0%, #FFF9C4 15%,
+        #66BB6A 25%, #4a7c3f 28%,
+        #5D4037 32%, #4E342E 34%,
+        #3E2723 40%, #2C1810 100%);
+}
+
+.farm-scene.season-summer::before {
+    background: linear-gradient(180deg, rgba(255,213,79,0.2) 0%, transparent 100%);
+}
+
+.farm-scene.season-autumn {
+    background: linear-gradient(180deg,
+        #FFAB91 0%, #FFCC80 15%,
+        #8D6E63 25%, #6D4C41 28%,
+        #5D4037 32%, #4E342E 34%,
+        #3E2723 40%, #2C1810 100%);
+}
+
+.farm-scene.season-autumn::before {
+    background: linear-gradient(180deg, rgba(255,171,145,0.2) 0%, transparent 100%);
+}
+
+.farm-scene.season-winter {
+    background: linear-gradient(180deg,
+        #B0BEC5 0%, #ECEFF1 15%,
+        #78909C 25%, #607D8B 28%,
+        #5D4037 32%, #4E342E 34%,
+        #3E2723 40%, #2C1810 100%);
+}
+
+.farm-scene.season-winter::before {
+    background: linear-gradient(180deg, rgba(176,190,197,0.3) 0%, transparent 100%);
+}
+
+.farm-scene .section-title {
+    position: relative;
+    z-index: 3;
+    color: var(--cream);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+
+/* ── §3  Day/Night Overlay ── */
+
+.day-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 4;
+    border-radius: 16px;
+    transition: background 0.5s ease;
+}
+
+.day-overlay.dawn {
+    background: linear-gradient(180deg, rgba(255, 183, 77, 0.08) 0%, transparent 30%);
+}
+
+.day-overlay.midday {
+    background: transparent;
+}
+
+.day-overlay.afternoon {
+    background: linear-gradient(180deg, rgba(255, 152, 0, 0.1) 0%, transparent 40%);
+}
+
+.day-overlay.evening {
+    background: linear-gradient(180deg, rgba(255, 87, 34, 0.15) 0%, transparent 50%);
+}
+
+.day-overlay.night {
+    background: linear-gradient(180deg, rgba(0, 0, 30, 0.25) 0%, rgba(0, 0, 30, 0.15) 100%);
+}
+
+
+/* ── §4  Weather Effects ── */
+
+.weather-particles {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.raindrop {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(transparent, rgba(174, 214, 241, 0.6));
+    animation: rainfall linear infinite;
+    z-index: 5;
+}
+
+@keyframes rainfall {
+    0% { transform: translateY(-20px); opacity: 0; }
+    10% { opacity: 0.7; }
+    100% { transform: translateY(800px); opacity: 0; }
+}
+
+.snowflake {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: snowfall linear infinite;
+    z-index: 5;
+}
+
+@keyframes snowfall {
+    0% { transform: translateY(-10px) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.9; }
+    100% { transform: translateY(800px) translateX(30px) rotate(360deg); opacity: 0; }
+}
+
+.leaf-particle {
+    position: absolute;
+    font-size: 10px;
+    animation: leaffall linear infinite;
+    z-index: 5;
+}
+
+@keyframes leaffall {
+    0% { transform: translateY(-10px) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    50% { transform: translateY(400px) translateX(-20px) rotate(180deg); }
+    100% { transform: translateY(800px) translateX(20px) rotate(360deg); opacity: 0; }
+}
+
+.sun-ray {
+    position: absolute;
+    top: -10px;
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(180deg, rgba(255, 235, 59, 0.15) 0%, transparent 100%);
+    animation: sunray 8s ease-in-out infinite;
+    z-index: 1;
+    border-radius: 50%;
+}
+
+@keyframes sunray {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.5; }
+}
+
+
+/* ── §5  Farm Grid & Tiles ── */
+
+.farm-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg, #3E2723, #4E342E);
+    border: 4px solid #6D4C41;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.5),
+                0 0 0 2px #8D6E63,
+                0 4px 16px rgba(0,0,0,0.3);
+}
+
+.farm-tile {
+    background: linear-gradient(145deg, #3d2a1a, #2a1d10);
+    border: 2px solid #5D4037;
+    border-radius: 8px;
+    padding: 0.4rem 0.3rem;
+    text-align: center;
+    min-height: 85px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.farm-tile.empty {
+    cursor: pointer;
+    background: linear-gradient(145deg, #4a3520, #3d2a1a);
+    border-color: #6D4C41;
+}
+
+.farm-tile.empty:hover {
+    border-color: var(--green-light);
+    background: linear-gradient(145deg, #4a4020, #3d3010);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3),
+                0 0 8px rgba(76,175,80,0.3);
+    transform: translateY(-1px);
+}
+
+.farm-tile.empty:hover .tile-label {
+    color: var(--green-light);
+}
+
+/* Soil texture on empty tiles */
+.farm-tile.empty::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(139,90,43,0.15) 1px, transparent 1px),
+        radial-gradient(circle at 70% 60%, rgba(139,90,43,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 50% 80%, rgba(139,90,43,0.12) 1px, transparent 1px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.farm-tile.damaged {
+    border: 2px dashed var(--danger) !important;
+    background: linear-gradient(135deg, #2a0a0a, #1a0000) !important;
+}
+
+.farm-tile .tile-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.farm-tile .tile-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 0.1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.farm-tile .tile-soil {
+    font-size: 0.55rem;
+    color: var(--cream-dim);
+    margin-top: 0.1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.farm-tile .tile-damaged {
+    color: var(--danger);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+}
+
+.farm-tile .tile-action {
+    margin-top: 0.3rem;
+    position: relative;
+    z-index: 3;
+}
+
+.farm-tile .tile-bonus {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 0.55rem;
+    color: #4CAF50;
+    font-weight: 700;
+    pointer-events: none;
+    z-index: 2;
+}
+
+
+/* ── §6  Tile Action Buttons ── */
+
+.tile-action-btn {
+    background: var(--bg-card);
+    color: var(--cream);
+    border: 1px solid #3d5a3d;
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+    width: 100%;
+}
+
+.tile-action-btn:hover {
+    border-color: var(--green-light);
+    background: #1a3d1a;
+}
+
+.tile-action-btn.harvest {
+    border-color: var(--amber);
+    color: var(--amber);
+}
+
+.tile-action-btn.harvest:hover {
+    background: #2a2a00;
+}
+
+.tile-action-btn.fish {
+    border-color: #2196F3;
+    color: #90CAF9;
+}
+
+.tile-action-btn.danger {
+    border-color: var(--danger);
+    color: #ff8a80;
+}
+
+
+/* ── §7  Tile Type Variations & Growth Animations ── */
+
+/* Stream tile — animated water */
+.farm-tile.tile-stream {
+    border-color: #1565C0 !important;
+    background: linear-gradient(180deg, #0D47A1, #1565C0, #1976D2) !important;
+    box-shadow: inset 0 0 10px rgba(25,118,210,0.5),
+                0 0 8px rgba(33,150,243,0.2);
+}
+
+.farm-tile.tile-stream .tile-icon {
+    font-size: 1.3rem;
+}
+
+.farm-tile.tile-stream .tile-label {
+    color: #90CAF9 !important;
+}
+
+.farm-tile.tile-stream::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 300%; height: 100%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,0.15) 25%,
+        transparent 50%,
+        rgba(255,255,255,0.1) 75%,
+        transparent 100%);
+    animation: stream-flow 3s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.farm-tile.tile-stream::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+        radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+    animation: stream-shimmer 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes stream-flow {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(33%); }
+}
+
+@keyframes stream-shimmer {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Rock tile */
+.farm-tile.tile-rock {
+    border-color: #616161 !important;
+    background: linear-gradient(145deg, #424242, #2a2a2a, #37474F) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5),
+                inset 0 -1px 2px rgba(158,158,158,0.2);
+    cursor: pointer;
+}
+
+.farm-tile.tile-rock:hover {
+    border-color: #FFA726 !important;
+    background: linear-gradient(135deg, #3a3530, #2a2520) !important;
+}
+
+.farm-tile.tile-rock::before {
+    content: '';
+    position: absolute;
+    top: 15%; left: 20%; width: 35%; height: 25%;
+    background: rgba(97,97,97,0.3);
+    border-radius: 50% 30% 40% 60%;
+    pointer-events: none;
+}
+
+.farm-tile.tile-rock::after {
+    content: '';
+    position: absolute;
+    bottom: 20%; right: 15%; width: 25%; height: 20%;
+    background: rgba(117,117,117,0.2);
+    border-radius: 40% 60% 30% 50%;
+    pointer-events: none;
+}
+
+.farm-tile.tile-rock .tile-icon {
+    font-size: 1.4rem;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+}
+
+.farm-tile.tile-rock .tile-label {
+    color: #BDBDBD !important;
+}
+
+/* Building tiles */
+.farm-tile.tile-building {
+    border: 3px solid #5D4037 !important;
+    border-radius: 10px 10px 6px 6px;
+    background: linear-gradient(180deg, #3E2723 0%, #2C1810 60%, #1a1008 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1),
+                0 3px 8px rgba(0,0,0,0.4);
+}
+
+.farm-tile.tile-building .tile-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+}
+
+/* Animal tiles */
+.farm-tile.tile-animal {
+    border: 2px solid #8D6E63 !important;
+    background: linear-gradient(145deg, #2E3B2E, #3E4A3E) !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.farm-tile.tile-animal .tile-icon {
+    font-size: 1.5rem;
+    animation: animal-bob 3s ease-in-out infinite;
+}
+
+@keyframes animal-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+/* Weed tile */
+.farm-tile.tile-weed .tile-icon {
+    animation: weed-shake 2.5s ease-in-out infinite;
+}
+
+@keyframes weed-shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+}
+
+/* Scarecrow sway */
+.farm-tile.tile-scarecrow .tile-icon {
+    animation: scarecrow-sway 4s ease-in-out infinite;
+}
+
+@keyframes scarecrow-sway {
+    0%, 100% { transform: rotate(0deg); }
+    30% { transform: rotate(-2deg); }
+    70% { transform: rotate(2deg); }
+}
+
+/* Sprinkler drip */
+.farm-tile.tile-sprinkler::before {
+    content: '💧';
+    position: absolute;
+    top: 2px; right: 2px;
+    font-size: 0.45rem;
+    animation: sprinkler-drip 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes sprinkler-drip {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(3px); }
+}
+
+/* Manor shimmer */
+.farm-tile.tile-manor {
+    animation: gold-shimmer 3s ease-in-out infinite;
+    border-color: #FFC107 !important;
+    background: linear-gradient(145deg, #3d2e0a, #2a1a00) !important;
+}
+
+@keyframes gold-shimmer {
+    0%, 100% { box-shadow: 0 0 5px rgba(255, 193, 7, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(255, 193, 7, 0.6); }
+}
+
+/* Beehive golden glow */
+.farm-tile.tile-beehive {
+    background: linear-gradient(145deg, #3d2e0a, #2a1d05) !important;
+    border-color: #F9A825 !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3),
+                0 0 8px rgba(249,168,37,0.15);
+}
+
+/* Crop growth stages */
+.farm-tile.crop-seed {
+    background: linear-gradient(145deg, #3d2a1a, #2a1d10) !important;
+    border-color: #6D4C41 !important;
+}
+
+.farm-tile.crop-seed .tile-icon {
+    animation: sprout 0.6s ease-out;
+}
+
+.farm-tile.crop-growing {
+    background: linear-gradient(145deg, #2a3d1a, #1d2a10) !important;
+    border-color: #558B2F !important;
+    box-shadow: inset 0 0 8px rgba(76,175,80,0.15);
+}
+
+.farm-tile.crop-growing .tile-icon {
+    animation: plant-sway 3s ease-in-out infinite;
+}
+
+.farm-tile.crop-ready {
+    background: linear-gradient(145deg, #3d3d1a, #2a2a10) !important;
+    border-color: #FFC107 !important;
+    box-shadow: 0 0 10px rgba(255,193,7,0.2);
+    position: relative;
+}
+
+.farm-tile.crop-ready .tile-icon {
+    animation: pulse-ready 2s ease-in-out infinite;
+}
+
+.farm-tile.crop-ready::after {
+    content: '✨';
+    position: absolute;
+    top: 2px; right: 4px;
+    font-size: 0.55rem;
+    animation: pulse-ready 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Crop-ready golden glow */
+.farm-tile.crop-ready::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 40px; height: 40px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255,193,7,0.2), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes sprout {
+    0% { transform: scale(0.2); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes plant-sway {
+    0%, 100% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+}
+
+@keyframes pulse-ready {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* River adjacency glow */
+.farm-tile.river-adjacent {
+    box-shadow: inset 0 0 8px rgba(33, 150, 243, 0.15) !important;
+}
+
+.farm-tile.river-adjacent::before {
+    content: none !important;
+}
+
+.river-adjacent-glow {
+    position: absolute;
+    top: 2px; right: 2px;
+    font-size: 0.5rem;
+    color: #64B5F6;
+    pointer-events: none;
+    z-index: 2;
+}
+
+
+/* ── §8  Animal Animations ── */
+
+@keyframes chicken-peck {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    15% { transform: translateY(2px) rotate(-3deg); }
+    30% { transform: translateY(0) rotate(0deg); }
+    45% { transform: translateY(2px) rotate(3deg); }
+}
+
+@keyframes cow-shift {
+    0%, 85%, 100% { transform: translateX(0); }
+    90% { transform: translateX(-2px); }
+    95% { transform: translateX(2px); }
+}
+
+@keyframes goat-nod {
+    0%, 80%, 100% { transform: rotate(0deg); }
+    85% { transform: rotate(-3deg); }
+    90% { transform: rotate(3deg); }
+}
+
+@keyframes bee-buzz {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(2px, -2px); }
+    40% { transform: translate(-1px, 1px); }
+    60% { transform: translate(1px, -1px); }
+    80% { transform: translate(-2px, 0px); }
+    100% { transform: translate(0, 0); }
+}
+
+.farm-tile.tile-chicken .tile-icon { animation: chicken-peck 2s ease-in-out infinite; }
+.farm-tile.tile-cow .tile-icon { animation: cow-shift 4s ease-in-out infinite; }
+.farm-tile.tile-goat .tile-icon { animation: goat-nod 3.5s ease-in-out infinite; }
+.farm-tile.tile-beehive .tile-icon { animation: bee-buzz 1.5s ease-in-out infinite; }
+
+/* Tile icon z-index for stream adjacency */
+.farm-tile .tile-icon {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* ── §9  Legend Bar ── */
+
+.legend-bar {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.legend-item {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+}
+
+
+/* ── §10  Tool Panel ── */
+
+.tool-panel {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    align-items: end;
+    background: linear-gradient(135deg, #2C1810, #3E2723);
+    border: 2px solid #5D4037;
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.tool-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.tool-group label {
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+    font-weight: 600;
+}
+
+.tool-group select {
+    background: #1a1a1a;
+    color: var(--cream);
+    border: 2px solid #5D4037;
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.tool-group select:focus {
+    outline: none;
+    border-color: #FFCC80;
+}
+
+
+/* ── §11  Sub-tabs ── */
+
+.sub-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #3d5a3d;
+    padding-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sub-tab {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.5rem 1rem;
+    color: var(--cream-dim);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.sub-tab:hover {
+    background: #2a3a2a;
+    color: var(--cream);
+}
+
+.sub-tab.active {
+    background: linear-gradient(135deg, #1a3d1a, #2a4a2a);
+    color: var(--green-light);
+    border-color: var(--green-leaf);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.sub-tab-content {
+    display: none;
+}
+
+.sub-tab-content.active {
+    display: block;
+}
+
+
+/* ── §12  Season Bar ── */
+
+.season-bar {
+    background: linear-gradient(135deg, #2C1810, #3E2723);
+    border: 2px solid #5D4037;
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+    color: #FFCC80;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+
+/* ── §13  Warning Boxes ── */
+
+.warning-box {
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.warning-box.autumn {
+    background: #3d2e0a;
+    border: 1px solid var(--amber);
+}
+
+.warning-box.winter-danger {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger);
+}
+
+.warning-box.winter-safe {
+    background: var(--info-bg);
+    border: 1px solid #2196F3;
+}
+
+.warning-box.nature-low {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger);
+}
+
+
+/* ── §14  Feed Production & Status ── */
+
+.feed-production {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.feed-production h4 {
+    color: var(--amber);
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.5rem;
+}
+
+.feed-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.feed-recipe {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+}
+
+.feed-status {
+    background: linear-gradient(135deg, #1a2e1a, #2a3e2a);
+    border: 2px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--cream-dim);
+}
+
+
+/* ── §15  Market Grid & Stall ── */
+
+/* ── Market container — looks like a market hall ── */
+.market-stall {
+    position: relative;
+    background:
+        repeating-linear-gradient(
+            180deg,
+            transparent 0px,
+            rgba(0,0,0,0.03) 1px,
+            transparent 2px,
+            transparent 20px
+        ),
+        linear-gradient(180deg, #5D4037 0%, #4E342E 40%, #3E2723 100%);
+    border: 4px solid #6D4C41;
+    border-radius: 16px 16px 12px 12px;
+    padding: 4rem 1rem 1.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow:
+        inset 0 2px 4px rgba(255,255,255,0.08),
+        0 8px 32px rgba(0,0,0,0.4),
+        0 0 0 2px #8D6E63;
+}
+
+/* Large striped awning over the whole market */
+.market-stall::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    background: repeating-linear-gradient(
+        90deg,
+        #C62828 0px, #C62828 20px,
+        #FFF8E1 20px, #FFF8E1 40px
+    );
+    clip-path: polygon(
+        0% 0%, 100% 0%, 100% 60%,
+        97.5% 100%, 95% 60%, 92.5% 100%, 90% 60%,
+        87.5% 100%, 85% 60%, 82.5% 100%, 80% 60%,
+        77.5% 100%, 75% 60%, 72.5% 100%, 70% 60%,
+        67.5% 100%, 65% 60%, 62.5% 100%, 60% 60%,
+        57.5% 100%, 55% 60%, 52.5% 100%, 50% 60%,
+        47.5% 100%, 45% 60%, 42.5% 100%, 40% 60%,
+        37.5% 100%, 35% 60%, 32.5% 100%, 30% 60%,
+        27.5% 100%, 25% 60%, 22.5% 100%, 20% 60%,
+        17.5% 100%, 15% 60%, 12.5% 100%, 10% 60%,
+        7.5% 100%, 5% 60%, 2.5% 100%, 0% 60%
+    );
+    z-index: 5;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+/* Sign board hanging below the awning */
+.market-stall::after {
+    content: '🏪 Open for Trade';
+    position: absolute;
+    top: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #4E342E, #3E2723);
+    color: #FFCC80;
+    font-family: 'Crimson Text', serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.2rem 1.4rem;
+    border-radius: 0 0 8px 8px;
+    border: 2px solid #6D4C41;
+    border-top: none;
+    z-index: 5;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.market-stall .section-title {
+    color: #FFCC80;
+    position: relative;
+    z-index: 3;
+}
+
+/* ── Grid layout for market items ── */
+.market-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 3;
+}
+
+.mg-market-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 3;
+}
+
+/* ── Individual stall booth (Farm Tycoon) ── */
+.market-item {
+    position: relative;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            rgba(0,0,0,0.04) 1px,
+            transparent 2px,
+            transparent 6px
+        ),
+        linear-gradient(180deg,
+            #6D4C41 0%,
+            #5D4037 5px,
+            #4E342E 5px,
+            #3E2723 20%,
+            #2C1810 100%
+        );
+    border: 3px solid #5D4037;
+    border-radius: 10px 10px 8px 8px;
+    padding: 2rem 0.7rem 0.7rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 4px 12px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+/* Mini striped awning on each stall booth */
+.market-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -3px;
+    right: -3px;
+    height: 20px;
+    background: repeating-linear-gradient(
+        90deg,
+        #C62828 0px, #C62828 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    );
+    clip-path: polygon(
+        0% 0%, 100% 0%, 100% 55%,
+        93.75% 100%, 87.5% 55%, 81.25% 100%, 75% 55%,
+        68.75% 100%, 62.5% 55%, 56.25% 100%, 50% 55%,
+        43.75% 100%, 37.5% 55%, 31.25% 100%, 25% 55%,
+        18.75% 100%, 12.5% 55%, 6.25% 100%, 0% 55%
+    );
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Wooden shelf bar below the awning */
+.market-item::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: -3px;
+    right: -3px;
+    height: 5px;
+    background: linear-gradient(180deg, #8D6E63, #6D4C41, #5D4037);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+
+/* Alternate stall awning colours for variety */
+.market-item:nth-child(3n+2)::before {
+    background: repeating-linear-gradient(
+        90deg,
+        #1B5E20 0px, #1B5E20 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    );
+}
+.market-item:nth-child(3n+3)::before {
+    background: repeating-linear-gradient(
+        90deg,
+        #E65100 0px, #E65100 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    );
+}
+
+.market-item:hover {
+    border-color: var(--green-light);
+    transform: translateY(-3px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 8px 20px rgba(0,0,0,0.5),
+        0 0 12px rgba(76,175,80,0.2);
+}
+
+/* Market item inner content */
+.market-item .mi-name {
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 3;
+    margin-top: 0.2rem;
+}
+
+.market-item .mi-price {
+    color: var(--amber);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Crimson Text', serif;
+    margin-top: 0.2rem;
+    position: relative;
+    z-index: 3;
+}
+
+.market-item .mi-qty {
+    color: var(--cream-dim);
+    font-size: 0.8rem;
+    margin-top: 0.15rem;
+    position: relative;
+    z-index: 3;
+}
+
+.market-item .mi-surge {
+    color: var(--amber);
+    font-size: 0.75rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 3;
+}
+
+.market-item .mi-crash {
+    color: var(--danger);
+    font-size: 0.75rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 3;
+}
+
+.mi-season {
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-top: 2px;
+    display: inline-block;
+    position: relative;
+    z-index: 3;
+}
+
+.mi-season.season-high {
+    background: #1a3d1a;
+    color: #4CAF50;
+}
+
+.mi-season.season-low {
+    background: #3d1a1a;
+    color: #F44336;
+}
+
+/* Sell button — styled like a price tag */
+.sell-btn {
+    position: relative;
+    z-index: 3;
+    background: linear-gradient(135deg, var(--green-leaf), var(--green-dark));
+    color: var(--cream);
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    margin-top: 0.4rem;
+    transition: all 0.15s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.sell-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.sell-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Market Garden item stalls ── */
+.mg-market-item {
+    position: relative;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            rgba(0,0,0,0.04) 1px,
+            transparent 2px,
+            transparent 6px
+        ),
+        linear-gradient(180deg,
+            #6D4C41 0%,
+            #5D4037 5px,
+            #4E342E 5px,
+            #3E2723 15%,
+            #2C1810 100%
+        );
+    border: 3px solid #5D4037;
+    border-radius: 10px 10px 8px 8px;
+    padding: 2rem 0.6rem 0.7rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 4px 12px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+/* Mini awning for MG stalls */
+.mg-market-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -3px;
+    right: -3px;
+    height: 20px;
+    background: repeating-linear-gradient(
+        90deg,
+        #1565C0 0px, #1565C0 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    );
+    clip-path: polygon(
+        0% 0%, 100% 0%, 100% 55%,
+        93.75% 100%, 87.5% 55%, 81.25% 100%, 75% 55%,
+        68.75% 100%, 62.5% 55%, 56.25% 100%, 50% 55%,
+        43.75% 100%, 37.5% 55%, 31.25% 100%, 25% 55%,
+        18.75% 100%, 12.5% 55%, 6.25% 100%, 0% 55%
+    );
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Shelf bar */
+.mg-market-item::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: -3px;
+    right: -3px;
+    height: 5px;
+    background: linear-gradient(180deg, #8D6E63, #6D4C41, #5D4037);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+
+/* Alternate MG stall awning colours */
+.mg-market-item:nth-child(4n+2)::before {
+    background: repeating-linear-gradient(
+        90deg,
+        #2E7D32 0px, #2E7D32 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    );
+}
+.mg-market-item:nth-child(4n+3)::before {
+    background: repeating-linear-gradient(
+        90deg,
+        #E65100 0px, #E65100 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    );
+}
+.mg-market-item:nth-child(4n+4)::before {
+    background: repeating-linear-gradient(
+        90deg,
+        #6A1B9A 0px, #6A1B9A 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    );
+}
+
+.mg-market-item:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 8px 20px rgba(0,0,0,0.5),
+        0 0 12px rgba(76,175,80,0.15);
+}
+
+/* Produce icon — sits on the shelf */
+.mg-market-item .mmi-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    position: relative;
+    z-index: 3;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5));
+    transition: transform 0.2s ease;
+}
+
+.mg-market-item:hover .mmi-icon {
+    transform: scale(1.15) translateY(-2px);
+}
+
+.mg-market-item .mmi-name {
+    font-size: 0.85rem;
+    color: var(--cream);
+    font-weight: 700;
+    margin-top: 0.3rem;
+    position: relative;
+    z-index: 3;
+}
+
+.mg-market-item .mmi-qty {
+    font-size: 0.72rem;
+    color: var(--cream-dim);
+    position: relative;
+    z-index: 3;
+}
+
+.mg-market-item .mmi-price {
+    font-size: 0.9rem;
+    color: var(--amber);
+    font-weight: 700;
+    font-family: 'Crimson Text', serif;
+    position: relative;
+    z-index: 3;
+}
+
+/* Golden crop shimmer */
+.mg-market-item.golden-item {
+    border-color: var(--amber) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.15),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 4px 12px rgba(0,0,0,0.4),
+        0 0 16px rgba(255,193,7,0.35);
+    animation: goldStallGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes goldStallGlow {
+    0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -2px 4px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.4), 0 0 16px rgba(255,193,7,0.3); }
+    50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -2px 4px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.4), 0 0 28px rgba(255,193,7,0.5); }
+}
+
+.mg-market-item.golden-item::before {
+    background: repeating-linear-gradient(
+        90deg,
+        #FFD54F 0px, #FFD54F 7px,
+        #FFF8E1 7px, #FFF8E1 14px
+    ) !important;
+}
+
+/* ── §16  Market Garden Scene & Beds ── */
+
+.mg-scene {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 1.5rem 1rem 1rem;
+    border: 3px solid #5D4037;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3),
+                inset 0 -20px 40px rgba(0,0,0,0.15);
+}
+
+.mg-scene::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 30%;
+    background: linear-gradient(180deg, rgba(135,206,235,0.15), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.mg-scene.season-spring {
+    background: linear-gradient(180deg,
+        #A9DFBF 0%, #82E0AA 8%,
+        #5D4037 14%, #4E342E 17%,
+        #3E2723 25%, #2C1810 100%);
+}
+
+.mg-scene.season-summer {
+    background: linear-gradient(180deg,
+        #F9E79F 0%, #F4D03F 8%,
+        #5D4037 14%, #4E342E 17%,
+        #3E2723 25%, #2C1810 100%);
+}
+
+.mg-scene.season-autumn {
+    background: linear-gradient(180deg,
+        #E59866 0%, #CA6F1E 8%,
+        #5D4037 14%, #4E342E 17%,
+        #3E2723 25%, #2C1810 100%);
+}
+
+.mg-scene.season-winter {
+    background: linear-gradient(180deg,
+        #D5DBDB 0%, #ABB2B9 8%,
+        #5D4037 14%, #4E342E 17%,
+        #3E2723 25%, #2C1810 100%);
+}
+
+.mg-scene .section-title {
+    position: relative;
+    z-index: 3;
+}
+
+.mg-beds-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+
+.mg-bed {
+    background: linear-gradient(180deg,
+        #3E2723 0%, #2C1810 3px,
+        #5D4037 3px, #4A3728 8px,
+        #3E2723 40%, #2C1810 100%);
+    border: 3px solid #5D4037;
+    border-top: 5px solid #6D4C41;
+    border-radius: 6px;
+    padding: 0.6rem;
+    text-align: center;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+/* Soil texture on bed */
+.mg-bed::after {
+    content: '';
+    position: absolute;
+    bottom: 4px; left: 4px; right: 4px;
+    height: 8px;
+    background: repeating-linear-gradient(90deg,
+        rgba(139, 90, 43, 0.15) 0px, rgba(139, 90, 43, 0.15) 2px,
+        transparent 2px, transparent 6px);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.mg-bed .bed-soil-bars {
+    margin-top: 0.15rem;
+}
+
+.mg-bed.empty {
+    background: linear-gradient(180deg,
+        #3E2723 0%, #2C1810 3px,
+        #6D4C41 3px, #5D4037 8px,
+        #4E342E 50%, #3E2723 100%);
+    cursor: pointer;
+}
+
+.mg-bed.empty:hover {
+    border-color: var(--green-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.mg-bed.empty .bed-num {
+    color: var(--cream-dim);
+    font-size: 0.8rem;
+}
+
+.mg-bed.companion {
+    background: linear-gradient(135deg, #0a2e0a, #1a3d1a);
+    border-color: #4CAF50;
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.3),
+                0 4px 8px rgba(0,0,0,0.3);
+    animation: companion-pulse 3s ease-in-out infinite;
+}
+
+.mg-bed.antagonist {
+    background: linear-gradient(135deg, #2a1010, #3d1515);
+    border-color: #F44336;
+    box-shadow: 0 0 12px rgba(244, 67, 54, 0.2),
+                0 4px 8px rgba(0,0,0,0.3);
+    animation: antagonist-pulse 2s ease-in-out infinite;
+}
+
+@keyframes companion-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(76, 175, 80, 0.2), 0 4px 8px rgba(0,0,0,0.3); }
+    50% { box-shadow: 0 0 16px rgba(76, 175, 80, 0.4), 0 4px 8px rgba(0,0,0,0.3); }
+}
+
+@keyframes antagonist-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(244, 67, 54, 0.15), 0 4px 8px rgba(0,0,0,0.3); }
+    50% { box-shadow: 0 0 16px rgba(244, 67, 54, 0.3), 0 4px 8px rgba(0,0,0,0.3); }
+}
+
+.mg-bed .bed-num {
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+    font-weight: 600;
+}
+
+.mg-bed .bed-crop {
+    font-size: 1.3rem;
+    margin: 0.2rem 0;
+}
+
+.mg-bed .bed-name {
+    font-size: 0.8rem;
+    color: var(--cream);
+    font-weight: 600;
+}
+
+.mg-bed .bed-progress {
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+    margin-top: 0.2rem;
+}
+
+.mg-bed .bed-soil {
+    font-size: 0.7rem;
+    color: var(--cream-dim);
+    margin-top: 0.15rem;
+}
+
+.mg-bed .bed-bonus {
+    font-size: 0.7rem;
+    color: var(--green-leaf);
+}
+
+.mg-bed .bed-penalty {
+    font-size: 0.7rem;
+    color: var(--danger);
+}
+
+.mg-bed .bed-status {
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+    margin-top: 0.15rem;
+}
+
+/* MG Bed growth animations (moved from old §8) */
+.mg-bed.crop-growing .bed-crop {
+    animation: plant-sway 4s ease-in-out infinite;
+    display: inline-block;
+}
+
+.mg-bed.crop-ready .bed-crop {
+    animation: pulse-ready 2s ease-in-out infinite;
+    display: inline-block;
+}
+
+.mg-bed.crop-ready::before {
+    content: '✨';
+    position: absolute;
+    top: 2px; right: 4px;
+    font-size: 0.6rem;
+    z-index: 2;
+    animation: pulse-ready 2s ease-in-out infinite;
+}
+
+.mg-progress-bar {
+    background: #1a2e1a;
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+    margin-top: 0.2rem;
+    border: 1px solid #3d5a3d;
+}
+
+.mg-progress-fill {
+    background: linear-gradient(90deg, var(--green-leaf), var(--green-light));
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.mg-progress-fill.ready {
+    background: linear-gradient(90deg, var(--amber-dark), var(--amber));
+}
+
+/* ── Garden bed growth stage visuals ── */
+
+/* Empty bed — tilled soil with visible furrows */
+.mg-bed.empty::before {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 15%;
+    right: 15%;
+    bottom: 12px;
+    background:
+        repeating-linear-gradient(
+            180deg,
+            transparent 0px,
+            rgba(139,90,43,0.12) 3px,
+            transparent 4px,
+            transparent 8px
+        );
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.7;
+}
+
+/* "Plant here" hint on empty beds */
+.mg-bed.empty::after {
+    content: '🌱';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 4;
+    filter: grayscale(0.5);
+}
+
+.mg-bed.empty:hover::after {
+    opacity: 0.6;
+}
+
+/* Planted / growing — green glow at base of plant */
+.mg-bed.crop-growing::before {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 10px;
+    background: radial-gradient(ellipse, rgba(76,175,80,0.25), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Growing — small stem lines flanking the emoji */
+.mg-bed.crop-growing .bed-crop {
+    position: relative;
+    display: inline-block;
+}
+
+/* Small CSS "leaves" either side of the growing crop emoji */
+.mg-bed.crop-growing .bed-crop::before,
+.mg-bed.crop-growing .bed-crop::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 6px;
+    height: 10px;
+    border-radius: 0 70% 0 70%;
+    opacity: 0.6;
+}
+
+.mg-bed.crop-growing .bed-crop::before {
+    left: -8px;
+    background: #66BB6A;
+    transform: rotate(-20deg) translateY(-50%);
+}
+
+.mg-bed.crop-growing .bed-crop::after {
+    right: -8px;
+    background: #66BB6A;
+    transform: rotate(20deg) translateY(-50%);
+    border-radius: 70% 0 70% 0;
+}
+
+/* Ready — golden harvest glow at base */
+.mg-bed.crop-ready::before {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 14px;
+    background: radial-gradient(ellipse, rgba(255,193,7,0.3), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Companion bonus — green border pulse (enhance existing) */
+.mg-bed.companion {
+    background: linear-gradient(135deg, #0a2e0a, #1a3d1a);
+    border-color: #4CAF50;
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.3),
+                0 4px 8px rgba(0,0,0,0.3);
+    animation: companion-pulse 3s ease-in-out infinite;
+}
+
+/* Companion — small helper icon top-right */
+.mg-bed.companion::after {
+    content: '🤝';
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 0.55rem;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0.8;
+}
+
+/* Antagonist — warning icon top-right */
+.mg-bed.antagonist::after {
+    content: '⚠️';
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 0.55rem;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0.8;
+}
+
+/* ── Watered bed indicator ── */
+.mg-bed .bed-status {
+    font-size: 0.7rem;
+    color: var(--cream-dim);
+    margin-top: 0.15rem;
+}
+
+/* If the bed-status contains "Watered" or "Rain", add a subtle blue tint */
+.mg-bed[data-watered="true"] {
+    box-shadow:
+        inset 0 2px 8px rgba(66,165,245,0.15),
+        0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* ── Soil NPK bar improvements ── */
+.mg-bed .bed-soil-bars {
+    display: flex;
+    gap: 2px;
+    margin-top: 0.15rem;
+}
+
+.mg-bed .soil-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.mg-bed .soil-bar .soil-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.mg-bed .soil-bar .soil-fill.nitrogen {
+    background: linear-gradient(90deg, #388E3C, #66BB6A);
+}
+
+.mg-bed .soil-bar .soil-fill.phosphorus {
+    background: linear-gradient(90deg, #E65100, #FF9800);
+}
+
+.mg-bed .soil-bar .soil-fill.potassium {
+    background: linear-gradient(90deg, #6A1B9A, #CE93D8);
+}
+
+/* ── Distinct growth stages ── */
+
+/* Just planted — seed dot on soil */
+.mg-bed.crop-seed .bed-crop {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    animation: sprout 0.6s ease-out;
+}
+
+.mg-bed.crop-seed::before {
+    content: '';
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 5px;
+    background: radial-gradient(ellipse, rgba(139,90,43,0.7), rgba(93,64,55,0.5));
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Sprout — small, slightly transparent */
+.mg-bed.crop-sprout .bed-crop {
+    font-size: 1rem;
+    opacity: 0.85;
+}
+
+.mg-bed.crop-sprout .bed-crop::before,
+.mg-bed.crop-sprout .bed-crop::after {
+    display: none;
+}
+
+/* Growing — full size, swaying, with CSS leaves */
+.mg-bed.crop-growing .bed-crop {
+    font-size: 1.3rem;
+    animation: plant-sway 4s ease-in-out infinite;
+    display: inline-block;
+}
+
+/* Ready — full size, glowing, pulsing */
+.mg-bed.crop-ready .bed-crop {
+    font-size: 1.4rem;
+    animation: pulse-ready 2s ease-in-out infinite;
+    display: inline-block;
+}
+
+
+/* ── §17  Actions Grid ── */
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.action-card {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 0.8rem;
+}
+
+.action-card h4 {
+    color: var(--amber);
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+}
+
+.action-card .ac-desc {
+    color: var(--cream-dim);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.action-card .ac-value {
+    color: var(--cream);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+
+/* ── §18  Crop Select ── */
+
+.crop-select-area {
+    background: linear-gradient(135deg, #2C1810, #3E2723);
+    border: 2px solid #5D4037;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 6;
+}
+
+.crop-select-area label {
+    color: var(--cream-dim);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.crop-select-area select {
+    background: #1a1a1a;
+    color: var(--cream);
+    border: 2px solid #5D4037;
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 0.3rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.crop-select-area select:focus {
+    outline: none;
+    border-color: #FFCC80;
+}
+
+
+/* ── §19  Companion Info ── */
+
+.companion-info {
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.companion-info.good {
+    background: linear-gradient(135deg, #0a2a0a, #1a3d1a);
+    border: 1px solid #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.15);
+}
+
+.companion-info.bad {
+    background: linear-gradient(135deg, #2a1010, #3d1515);
+    border: 1px solid #F44336;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.15);
+}
+
+
+/* ── §20  Catalogue & Seed Packets ── */
+
+.catalogue-season {
+    margin-bottom: 1rem;
+}
+
+.catalogue-season h4 {
+    color: var(--green-light);
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.3rem;
+}
+
+.catalogue-crops {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.catalogue-crop {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    color: var(--cream);
+}
+
+.seed-packet {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(180deg, #5D4037, #4E342E);
+    border: 2px solid #8D6E63;
+    border-radius: 4px 4px 8px 8px;
+    padding: 0.5rem 0.6rem 0.4rem;
+    margin: 0.3rem;
+    color: #D7CCC8;
+    box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+    position: relative;
+    min-width: 80px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+}
+
+.seed-packet:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.seed-packet.locked {
+    opacity: 0.5;
+    filter: grayscale(0.7);
+}
+
+.seed-packet.locked:hover {
+    transform: none;
+    box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+}
+
+.seed-packet .sp-tab {
+    position: absolute;
+    top: -7px; left: 50%;
+    transform: translateX(-50%);
+    width: 14px; height: 8px;
+    background: #8D6E63;
+    border-radius: 2px 2px 0 0;
+}
+
+.seed-packet .sp-icon { font-size: 1.3rem; line-height: 1; }
+.seed-packet .sp-name { font-weight: 600; font-size: 0.75rem; margin-top: 0.15rem; }
+.seed-packet .sp-cost { color: #FFCC80; font-size: 0.65rem; }
+.seed-packet .sp-season { color: #A5D6A7; font-size: 0.6rem; }
+.seed-packet .sp-days { color: #A5D6A7; font-size: 0.6rem; }
+
+.sp-nutrients {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.sp-nutrients span {
+    font-size: 0.55rem;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.sp-n { background: #1a3d1a; color: #81C784; }
+.sp-p { background: #0a1a2e; color: #64B5F6; }
+.sp-k { background: #2a1a00; color: #FFB74D; }
+.sp-n-pos { color: #A5D6A7 !important; background: #0a2e0a !important; }
+
+
+/* ── §21  Banners (Win & Placing) ── */
+
+.win-banner {
+    background: linear-gradient(135deg, #2a1a00, #3d2a00);
+    border: 2px solid var(--amber);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+    animation: gold-shimmer 3s ease-in-out infinite;
+}
+
+.win-banner .win-icon {
+    font-size: 3rem;
+}
+
+.win-banner .win-title {
+    color: var(--amber);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.win-banner .win-text {
+    color: var(--cream);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+.placing-banner {
+    background: linear-gradient(135deg, #1a1a00, #2a2a00);
+    border: 2px solid var(--amber);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 12px rgba(255, 193, 7, 0.2);
+    position: relative;
+    z-index: 6;
+}
+
+.placing-banner.hidden {
+    display: none;
+}
+
+
+/* ── §22  Stats Ledger & Stat Boxes ── */
+
+.stats-ledger {
+    background: linear-gradient(135deg, #2C1810, #3E2723);
+    border: 3px solid #5D4037;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.05),
+                0 4px 12px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+.stats-ledger::before {
+    content: '📐';
+    position: absolute;
+    top: -10px; right: 12px;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+}
+
+.stats-ledger::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #5D4037, #8D6E63, #5D4037);
+    border-radius: 8px 8px 0 0;
+}
+
+.stat-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+}
+
+.stat-box.year {
+    background: linear-gradient(135deg, #1a1a00, #2a2a00);
+    border: 2px solid var(--amber-dark);
+}
+
+.stat-box.year .stat-label { color: var(--amber); }
+
+.stat-box.money {
+    background: linear-gradient(135deg, #1a1a00, #2a2a00);
+    border: 2px solid var(--amber);
+}
+
+.stat-box.money .stat-label { color: var(--amber); }
+
+.stat-box.animals {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+}
+
+.stat-box.animals .stat-label { color: var(--green-leaf); }
+
+.stat-box.feed-stat {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+}
+
+.stat-box.feed-stat .stat-label { color: var(--green-leaf); }
+
+.stat-box.harvests {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+}
+
+.stat-box.harvests .stat-label { color: var(--green-leaf); }
+
+/* Farm ledger section */
+.farm-ledger {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.farm-ledger h4 {
+    color: var(--green-light);
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.5rem;
+}
+
+.ledger-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #2a3a2a;
+    font-size: 0.85rem;
+}
+
+.ledger-row:last-child {
+    border-bottom: none;
+}
+
+.ledger-label {
+    color: var(--cream-dim);
+}
+
+.ledger-value {
+    color: var(--cream);
+    font-weight: 600;
+}
+
+.ledger-value.positive { color: var(--green-leaf); }
+.ledger-value.negative { color: var(--danger); }
+
+
+/* ── §23  Inventory Bar ── */
+
+.inventory-bar {
+    background: linear-gradient(135deg, #2C1810, #3E2723);
+    border: 2px solid #5D4037;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+    color: #D7CCC8;
+    font-size: 0.9rem;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+/* ── §24  Fence Border ── */
+
+.farm-grid.fenced {
+    border: 4px solid #6D4C41;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.5),
+                0 0 0 2px #8D6E63,
+                0 0 0 6px #5D4037,
+                0 0 0 8px #4E342E,
+                0 4px 16px rgba(0,0,0,0.3);
+}
+
+.farm-grid.fenced::before {
+    content: '';
+    position: absolute;
+    top: -3px; left: -3px; right: -3px; bottom: -3px;
+    border: 3px dashed #5D4037;
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.3;
+}
+
+
+/* ── §25  Responsive ── */
+
+@media (max-width: 600px) {
+    .farm-page { padding: 1rem 0.5rem 2rem; }
+    .farm-grid { grid-template-columns: repeat(6, 1fr); gap: 3px; }
+    .farm-tile { min-height: 70px; padding: 0.2rem; }
+    .farm-tile .tile-icon { font-size: 1.2rem; }
+    .farm-tile .tile-label { font-size: 0.55rem; }
+    .farm-tile .tile-soil { font-size: 0.5rem; }
+    .mg-beds-grid { grid-template-columns: repeat(2, 1fr); }
+    .market-grid { grid-template-columns: repeat(3, 1fr); }
+    .actions-grid { grid-template-columns: 1fr 1fr; }
+    .tool-panel { flex-direction: column; }
+}
+
+
+/* ── §26  Additional Feature Styles ── */
+
+/* Harvest float animation */
+.float-text {
+    position: fixed;
+    pointer-events: none;
+    font-weight: 700;
+    font-size: 1rem;
+    z-index: 9999;
+    animation: float-up 1.5s ease-out forwards;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+@keyframes float-up {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-60px); }
+}
+
+/* Forecast box */
+.forecast-box {
+    background: linear-gradient(135deg, #1a2a3d, #0a1a2e);
+    border: 1px solid #2196F3;
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.forecast-label {
+    color: #90CAF9;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.forecast-value {
+    color: #E3F2FD;
+    font-size: 0.9rem;
+}
+
+/* Event box */
+.event-box {
+    background: #3d2e0a;
+    border: 1px solid var(--amber-dark);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Surge box */
+.surge-box {
+    background: linear-gradient(135deg, #1a1a00, #2a2a00);
+    border: 1px solid var(--amber);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Contract card */
+.contract-card {
+    background: var(--bg-card);
+    border: 2px solid var(--amber-dark);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.contract-card.empty {
+    border-color: #3d5a3d;
+}
+
+.contract-header {
+    font-weight: 700;
+    color: var(--amber);
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.contract-desc {
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.contract-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.contract-bar {
+    flex: 1;
+    background: #1a2e1a;
+    border-radius: 10px;
+    height: 12px;
+    overflow: hidden;
+    border: 1px solid #3d5a3d;
+}
+
+.contract-fill {
+    background: linear-gradient(90deg, var(--amber-dark), var(--amber));
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.contract-progress span {
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.contract-reward {
+    color: var(--green-leaf);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Season price indicators */
+.season-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.season-badge.spring { background: #1a3d1a; color: #81C784; }
+.season-badge.summer { background: #3d3a00; color: #FFD54F; }
+.season-badge.autumn { background: #3d2a00; color: #FFB74D; }
+.season-badge.winter { background: #0a1a2e; color: #64B5F6; }
+
+/* Soil health bars for MG beds */
+.bed-soil-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 0.2rem;
+}
+
+.soil-bar {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.soil-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    width: 10px;
+    color: var(--cream-dim);
+}
+
+.soil-track {
+    flex: 1;
+    height: 5px;
+    background: #1a1a1a;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.soil-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.soil-fill.nitrogen { background: linear-gradient(90deg, #4CAF50, #66BB6A); }
+.soil-fill.n.sp-n-pos { background: linear-gradient(90deg, #4CAF50, #81C784); }
+.soil-fill.phosphorus { background: linear-gradient(90deg, #2196F3, #42A5F5); }
+.soil-fill.potassium { background: linear-gradient(90deg, #FF9800, #FFB74D); }
+
+/* Locked seed packets */
+.seed-packet.locked {
+    opacity: 0.5;
+    filter: grayscale(0.7);
+}
+
+.seed-packet.locked:hover {
+    transform: none;
+    box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Sticky advance day button area */
+.day-advance-area {
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(0deg, var(--bg-card) 70%, transparent);
+    padding: 1rem 0 0.5rem;
+    z-index: 10;
+}
+
+/* Fishing animation */
+.fishing-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.fishing-ripple .ripple-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(33, 150, 243, 0.8);
+    border-radius: 50%;
+    animation: ripple-expand 1.5s ease-out forwards;
+}
+
+.fishing-ripple .ripple-ring:nth-child(2) { animation-delay: 0.3s; }
+.fishing-ripple .ripple-ring:nth-child(3) { animation-delay: 0.6s; }
+
+.fishing-ripple .catch-result {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    animation: catch-float 2s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes ripple-expand {
+    0% { width: 10px; height: 10px; opacity: 1; }
+    100% { width: 80px; height: 80px; opacity: 0; }
+}
+
+@keyframes catch-float {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    60% { opacity: 1; transform: translateX(-50%) translateY(-30px); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
+}
+
+/* Season transition flash */
+.season-flash {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 9999;
+    animation: season-flash-anim 1.5s ease-out forwards;
+}
+
+.season-flash.spring { background: radial-gradient(circle, rgba(102,187,106,0.4), transparent 70%); }
+.season-flash.summer { background: radial-gradient(circle, rgba(255,167,38,0.4), transparent 70%); }
+.season-flash.autumn { background: radial-gradient(circle, rgba(239,108,0,0.4), transparent 70%); }
+.season-flash.winter { background: radial-gradient(circle, rgba(66,165,245,0.4), transparent 70%); }
+
+@keyframes season-flash-anim {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Farm ledger enhancement */
+.farm-ledger {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.farm-ledger h4 {
+    color: var(--green-light);
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.5rem;
+}
+
+.ledger-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #2a3a2a;
+    font-size: 0.85rem;
+}
+
+.ledger-row:last-child {
+    border-bottom: none;
+}
+
+.ledger-label {
+    color: var(--cream-dim);
+}
+
+.ledger-value {
+    color: var(--cream);
+    font-weight: 600;
+}
+
+.ledger-value.positive { color: var(--green-leaf); }
+.ledger-value.negative { color: var(--danger); }
+
+
+/* ── §27  Decorative Farm Elements ── */
+
+/* Cold Frame / stream adjacency icon fix */
+.farm-tile.tile-stream + .farm-tile .tile-icon,
+.farm-tile .tile-icon {
+    position: relative;
+    z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════
+   §28  Farm Village Scene View (REVISED)
+   ═══════════════════════════════════════════════ */
+
+.village-farm {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+    border: 3px solid #5D4037;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    background: #2C1810;
+}
+
+/* Sky */
+.vf-sky {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 32%;
+    z-index: 1;
+    border-radius: 16px 16px 0 0;
+}
+
+.vf-sun {
+    position: absolute;
+    font-size: 2.2rem;
+    top: 8%;
+    right: 12%;
+    z-index: 2;
+    filter: drop-shadow(0 0 10px rgba(255,200,0,0.4));
+    animation: sunBob 6s ease-in-out infinite;
+}
+
+@keyframes sunBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.vf-cloud {
+    position: absolute;
+    font-size: 1.6rem;
+    opacity: 0.6;
+    z-index: 2;
+    animation: cloudDrift linear infinite;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+@keyframes cloudDrift {
+    0% { transform: translateX(-30px); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateX(30px); opacity: 0; }
+}
+
+/* Hills */
+.vf-hills-svg {
+    position: absolute;
+    top: 15%;
+    left: 0; right: 0;
+    width: 100%;
+    height: 35%;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* Meadow */
+.vf-meadow {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 70%;
+    z-index: 4;
+    border-radius: 0 0 16px 16px;
+}
+
+.village-farm.season-spring .vf-meadow {
+    background: linear-gradient(180deg, #8D6E63 0%, #795548 30%, #6D4C41 70%, #5D4037 100%);
+}
+.village-farm.season-summer .vf-meadow {
+    background: linear-gradient(180deg, #A1887F 0%, #8D6E63 30%, #795548 70%, #6D4C41 100%);
+}
+.village-farm.season-autumn .vf-meadow {
+    background: linear-gradient(180deg, #795548 0%, #6D4C41 30%, #5D4037 70%, #4E342E 100%);
+}
+.village-farm.season-winter .vf-meadow {
+    background: linear-gradient(180deg, #BCAAA4 0%, #A1887F 30%, #8D6E63 70%, #795548 100%);
+}
+
+/* Meadow grass texture overlay */
+.vf-meadow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05) 1px, transparent 2px),
+        radial-gradient(circle at 30% 50%, rgba(0,0,0,0.03) 1px, transparent 2px),
+        radial-gradient(circle at 70% 30%, rgba(255,255,255,0.04) 1px, transparent 2px),
+        radial-gradient(circle at 90% 70%, rgba(0,0,0,0.02) 1px, transparent 2px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* River */
+.vf-river-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* ── Field patches — organic farm shapes (replaces .vf-plot) ── */
+
+.vf-patch {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 12%;
+    height: 7.5%;
+    border-radius: 40% 50% 45% 55%;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.vf-patch:hover {
+    filter: brightness(1.15);
+    z-index: 15;
+}
+
+.vf-patch-empty {
+    background: radial-gradient(ellipse at 50% 40%, #6D4C41, #4E342E);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+.vf-patch-empty::after {
+    content: '';
+    position: absolute;
+    inset: 15% 20% 25% 20%;
+    background:
+        repeating-linear-gradient(90deg, transparent 0px, rgba(139,90,43,0.2) 1px, transparent 2px, transparent 5px),
+        repeating-linear-gradient(0deg, transparent 0px, rgba(139,90,43,0.15) 1px, transparent 2px, transparent 6px);
+    border-radius: 30%;
+    pointer-events: none;
+}
+
+.vf-patch-seed {
+    background: radial-gradient(ellipse at 50% 40%, #5D4037, #3E2723);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+.vf-patch-seed .vf-seed-dot {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 4px;
+    background: #81C784;
+    border-radius: 50%;
+    box-shadow: 0 0 3px rgba(129,199,132,0.5);
+}
+
+.vf-patch-growing {
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(76,175,80,0.6), transparent 55%),
+        radial-gradient(ellipse at 50% 60%, #6D4C41, #4E342E);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35), 0 0 8px rgba(76,175,80,0.12);
+}
+
+.vf-patch-growing .vf-sprout {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 50%;
+    background: #5D4037;
+    border-radius: 1.5px;
+}
+
+.vf-patch-growing .vf-sprout::before,
+.vf-patch-growing .vf-sprout::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 9px;
+    background: #A5D6A7;
+    border-radius: 0 70% 0 70%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.vf-patch-growing .vf-sprout::before {
+    top: 5%;
+    left: -10px;
+    transform: rotate(-25deg);
+}
+
+.vf-patch-growing .vf-sprout::after {
+    top: 5%;
+    right: -10px;
+    border-radius: 70% 0 70% 0;
+    transform: rotate(25deg);
+}
+
+
+.vf-patch-ready {
+    background:
+        radial-gradient(ellipse at 50% 20%, rgba(255,193,7,0.55), transparent 40%),
+        radial-gradient(ellipse at 50% 35%, rgba(139,195,74,0.7), transparent 50%),
+        radial-gradient(ellipse at 50% 60%, #6D4C41, #4E342E);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 0 15px rgba(255,193,7,0.2);
+    animation: patchHarvestGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes patchHarvestGlow {
+    0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 0 8px rgba(255,193,7,0.15); }
+    50% { box-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255,193,7,0.35); }
+}
+
+.vf-patch-ready .vf-harvest-glow {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 35%;
+    background: radial-gradient(circle, #FFD54F 30%, #FF8F00 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255,193,7,0.5), 0 1px 3px rgba(0,0,0,0.3);
+    pointer-events: none;
+}
+
+
+.vf-patch-rock {
+    background: radial-gradient(ellipse at 40% 35%, #9E9E9E, #616161);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    border-radius: 45% 55% 50% 40%;
+}
+
+.vf-patch-rock::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    left: 20%;
+    width: 30%;
+    height: 20%;
+    background: rgba(158,158,158,0.3);
+    border-radius: 50% 30% 40% 60%;
+}
+
+.vf-patch-rock::after {
+    content: '';
+    position: absolute;
+    bottom: 20%;
+    right: 15%;
+    width: 25%;
+    height: 18%;
+    background: rgba(117,117,117,0.3);
+    border-radius: 40% 60% 30% 50%;
+}
+
+.vf-patch-weed {
+    background: radial-gradient(ellipse at 50% 40%, #7CB342, #558B2F);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.vf-patch-weed::before {
+    content: '🌿';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+/* ── Building icons on landscape ── */
+
+.vf-building {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 10%;
+    z-index: 12;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.vf-building:hover {
+    filter: brightness(1.15);
+    z-index: 16;
+}
+
+.vf-building svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4));
+}
+
+.vf-building-label {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.5rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    color: #FFF8E1;
+    background: rgba(0,0,0,0.6);
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
+.vf-building-label.damaged {
+    color: #FF8A80;
+    border: 1px solid #C62828;
+}
+
+
+@keyframes plotPop {
+    0% { transform: translate(-50%,-50%) scale(0.3); opacity: 0; }
+    60% { transform: translate(-50%,-50%) scale(1.1); }
+    100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+}
+
+.vf-building-label {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.5rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    color: #FFF8E1;
+    background: rgba(0,0,0,0.6);
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
+.vf-building-label.damaged {
+    color: #FF8A80;
+    border: 1px solid #C62828;
+}
+
+/* Scene info tooltip */
+.vf-info-panel {
+    position: absolute;
+    z-index: 50;
+    background: rgba(26, 15, 8, 0.95);
+    border: 2px solid #6D4C41;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+    color: #FFF8E1;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    display: none;
+}
+
+.vf-info-panel.visible {
+    display: block;
+}
+
+.vf-info-panel .vf-info-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #FFCC80;
+    margin-bottom: 0.15rem;
+}
+
+.vf-info-panel .vf-info-detail {
+    color: #B8A88A;
+    line-height: 1.4;
+}
+
+/* Smoke */
+.vf-smoke-container {
+    position: absolute;
+    z-index: 12;
+    pointer-events: none;
+}
+
+.vf-smoke-puff {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: rgba(200,200,200,0.4);
+    border-radius: 50%;
+    animation: smokeRise 3s ease-out infinite;
+}
+
+@keyframes smokeRise {
+    0% { transform: translateY(0) scale(1); opacity: 0.5; }
+    50% { transform: translateY(-12px) scale(1.8); opacity: 0.25; }
+    100% { transform: translateY(-25px) scale(2.5); opacity: 0; }
+}
+
+/* Chickens */
+.vf-chicken {
+    position: absolute;
+    z-index: 11;
+    font-size: 0.85rem;
+    animation: chickenWander 4s ease-in-out infinite;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+}
+
+@keyframes chickenWander {
+    0%, 100% { transform: translateX(0) scaleX(1); }
+    25% { transform: translateX(5px) scaleX(1); }
+    50% { transform: translateX(-3px) scaleX(-1); }
+    75% { transform: translateX(4px) scaleX(-1); }
+}
+
+/* Cows */
+.vf-cow {
+    position: absolute;
+    z-index: 11;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+    animation: cowGraze 5s ease-in-out infinite;
+}
+
+@keyframes cowGraze {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(2px); }
+}
+
+/* Goats */
+.vf-goat {
+    position: absolute;
+    z-index: 11;
+    font-size: 0.95rem;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+    animation: goatBounce 2.5s ease-in-out infinite;
+}
+
+@keyframes goatBounce {
+    0%, 65%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-3px); }
+}
+
+/* Foreground */
+.vf-foreground {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 6%;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* Time/day overlay */
+.vf-time-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    pointer-events: none;
+    border-radius: 16px;
+    transition: background 2s ease;
+}
+
+.vf-time-overlay.dawn { background: rgba(255,183,77,0.1); }
+.vf-time-overlay.midday { background: rgba(255,255,255,0.02); }
+.vf-time-overlay.afternoon { background: rgba(255,152,0,0.06); }
+.vf-time-overlay.evening { background: rgba(255,87,34,0.1); }
+.vf-time-overlay.night { background: rgba(26,35,126,0.18); }
+
+/* Wildflowers (spring) */
+.vf-wildflowers {
+    position: absolute;
+    bottom: 8%; left: 5%; right: 5%;
+    height: 15%;
+    z-index: 6;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 8% 35%, #F48FB1 2px, transparent 2px),
+        radial-gradient(circle at 22% 55%, #FFF176 2px, transparent 2px),
+        radial-gradient(circle at 38% 25%, #CE93D8 2px, transparent 2px),
+        radial-gradient(circle at 52% 65%, #F48FB1 1.5px, transparent 1.5px),
+        radial-gradient(circle at 68% 40%, #FFF176 2px, transparent 2px),
+        radial-gradient(circle at 82% 60%, #CE93D8 1.5px, transparent 1.5px),
+        radial-gradient(circle at 92% 30%, #81D4FA 2px, transparent 2px);
+}
+
+/* Scene stats bar */
+.vf-scene-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.vf-scene-stat {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.vf-scene-stat .vf-stat-label {
+    color: var(--cream-dim);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vf-scene-stat .vf-stat-value {
+    color: var(--cream);
+    font-weight: 700;
+    font-family: 'Fredoka', sans-serif;
+}
+
+.vf-scene-stat .vf-stat-value.money { color: var(--amber); }
+
+/* ═══════════════════════════════════════════════
+   Sub-tab content visibility (Farm Tycoon tabs)
+   ═══════════════════════════════════════════════ */
+
+#farm-tycoon .sub-tab-content {
+    display: none;
+}
+
+#farm-tycoon .sub-tab-content.active {
+    display: block;
+}
+
+/* ── Fence along river ── */
+
+.vf-fence {
+    position: absolute;
+    width: 1.5%;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.vf-fence-rail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #8D6E63;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border-radius: 1px;
+}
+
+.vf-fence-post {
+    position: absolute;
+    left: 20%;
+    width: 60%;
+    height: 5%;
+    background: linear-gradient(90deg, #6D4C41, #8D6E63, #6D4C41);
+    border-radius: 1px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* ── Flying bees ── */
+
+.vf-bee {
+    position: absolute;
+    font-size: 0.65rem;
+    z-index: 13;
+    pointer-events: none;
+    animation: beeFly 2.5s ease-in-out infinite;
+}
+
+@keyframes beeFly {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(6px, -4px) rotate(10deg); }
+    50% { transform: translate(-4px, -8px) rotate(-5deg); }
+    75% { transform: translate(3px, -2px) rotate(8deg); }
+}
+
+/* ── Scene weather ── */
+
+.vf-rain {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, rgba(66,165,245,0.6));
+    border-radius: 0 0 2px 2px;
+    animation: vfRainFall linear infinite;
+    z-index: 30;
+    pointer-events: none;
+}
+
+@keyframes vfRainFall {
+    0% { transform: translateY(-20px); opacity: 0; }
+    10% { opacity: 0.6; }
+    100% { transform: translateY(500px); opacity: 0.2; }
+}
+
+.vf-snow {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: vfSnowFall linear infinite;
+    z-index: 30;
+    pointer-events: none;
+}
+
+@keyframes vfSnowFall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    100% { transform: translateY(500px) rotate(360deg); opacity: 0.2; }
+}
+
+.vf-leaf {
+    position: absolute;
+    font-size: 1.2rem;
+    animation: vfLeafFall linear infinite;
+    z-index: 30;
+    pointer-events: none;
+}
+
+@keyframes vfLeafFall {
+    0% { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    50% { transform: translateY(250px) rotate(180deg) translateX(40px); }
+    100% { transform: translateY(500px) rotate(360deg) translateX(-20px); opacity: 0; }
+}
+
+.vf-sunray {
+    position: absolute;
+    top: 0;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,213,79,0.25), transparent 60%);
+    animation: vfSunPulse 3s ease-in-out infinite;
+    transform: skewX(-15deg);
+    z-index: 30;
+    pointer-events: none;
+}
+
+@keyframes vfSunPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+/* ═══════════════════════════════════════════
+   §29 MARKET GARDEN SCENE VIEW
+   ═══════════════════════════════════════════ */
+
+.village-garden {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    background: #3e2723;
+    font-family: 'Inter', sans-serif;
+}
+
+.vg-sky {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 22%;
+    z-index: 1;
+}
+
+.vg-sky .vf-sun {
+    position: absolute;
+    top: 12%;
+    right: 10%;
+    font-size: 2rem;
+    z-index: 2;
+    filter: drop-shadow(0 0 6px rgba(255, 200, 0, 0.3));
+}
+
+/* ── Brick Wall Backdrop ── */
+
+.vg-wall {
+    position: absolute;
+    top: 18%;
+    left: 0;
+    right: 0;
+    height: 25%;
+    z-index: 4;
+    border-bottom: 4px solid rgba(0, 0, 0, 0.2);
+}
+
+/* ── Packed Earth Ground ── */
+
+.vg-ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    z-index: 3;
+}
+
+/* ── Stall Structure ── */
+
+.vg-stall {
+    position: absolute;
+    width: 44%;
+    height: 58%;
+    z-index: 8;
+    background: rgba(93, 64, 55, 0.12);
+    border-radius: 10px;
+    border: 2px solid rgba(93, 64, 55, 0.25);
+}
+
+.vg-awning {
+    position: absolute;
+    top: 0;
+    left: -3px;
+    right: -3px;
+    height: 11%;
+    border-radius: 10px 10px 0 0;
+    z-index: 9;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.vg-awning-scallop {
+    position: absolute;
+    bottom: -9px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: inherit;
+    clip-path: polygon(
+        0% 0%, 3.3% 100%, 6.6% 0%, 10% 100%, 13.3% 0%, 16.6% 100%, 20% 0%, 23.3% 100%,
+        26.6% 0%, 30% 100%, 33.3% 0%, 36.6% 100%, 40% 0%, 43.3% 100%, 46.6% 0%, 50% 100%,
+        53.3% 0%, 56.6% 100%, 60% 0%, 63.3% 100%, 66.6% 0%, 70% 100%, 73.3% 0%, 76.6% 100%,
+        80% 0%, 83.3% 100%, 86.6% 0%, 90% 100%, 93.3% 0%, 96.6% 100%, 100% 0%
+    );
+}
+
+.vg-stall-sign {
+    position: absolute;
+    top: 14%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(62, 39, 23, 0.92);
+    color: #FFCC80;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 12px;
+    border-radius: 3px;
+    letter-spacing: 1.5px;
+    z-index: 12;
+    border: 1px solid #8D6E63;
+    white-space: nowrap;
+}
+
+.vg-stall-post {
+    position: absolute;
+    top: 8%;
+    bottom: 12%;
+    width: 5px;
+    background: #5D4037;
+    border-radius: 2px;
+    z-index: 9;
+    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.25);
+}
+
+.vg-stall-counter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 14%;
+    border-top: 3px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 2px 8px;
+    overflow: hidden;
+    z-index: 11;
+    border-radius: 0 0 10px 10px;
+    flex-wrap: wrap;
+}
+
+/* ── Bed Patches ── */
+
+.vg-patch {
+    position: absolute;
+    width: 11%;
+    height: 15%;
+    z-index: 15;
+    pointer-events: auto;
+    border-radius: 6px;
+    overflow: visible;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid rgba(93, 64, 55, 0.5);
+}
+
+.vg-patch:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.25);
+    z-index: 25;
+}
+
+.vg-patch svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 4px;
+}
+
+.vg-patch-ready {
+    animation: vg-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vg-pulse {
+    0%, 100% { box-shadow: 0 0 4px rgba(255, 193, 7, 0.3); }
+    50% { box-shadow: 0 0 18px rgba(255, 193, 7, 0.7); }
+}
+
+.vg-companion {
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5), inset 0 0 4px rgba(76, 175, 80, 0.15);
+}
+
+.vg-antagonist {
+    box-shadow: 0 0 10px rgba(244, 67, 54, 0.5), inset 0 0 4px rgba(244, 67, 54, 0.15);
+}
+
+.vg-soil-fair {
+    filter: brightness(0.9) saturate(0.8);
+}
+
+.vg-soil-poor {
+    filter: brightness(0.75) saturate(0.5);
+}
+
+/* ── Companion & Antagonist Indicators ── */
+
+.vg-companion-indicator,
+.vg-antagonist-indicator {
+    position: absolute;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.5rem;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 1px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 16;
+    line-height: 1.2;
+}
+
+.vg-companion-indicator {
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.vg-antagonist-indicator {
+    color: #F44336;
+    border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+/* ── Soil NPK Dots ── */
+
+.vg-soil-dots {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 2px;
+    z-index: 16;
+}
+
+.vg-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+/* ── Produce on Counter ── */
+
+.vg-produce-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.85rem;
+    position: relative;
+    line-height: 1;
+}
+
+.vg-produce-qty {
+    font-size: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 50%;
+    min-width: 13px;
+    height: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -3px;
+    right: -5px;
+    padding: 0 2px;
+}
+
+.vg-no-produce {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.6rem;
+    font-style: italic;
+}
+
+/* ── Irrigation ── */
+
+.vg-pipe {
+    position: absolute;
+    height: 3px;
+    background: #78909C;
+    border-radius: 2px;
+    z-index: 18;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.vg-drip {
+    position: absolute;
+    width: 3px;
+    height: 6px;
+    background: #42A5F5;
+    border-radius: 0 0 50% 50%;
+    z-index: 19;
+    animation: vg-drip 1.5s ease-in infinite;
+}
+
+@keyframes vg-drip {
+    0% { opacity: 0.7; transform: translateY(0); }
+    80% { opacity: 0.3; transform: translateY(14px); }
+    100% { opacity: 0; transform: translateY(18px); }
+}
+
+/* ── Foreground ── */
+
+.vg-foreground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 12%;
+    z-index: 22;
+    pointer-events: none;
+}
+
+/* ── Time Overlay ── */
+
+.vg-time-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    pointer-events: none;
+    transition: background 0.5s;
+}
+
+.vg-time-overlay.dawn { background: rgba(255, 152, 0, 0.08); }
+.vg-time-overlay.midday { background: transparent; }
+.vg-time-overlay.afternoon { background: rgba(255, 111, 0, 0.1); }
+.vg-time-overlay.evening { background: rgba(255, 87, 34, 0.15); }
+.vg-time-overlay.night { background: rgba(0, 0, 30, 0.25); }
+
+/* ── Info Panel ── */
+
+.vg-info-panel {
+    position: absolute;
+    z-index: 50;
+    background: rgba(20, 15, 8, 0.95);
+    color: #FFCC80;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    max-width: 240px;
+    border: 1px solid rgba(255, 204, 128, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.vg-info-panel.visible { opacity: 1; }
+
+.vg-info-detail { line-height: 1.4; }
+
+/* ── Seasonal Variants ── */
+
+.village-garden.season-winter .vg-wall {
+    filter: brightness(0.9);
+}
+.village-garden.season-winter .vg-stall-post {
+    background: #6D4C41;
+}
+.village-garden.season-autumn .vg-stall-post {
+    background: #4E342E;
+}

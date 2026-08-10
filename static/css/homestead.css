@@ -1,0 +1,4386 @@
+/* ═══════════════════════════════════════════
+   HOMESTEAD PAGE STYLES
+   ═══════════════════════════════════════════
+
+   TABLE OF CONTENTS
+   ────────────────
+   §1   Page Layout & Title
+   §2   Tab Navigation
+   §3   How to Play
+   §4   Stats & Progress Bars
+   §5   Season Bar
+   §6   Warning Boxes
+   §7   Sub-tabs
+   §8   Section Title, Divider & Placing Banner
+   §9   Village Grid & Tiles
+   §10  Build Panel & Cards
+   §11  Buttons
+   §12  Market Layout
+   §13  Kitchen Layout
+   §14  Recipe Cards & Notices
+   §15  Questions & Locked Tiers
+   §16  Achievements
+   §17  Toast & Utility
+   §18  Keyframe Animations
+   §19  Cookbook Layout & Navigation
+   §20  Book Container & Page
+   §21  Book Content (Chapters, Recipes, Unlock)
+   §22  Cooking Animation Overlay
+   §22b Kitchen Scene
+   §23  Eco-Village Season Themes
+   §24  Eco-Village Visual Enhancements
+   §25  Responsive
+   §26  Village View
+
+   ═══════════════════════════════════════════ */
+
+
+/* ── Palette: Warm Parchment & Leather ── */
+
+.homestead-page {
+    --cream: #f4e8d1;
+    --cream-dim: #b8a88a;
+    --amber: #c49a3c;
+    --amber-light: #d4aa4c;
+    --amber-dark: #8b6914;
+    --nature-green: #66BB6A;
+    --danger: #c62828;
+    --danger-bg: #2a1010;
+    --bg-card: #2a1a10;
+    --bg-deep: #1a0f08;
+}
+
+/* Homestead season-bar uses a darker gradient than the base */
+.homestead-page .season-bar {
+    background: linear-gradient(135deg, #1a0f08, #2a1a10);
+}
+
+
+/* ── §1  Page Layout & Title ── */
+
+
+.homestead-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+.page-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 2rem;
+    color: var(--cream);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+
+/* ── §2  Tab Navigation ── */
+
+.game-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tab-btn {
+    background: var(--bg-card);
+    color: var(--cream-dim);
+    border: 2px solid #5c3a1e;
+    border-radius: 10px;
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.tab-btn:hover {
+    border-color: var(--amber);
+    color: var(--cream);
+    background: #2a1a10;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #1a0f08, #2a1a10);
+    border-color: var(--amber);
+    color: var(--amber-light);
+    box-shadow: 0 0 12px rgba(196, 154, 60, 0.3);
+}
+
+.game-container {
+    display: none;
+}
+
+.game-container.active {
+    display: block;
+}
+
+.game-header h2 {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.8rem;
+    color: var(--cream);
+    margin-bottom: 0.2rem;
+}
+
+.game-caption {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+
+/* ── §3  How to Play ── */
+
+.htp-section {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.htp-section summary {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--amber-light);
+    font-size: 0.95rem;
+}
+
+.htp-content {
+    padding: 0 1rem 1rem;
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.htp-content ol,
+.htp-content ul {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+.htp-content li {
+    margin-bottom: 0.3rem;
+}
+
+
+/* ── §4  Stats & Progress Bars ── */
+
+.stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+}
+
+.stat-box .stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.stat-box .stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--cream);
+}
+
+.stat-box.food {
+    background: linear-gradient(135deg, #1a0f08, #2a1a00);
+    border: 2px solid #FF8F00;
+}
+
+.stat-box.food .stat-label { color: #FF8F00; }
+
+.stat-box.water {
+    background: linear-gradient(135deg, #0a1a2e, #1a2a3e);
+    border: 2px solid #2196F3;
+}
+
+.stat-box.water .stat-label { color: #2196F3; }
+
+.stat-box.power {
+    background: linear-gradient(135deg, #2a1a00, #3d3d00);
+    border: 2px solid #FFC107;
+}
+
+.stat-box.power .stat-label { color: #FFC107; }
+
+.stat-box.money {
+    background: linear-gradient(135deg, #1a0f08, #2a1a00);
+    border: 2px solid var(--amber-dark);
+}
+
+.stat-box.money .stat-label { color: var(--amber); }
+
+.stat-box.nature {
+    background: linear-gradient(135deg, #1a0f08, #2a1f15);
+    border: 2px solid var(--nature-green);
+}
+
+.stat-box.nature .stat-label { color: var(--nature-green); }
+
+.stat-box.storage {
+    background: var(--bg-card);
+    border: 2px solid #5c3a1e;
+}
+
+.stat-box.storage .stat-label { color: var(--amber); }
+
+.stat-box.stamina {
+    background: linear-gradient(135deg, #2a1a2e, #3d2a4a);
+    border: 2px solid #AB47BC;
+}
+
+.stat-box.stamina .stat-label { color: #AB47BC; }
+
+.stat-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease, background-color 0.6s ease;
+}
+
+.stat-box.pulse {
+    animation: stat-pulse 0.4s ease;
+}
+
+
+/* ── §5  Season Bar ── */
+
+.season-bar {
+    background: linear-gradient(135deg, #2a1a10, #2a4a2a);
+    border: 2px solid var(--amber-light);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+/* ── §6  Warning Boxes ── */
+
+.warning-box {
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.warning-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    animation: warning-shine 3s ease-in-out infinite;
+}
+
+.warning-box.autumn {
+    background: #3d2e0a;
+    border: 1px solid var(--amber);
+}
+
+.warning-box.winter-safe {
+    background: #0a1a2e;
+    border: 1px solid #2196F3;
+}
+
+.warning-box.winter-danger {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger);
+}
+
+.warning-box.nature-low {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger);
+}
+
+
+/* ── §7  Sub-tabs ── */
+
+.sub-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.sub-tab {
+    background: var(--bg-card);
+    color: var(--cream-dim);
+    border: 1px solid #5c3a1e;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.sub-tab:hover {
+    border-color: var(--amber-light);
+    color: var(--cream);
+}
+
+.sub-tab.active {
+    background: linear-gradient(135deg, #1a0f08, #2a1f15);
+    border-color: var(--amber);
+    color: var(--amber-light);
+}
+
+.sub-tab-content {
+    display: none;
+}
+
+.sub-tab-content.active {
+    display: block;
+}
+
+
+/* ── §8  Section Title, Divider & Placing Banner ── */
+
+.section-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin: 1rem 0 0.8rem;
+}
+
+.game-divider {
+    border: none;
+    border-top: 1px solid #5c3a1e;
+    margin: 1.5rem 0;
+}
+
+.placing-banner {
+    background: linear-gradient(135deg, #1a0f08, #2a1a00);
+    border: 2px solid var(--amber);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.placing-banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    animation: placing-pulse 2s ease-in-out infinite;
+}
+
+.placing-banner.hidden {
+    display: none;
+}
+
+
+/* ── §9  Village Grid & Tiles ── */
+
+.village-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, rgba(42,26,16,0.3), rgba(26,15,8,0.5));
+    border: 2px solid #5c3a1e;
+    border-radius: 12px;
+    padding: 0.5rem;
+}
+
+.tile {
+    background: #2a1a10;
+    border: 2px solid #5c3a1e;
+    border-radius: 10px;
+    padding: 0.4rem;
+    text-align: center;
+    min-height: 85px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+    position: relative;
+    transition: all 0.25s ease, transform 0.15s ease;
+}
+
+.tile:hover {
+    border-color: var(--amber-light);
+    transform: translateY(-2px);
+}
+
+.tile .tile-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.tile .tile-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-top: 0.15rem;
+    line-height: 1.2;
+}
+
+.tile .tile-damaged {
+    color: var(--danger);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.tile.damaged {
+    border: 2px dashed var(--danger);
+    background: linear-gradient(135deg, #2a0a0a, #1a0000);
+    animation: damage-pulse 1.5s ease-in-out infinite;
+}
+
+.tile.stream {
+    background: #0a1a2e;
+    border-color: #2196F3;
+}
+
+.tile.empty {
+    background: #2a1a10;
+    border-color: #5c3a1e;
+    cursor: pointer;
+}
+
+.tile.empty:hover {
+    background: #2a3e2a;
+    border-color: var(--amber-light);
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+}
+
+.tile.pop-in {
+    animation: tile-pop 0.35s ease-out;
+}
+
+.tile.crop-ready {
+    animation: crop-pulse 2s ease-in-out infinite;
+}
+
+.tile-season-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.tile-action {
+    background: var(--bg-card);
+    color: var(--cream-dim);
+    border: 1px solid #5c3a1e;
+    border-radius: 6px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    margin-top: 0.3rem;
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+}
+
+.tile-action:hover {
+    border-color: var(--amber-light);
+    color: var(--cream);
+    background: #2a1a10;
+}
+
+.tile-action:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.tile-action.build {
+    background: linear-gradient(135deg, #1a0f08, #2a1f15);
+    border-color: var(--amber);
+    color: var(--amber-light);
+}
+
+.tile-action.damaged {
+    background: #2a1010;
+    border-color: var(--danger);
+    color: #ff8a80;
+}
+
+
+/* ── §10  Build Panel & Cards ── */
+
+.build-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+
+.build-card {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 8px;
+    padding: 0.5rem;
+    text-align: center;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    gap: 0.15rem;
+}
+
+
+.build-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.5s ease;
+}
+
+.build-card:hover::after {
+    left: 100%;
+}
+
+.build-card:hover {
+    border-color: var(--amber-light);
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.build-card .build-icon {
+    font-size: 1.4rem;
+}
+
+
+.build-card .build-name {
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.build-card .build-cost {
+    color: var(--amber);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+}
+
+.build-card .build-desc {
+    color: var(--cream-dim);
+    font-size: 0.75rem;
+    margin-top: 0.3rem;
+    line-height: 1.3;
+}
+
+.build-card-season-tag {
+    position: absolute;
+    top: 4px; right: 4px;
+    background: rgba(255, 193, 7, 0.9);
+    color: #1a1a1a;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+}
+
+
+/* ── §11  Buttons ── */
+
+.btn-full {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--amber), var(--amber-dark));
+    color: var(--cream);
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.btn-primary:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+}
+
+.btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: none;
+    transform: none;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #c62828, #b71c1c);
+    color: var(--cream);
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    filter: brightness(1.1);
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--cream);
+    border: 1px solid #5c3a1e;
+    border-radius: 10px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    border-color: var(--amber-light);
+    background: #2a1a10;
+}
+
+
+/* ── §12  Market Layout ── */
+
+.market-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.market-section-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.2rem;
+    color: var(--cream);
+    margin-bottom: 0.8rem;
+}
+
+.action-btn {
+    background: var(--bg-card);
+    color: var(--cream);
+    border: 1px solid #5c3a1e;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s;
+    margin-bottom: 0.5rem;
+}
+
+.action-btn:hover {
+    border-color: var(--amber-light);
+    background: #2a1a10;
+}
+
+.action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.production-item {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+}
+
+.production-item .prod-name {
+    color: var(--cream);
+    font-weight: 600;
+}
+
+.production-item .prod-cost {
+    color: var(--amber);
+}
+
+.pantry-box,
+.progress-box {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pantry-title,
+.progress-title {
+    color: var(--amber);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.inv-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #4a2e14;
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+}
+
+.inv-row:last-child {
+    border-bottom: none;
+}
+
+.inv-row .inv-name {
+    color: var(--cream);
+}
+
+.inv-row .inv-actions {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.inv-btn {
+    background: var(--bg-deep);
+    color: var(--cream-dim);
+    border: 1px solid #5c3a1e;
+    border-radius: 4px;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.inv-btn:hover {
+    border-color: var(--amber-light);
+    color: var(--cream);
+}
+
+.inv-btn.sell {
+    border-color: var(--amber-dark);
+}
+
+.inv-btn.sell:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+}
+
+.inv-btn.eat {
+    border-color: #4CAF5050;
+}
+
+.inv-btn.eat:hover {
+    border-color: #4CAF50;
+    color: #4CAF50;
+}
+
+
+/* ── §13  Kitchen Layout ── */
+
+.kitchen-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    border: 1px solid #5c3a1e;
+}
+
+.basics-box {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.basics-title {
+    color: var(--cream-dim);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.basics-list {
+    color: var(--cream-dim);
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+
+/* ── §14  Recipe Cards & Notices ── */
+
+.recipe-card {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    overflow: hidden;
+}
+
+.recipe-card.locked-tier {
+    border-style: dashed;
+    opacity: 0.6;
+}
+
+.recipe-card.unlocked {
+    border-color: var(--amber);
+}
+
+.recipe-header {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recipe-header:hover {
+    background: #2a1a10;
+}
+
+.recipe-header .rh-name {
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.recipe-header .rh-stars {
+    color: var(--amber);
+}
+
+.recipe-header .rh-status {
+    font-size: 0.8rem;
+}
+
+.recipe-body {
+    padding: 0 1rem 1rem;
+}
+
+.recipe-desc {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.recipe-benefits {
+    background: #1a0f08;
+    border: 1px solid #5c3a1e;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    color: var(--amber-light);
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+}
+
+.ingredient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+}
+
+.ingredient-item {
+    background: var(--bg-deep);
+    border: 1px solid #5c3a1e;
+    border-radius: 6px;
+    padding: 0.4rem;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.ingredient-item.has {
+    border-color: var(--amber);
+    color: var(--amber-light);
+}
+
+.ingredient-item.missing {
+    border-color: var(--danger);
+    color: #ff8a80;
+}
+
+.ingredient-item.basic {
+    border-color: #555;
+    color: var(--cream-dim);
+}
+
+.lock-notice {
+    background: #3d2e0a;
+    border: 1px solid var(--amber);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+}
+
+.lock-notice .lock-title {
+    color: var(--amber);
+    font-weight: 700;
+}
+
+.lock-notice .lock-desc {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+.ready-notice {
+    background: linear-gradient(135deg, #1a0f08, #2a1f15);
+    border: 1px solid var(--amber);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    color: var(--amber-light);
+    font-weight: 600;
+}
+
+.missing-notice {
+    background: #3d2e0a;
+    border: 1px solid var(--amber-dark);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0;
+}
+
+.missing-notice .missing-title {
+    color: var(--amber);
+    font-weight: 600;
+}
+
+.missing-notice .missing-items {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+
+/* ── §15  Questions & Locked Tiers ── */
+
+.question-block {
+    background: var(--bg-deep);
+    border: 1px solid rgba(139, 105, 20, 0.2);
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.question-block .q-text {
+    color: var(--cream);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.question-block label {
+    display: block;
+    padding: 0.3rem 0;
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.question-block input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.locked-tier-notice {
+    background: var(--bg-card);
+    border: 2px dashed #555;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.locked-tier-notice .lt-icon {
+    font-size: 2rem;
+}
+
+.locked-tier-notice .lt-text {
+    color: var(--cream-dim);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.locked-tier-notice .lt-sub {
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+}
+
+
+/* ── §16  Achievements ── */
+
+.achievements-section {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.achievements-section summary {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--amber-light);
+    font-size: 0.95rem;
+}
+
+.achievements-grid {
+    padding: 0 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.achievement-card {
+    background: var(--bg-card);
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.achievement-card.unlocked {
+    background: linear-gradient(135deg, #1a0f08, #2a1f15);
+    border-color: var(--amber);
+}
+
+.achievement-card .ach-left {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.achievement-card .ach-icon {
+    font-size: 1.2rem;
+}
+
+.achievement-card .ach-name {
+    font-weight: 700;
+    color: var(--cream-dim);
+}
+
+.achievement-card.unlocked .ach-name {
+    color: var(--amber);
+}
+
+.achievement-card .ach-progress {
+    color: var(--cream-dim);
+    font-size: 0.8rem;
+}
+
+.achievement-card .ach-desc {
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+}
+
+
+/* ── §17  Toast & Utility ── */
+
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #1a0f08, #2a1f15);
+    border: 2px solid var(--amber);
+    color: var(--cream);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.3s ease;
+}
+
+.toast.hidden {
+    display: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ── §18  Keyframe Animations ── */
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes stat-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+@keyframes tile-pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes crop-pulse {
+    0%, 100% { box-shadow: 0 0 0 rgba(255, 193, 7, 0); }
+    50% { box-shadow: 0 0 12px rgba(255, 193, 7, 0.4); }
+}
+
+@keyframes damage-pulse {
+    0%, 100% { border-color: var(--danger); }
+    50% { border-color: #ff8a80; box-shadow: 0 0 8px rgba(244, 67, 54, 0.4); }
+}
+
+@keyframes warning-shine {
+    0% { left: -50%; }
+    100% { left: 150%; }
+}
+
+@keyframes placing-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+@keyframes petal-fall {
+    0% { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(100vh) rotate(360deg) translateX(50px); opacity: 0; }
+}
+
+@keyframes leaf-fall {
+    0% { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    50% { transform: translateY(50vh) rotate(180deg) translateX(30px); }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(100vh) rotate(360deg) translateX(-20px); opacity: 0; }
+}
+
+@keyframes snow-fall {
+    0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    50% { transform: translateY(50vh) translateX(15px); }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(100vh) translateX(-10px); opacity: 0; }
+}
+
+@keyframes firefly-float {
+    0% { transform: translate(0, 0); opacity: 0; }
+    20% { opacity: 0.8; }
+    50% { transform: translate(30px, -20px); opacity: 0.6; }
+    80% { opacity: 0.8; }
+    100% { transform: translate(-10px, -40px); opacity: 0; }
+}
+
+@keyframes day-fade {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes flicker {
+    0% { transform: scaleY(1) scaleX(1); opacity: 0.9; }
+    25% { transform: scaleY(1.15) scaleX(0.9); opacity: 1; }
+    50% { transform: scaleY(0.95) scaleX(1.05); opacity: 0.85; }
+    75% { transform: scaleY(1.1) scaleX(0.95); opacity: 0.95; }
+    100% { transform: scaleY(1.05) scaleX(1); opacity: 0.9; }
+}
+
+@keyframes bubble-rise {
+    0% { transform: translateY(0) scale(1); opacity: 0.7; }
+    100% { transform: translateY(-80px) scale(0.3); opacity: 0; }
+}
+
+@keyframes steam-rise {
+    0% { opacity: 0.4; transform: translateY(0) scale(1) translateX(0); }
+    50% { opacity: 0.25; transform: translateY(-40px) scale(1.5) translateX(8px); }
+    100% { opacity: 0; transform: translateY(-90px) scale(2.5) translateX(-5px); }
+}
+
+@keyframes stir-spoon {
+    0% { transform: rotate(-30deg) translateX(0px) translateY(0px); }
+    25% { transform: rotate(-20deg) translateX(5px) translateY(3px); }
+    50% { transform: rotate(-30deg) translateX(10px) translateY(0px); }
+    75% { transform: rotate(-40deg) translateX(5px) translateY(-3px); }
+    100% { transform: rotate(-30deg) translateX(0px) translateY(0px); }
+}
+
+@keyframes ingredient-fly-left {
+    0% { transform: translate(0, 0) scale(1.5) rotate(0deg); opacity: 0; }
+    15% { opacity: 1; }
+    60% { transform: translate(180px, 60px) scale(1.2) rotate(180deg); opacity: 1; }
+    85% { transform: translate(200px, 130px) scale(0.8) rotate(270deg); opacity: 0.7; }
+    100% { transform: translate(195px, 150px) scale(0) rotate(360deg); opacity: 0; }
+}
+
+@keyframes ingredient-fly-right {
+    0% { transform: translate(0, 0) scale(1.5) rotate(0deg); opacity: 0; }
+    15% { opacity: 1; }
+    60% { transform: translate(-180px, 60px) scale(1.2) rotate(-180deg); opacity: 1; }
+    85% { transform: translate(-195px, 130px) scale(0.8) rotate(-270deg); opacity: 0.7; }
+    100% { transform: translate(-190px, 150px) scale(0) rotate(-360deg); opacity: 0; }
+}
+
+@keyframes splash {
+    0% { transform: translateX(-50%) scale(0.5); opacity: 1; }
+    100% { transform: translateX(-50%) scale(2); opacity: 0; }
+}
+
+@keyframes flash-glow {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes result-pop {
+    0% { opacity: 0; transform: translateX(-50%) scale(0.5) translateY(20px); }
+    60% { transform: translateX(-50%) scale(1.1) translateY(0); }
+    100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+}
+
+@keyframes vl-cloud-drift {
+    0% { transform: translateX(-80px); }
+    100% { transform: translateX(calc(100% + 160px)); }
+}
+
+@keyframes vl-building-pop {
+    0% { transform: translate(-50%, -50%) scale(0) translateY(20px); opacity: 0; }
+    60% { transform: translate(-50%, -50%) scale(1.15) translateY(-5px); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes vl-smoke {
+    0% { transform: translateY(0) scale(0.5); opacity: 0.5; }
+    50% { transform: translateY(-20px) scale(1.5); opacity: 0.3; }
+    100% { transform: translateY(-40px) scale(2.5); opacity: 0; }
+}
+
+@keyframes vl-chicken-peck {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    15% { transform: translate(3px, 1px) rotate(3deg); }
+    30% { transform: translate(8px, -1px) rotate(0deg); }
+    45% { transform: translate(5px, 2px) rotate(-3deg); }
+    60% { transform: translate(12px, 0) rotate(2deg); }
+    75% { transform: translate(7px, -2px) rotate(-1deg); }
+}
+
+@keyframes vl-river-scroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 20px; }
+}
+
+@keyframes vl-damage-pulse {
+    0%, 100% { border-color: #f44336; opacity: 0.8; }
+    50% { border-color: #ff8a80; opacity: 1; }
+}
+
+@keyframes vl-recipe-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(76,175,80,0.3); }
+    50% { box-shadow: 0 0 16px rgba(76,175,80,0.6); }
+}
+
+@keyframes book-open {
+    0% { transform: perspective(800px) rotateY(-30deg) scale(0.8); opacity: 0; }
+    100% { transform: perspective(800px) rotateY(0) scale(1); opacity: 1; }
+}
+/* ── §19  Cookbook Layout & Navigation ── */
+
+.cookbook-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.cookbook {
+    max-width: 100%;
+}
+
+.book-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.book-nav-btn {
+    background: linear-gradient(135deg, #3a2010, #5c3a1e);
+    color: #e8d5b5;
+    border: 2px solid #8b6914;
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.book-nav-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #5c3a1e, #8b6914);
+    transform: scale(1.05);
+}
+
+.book-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.book-page-info {
+    color: #8b7355;
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: center;
+}
+
+.book-chapters {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.book-chapter-tab {
+    background: linear-gradient(135deg, #3a2010, #5c3a1e);
+    color: #8b7355;
+    border: 1px solid #5c3a1e;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.book-chapter-tab:hover:not(.locked) {
+    background: linear-gradient(135deg, #5c3a1e, #8b6914);
+    color: #e8d5b5;
+    border-color: #8b6914;
+}
+
+.book-chapter-tab.active {
+    background: linear-gradient(135deg, #8b6914, #a67c28);
+    color: #f4e8d1;
+    border-color: #a67c28;
+    box-shadow: 0 0 8px rgba(166, 124, 40, 0.3);
+}
+
+.book-chapter-tab.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* ── §20  Book Container & Page ── */
+
+.book-container {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(139, 69, 19, 0.3);
+    border: 3px solid #5c3a1e;
+}
+
+.book-spine {
+    width: 28px;
+    min-height: 420px;
+    background: linear-gradient(90deg, #2a1508, #5c3a1e 40%, #3a2010 60%, #2a1508);
+    border-right: 2px solid #1a0f0a;
+    box-shadow: inset -5px 0 12px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.book-page {
+    flex: 1;
+    min-height: 420px;
+    max-height: 520px;
+    overflow-y: auto;
+    padding: 2rem 1.8rem;
+    background:
+        radial-gradient(ellipse at 20% 80%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
+        linear-gradient(170deg, #f4e8d1 0%, #e8d5b5 50%, #f0deb8 100%);
+    color: #2a1810;
+    position: relative;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.book-page.flip-forward {
+    opacity: 0;
+    transform: perspective(800px) rotateY(-12deg);
+}
+
+.book-page.flip-backward {
+    opacity: 0;
+    transform: perspective(800px) rotateY(12deg);
+}
+
+.book-page::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 20px;
+    background: linear-gradient(90deg, transparent, rgba(139, 69, 19, 0.08));
+    pointer-events: none;
+}
+
+
+/* ── §21  Book Content (Chapters, Recipes, Unlock) ── */
+
+.page-chapter {
+    text-align: center;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 340px;
+}
+
+.chapter-ornament {
+    font-size: 1.5rem;
+    color: #8b6914;
+    margin: 0.5rem 0;
+    letter-spacing: 0.5rem;
+}
+
+.chapter-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.8rem;
+    color: #3a2010;
+    margin: 0.5rem 0;
+    font-weight: 700;
+}
+
+.chapter-title.locked {
+    color: #999;
+}
+
+.chapter-desc {
+    color: #6b4226;
+    font-size: 1rem;
+    font-style: italic;
+    margin: 0.5rem 0;
+}
+
+.chapter-divider-line {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8b6914, transparent);
+    margin: 1rem auto;
+}
+
+.page-locked-chapter {
+    text-align: center;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 340px;
+}
+
+.wax-seal {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    filter: grayscale(0.3);
+}
+
+.lock-notice-page {
+    background: rgba(139, 69, 19, 0.1);
+    border: 2px dashed #8b6914;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-top: 1rem;
+    max-width: 300px;
+}
+
+.lock-notice-page .lock-title {
+    color: #8b6914;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.lock-notice-page .lock-desc {
+    color: #6b4226;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+.page-recipe {
+    padding: 0;
+}
+
+.recipe-page-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 2px solid rgba(139, 69, 19, 0.3);
+    padding-bottom: 0.6rem;
+}
+
+.recipe-page-icon {
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+.recipe-page-name {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.6rem;
+    color: #2a1810;
+    margin: 0;
+    flex: 1;
+}
+
+.recipe-page-stars {
+    color: #8b6914;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.recipe-page-desc {
+    color: #5c3a1e;
+    font-size: 0.95rem;
+    font-style: italic;
+    margin: 0.6rem 0 1rem;
+    line-height: 1.5;
+}
+
+.benefit-box {
+    background: linear-gradient(135deg, #f0e6d0, #e8dbc0);
+    border: 2px solid #8b6914;
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.benefit-box::before {
+    content: '🌿';
+    position: absolute;
+    top: -0.6rem;
+    left: 0.8rem;
+    background: #f4e8d1;
+    padding: 0 0.3rem;
+    font-size: 1rem;
+}
+
+.benefit-title {
+    color: #3a5a1e;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+.benefit-detail {
+    color: #2a1810;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.benefit-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.benefit-tag {
+    background: linear-gradient(135deg, #4a7c3f, #3d6b34);
+    color: #f4e8d1;
+    border-radius: 12px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.recipe-ingredients-section {
+    margin: 1rem 0;
+}
+
+.ingredients-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #3a2010;
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    padding-bottom: 0.3rem;
+}
+
+.ingredients-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border: 1px solid transparent;
+}
+
+.ingredient-item.has {
+    background: rgba(74, 124, 63, 0.1);
+    border-color: rgba(74, 124, 63, 0.3);
+    color: #3d6b34;
+}
+
+.ingredient-item.missing {
+    background: rgba(180, 80, 40, 0.1);
+    border-color: rgba(180, 80, 40, 0.3);
+    color: #a03020;
+}
+
+.ingredient-item.basic {
+    background: rgba(139, 105, 20, 0.08);
+    border-color: rgba(139, 105, 20, 0.2);
+    color: #8b7355;
+}
+
+.ing-status {
+    font-size: 0.8rem;
+    width: 1.2rem;
+    text-align: center;
+}
+
+.ing-name {
+    flex: 1;
+    font-weight: 600;
+}
+
+.ing-qty {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.unlock-section {
+    margin-top: 1rem;
+    border-top: 1px dashed rgba(139, 69, 19, 0.3);
+    padding-top: 1rem;
+}
+
+.unlock-section .lock-notice {
+    background: rgba(139, 69, 19, 0.1);
+    border: 2px dashed #8b6914;
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.unlock-section .question-block {
+    background: rgba(139, 69, 19, 0.05);
+    border: 1px solid rgba(139, 69, 19, 0.2);
+    border-radius: 8px;
+    padding: 0.7rem;
+    margin-bottom: 0.5rem;
+}
+
+.unlock-section .question-block .q-text {
+    color: #3a2010;
+    font-weight: 600;
+}
+
+.unlock-section .question-block label {
+    color: #5c3a1e;
+    display: block;
+    padding: 0.2rem 0;
+    cursor: pointer;
+}
+
+.unlock-section .question-block label:hover {
+    color: #2a1810;
+}
+
+.book-page .ready-notice {
+    background: linear-gradient(135deg, rgba(74, 124, 63, 0.15), rgba(74, 124, 63, 0.05));
+    border: 2px solid #4a7c3f;
+    border-radius: 10px;
+    padding: 0.8rem;
+    text-align: center;
+    color: #3d6b34;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.book-page .missing-notice {
+    background: rgba(180, 80, 40, 0.1);
+    border: 2px solid rgba(180, 80, 40, 0.4);
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-top: 1rem;
+}
+
+.book-page .missing-notice .missing-title {
+    color: #a03020;
+    font-weight: 700;
+}
+
+.book-page .missing-notice .missing-items {
+    color: #6b4226;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+.cook-btn {
+    background: linear-gradient(135deg, #4a7c3f, #3d6b34) !important;
+    font-family: 'Crimson Text', Georgia, serif !important;
+    font-size: 1.1rem !important;
+    letter-spacing: 0.5px;
+    margin-top: 0.8rem;
+}
+
+.cook-btn:hover {
+    filter: brightness(1.15);
+}
+
+
+/* ── §22  Cooking Animation Overlay ── */
+
+.cooking-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at center, #1a0f0a 0%, #0a0604 100%);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.cooking-overlay:not(.hidden) {
+    opacity: 1;
+}
+
+.cooking-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cooking-scene {
+    position: relative;
+    width: 400px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.cooking-fire {
+    position: absolute;
+    bottom: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 50px;
+    z-index: 1;
+}
+
+.flame {
+    position: absolute;
+    bottom: 0;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: flicker 0.4s ease-in-out infinite alternate;
+}
+
+.flame-1 {
+    left: 30%; width: 30px; height: 40px;
+    background: radial-gradient(ellipse at bottom, #ffd54f, #ff9800, #f44336);
+    animation-delay: 0s;
+}
+
+.flame-2 {
+    left: 45%; width: 25px; height: 50px;
+    background: radial-gradient(ellipse at bottom, #fff59d, #ffab00, #ff6d00);
+    animation-delay: 0.1s;
+}
+
+.flame-3 {
+    left: 55%; width: 35px; height: 45px;
+    background: radial-gradient(ellipse at bottom, #ffd54f, #ff9800, #d84315);
+    animation-delay: 0.2s;
+}
+
+.flame-4 {
+    left: 20%; width: 20px; height: 30px;
+    background: radial-gradient(ellipse at bottom, #ffab00, #f44336, transparent);
+    animation-delay: 0.15s;
+}
+
+.flame-5 {
+    left: 65%; width: 22px; height: 35px;
+    background: radial-gradient(ellipse at bottom, #fff59d, #ff6d00, #d84315);
+    animation-delay: 0.25s;
+}
+
+.cooking-pot-wrap {
+    position: absolute;
+    bottom: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+.cooking-pot {
+    position: relative;
+    width: 180px;
+    height: 140px;
+}
+
+.pot-rim {
+    width: 190px;
+    height: 14px;
+    background: linear-gradient(180deg, #4a4a4a, #2a2a2a);
+    border-radius: 50%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 5;
+    border: 2px solid #555;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.pot-body {
+    width: 170px;
+    height: 110px;
+    background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 40%, #0d0d0d 100%);
+    border-radius: 5px 5px 45% 45%;
+    margin: -6px auto 0;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #444;
+    border-top: none;
+    box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pot-liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0%;
+    background: #4a7c3f;
+    border-radius: 0 0 45% 45%;
+    transition: height 1.5s ease, background-color 2s ease;
+    z-index: 1;
+}
+
+.pot-bubbles {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.pot-bubble {
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: bubble-rise 0.8s ease-out forwards;
+}
+
+.pot-handle {
+    position: absolute;
+    width: 22px;
+    height: 12px;
+    border: 3px solid #555;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    top: 8px;
+    z-index: 6;
+}
+
+.pot-handle-left { left: -18px; }
+.pot-handle-right { right: -18px; }
+
+.pot-leg {
+    position: absolute;
+    bottom: -12px;
+    width: 10px;
+    height: 14px;
+    background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+    border-radius: 0 0 3px 3px;
+    z-index: 1;
+}
+
+.pot-leg-left { left: 25px; }
+.pot-leg-right { right: 25px; }
+
+.cooking-steam {
+    position: absolute;
+    bottom: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 120px;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.steam-wisp {
+    position: absolute;
+    bottom: 0;
+    width: 12px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    animation: steam-rise 2.5s ease-out forwards;
+    filter: blur(2px);
+}
+
+.cooking-spoon {
+    position: absolute;
+    bottom: 160px;
+    right: 60px;
+    z-index: 7;
+    transform: rotate(-30deg);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    transform-origin: 85% 90%;
+}
+
+.cooking-spoon.visible {
+    opacity: 1;
+}
+
+.cooking-spoon.stirring {
+    animation: stir-spoon 1.5s ease-in-out infinite;
+}
+
+.spoon-handle {
+    width: 100px;
+    height: 8px;
+    background: linear-gradient(90deg, #a67c28, #c49a3c, #8B6914);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.spoon-bowl {
+    position: absolute;
+    right: -10px;
+    top: -8px;
+    width: 18px;
+    height: 24px;
+    background: linear-gradient(135deg, #c49a3c, #8B6914);
+    border-radius: 50%;
+    border: 2px solid #7a5a10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cooking-ingredients {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 8;
+    pointer-events: none;
+}
+
+.flying-ingredient {
+    position: absolute;
+    font-size: 2rem;
+    z-index: 8;
+    animation: ingredient-fly 0.8s ease-in forwards;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.flying-ingredient.from-left {
+    left: -60px;
+    top: 30%;
+    animation-name: ingredient-fly-left;
+}
+
+.flying-ingredient.from-right {
+    right: -60px;
+    top: 30%;
+    animation-name: ingredient-fly-right;
+}
+
+.ingredient-splash {
+    position: absolute;
+    bottom: 190px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.4), transparent);
+    animation: splash 0.4s ease-out forwards;
+    z-index: 9;
+}
+
+.cooking-flash {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(255, 255, 200, 0.9), rgba(255, 200, 50, 0.3), transparent);
+    opacity: 0;
+    z-index: 15;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.cooking-flash.active {
+    animation: flash-glow 1.2s ease-out forwards;
+}
+
+.cooking-result {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 16;
+    animation: result-pop 0.6s ease-out forwards;
+}
+
+.cooking-result.hidden {
+    display: none;
+}
+
+.cooking-result-icon {
+    font-size: 3rem;
+    margin-bottom: 0.3rem;
+}
+
+.cooking-result-text {
+    color: #ffd54f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.cooking-result-xp {
+    color: #a5d6a7;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 0.3rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.cooking-skip-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #aaa;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    z-index: 20;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+}
+
+.cooking-skip-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ddd;
+}
+
+.cooking-skip-btn.hidden {
+    display: none;
+}
+
+.cookbook-sidebar .pantry-box,
+.cookbook-sidebar .basics-box {
+    background: var(--bg-card);
+    border: 1px solid #5c3a1e;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* ── §22b  Kitchen Scene ── */
+
+/* ── Book Overlay ── */
+
+.book-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease;
+}
+
+.book-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.book-overlay-backdrop {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.book-overlay-content {
+    position: relative;
+    z-index: 1;
+    width: 95%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #1a0f08, #2a1a10);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 3px solid #5c3a1e;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    animation: book-open 0.4s ease-out;
+}
+
+.book-overlay-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #3a2010, #5c3a1e);
+    color: #e8d5b5;
+    border: 2px solid #8b6914;
+    border-radius: 8px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.book-overlay-close:hover {
+    background: linear-gradient(135deg, #5c3a1e, #8b6914);
+}
+
+/* ── Room Container ── */
+
+.kitchen-scene {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    border-radius: 16px;
+    border: 3px solid #5c3a1e;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5), 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Stone Wall ── */
+
+.ks-wall {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 22% 65%, rgba(255,140,40,0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 18% 30%, rgba(255,120,30,0.05) 0%, transparent 35%),
+        repeating-linear-gradient(0deg, transparent 0px, transparent 34px, rgba(0,0,0,0.12) 34px, rgba(0,0,0,0.12) 36px),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 72px, rgba(0,0,0,0.08) 72px, rgba(0,0,0,0.08) 74px),
+        repeating-linear-gradient(90deg, transparent 74px, transparent 146px, rgba(0,0,0,0.06) 146px, rgba(0,0,0,0.06) 148px),
+        radial-gradient(ellipse at 25% 35%, rgba(120,100,80,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 65% 55%, rgba(90,70,50,0.1) 0%, transparent 50%),
+        linear-gradient(180deg, #6b5b4a 0%, #5a4a38 30%, #4a3a2a 70%, #3d2d1d 100%);
+    z-index: 0;
+}
+
+
+/* ── Wooden Floor ── */
+
+.ks-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 27%;
+    background:
+        repeating-linear-gradient(90deg,
+            #7a5230 0px, #6b4226 25px, #7a5230 50px, #5c3a1e 75px,
+            rgba(0,0,0,0.18) 88px, rgba(0,0,0,0.08) 90px, #6b4226 90px
+        ),
+        repeating-linear-gradient(0deg,
+            transparent 0px, transparent 5px, rgba(0,0,0,0.03) 5px, rgba(0,0,0,0.03) 6px
+        ),
+        linear-gradient(180deg, #7a5230 0%, #6b4226 40%, #5c3a1e 80%, #4a2e14 100%);
+    border-top: 4px solid #8b6914;
+    z-index: 1;
+}
+
+.ks-floor::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), transparent);
+}
+
+.ks-floor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 45%;
+    height: 100%;
+    background: radial-gradient(ellipse at 30% 0%, rgba(255,140,40,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ── Ceiling ── */
+
+.ks-ceiling {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 9%;
+    background:
+        radial-gradient(ellipse at 30% 100%, rgba(255,140,40,0.14) 0%, transparent 50%),
+        linear-gradient(180deg, #1a0f08 0%, #2a1a10 60%, #3a2515 100%);
+    z-index: 1;
+}
+
+.ks-ceiling::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.3), transparent);
+}
+
+/* ── Ceiling Beams ── */
+
+.ks-beam {
+    position: absolute;
+    top: 9%;
+    height: 3.5%;
+    background: linear-gradient(180deg, #5c3a1e 0%, #3a2010 40%, #2a1508 100%);
+    border-top: 2px solid #8b6914;
+    border-bottom: 2px solid #1a0f06;
+    z-index: 2;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+.ks-beam::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(0,0,0,0.06) 80px, rgba(0,0,0,0.06) 82px);
+}
+
+.ks-beam-l  { left: 0;    width: 35%; }
+.ks-beam-c  { left: 37%;  width: 26%; }
+.ks-beam-r  { left: 65%;  width: 35%; }
+
+.ks-beam-l::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,140,40,0.06), transparent 50%);
+    pointer-events: none;
+}
+
+.ks-beam-shadow {
+    position: absolute;
+    top: 12.5%;
+    left: 0;
+    right: 0;
+    height: 4%;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), transparent);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ── Fireplace ── */
+
+.ks-fp {
+    position: absolute;
+    left: 2%;
+    bottom: 27%;
+    width: 40%;
+    height: 57%;
+    z-index: 3;
+}
+
+.ks-fp-surround {
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(0deg, transparent 0px, transparent 28px, rgba(0,0,0,0.08) 28px, rgba(0,0,0,0.08) 30px),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 55px, rgba(0,0,0,0.06) 55px, rgba(0,0,0,0.06) 57px),
+        linear-gradient(180deg, #7a6a58 0%, #6b5b48 30%, #5a4a38 70%, #4a3a28 100%);
+    border-radius: 8px 8px 0 0;
+    border: 3px solid #4a3a28;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3);
+}
+
+.ks-fp-opening {
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    bottom: 0;
+    height: 70%;
+    background: #060302;
+    border-radius: 45% 45% 0 0 / 25% 25% 0 0;
+    box-shadow: inset 0 10px 30px rgba(0,0,0,0.9), inset 0 -5px 15px rgba(255,100,20,0.05);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.ks-fp-inner {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 90%, rgba(60,20,5,0.4) 0%, rgba(10,5,2,0.8) 50%, #060302 100%);
+}
+
+.ks-fp-mantel {
+    position: absolute;
+    top: -4%;
+    left: -5%;
+    right: -5%;
+    height: 9%;
+    background: linear-gradient(180deg, #8a7a68 0%, #7a6a58 40%, #6b5b48 100%);
+    border: 2px solid #4a3a28;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+    z-index: 4;
+}
+
+.ks-fp-mantel::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    right: 4px;
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+}
+
+.ks-fp-hearth {
+    position: absolute;
+    bottom: -3%;
+    left: -8%;
+    right: -8%;
+    height: 7%;
+    background: linear-gradient(180deg, #6b5b48 0%, #5a4a38 60%, #4a3a28 100%);
+    border-radius: 3px;
+    border: 2px solid #3a2a18;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+
+/* ── Fire Glow ── */
+
+.ks-fire-glow {
+    position: absolute;
+    left: -25%;
+    top: -40%;
+    right: -25%;
+    bottom: 10%;
+    background: radial-gradient(ellipse at 50% 85%, rgba(255,150,50,0.12) 0%, rgba(255,100,30,0.05) 35%, transparent 65%);
+    pointer-events: none;
+    z-index: 5;
+    animation: ks-glow-pulse 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes ks-glow-pulse {
+    0%   { opacity: 0.7; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+/* ── Flames ── */
+
+.ks-fire {
+    position: absolute;
+    bottom: 6%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 45%;
+    z-index: 2;
+}
+
+.ks-flame {
+    position: absolute;
+    bottom: 0;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+.ks-f1 {
+    left: 25%;
+    width: 22%;
+    height: 55%;
+    background: radial-gradient(ellipse at bottom, #ffd54f, #ff9800, #f44336);
+    animation: flicker 0.4s ease-in-out infinite alternate;
+}
+.ks-f2 {
+    left: 40%;
+    width: 28%;
+    height: 70%;
+    background: radial-gradient(ellipse at bottom, #fff59d, #ffab00, #ff6d00);
+    animation: flicker 0.35s ease-in-out infinite alternate;
+    animation-delay: 0.1s;
+}
+.ks-f3 {
+    left: 55%;
+    width: 20%;
+    height: 48%;
+    background: radial-gradient(ellipse at bottom, #ffd54f, #f44336, transparent);
+    animation: flicker 0.45s ease-in-out infinite alternate;
+    animation-delay: 0.2s;
+}
+.ks-f4 {
+    left: 15%;
+    width: 16%;
+    height: 35%;
+    background: radial-gradient(ellipse at bottom, #ffab00, #f44336, transparent);
+    animation: flicker 0.38s ease-in-out infinite alternate;
+    animation-delay: 0.15s;
+}
+.ks-f5 {
+    left: 68%;
+    width: 18%;
+    height: 42%;
+    background: radial-gradient(ellipse at bottom, #fff59d, #ff6d00, #d84315);
+    animation: flicker 0.42s ease-in-out infinite alternate;
+    animation-delay: 0.25s;
+}
+
+/* ── Embers ── */
+
+.ks-embers {
+    position: absolute;
+    bottom: 2%;
+    left: 18%;
+    right: 18%;
+    height: 10%;
+    z-index: 3;
+}
+
+.ks-ember {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    animation: ks-ember-glow 1.5s ease-in-out infinite alternate;
+}
+
+.ks-e1 { left: 15%; bottom: 20%; background: #ff6d00; animation-delay: 0s; }
+.ks-e2 { left: 30%; bottom: 10%; background: #ff9800; animation-delay: 0.3s; }
+.ks-e3 { left: 50%; bottom: 30%; background: #ffd54f; animation-delay: 0.6s; }
+.ks-e4 { left: 65%; bottom: 15%; background: #ff6d00; animation-delay: 0.9s; }
+.ks-e5 { left: 80%; bottom: 25%; background: #ffab00; animation-delay: 1.2s; }
+
+@keyframes ks-ember-glow {
+    0%   { opacity: 0.4; transform: scale(0.8); }
+    50%  { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0.6; transform: scale(0.9); }
+}
+
+/* ── Cauldron ── */
+
+.ks-cauldron {
+    position: absolute;
+    left: 12%;
+    bottom: 32%;
+    width: 16%;
+    height: 18%;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.ks-cauldron:hover {
+    transform: scale(1.06);
+    filter: brightness(1.15);
+}
+
+.ks-cauldron-rim {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 108%;
+    height: 12%;
+    background: linear-gradient(180deg, #555, #333);
+    border-radius: 50%;
+    border: 2px solid #666;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 3;
+}
+
+.ks-cauldron-body {
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    right: 5%;
+    bottom: 12%;
+    background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 50%, #0d0d0d 100%);
+    border-radius: 5% 5% 45% 45%;
+    border: 2px solid #444;
+    border-top: none;
+    overflow: hidden;
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.ks-cauldron-liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0%;
+    background: #4a7c3f;
+    border-radius: 0 0 45% 45%;
+    transition: height 1s ease, background-color 2s ease;
+}
+
+.ks-cauldron-handle {
+    position: absolute;
+    width: 14%;
+    height: 30%;
+    border: 3px solid #555;
+    border-bottom: none;
+    border-radius: 50% 50% 0 0;
+    top: 5%;
+    z-index: 4;
+}
+.ks-ch-l { left: -8%; }
+.ks-ch-r { right: -8%; }
+
+.ks-cauldron-rivet {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #777, #444);
+    border-radius: 50%;
+    z-index: 5;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.2);
+}
+.ks-rv1 { top: 35%; left: 12%; }
+.ks-rv2 { top: 35%; right: 12%; }
+.ks-rv3 { top: 55%; left: 50%; transform: translateX(-50%); }
+
+.ks-cauldron.has-recipe .ks-cauldron-rim {
+    box-shadow: 0 2px 8px rgba(255,200,50,0.3);
+}
+
+.ks-cauldron.has-recipe .ks-cauldron-body {
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.5), 0 0 12px rgba(255,200,50,0.2);
+}
+
+/* ── Cauldron Stand ── */
+
+.ks-cauldron-stand {
+    position: absolute;
+    left: 8%;
+    bottom: 27%;
+    width: 24%;
+    height: 8%;
+    z-index: 9;
+}
+
+.ks-stand-leg {
+    position: absolute;
+    bottom: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #555, #333);
+    border-radius: 1px;
+}
+.ks-stand-l {
+    left: 8%;
+    transform: rotate(8deg);
+    transform-origin: top center;
+}
+.ks-stand-r {
+    right: 8%;
+    transform: rotate(-8deg);
+    transform-origin: top center;
+}
+
+.ks-stand-cross {
+    position: absolute;
+    bottom: 35%;
+    left: 15%;
+    right: 15%;
+    height: 3px;
+    background: linear-gradient(180deg, #666, #444);
+    border-radius: 1px;
+}
+
+/* ── Cauldron Label ── */
+
+.ks-cauldron-label {
+    position: absolute;
+    bottom: 22%;
+    left: 6%;
+    color: #e8d5b5;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.5);
+    z-index: 11;
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.ks-cauldron.has-recipe + .ks-cauldron-stand + .ks-cauldron-label {
+    color: #FFD54F;
+    animation: ks-label-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ks-label-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ── Window ── */
+
+.ks-window {
+    position: absolute;
+    top: 11%;
+    left: 48%;
+    width: 15%;
+    height: 27%;
+    border: 6px solid #5c3a1e;
+    border-radius: 50% 50% 2px 2px / 35% 35% 2px 2px;
+    overflow: hidden;
+    z-index: 6;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.ks-window-scene {
+    position: absolute;
+    inset: 0;
+    transition: background 1s ease;
+    z-index: 1;
+}
+
+.ks-window-scene.window-spring {
+    background: linear-gradient(180deg, #87CEEB 0%, #B2DFDB 60%, #4CAF50 100%);
+}
+.ks-window-scene.window-summer {
+    background: linear-gradient(180deg, #64B5F6 0%, #FFF9C4 60%, #66BB6A 100%);
+}
+.ks-window-scene.window-autumn {
+    background: linear-gradient(180deg, #90A4AE 0%, #FFCC80 60%, #A1887F 100%);
+}
+.ks-window-scene.window-winter {
+    background: linear-gradient(180deg, #78909C 0%, #B0BEC5 60%, #E0E0E0 100%);
+}
+
+.ks-window-scene .window-sun {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.ks-window-bar-h {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(180deg, #6b4226, #5c3a1e);
+    transform: translateY(-50%);
+    z-index: 3;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.ks-window-bar-v {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(90deg, #6b4226, #5c3a1e);
+    transform: translateX(-50%);
+    z-index: 3;
+    box-shadow: 1px 0 2px rgba(0,0,0,0.4);
+}
+
+.ks-window-sill {
+    position: absolute;
+    bottom: -8px;
+    left: -10%;
+    right: -10%;
+    height: 10px;
+    background: linear-gradient(180deg, #7a6a58, #6b5b48);
+    border-radius: 0 0 3px 3px;
+    z-index: 4;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+/* ── Shelves ── */
+
+.ks-shelf {
+    position: absolute;
+    z-index: 7;
+}
+
+.ks-shelf-upper {
+    top: 42%;
+    left: 48%;
+    width: 32%;
+    height: 8%;
+}
+
+.ks-shelf-lower {
+    top: 58%;
+    left: 48%;
+    width: 32%;
+    height: 8%;
+}
+
+.ks-shelf-board {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 7px;
+    background: linear-gradient(180deg, #8b6914, #6b4226, #5c3a1e);
+    border-radius: 0 0 2px 2px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+    z-index: 2;
+}
+
+.ks-shelf-board::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    right: 2px;
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+}
+
+.ks-shelf-bracket {
+    position: absolute;
+    bottom: 7px;
+    width: 8px;
+    height: 20px;
+    background: linear-gradient(90deg, #5c3a1e, #4a2e14);
+    z-index: 1;
+    border-radius: 0 0 2px 2px;
+}
+
+.ks-shelf-bracket::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    background: #5c3a1e;
+    border-radius: 50%;
+    left: 1px;
+}
+
+.ks-sb-l { left: 5%; }
+.ks-sb-r { right: 5%; }
+
+/* ── Jars ── */
+
+.ks-jar {
+    position: absolute;
+    bottom: 8px;
+    border-radius: 3px 3px 5px 5px;
+    z-index: 3;
+}
+
+.ks-jar-1 {
+    left: 8%;
+    width: 16px;
+    height: 24px;
+    background: linear-gradient(135deg, rgba(200,180,140,0.65), rgba(180,160,120,0.45));
+    border: 1px solid rgba(150,130,100,0.5);
+}
+.ks-jar-2 {
+    left: 22%;
+    width: 18px;
+    height: 28px;
+    background: linear-gradient(135deg, rgba(200,180,140,0.65), rgba(180,160,120,0.45));
+    border: 1px solid rgba(150,130,100,0.5);
+}
+.ks-jar-3 {
+    left: 36%;
+    width: 13px;
+    height: 20px;
+    background: linear-gradient(135deg, rgba(200,180,140,0.65), rgba(180,160,120,0.45));
+    border: 1px solid rgba(150,130,100,0.5);
+}
+.ks-jar-4 {
+    left: 45%;
+    width: 16px;
+    height: 22px;
+    background: linear-gradient(135deg, rgba(220,200,120,0.6), rgba(200,180,100,0.4));
+    border: 1px solid rgba(180,160,80,0.5);
+}
+.ks-jar-5 {
+    left: 58%;
+    width: 14px;
+    height: 24px;
+    background: linear-gradient(135deg, rgba(180,200,220,0.5), rgba(160,180,200,0.35));
+    border: 1px solid rgba(140,160,180,0.4);
+}
+
+.ks-jar-lid {
+    position: absolute;
+    top: -5px;
+    left: -2px;
+    right: -2px;
+    height: 6px;
+    background: linear-gradient(180deg, #8b6914, #6b4226);
+    border-radius: 2px 2px 0 0;
+    border: 1px solid #5c3a1e;
+}
+
+.ks-jar-lid-sm {
+    left: -1px;
+    right: -1px;
+    height: 5px;
+}
+
+.ks-jar-content {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    border-radius: 0 0 3px 3px;
+}
+
+.ks-jc-green  { height: 60%; background: linear-gradient(180deg, rgba(76,175,80,0.6), rgba(56,142,60,0.7)); }
+.ks-jc-amber  { height: 55%; background: linear-gradient(180deg, rgba(255,193,7,0.5), rgba(255,160,0,0.6)); }
+.ks-jc-red    { height: 50%; background: linear-gradient(180deg, rgba(244,67,54,0.5), rgba(211,47,47,0.6)); }
+.ks-jc-gold   { height: 65%; background: linear-gradient(180deg, rgba(255,215,0,0.6), rgba(255,180,0,0.7)); }
+.ks-jc-clear  { height: 40%; background: linear-gradient(180deg, rgba(200,220,240,0.3), rgba(180,200,220,0.4)); }
+
+/* ── Iron Pot ── */
+
+.ks-pot-iron {
+    position: absolute;
+    bottom: 8px;
+    right: 10%;
+    width: 22px;
+    height: 18px;
+    background: linear-gradient(180deg, #4a4a4a, #2a2a2a);
+    border-radius: 3px 3px 40% 40%;
+    border: 1px solid #555;
+    z-index: 3;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.4);
+}
+
+.ks-pot-iron::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -3px;
+    right: -3px;
+    height: 4px;
+    background: linear-gradient(180deg, #555, #3a3a3a);
+    border-radius: 2px;
+}
+
+.ks-pot-iron::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: -6px;
+    width: 8px;
+    height: 4px;
+    border: 2px solid #555;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+}
+
+/* ── Book ── */
+
+.ks-book {
+    position: absolute;
+    bottom: 8px;
+    left: 5%;
+    display: flex;
+    align-items: stretch;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    z-index: 4;
+}
+
+.ks-book:hover {
+    transform: scale(1.1) translateY(-2px);
+    filter: brightness(1.2);
+}
+
+.ks-book-spine {
+    width: 8px;
+    background: linear-gradient(90deg, #2a1508, #5c3a1e 40%, #3a2010 60%, #2a1508);
+    border-radius: 3px 0 0 3px;
+    box-shadow: inset -3px 0 6px rgba(0,0,0,0.3);
+}
+
+.ks-book-cover {
+    width: 42px;
+    height: 54px;
+    background: linear-gradient(135deg, #6b4226, #8b6914, #5c3a1e);
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    border: 1px solid #a67c28;
+}
+
+.ks-book-title {
+    color: #f4e8d1;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* ── Bowl ── */
+
+.ks-bowl {
+    position: absolute;
+    bottom: 8px;
+    right: 20%;
+    width: 22px;
+    height: 12px;
+    background: linear-gradient(180deg, #a67c28, #8b6914);
+    border-radius: 50%;
+    border: 1px solid #6b4226;
+    z-index: 3;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+}
+
+.ks-bowl::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    right: 3px;
+    height: 4px;
+    background: rgba(139,105,20,0.3);
+    border-radius: 50%;
+}
+
+/* ── Herb Rafters ── */
+
+.ks-herbs {
+    position: absolute;
+    top: 13%;
+    left: 0;
+    right: 0;
+    height: 18%;
+    z-index: 8;
+    pointer-events: none;
+}
+
+.ks-herb {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ks-herb-1 { left: 20%; }
+.ks-herb-2 { left: 42%; }
+.ks-herb-3 { left: 62%; }
+.ks-herb-4 { left: 82%; }
+
+.ks-herb-string {
+    width: 2px;
+    height: 18px;
+    background: linear-gradient(180deg, #8b6914, #a67c28, #8b6914);
+    opacity: 0.7;
+}
+
+.ks-herb-bundle {
+    position: relative;
+    width: 20px;
+    height: 24px;
+    animation: ks-herb-sway 3s ease-in-out infinite;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
+}
+
+.ks-herb-bundle::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 4px;
+    background: linear-gradient(180deg, #a67c28, #8b6914);
+    border-radius: 2px;
+    z-index: 2;
+}
+
+.ks-herb-bundle::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    width: 6px;
+    height: 5px;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(15deg);
+}
+
+/* Sage */
+.ks-herb-1 .ks-herb-bundle {
+    background: radial-gradient(ellipse at 50% 55%, #8a9a6a 0%, #6a7a4a 50%, #5a6a3a 100%);
+    border-radius: 40% 40% 50% 50%;
+}
+.ks-herb-1 .ks-herb-bundle::after {
+    left: 3px;
+    background: #7a8a5a;
+}
+
+/* Bay */
+.ks-herb-2 .ks-herb-bundle {
+    background: radial-gradient(ellipse at 50% 55%, #5a8a3a 0%, #3a6a2a 50%, #2a5a1a 100%);
+    border-radius: 30% 30% 50% 50%;
+}
+.ks-herb-2 .ks-herb-bundle::after {
+    left: 5px;
+    background: #4a7a2a;
+    border-radius: 50% 0 50% 0;
+}
+
+/* Thyme */
+.ks-herb-3 .ks-herb-bundle {
+    width: 16px;
+    height: 20px;
+    background: radial-gradient(ellipse at 50% 55%, #9aaa7a 0%, #7a8a5a 50%, #6a7a4a 100%);
+    border-radius: 45% 45% 50% 50%;
+}
+.ks-herb-3 .ks-herb-bundle::after {
+    left: 2px;
+    width: 5px;
+    height: 4px;
+    background: #8a9a6a;
+}
+
+/* Rosemary */
+.ks-herb-4 .ks-herb-bundle {
+    width: 14px;
+    height: 22px;
+    background: radial-gradient(ellipse at 50% 55%, #4a7a5a 0%, #3a6a4a 50%, #2a5a3a 100%);
+    border-radius: 25% 25% 50% 50%;
+}
+.ks-herb-4 .ks-herb-bundle::after {
+    left: 3px;
+    width: 4px;
+    height: 6px;
+    background: #3a6a4a;
+    border-radius: 50% 0 50% 0;
+}
+
+.ks-herb-1 .ks-herb-bundle { animation-delay: 0s; }
+.ks-herb-2 .ks-herb-bundle { animation-delay: 0.8s; }
+.ks-herb-3 .ks-herb-bundle { animation-delay: 1.5s; }
+.ks-herb-4 .ks-herb-bundle { animation-delay: 2.2s; }
+
+@keyframes ks-herb-sway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+}
+
+/* ── Larder ── */
+
+.ks-larder {
+    position: absolute;
+    right: 2%;
+    bottom: 27%;
+    width: 14%;
+    height: 38%;
+    cursor: pointer;
+    z-index: 6;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.ks-larder:hover {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+}
+
+.ks-larder-door {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #6b4226 0%, #5c3a1e 40%, #4a2e14 100%);
+    border: 3px solid #4a2e14;
+    border-radius: 4px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.3), 2px 2px 8px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+.ks-larder-plank {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    height: 1px;
+    background: rgba(0,0,0,0.2);
+    box-shadow: 0 0 2px rgba(0,0,0,0.15);
+}
+.ks-lp1 { top: 25%; }
+.ks-lp2 { top: 50%; }
+.ks-lp3 { top: 75%; }
+
+.ks-larder-handle {
+    position: absolute;
+    right: 12%;
+    top: 45%;
+    width: 6px;
+    height: 14px;
+    background: linear-gradient(180deg, #a67c28, #8b6914);
+    border-radius: 3px;
+    border: 1px solid #6b4226;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+}
+
+.ks-larder-handle::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #a67c28;
+    border-radius: 50%;
+    border: 1px solid #6b4226;
+}
+
+.ks-larder-label {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #e8d5b5;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    white-space: nowrap;
+}
+
+/* ── Selected Recipe ── */
+
+.ks-selected-recipe {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(74, 124, 63, 0.9);
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    padding: 0.4rem 1rem;
+    color: #f4e8d1;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    z-index: 15;
+    text-align: center;
+    max-width: 200px;
+    display: none;
+    white-space: nowrap;
+}
+
+.ks-selected-recipe.visible {
+    display: block;
+    animation: vl-recipe-pulse 2s ease-in-out infinite;
+}
+
+/* ── Hanging Pot ── */
+
+.ks-hook {
+    position: absolute;
+    top: 12.5%;
+    left: 36%;
+    width: 3px;
+    z-index: 8;
+}
+
+.ks-hook-chain {
+    width: 2px;
+    height: 30px;
+    background: repeating-linear-gradient(180deg, #666 0px, #666 3px, #555 3px, #555 6px);
+    margin: 0 auto;
+}
+
+.ks-hook-pot {
+    width: 16px;
+    height: 12px;
+    background: linear-gradient(180deg, #4a4a4a, #2a2a2a);
+    border-radius: 2px 2px 40% 40%;
+    border: 1px solid #555;
+    margin: 0 auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.ks-hook-pot::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 3px;
+    background: #555;
+    border-radius: 2px;
+    margin: 0 auto -1px;
+}
+
+/* ── Soot stain above fireplace ── */
+
+.ks-soot {
+    position: absolute;
+    top: -8%;
+    left: 10%;
+    right: 10%;
+    height: 25%;
+    background: radial-gradient(ellipse at 50% 100%, rgba(15,8,3,0.5) 0%, rgba(25,12,5,0.2) 40%, transparent 70%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ── Candle on shelf ── */
+
+.ks-candle {
+    position: absolute;
+    bottom: 8px;
+    right: 28%;
+    z-index: 4;
+}
+
+.ks-candle-body {
+    width: 7px;
+    height: 20px;
+    background: linear-gradient(180deg, #f5e6c8, #e8d5b5, #d4c4a0);
+    border-radius: 2px 2px 1px 1px;
+    border: 1px solid rgba(139,105,20,0.3);
+    margin: 0 auto;
+}
+
+.ks-candle-wick {
+    width: 1px;
+    height: 3px;
+    background: #333;
+    margin: 0 auto;
+}
+
+.ks-candle-flame {
+    width: 5px;
+    height: 8px;
+    background: radial-gradient(ellipse at bottom, #fff59d, #ff9800, #f44336);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    margin: -1px auto 0;
+    animation: flicker 0.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 3px rgba(255,150,50,0.5));
+}
+
+.ks-candle-holder {
+    width: 11px;
+    height: 4px;
+    background: linear-gradient(180deg, #8b6914, #6b4226);
+    border-radius: 1px;
+    margin: 0 auto;
+}
+
+.ks-candle-glow {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, rgba(255,150,50,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    animation: ks-firelight 2s ease-in-out infinite alternate;
+}
+
+/* ── Barrel ── */
+
+.ks-barrel {
+    position: absolute;
+    right: 16.5%;
+    bottom: 27.5%;
+    width: 28px;
+    height: 34px;
+    background:
+        repeating-linear-gradient(0deg, transparent 0px, transparent 5px, rgba(0,0,0,0.08) 5px, rgba(0,0,0,0.08) 6px),
+        linear-gradient(90deg, #5c3a1e 0%, #7a5230 25%, #6b4226 50%, #7a5230 75%, #5c3a1e 100%);
+    border-radius: 3px;
+    border: 2px solid #4a2e14;
+    z-index: 6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.ks-barrel::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: -1px;
+    right: -1px;
+    height: 3px;
+    background: linear-gradient(180deg, #999, #777, #999);
+    border-radius: 1px;
+}
+
+.ks-barrel::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: -1px;
+    right: -1px;
+    height: 3px;
+    background: linear-gradient(180deg, #999, #777, #999);
+    border-radius: 1px;
+}
+
+/* ── Dust motes in firelight ── */
+
+.ks-dust {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.ks-mote {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 220, 150, 0.35);
+    border-radius: 50%;
+    animation: ks-mote-float 10s ease-in-out infinite;
+}
+
+.ks-m1 { left: 15%; top: 20%; animation-delay: 0s; animation-duration: 12s; }
+.ks-m2 { left: 25%; top: 35%; animation-delay: 2s; animation-duration: 10s; }
+.ks-m3 { left: 35%; top: 15%; animation-delay: 4s; animation-duration: 14s; }
+.ks-m4 { left: 20%; top: 50%; animation-delay: 1s; animation-duration: 11s; }
+.ks-m5 { left: 30%; top: 25%; animation-delay: 3s; animation-duration: 13s; }
+.ks-m6 { left: 12%; top: 40%; animation-delay: 5s; animation-duration: 9s; }
+.ks-m7 { left: 40%; top: 30%; animation-delay: 2.5s; animation-duration: 15s; }
+
+@keyframes ks-mote-float {
+    0% { transform: translate(0, 0); opacity: 0; }
+    10% { opacity: 0.5; }
+    50% { transform: translate(15px, -20px); opacity: 0.3; }
+    90% { opacity: 0.15; }
+    100% { transform: translate(30px, -40px); opacity: 0; }
+}
+
+/* ── Firelight flicker on wall ── */
+
+@keyframes ks-firelight {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.85; }
+}
+
+/* ── Kitchen Scene Responsive ── */
+
+@media (max-width: 700px) {
+    .kitchen-scene {
+        height: 380px;
+    }
+
+    .ks-book-cover {
+        width: 36px;
+        height: 46px;
+    }
+
+    .ks-book-title {
+        font-size: 0.5rem;
+    }
+
+    .ks-jar-1, .ks-jar-2, .ks-jar-3,
+    .ks-jar-4, .ks-jar-5 {
+        transform: scale(0.85);
+    }
+
+    .ks-larder-label {
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .kitchen-scene {
+        height: 340px;
+    }
+
+    .ks-flame {
+        transform: scale(0.8);
+    }
+
+    .ks-cauldron-label {
+        font-size: 0.7rem;
+    }
+}
+
+/* ── Pantry Overlay ── */
+
+.pantry-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.pantry-overlay:not(.hidden) {
+    opacity: 1;
+}
+
+.pantry-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pantry-overlay-backdrop {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.pantry-overlay-content {
+    position: relative;
+    z-index: 1;
+    width: 90%;
+    max-width: 440px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #1a0f08, #2a1a10);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 3px solid #5c3a1e;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    animation: book-open 0.3s ease-out;
+}
+
+.pantry-overlay-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #3a2010, #5c3a1e);
+    color: #e8d5b5;
+    border: 2px solid #8b6914;
+    border-radius: 8px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.pantry-overlay-close:hover {
+    background: linear-gradient(135deg, #5c3a1e, #8b6914);
+}
+
+.pantry-overlay-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.5rem;
+    color: #e8d5b5;
+    margin-bottom: 1rem;
+    padding-right: 5rem;
+}
+
+.pantry-overlay-list {
+    margin-bottom: 1rem;
+}
+
+.pantry-popup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid #3a2a1a;
+    color: #e8d5b5;
+    font-size: 0.9rem;
+}
+
+.pantry-popup-row:last-child {
+    border-bottom: none;
+}
+
+.pantry-popup-row span:first-child {
+    color: #e8d5b5;
+}
+
+.pantry-popup-row span:last-child {
+    color: #a67c28;
+    font-weight: 600;
+}
+
+.pantry-overlay-basics {
+    border-top: 1px solid #3a2a1a;
+    padding-top: 0.8rem;
+}
+
+.pantry-basics-title {
+    color: #8b6914;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+}
+
+.pantry-basics-list {
+    color: #8b7355;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+
+
+/* ── §23  Eco-Village Season Themes ── */
+
+#eco-village.season-spring {
+    --season-tint: rgba(102, 187, 106, 0.08);
+    --season-glow: #66BB6A;
+    --season-grad: linear-gradient(180deg, rgba(102, 187, 106, 0.06) 0%, transparent 40%);
+}
+
+#eco-village.season-summer {
+    --season-tint: rgba(255, 167, 38, 0.08);
+    --season-glow: #FFA726;
+    --season-grad: linear-gradient(180deg, rgba(255, 167, 38, 0.06) 0%, transparent 40%);
+}
+
+#eco-village.season-autumn {
+    --season-tint: rgba(239, 108, 0, 0.08);
+    --season-glow: #EF6C00;
+    --season-grad: linear-gradient(180deg, rgba(239, 108, 0, 0.06) 0%, transparent 40%);
+}
+
+#eco-village.season-winter {
+    --season-tint: rgba(66, 165, 245, 0.1);
+    --season-glow: #42A5F5;
+    --season-grad: linear-gradient(180deg, rgba(66, 165, 245, 0.08) 0%, transparent 40%);
+}
+
+#eco-village.season-spring,
+#eco-village.season-summer,
+#eco-village.season-autumn,
+#eco-village.season-winter {
+    background: var(--season-grad);
+    border-radius: 16px;
+    padding: 1.5rem 1rem 3rem;
+    position: relative;
+}
+
+
+#eco-village.season-spring .season-bar {
+    border-color: #66BB6A;
+    background: linear-gradient(135deg, #1a0f08, #1a4a1a);
+}
+
+#eco-village.season-summer .season-bar {
+    border-color: #FFA726;
+    background: linear-gradient(135deg, #2a1a00, #3d2a00);
+}
+
+#eco-village.season-autumn .season-bar {
+    border-color: #EF6C00;
+    background: linear-gradient(135deg, #2a1500, #3d2000);
+}
+
+#eco-village.season-winter .season-bar {
+    border-color: #42A5F5;
+    background: linear-gradient(135deg, #0a1a2e, #1a2a3e);
+}
+
+.season-spring .tile-season-overlay {
+    background: linear-gradient(180deg, rgba(255, 183, 197, 0.08) 0%, transparent 50%);
+}
+
+.season-summer .tile-season-overlay {
+    background: linear-gradient(180deg, rgba(255, 235, 59, 0.06) 0%, transparent 50%);
+}
+
+.season-autumn .tile-season-overlay {
+    background: linear-gradient(180deg, rgba(255, 152, 0, 0.08) 0%, transparent 50%);
+}
+
+.season-winter .tile-season-overlay {
+    background: linear-gradient(180deg, rgba(200, 230, 255, 0.15) 0%, transparent 50%);
+}
+
+
+/* ── §24  Eco-Village Visual Enhancements ── */
+
+.ev-particles {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+
+.petal-particle {
+    position: absolute;
+    font-size: 0.8rem;
+    animation: petal-fall linear infinite;
+    opacity: 0.7;
+}
+
+.leaf-particle {
+    position: absolute;
+    font-size: 1rem;
+    animation: leaf-fall linear infinite;
+    opacity: 0.6;
+}
+
+.snowflake-particle {
+    position: absolute;
+    font-size: 0.7rem;
+    animation: snow-fall linear infinite;
+    opacity: 0.8;
+}
+
+.firefly-particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #FFD54F;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #FFD54F, 0 0 12px rgba(255, 213, 79, 0.3);
+    animation: firefly-float ease-in-out infinite;
+}
+
+.ev-day-transition {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 100;
+    border-radius: 16px;
+    animation: day-fade 1.5s ease-out forwards;
+}
+
+.ev-day-transition.hidden {
+    display: none;
+}
+
+.ev-day-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.ev-day-text {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    font-weight: 700;
+}
+
+.ev-day-sub {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+#eco-village .sub-tab-content {
+    position: relative;
+    z-index: 1;
+}
+
+#eco-village > .game-header,
+#eco-village > .htp-section,
+#eco-village > .stats-row,
+#eco-village > .season-bar,
+#eco-village > .warning-box,
+#eco-village > .sub-tabs,
+#eco-village > .sub-tab-content,
+#eco-village > .game-divider,
+#eco-village > .achievements-section {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* ── §25  Responsive ── */
+
+@media (max-width: 800px) {
+    .cookbook-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .book-spine {
+        width: 16px;
+    }
+
+    .book-page {
+        padding: 1.2rem 1rem;
+        min-height: 360px;
+        max-height: 450px;
+    }
+
+    .recipe-page-name {
+        font-size: 1.3rem;
+    }
+
+    .cooking-scene {
+        width: 300px;
+        height: 420px;
+    }
+
+    .cooking-pot {
+        width: 140px;
+        height: 110px;
+    }
+
+    .pot-rim {
+        width: 150px;
+    }
+
+    .pot-body {
+        width: 135px;
+        height: 85px;
+    }
+
+    .cooking-fire {
+        width: 110px;
+    }
+
+    .flame-1, .flame-2, .flame-3, .flame-4, .flame-5 {
+        transform: scale(0.7);
+    }
+
+    .spoon-handle {
+        width: 80px;
+    }
+}
+
+@media (max-width: 700px) {
+    .market-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .kitchen-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .village-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.2rem;
+    }
+
+    .tile {
+        min-height: 70px;
+        padding: 0.2rem;
+    }
+
+    .tile .tile-icon {
+        font-size: 1.1rem;
+    }
+
+    .tile .tile-label {
+        font-size: 0.55rem;
+    }
+
+    .build-panel {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tab-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+    }
+
+    .stats-row {
+        gap: 0.4rem;
+    }
+
+    .stat-box {
+        padding: 0.4rem 0.5rem;
+        min-width: 65px;
+    }
+
+    .stat-box .stat-value {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .book-page {
+        padding: 1rem 0.8rem;
+        min-height: 340px;
+    }
+
+    .chapter-title {
+        font-size: 1.4rem;
+    }
+
+    .recipe-page-name {
+        font-size: 1.2rem;
+    }
+
+    .recipe-page-icon {
+        font-size: 1.8rem;
+    }
+
+    .cooking-scene {
+        width: 260px;
+        height: 380px;
+    }
+}
+
+/* ── §26  Village View (Suikoden-Style Landscape) ── */
+
+.village-landscape {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 420px;
+    max-height: 600px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid #5c3a1e;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    background-color: #2E7D32;
+}
+
+.season-summer .village-landscape { background-color: #1B5E20; }
+.season-autumn .village-landscape { background-color: #795548; }
+.season-winter .village-landscape { background-color: #9E9E9E; }
+
+/* ── Sky ── */
+
+.vl-sky {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 45%;
+    z-index: 1;
+    transition: background 1s ease;
+    padding-bottom: 4px;
+}
+
+.season-spring .vl-sky {
+    background: linear-gradient(180deg, #87CEEB 0%, #B2DFDB 70%, #C8E6C9 100%);
+}
+.season-summer .vl-sky {
+    background: linear-gradient(180deg, #4FC3F7 0%, #81D4FA 50%, #FFF9C4 100%);
+}
+.season-autumn .vl-sky {
+    background: linear-gradient(180deg, #90A4AE 0%, #FFCC80 60%, #BCAAA4 100%);
+}
+.season-winter .vl-sky {
+    background: linear-gradient(180deg, #78909C 0%, #B0BEC5 50%, #CFD8DC 100%);
+}
+
+.vl-sun {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    font-size: 2.5rem;
+    z-index: 2;
+    filter: drop-shadow(0 0 12px rgba(255, 235, 59, 0.5));
+    transition: all 1s ease;
+}
+
+.vl-cloud {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.6;
+    z-index: 2;
+    animation: vl-cloud-drift linear infinite;
+}
+
+/* ── Hills ── */
+
+.vl-hills-svg {
+    position: absolute;
+    top: 20%;
+    left: 0; right: 0;
+    height: 35%;
+    width: 100%;
+    z-index: 3;
+    pointer-events: none;
+    margin-bottom: -6px;
+}
+
+/* ── Meadow ── */
+
+.vl-meadow {
+    position: absolute;
+    top: 36%; left: 0; right: 0; bottom: 0;
+    z-index: 4;
+    transition: background 1s ease;
+    margin-top: -4px;
+}
+
+.season-spring .vl-meadow { background: linear-gradient(180deg, #66BB6A 0%, #4CAF50 30%, #388E3C 100%); }
+.season-summer .vl-meadow { background: linear-gradient(180deg, #43A047 0%, #2E7D32 40%, #1B5E20 100%); }
+.season-autumn .vl-meadow { background: linear-gradient(180deg, #C0A050 0%, #A1887F 40%, #795548 100%); }
+.season-winter .vl-meadow { background: linear-gradient(180deg, #E0E0E0 0%, #BDBDBD 40%, #9E9E9E 100%); }
+
+/* ── River ── */
+
+.vl-river-svg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.vl-river-svg path:first-child {
+    animation: vl-river-shimmer 3s ease-in-out infinite;
+}
+
+.vl-river-svg path:last-child {
+    animation: vl-river-shimmer 3s ease-in-out infinite;
+    animation-delay: 1.5s;
+}
+
+@keyframes vl-river-shimmer {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.65; }
+}
+
+.vl-river-flow {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 7;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 18px,
+        rgba(255, 255, 255, 0.08) 18px,
+        rgba(255, 255, 255, 0.08) 20px
+    );
+    animation: vl-river-scroll 2.5s linear infinite;
+    clip-path: inset(40% 0 0 0);
+}
+
+/* ── Plots ── */
+
+.vl-plots {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.vl-plot {
+    position: absolute;
+    z-index: 10;
+    pointer-events: auto;
+    transition: all 0.5s ease;
+    text-align: center;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+.vl-plot:hover {
+    filter: brightness(1.15);
+}
+
+.vl-plot-pop {
+    animation: vl-building-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.vl-plot-tree {
+    opacity: 0.85;
+}
+
+.vl-plot-tree:hover {
+    opacity: 1;
+}
+
+.vl-tree-cluster {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.vl-tree-cluster .tree-svg:first-child {
+    width: 18px;
+    height: 32px;
+}
+
+.vl-tree-cluster .tree-svg:nth-child(2) {
+    width: 26px;
+    height: 44px;
+}
+
+.vl-tree-cluster .tree-svg:nth-child(3) {
+    width: 16px;
+    height: 28px;
+}
+
+.vl-plot-building {
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+}
+
+.building-svg {
+    display: block;
+    width: 70px;
+    height: 70px;
+    border: none;
+    outline: none;
+}
+
+.tree-svg {
+    display: block;
+}
+
+/* ── Building Labels ── */
+
+.vl-building-label {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 15;
+}
+
+.vl-building-label.damaged {
+    background: rgba(244, 67, 54, 0.9);
+    border: 1px solid #f44336;
+}
+
+/* ── Damage Overlay ── */
+
+.vl-damage-overlay {
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border: 2px dashed #f44336;
+    border-radius: 8px;
+    z-index: 15;
+    pointer-events: none;
+    animation: vl-damage-pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Smoke ── */
+
+.vl-smoke-container {
+    position: absolute;
+    z-index: 12;
+    pointer-events: none;
+}
+
+.vl-smoke-puff {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(200, 200, 200, 0.4);
+    border-radius: 50%;
+    animation: vl-smoke 3s ease-out infinite;
+}
+
+/* ── Chickens ── */
+
+.vl-chicken {
+    position: absolute;
+    font-size: 0.9rem;
+    z-index: 14;
+    pointer-events: none;
+    animation: vl-chicken-peck 4s ease-in-out infinite;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* ── Wildflowers (spring) ── */
+
+.vl-wildflowers {
+    position: absolute;
+    bottom: 10%; left: 0; right: 0;
+    height: 30px;
+    z-index: 9;
+    pointer-events: none;
+    background:
+        radial-gradient(circle 3px at 15% 70%, #F8BBD0 60%, transparent 60%),
+        radial-gradient(circle 3px at 25% 50%, #FFF59D 60%, transparent 60%),
+        radial-gradient(circle 3px at 40% 80%, #F8BBD0 60%, transparent 60%),
+        radial-gradient(circle 3px at 55% 40%, #FFF59D 60%, transparent 60%),
+        radial-gradient(circle 3px at 70% 70%, #F8BBD0 60%, transparent 60%),
+        radial-gradient(circle 3px at 85% 55%, #FFF59D 60%, transparent 60%),
+        radial-gradient(circle 3px at 92% 75%, #F8BBD0 60%, transparent 60%);
+    opacity: 0.6;
+}
+
+/* ── Foreground ── */
+
+.vl-foreground {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 12%;
+    z-index: 11;
+    pointer-events: none;
+    transition: background 1s ease;
+    margin-top: -4px;
+}
+
+.season-spring .vl-foreground { background: linear-gradient(180deg, transparent, rgba(56, 142, 60, 0.3)); }
+.season-summer .vl-foreground { background: linear-gradient(180deg, transparent, rgba(27, 94, 32, 0.25)); }
+.season-autumn .vl-foreground { background: linear-gradient(180deg, transparent, rgba(121, 85, 72, 0.25)); }
+.season-winter .vl-foreground { background: linear-gradient(180deg, transparent, rgba(176, 190, 197, 0.25)); }
+
+/* ── Keep old village-scene as fallback ── */
+
+.village-scene {
+    position: relative;
+    width: 100%;
+    min-height: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid #5c3a1e;
+    margin-bottom: 1rem;
+}
+
+.village-damage-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #f44336;
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    z-index: 10;
+}
+
+/* ── Sticky End Day Button ── */
+
+.end-day-sticky {
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+    background: linear-gradient(180deg, transparent, var(--bg-deep, #0a0f0a) 30%);
+    padding: 0.8rem 0 1rem;
+    margin-top: -2rem;
+}
+
+.end-day-sticky .btn-primary {
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 16px rgba(76, 175, 80, 0.2);
+}
+
+/* ── Barn Storage stat box ── */
+
+.stat-box.barn {
+    background: linear-gradient(135deg, #2a1a0a, #3d2a1a);
+    border: 2px solid #8B6914;
+}
+
+.stat-box.barn .stat-label {
+    color: #D4A017;
+}
+
+
+/* ── §28  Weather Badge ── */
+
+.weather-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.weather-sunny { background: rgba(255, 193, 7, 0.2); color: #FFD54F; }
+.weather-rainy { background: rgba(33, 150, 243, 0.2); color: #90CAF9; }
+.weather-stormy { background: rgba(156, 39, 176, 0.2); color: #CE93D8; }
+.weather-drought { background: rgba(255, 87, 34, 0.2); color: #FF8A65; }
+.weather-cold-snap { background: rgba(100, 181, 246, 0.2); color: #81D4FA; }
+.weather-snowy { background: rgba(224, 224, 224, 0.2); color: #E0E0E0; }
+.weather-windy { background: rgba(178, 235, 242, 0.2); color: #B2EBF2; }
+
+/* ── §29  Day Summary Log ── */
+
+.day-log {
+    margin-top: 0.8rem;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #5c3a1e rgba(0,0,0,0.2);
+}
+
+.day-log-entry {
+    padding: 0.15rem 0;
+    font-size: 0.8rem;
+    color: var(--cream-dim);
+    line-height: 1.4;
+}
+
+.day-log-entry.positive { color: #66BB6A; }
+.day-log-entry.negative { color: #EF5350; }
+.day-log-entry.weather { color: #90CAF9; }
+.day-log-event { color: #FFD54F; font-size: 0.85rem; font-weight: 600; margin-top: 0.3rem; }
+
+/* ── §30  Bulk Action Buttons ── */
+
+.bulk-actions {
+    display: flex;
+    gap: 0.3rem;
+    margin-bottom: 0.3rem;
+    flex-wrap: wrap;
+}
+
+.bulk-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.72rem;
+    border-radius: 4px;
+    border: 1px solid #3d5a3d;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--cream-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.bulk-btn:hover {
+    background: rgba(196, 154, 60, 0.2);
+    border-color: var(--amber);
+    color: var(--cream);
+}
+
+.bulk-btn.danger { border-color: #5a2020; }
+.bulk-btn.danger:hover { background: rgba(239, 83, 80, 0.2); border-color: #EF5350; color: #EF5350; }
+
+/* ── §31  Achievement Card Updates ── */
+
+.achievement-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: var(--bg-card);
+    transition: all 0.2s;
+    gap: 0.5rem;
+}
+
+.achievement-card.unlocked {
+    border-color: var(--green-leaf);
+    background: linear-gradient(135deg, #0a2a0a, #1a3d1a);
+}
+
+.ach-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ach-icon { font-size: 1.1rem; }
+.ach-name { font-weight: 600; font-size: 0.9rem; }
+.ach-desc { font-size: 0.78rem; color: var(--cream-dim); }
+.ach-progress { font-size: 0.75rem; color: var(--amber); white-space: nowrap; }

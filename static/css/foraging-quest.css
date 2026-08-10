@@ -1,0 +1,2112 @@
+/* ═══════════════════════════════════════════════════════════════
+   ROCEN HOMESTEADY — FORAGING-QUEST.CSS
+   Styles specific to the Foraging Quest game
+   ═══════════════════════════════════════════════════════════════
+
+   Requires games.css to be loaded first.
+
+   TABLE OF CONTENTS
+   ────────────────
+   1.  Page & Hero
+   2.  Loading
+   3.  How to Play & Safety
+   4.  Scenario Grid
+   5.  Intro Screen
+   6.  Top Bar & Badges
+   7.  Location Bar
+   8.  Resource Bars
+   9.  Hours Bar
+   10. Narrative Box
+   11. Action Grid (incl. Use Item)
+   12. Foraging Challenge
+   13. Foraging Result
+   14. Events (incl. Wildlife & Injury Choices)
+   15. Action Result
+   16. Day End
+   17. Discovery
+   18. Inventory (incl. Consumable Items)
+   19. Bottom Actions
+   20. Overlays & Menu
+   21. Journal (incl. Achievements)
+   22. Game Over (incl. Mythic Ending)
+   23. Toast & Achievement Toast
+   24. Injury Display (incl. Panel & Severity Tags)
+   25. Weather & Atmosphere
+   26. Special Effects
+   27. Keyframe Animations
+   28. FQ Responsive
+   29. Overlay Screens
+   30. Game Screen Polish
+   31. SURVIVAL STORY
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════════════
+   1. PAGE & HERO
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.fq-screen.hidden,
+.fq-panel.hidden,
+.fq-overlay.hidden,
+.hidden {
+    display: none !important;
+}
+
+.fq-screen.active { display: block !important; animation: fqFadeIn 0.4s ease; }
+
+
+.fq-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 2.2rem;
+    color: var(--cream);
+    text-align: center;
+    margin-bottom: 0.3rem;
+}
+
+.fq-subtitle {
+    color: var(--cream-dim);
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.fq-section-title {
+    color: var(--green-light);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.3rem;
+    text-align: center;
+    margin: 1.5rem 0 1rem;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   2. LOADING
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-loading-box { text-align: center; padding: 4rem 1rem; }
+.fq-loading-icon { font-size: 3rem; margin-bottom: 1rem; animation: fqPulse 2s ease infinite; }
+.fq-loading-box h2 { font-family: 'Crimson Text', Georgia, serif; color: var(--cream); font-size: 1.8rem; margin-bottom: 0.5rem; }
+.fq-loading-text { color: var(--cream-dim); font-size: 0.95rem; margin-bottom: 1.5rem; }
+.fq-loading-bar { height: 6px; background: #1a2e1a; border-radius: 3px; max-width: 200px; margin: 0 auto; overflow: hidden; }
+.fq-loading-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green-leaf), var(--green-light)); border-radius: 3px; animation: fqLoading 1.5s ease infinite; width: 30%; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   3. HOW TO PLAY & SAFETY
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-how-to {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.fq-how-to summary {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--green-light);
+    font-size: 0.95rem;
+}
+
+.fq-how-to-content {
+    padding: 0 1rem 1rem;
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.fq-how-to-content ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+.fq-how-to-content li { margin-bottom: 0.5rem; }
+.fq-how-to-content strong { color: var(--cream); }
+
+.fq-safety-note {
+    background: linear-gradient(135deg, #2a1010, #3d1515);
+    border: 2px solid var(--danger);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+.fq-safety-note h3 { color: var(--danger); font-family: 'Crimson Text', Georgia, serif; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.fq-safety-note p { color: var(--cream-dim); font-size: 0.85rem; line-height: 1.5; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   4. SCENARIO GRID
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 600px) {
+    .fq-scenario-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+.fq-scenario-card {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+    border-radius: 14px;
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+.fq-scenario-card:hover {
+    border-color: var(--green-light);
+    background: #1a2e1a;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(76,175,80,0.2);
+}
+
+.fq-scenario-card:active { transform: translateY(0); }
+
+.fq-scenario-card.fq-diff-2 { border-color: var(--amber-dark); }
+.fq-scenario-card.fq-diff-2:hover { border-color: var(--amber); box-shadow: 0 6px 20px rgba(255,193,7,0.2); }
+.fq-scenario-card.fq-diff-3 { border-color: #c62828; }
+.fq-scenario-card.fq-diff-3:hover { border-color: #ef5350; box-shadow: 0 6px 20px rgba(239,83,80,0.2); }
+
+.fq-scenario-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+.fq-scenario-name { font-family: 'Crimson Text', Georgia, serif; font-size: 1.3rem; color: var(--cream); margin-bottom: 0.3rem; }
+.fq-scenario-diff { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; }
+.fq-scenario-diff.diff-1 { color: #66BB6A; }
+.fq-scenario-diff.diff-2 { color: #FFC107; }
+.fq-scenario-diff.diff-3 { color: #EF5350; }
+.fq-scenario-desc { font-size: 0.85rem; color: var(--cream-dim); line-height: 1.4; margin-bottom: 0.8rem; }
+
+.fq-scenario-starting {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    justify-content: center;
+}
+
+.fq-scenario-stat {
+    font-size: 0.75rem;
+    background: #1a2e1a;
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    color: var(--cream-dim);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   5. INTRO SCREEN
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-intro-header { text-align: center; margin-bottom: 1.5rem; }
+.fq-scenario-icon-large { font-size: 3.5rem; display: block; margin-bottom: 0.5rem; }
+.fq-intro-header h2 { font-family: 'Crimson Text', Georgia, serif; font-size: 2rem; color: var(--cream); margin: 0; }
+.fq-tagline { color: var(--cream-dim); font-size: 0.9rem; font-style: italic; }
+
+.fq-starting-resources {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.fq-start-stat {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.fq-start-stat .fq-ss-icon { font-size: 1.2rem; }
+.fq-start-stat .fq-ss-label { font-size: 0.7rem; color: var(--cream-dim); display: block; }
+.fq-start-stat .fq-ss-value { font-size: 1.1rem; font-weight: 700; color: var(--cream); }
+
+.fq-intro-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.fq-btn-begin { font-size: 1.1rem !important; padding: 0.8rem 2rem !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   6. TOP BAR & BADGES
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-top-bar {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.fq-top-left { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.fq-top-right { display: flex; gap: 0.3rem; }
+
+.fq-badge {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cream);
+}
+
+.fq-badge-season { border-color: var(--amber-dark); color: var(--amber); }
+.fq-badge-weather { border-color: #42A5F5; color: #90CAF9; }
+
+.fq-icon-btn {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.3rem 0.6rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--cream);
+}
+
+.fq-icon-btn:hover {
+    border-color: var(--green-light);
+    background: #1a2e1a;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   7. LOCATION BAR
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-location-bar {
+    background: linear-gradient(135deg, #1a1a0a, #2a2a10);
+    border: 1px solid var(--amber-dark);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--cream);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fq-location-icon { font-size: 1.2rem; }
+.fq-location-name { font-weight: 700; }
+.fq-location-desc { color: var(--cream-dim); font-size: 0.85rem; margin-left: 0.3rem; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   8. RESOURCE BARS
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-resources {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.fq-resources.fq-5-bars { grid-template-columns: repeat(5, 1fr); }
+
+.fq-resource-bar {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+}
+
+.fq-resource-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.2rem;
+}
+
+.fq-resource-label {
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.fq-resource-value {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--cream);
+}
+
+.fq-resource-track {
+    height: 6px;
+    background: #1a2e1a;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.fq-resource-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.fq-fill-health { background: linear-gradient(90deg, #c62828, #ef5350); }
+.fq-fill-hunger { background: linear-gradient(90deg, #e65100, #ff9800); }
+.fq-fill-warmth { background: linear-gradient(90deg, #1565c0, #42a5f5); }
+.fq-fill-morale { background: linear-gradient(90deg, #6a1b9a, #ab47bc); }
+.fq-fill-water { background: linear-gradient(90deg, #00838f, #26c6da); }
+
+.fq-resource-bar.fq-low .fq-resource-value { color: #ef5350; }
+.fq-resource-bar.fq-low { border-color: #c62828; }
+.fq-resource-bar.fq-critical { border-color: #c62828; animation: fqPulse 1s ease infinite; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   9. HOURS BAR
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-hours-bar {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fq-hours-label { font-size: 0.85rem; color: var(--cream-dim); }
+.fq-hours-value { font-size: 0.85rem; font-weight: 700; color: var(--cream); }
+.fq-hours-pips { display: flex; gap: 2px; }
+.fq-hours-pip { width: 10px; height: 14px; border-radius: 2px; background: var(--green-leaf); }
+.fq-hours-pip.fq-spent { background: #333; }
+.fq-hours-pip.fq-current { background: var(--amber); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   10. NARRATIVE BOX
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-narrative-box {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-deep));
+    border: 1px solid #3d5a3d;
+    border-left: 3px solid var(--green-leaf);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--cream);
+    font-size: 1rem;
+    line-height: 1.7;
+    min-height: 60px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: fqFadeIn 0.4s ease;
+}
+
+.fq-narrative-box p { margin: 0 0 0.8rem; }
+.fq-narrative-box p:last-child { margin-bottom: 0; }
+.fq-narrative-box em { color: var(--green-light); font-style: italic; }
+.fq-narrative-box strong { color: var(--amber); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   11. ACTION GRID (incl. Use Item)
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.fq-action-btn {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.fq-action-btn:hover:not(.fq-action-disabled) {
+    border-color: var(--green-light);
+    background: #1a2e1a;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+.fq-action-btn:active:not(.fq-action-disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.fq-action-btn.fq-action-disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+    filter: grayscale(0.5);
+}
+
+.fq-action-icon { font-size: 1.5rem; margin-bottom: 0.3rem; display: block; }
+.fq-action-name { font-size: 0.95rem; font-weight: 700; color: var(--cream); display: block; }
+.fq-action-hours { font-size: 0.75rem; color: var(--amber); display: block; margin-top: 0.1rem; }
+.fq-action-desc { font-size: 0.75rem; color: var(--cream-dim); display: block; margin-top: 0.2rem; line-height: 1.3; }
+.fq-action-requires { font-size: 0.7rem; color: #ef5350; display: block; margin-top: 0.2rem; }
+
+/* ─── Use Item Button ─── */
+
+.fq-action-use-item {
+    background: var(--bg-card);
+    border-color: #4a7c4a;
+}
+
+.fq-action-use-item:hover {
+    border-color: #66bb6a;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   12. FORAGING CHALLENGE
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-encounter-text {
+    font-style: italic;
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.fq-plant-card {
+    background: linear-gradient(145deg, #1a2e1a, #0a1f0a);
+    border: 2px solid var(--green-leaf);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: fqFadeIn 0.3s ease;
+}
+
+.fq-plant-card .fq-plant-icon { font-size: 2.5rem; margin-bottom: 0.3rem; }
+.fq-plant-card .fq-plant-name { font-family: 'Crimson Text', Georgia, serif; font-size: 1.2rem; color: var(--cream); }
+.fq-plant-card .fq-plant-latin { color: var(--cream-dim); font-size: 0.85rem; font-style: italic; }
+.fq-plant-card .fq-plant-hint { color: var(--green-light); font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.4; }
+
+.fq-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.fq-option-btn {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+.fq-option-btn:hover {
+    border-color: var(--green-light);
+    background: #1a2e1a;
+    transform: scale(1.02);
+}
+
+.fq-option-btn:active { transform: scale(0.98); }
+.fq-option-btn .fq-opt-icon { font-size: 1.2rem; display: block; margin-bottom: 0.2rem; }
+.fq-option-btn .fq-opt-name { font-size: 0.9rem; font-weight: 600; color: var(--cream); display: block; }
+
+.fq-option-btn.fq-correct {
+    background: linear-gradient(135deg, #0a2a0a, #1a3d1a);
+    border-color: var(--green-leaf);
+    color: var(--green-light);
+}
+
+.fq-option-btn.fq-wrong {
+    background: linear-gradient(135deg, #2a1010, #3d1515);
+    border-color: var(--danger);
+    color: #ff8a80;
+}
+
+.fq-option-btn.fq-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.fq-hint {
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   13. FORAGING RESULT
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-result-box {
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: fqFadeIn 0.3s ease;
+}
+
+.fq-result-correct {
+    background: linear-gradient(135deg, #0a2a0a, #1a3d1a);
+    border: 2px solid var(--green-leaf);
+}
+
+.fq-result-wrong {
+    background: linear-gradient(135deg, #2a1010, #3d1515);
+    border: 2px solid var(--danger);
+}
+
+.fq-result-icon { font-size: 2.5rem; margin-bottom: 0.3rem; }
+
+.fq-result-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.fq-result-correct .fq-result-title { color: var(--green-light); }
+.fq-result-wrong .fq-result-title { color: #ff8a80; }
+
+.fq-result-text {
+    color: var(--cream);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+}
+
+.fq-result-plant-name {
+    color: var(--amber);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.fq-result-effects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+    margin-bottom: 0.8rem;
+}
+
+.fq-effect-badge {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.fq-effect-positive {
+    background: rgba(76,175,80,0.2);
+    color: var(--green-light);
+    border: 1px solid rgba(76,175,80,0.4);
+}
+
+.fq-effect-negative {
+    background: rgba(239,83,80,0.2);
+    color: #ff8a80;
+    border: 1px solid rgba(239,83,80,0.4);
+}
+
+.fq-danger-warning {
+    background: rgba(255,193,7,0.1);
+    border: 1px solid rgba(255,193,7,0.3);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    color: var(--cream);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+}
+
+.fq-danger-warning strong { color: var(--amber); }
+
+.fq-plant-detail {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+    line-height: 1.5;
+    text-align: left;
+    margin-bottom: 0.8rem;
+}
+
+.fq-plant-detail strong { color: var(--cream); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   14. EVENTS (incl. Wildlife & Injury Choices)
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-event-header { text-align: center; margin-bottom: 0.5rem; }
+.fq-event-icon { font-size: 2.5rem; }
+.fq-event-title { font-family: 'Crimson Text', Georgia, serif; font-size: 1.3rem; color: var(--amber); }
+
+.fq-event-text {
+    background: linear-gradient(135deg, #1a1a0a, #2a2a10);
+    border: 1px solid var(--amber-dark);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: var(--cream);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.fq-event-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+}
+
+.fq-event-choice {
+    background: var(--bg-card);
+    border: 2px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+}
+
+.fq-event-choice:hover {
+    border-color: var(--amber);
+    background: #1a1a0a;
+    transform: translateY(-2px);
+}
+
+.fq-choice-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.fq-choice-icon { font-size: 1.2rem; }
+.fq-choice-text { font-size: 0.9rem; font-weight: 600; color: var(--cream); }
+.fq-choice-hours { font-size: 0.75rem; color: var(--amber); }
+.fq-choice-requires { font-size: 0.7rem; color: #ef5350; }
+
+/* ─── Wildlife Event ─── */
+
+.fq-event-wildlife {
+    border: 2px solid #ef5350;
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(30, 30, 10, 0.9));
+}
+
+.fq-event-wildlife .fq-event-title {
+    color: #ef5350;
+}
+
+.fq-event-loot {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--amber);
+}
+
+/* ─── Injury Choice Indicators ─── */
+
+.fq-choice-injury-warning {
+    font-size: 0.7rem;
+    color: #ef5350;
+    margin-top: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.fq-choice-loot-info {
+    font-size: 0.7rem;
+    color: var(--amber);
+    margin-top: 0.2rem;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   15. ACTION RESULT
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-action-result-box {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    animation: fqFadeIn 0.3s ease;
+}
+
+.fq-action-result-icon { font-size: 2rem; text-align: center; margin-bottom: 0.3rem; }
+.fq-action-result-title { font-family: 'Crimson Text', Georgia, serif; font-size: 1.2rem; color: var(--cream); text-align: center; margin-bottom: 0.5rem; }
+.fq-action-result-text { color: var(--cream-dim); font-size: 0.95rem; line-height: 1.6; text-align: center; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   16. DAY END
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-day-end-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.fq-changes-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.fq-change-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.fq-change-positive { background: rgba(76,175,80,0.1); color: var(--green-light); }
+.fq-change-negative { background: rgba(239,83,80,0.1); color: #ff8a80; }
+.fq-change-neutral { background: var(--bg-card); color: var(--cream-dim); }
+
+.fq-journal-entry {
+    background: linear-gradient(135deg, #1a1a0a, #2a2a10);
+    border: 1px solid var(--amber-dark);
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   17. DISCOVERY
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-discovery-box {
+    background: linear-gradient(135deg, #0a1a2e, #1a2a3e);
+    border: 2px solid #42A5F5;
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    animation: fqDiscover 0.5s ease;
+}
+
+.fq-discovery-icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+.fq-discovery-box h3 { font-family: 'Crimson Text', Georgia, serif; font-size: 1.4rem; color: #90CAF9; margin-bottom: 0.3rem; }
+.fq-discovery-box p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.5; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   18. INVENTORY (incl. Consumable Items)
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-inventory-bar {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 2rem;
+}
+
+.fq-inv-label { font-size: 0.75rem; color: var(--cream-dim); font-weight: 600; }
+.fq-inv-item { font-size: 0.8rem; background: #1a2e1a; border: 1px solid #3d5a3d; border-radius: 6px; padding: 0.15rem 0.5rem; color: var(--cream); }
+.fq-inv-empty { font-size: 0.8rem; color: var(--cream-dim); font-style: italic; }
+
+/* ─── Consumable Items ─── */
+
+.fq-inv-item.fq-consumable {
+    cursor: pointer;
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.4);
+    border-radius: 4px;
+    padding: 0.15rem 0.4rem;
+    transition: all 0.2s;
+}
+
+.fq-inv-item.fq-consumable:hover {
+    background: rgba(76, 175, 80, 0.3);
+    border-color: #66bb6a;
+    transform: translateY(-1px);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   19. BOTTOM ACTIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-bottom-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.fq-btn-continue { min-width: 200px; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   20. OVERLAYS & MENU
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fqFadeIn 0.2s ease;
+}
+
+.fq-overlay-box {
+    background: var(--bg-deep);
+    border: 2px solid var(--green-leaf);
+    border-radius: 14px;
+    padding: 1.5rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.fq-overlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #3d5a3d;
+    padding-bottom: 0.8rem;
+}
+
+.fq-overlay-header h3 {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin: 0;
+}
+
+.fq-overlay-close {
+    background: none;
+    border: 1px solid #3d5a3d;
+    border-radius: 6px;
+    color: var(--cream-dim);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    transition: all 0.2s;
+}
+
+.fq-overlay-close:hover {
+    border-color: var(--danger);
+    color: #ff8a80;
+}
+
+.fq-menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.fq-menu-options .btn-primary,
+.fq-menu-options .btn-danger { width: 100%; text-align: center; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   21. JOURNAL (incl. Achievements)
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-journal-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.fq-journal-stat {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.fq-journal-stat .fq-js-value { font-size: 1.2rem; font-weight: 700; color: var(--cream); display: block; }
+.fq-journal-stat .fq-js-label { font-size: 0.7rem; color: var(--cream-dim); }
+
+.fq-journal-entries {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.fq-journal-day {
+    background: var(--bg-card);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.fq-journal-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+}
+
+.fq-journal-day-num { font-weight: 700; color: var(--amber); font-size: 0.9rem; }
+.fq-journal-day-weather { font-size: 0.8rem; color: var(--cream-dim); }
+.fq-journal-day-text { font-size: 0.85rem; color: var(--cream-dim); line-height: 1.5; }
+
+.fq-journal-plants h4 { color: var(--green-light); font-size: 0.95rem; margin-bottom: 0.5rem; }
+
+.fq-plant-seen {
+    display: inline-block;
+    background: #1a2e1a;
+    border: 1px solid #3d5a3d;
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    color: var(--cream);
+    margin: 0.2rem;
+}
+
+.fq-plant-seen.fq-plant-correct { border-color: var(--green-leaf); color: var(--green-light); }
+.fq-plant-seen.fq-plant-wrong { border-color: var(--danger); color: #ff8a80; }
+
+/* ─── Journal Achievements ─── */
+
+.fq-journal-achievements {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.fq-journal-ach {
+    padding: 0.3rem 0.5rem;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.fq-ach-locked {
+    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   22. GAME OVER (incl. Mythic Ending)
+   ═══════════════════════════════════════════════════════════════ */
+
+#fq-gameover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.fq-gameover-box {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 2rem;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto;
+    animation: fqFadeIn 0.5s ease;
+}
+
+.fq-gameover-box.fq-ending-good {
+    border: 3px solid var(--green-leaf);
+    background: linear-gradient(135deg, #0a2a0a, #1a3d1a);
+}
+
+.fq-gameover-box.fq-ending-bad {
+    border: 3px solid var(--danger);
+    background: linear-gradient(135deg, #1a0000, #2a0a0a);
+}
+
+.fq-gameover-icon { font-size: 4rem; margin-bottom: 0.5rem; }
+
+.fq-gameover-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.fq-ending-good .fq-gameover-title { color: var(--green-light); }
+.fq-ending-bad .fq-gameover-title { color: #ff8a80; }
+
+.fq-gameover-text {
+    color: var(--cream);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.fq-gameover-summary {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.fq-gameover-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.fq-gameover-stat {
+    background: var(--bg-deep);
+    border: 1px solid #3d5a3d;
+    border-radius: 8px;
+    padding: 0.6rem;
+    text-align: center;
+}
+
+.fq-gameover-stat .fq-gs-value { font-size: 1.3rem; font-weight: 700; color: var(--cream); display: block; }
+.fq-gameover-stat .fq-gs-label { font-size: 0.7rem; color: var(--cream-dim); }
+
+.fq-gameover-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ─── Mythic Ending ─── */
+
+.fq-ending-mythic {
+    background: linear-gradient(135deg, #0d1b2a, #1b2838, #0a1628) !important;
+    border: 2px solid #00e676 !important;
+    box-shadow: 0 0 40px rgba(0, 230, 118, 0.2), inset 0 0 60px rgba(0, 230, 118, 0.05) !important;
+}
+
+.fq-ending-mythic .fq-gameover-icon {
+    color: #00e676;
+    text-shadow: 0 0 20px rgba(0, 230, 118, 0.5);
+}
+
+.fq-ending-mythic .fq-gameover-title {
+    color: #69f0ae;
+    font-size: 1.8rem;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   23. TOAST & ACHIEVEMENT TOAST
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #0a2a0a, #1a3d1a);
+    border: 2px solid var(--green-leaf);
+    color: var(--cream);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    animation: fqFadeIn 0.3s ease;
+}
+
+.fq-toast.fq-toast-danger {
+    border-color: var(--danger);
+    background: linear-gradient(135deg, #2a1010, #3d1515);
+}
+
+.fq-toast.fq-toast-warning {
+    border-color: var(--amber);
+    background: linear-gradient(135deg, #2a1a00, #3d2a00);
+}
+
+/* ─── Achievement Toast ─── */
+
+.fq-achievement-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    background: linear-gradient(135deg, #1a3a1a, #2a4a2a);
+    border: 2px solid var(--amber);
+    border-radius: 16px;
+    padding: 1.5rem 2.5rem;
+    text-align: center;
+    z-index: 10001;
+    opacity: 0;
+    animation: fq-achievement-pop 3s ease-out forwards;
+    box-shadow: 0 0 40px rgba(255, 193, 7, 0.3), 0 0 80px rgba(255, 193, 7, 0.1);
+}
+
+.fq-achievement-toast .fq-ach-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    animation: fq-achievement-bounce 0.6s ease-out 0.3s both;
+}
+
+.fq-achievement-toast .fq-ach-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--amber);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.fq-achievement-toast .fq-ach-desc {
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   24. INJURY DISPLAY (incl. Panel & Severity Tags)
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-injury-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.fq-injury-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    animation: fq-injury-pulse 2s ease-in-out infinite;
+}
+
+.fq-injury-tag.severity-severe {
+    background: rgba(244, 67, 54, 0.25);
+    border: 1px solid #ef5350;
+    color: #ff8a80;
+}
+
+.fq-injury-tag.severity-moderate {
+    background: rgba(255, 152, 0, 0.25);
+    border: 1px solid #ffa726;
+    color: #ffcc80;
+}
+
+.fq-injury-tag.severity-minor {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid #66bb6a;
+    color: #a5d6a7;
+}
+
+.fq-injury-tag .fq-injury-days {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-left: 0.2rem;
+}
+
+/* ─── Day Start Injury Panel ─── */
+
+.fq-injury-panel {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(30, 30, 10, 0.5));
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.fq-injury-panel-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    color: #ef5350;
+    margin-bottom: 0.3rem;
+}
+
+.fq-injury-panel .fq-injury-tag {
+    font-size: 0.75rem;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   25. WEATHER & ATMOSPHERE
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-atmosphere {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+}
+
+.fq-particle-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* ─── Aurora Borealis ─── */
+
+.fq-aurora {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    overflow: hidden;
+    opacity: 0.6;
+}
+
+.fq-aurora-band {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    top: 0;
+    left: -50%;
+    filter: blur(30px);
+    mix-blend-mode: screen;
+}
+
+.fq-aurora-1 {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 255, 128, 0.3) 20%,
+        rgba(0, 200, 255, 0.2) 40%,
+        rgba(100, 0, 255, 0.3) 60%,
+        rgba(0, 255, 128, 0.2) 80%,
+        transparent 100%
+    );
+    animation: fq-aurora-move 8s ease-in-out infinite;
+}
+
+.fq-aurora-2 {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 200, 255, 0.2) 30%,
+        rgba(0, 255, 128, 0.3) 50%,
+        rgba(200, 0, 255, 0.2) 70%,
+        transparent 100%
+    );
+    animation: fq-aurora-move 12s ease-in-out infinite reverse;
+    opacity: 0.7;
+}
+
+.fq-aurora-3 {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(150, 255, 200, 0.15) 25%,
+        rgba(0, 150, 255, 0.2) 50%,
+        rgba(50, 255, 150, 0.15) 75%,
+        transparent 100%
+    );
+    animation: fq-aurora-move 15s ease-in-out infinite;
+    animation-delay: -3s;
+    opacity: 0.5;
+}
+
+/* ─── Snow & Blizzard ─── */
+
+.fq-snow-particle {
+    position: absolute;
+    top: -10px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: fq-snow-fall linear infinite;
+}
+
+.fq-blizzard-particle {
+    position: absolute;
+    top: -10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    opacity: 0.9;
+    animation: fq-blizzard-fall linear infinite;
+}
+
+/* ─── Rain & Freezing Rain ─── */
+
+.fq-rain-drop {
+    position: absolute;
+    top: -20px;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(150, 200, 255, 0.6));
+    border-radius: 0 0 2px 2px;
+    animation: fq-rain-fall linear infinite;
+}
+
+.fq-freezing-drop {
+    background: linear-gradient(to bottom, transparent, rgba(200, 230, 255, 0.7));
+    width: 2px;
+}
+
+/* ─── Desert Heat Haze ─── */
+
+.fq-heat-haze {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+        to top,
+        rgba(255, 200, 100, 0.08),
+        transparent
+    );
+    animation: fq-heat-shimmer 3s ease-in-out infinite;
+    filter: blur(2px);
+}
+
+/* ─── Sand Particles (Wind) ─── */
+
+.fq-sand-particle {
+    position: absolute;
+    left: -10px;
+    background: rgba(210, 180, 120, 0.6);
+    border-radius: 50%;
+    animation: fq-sand-blow linear infinite;
+}
+
+/* ─── Forest Mist ─── */
+
+.fq-mist {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.fq-mist-layer {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    top: 0;
+    left: -50%;
+    opacity: 0.15;
+}
+
+.fq-mist-1 {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(200, 230, 200, 0.3) 20%,
+        rgba(180, 220, 180, 0.4) 50%,
+        rgba(200, 230, 200, 0.3) 80%,
+        transparent 100%
+    );
+    animation: fq-mist-drift 20s ease-in-out infinite;
+    top: 30%;
+}
+
+.fq-mist-2 {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(180, 210, 180, 0.2) 30%,
+        rgba(200, 230, 200, 0.3) 60%,
+        transparent 100%
+    );
+    animation: fq-mist-drift 25s ease-in-out infinite reverse;
+    top: 50%;
+    opacity: 0.1;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   26. SPECIAL EFFECTS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Quick Shake (action feedback) ─── */
+
+.fq-shake { animation: fqShake 0.3s ease; }
+
+/* ─── Screen Shake (dramatic events — injury, storm, wolf) ─── */
+
+.screen-shake { animation: fqShake 0.5s ease-in-out; }
+
+/* ─── Health Hit Flash ─── */
+
+.anim-health-hit { animation: fqHitFlash 1s ease-out; }
+
+/* ─── Despair Vignette (missed rescue, death event) ─── */
+
+.anim-despair { animation: fqDespair 3s ease-out; }
+
+/* ─── Heat Shimmer Overlay (persistent — desert scorching/hot weather) ─── */
+
+.anim-heat-shimmer { position: relative; }
+
+.anim-heat-shimmer::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+        0deg,
+        rgba(255, 200, 50, 0.03) 0%,
+        transparent 40%,
+        rgba(255, 200, 50, 0.05) 60%,
+        transparent 100%
+    );
+    animation: fqHeatShimmer 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+/* ─── Sandstorm Overlay (persistent — desert sandstorm weather) ─── */
+
+.anim-sandstorm { position: relative; }
+
+.anim-sandstorm::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(194, 154, 108, 0.3);
+    animation: fqSandstorm 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+/* ─── Plane / Helicopter Flyover ─── */
+
+.anim-plane-shadow { animation: fqPlaneShadow 4s ease-in-out; }
+
+.anim-plane-flyover {
+    position: fixed;
+    top: 15%;
+    left: -10%;
+    font-size: 4rem;
+    animation: fqPlaneFly 4s linear forwards;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+/* ─── Fairy Glow (Forest — mythic events) ─── */
+
+.anim-fairy-glow {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9998;
+    pointer-events: none;
+    animation: fqFairyGlowContainer 3s ease-out forwards;
+}
+
+.anim-fairy-glow .fairy-light {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(150, 255, 150, 0.9), rgba(100, 200, 255, 0.4), transparent);
+    box-shadow: 0 0 14px rgba(150, 255, 150, 0.7), 0 0 28px rgba(100, 200, 255, 0.3);
+    animation: fqFairyFloat 2.5s ease-in-out infinite;
+}
+
+.anim-fairy-glow .fairy-light:nth-child(1) { top: 25%; left: 18%; animation-delay: 0s; }
+.anim-fairy-glow .fairy-light:nth-child(2) { top: 55%; left: 62%; animation-delay: 0.6s; }
+.anim-fairy-glow .fairy-light:nth-child(3) { top: 40%; left: 40%; animation-delay: 1.2s; }
+
+/* ─── Vultures Circling (Desert — low health) ─── */
+
+.anim-vultures {
+    position: fixed;
+    top: 8%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 2.2rem;
+    letter-spacing: 50px;
+    z-index: 9998;
+    pointer-events: none;
+    animation: fqVultures 4s ease-in-out forwards;
+}
+
+/* ─── Storm Flash (Alaska — great storm arriving) ─── */
+
+.anim-storm-flash {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: white;
+    z-index: 10000;
+    pointer-events: none;
+    animation: fqStormFlash 0.6s ease-out forwards;
+}
+
+/* ─── Discovery Reveal (finding new locations) ─── */
+
+.anim-discovery-reveal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.5rem;
+    z-index: 9998;
+    pointer-events: none;
+    animation: fqDiscoveryReveal 2s ease-out forwards;
+}
+
+/* ─── Eyes in the Dark (Forest — low karma) ─── */
+
+.eyes-in-dark {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+    animation: fqEyesFade 4s ease-out forwards;
+}
+
+.eye-pair {
+    position: absolute;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    animation: eyesBlink 4s ease-in-out forwards;
+}
+
+.eye-pair:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+.eye-pair:nth-child(2) { top: 60%; left: 85%; animation-delay: 0.8s; }
+.eye-pair:nth-child(3) { top: 80%; left: 25%; animation-delay: 1.6s; }
+.eye-pair:nth-child(4) { top: 30%; left: 75%; animation-delay: 2.4s; }
+.eye-pair:nth-child(5) { top: 50%; left: 5%;  animation-delay: 3.2s; }
+
+.eye-pair .eye {
+    width: 8px;
+    height: 4px;
+    background-color: #ff3300;
+    border-radius: 0 0 50% 50%;
+    box-shadow: 0 0 8px 3px rgba(255, 51, 0, 0.6);
+}
+
+/* ─── Storm Warning Badge (Alaska — storm countdown) ─── */
+
+.fq-storm-alert {
+    background: rgba(255, 87, 34, 0.15);
+    border: 1px solid rgba(255, 87, 34, 0.5);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    text-align: center;
+    font-weight: 600;
+    color: #ff8a65;
+    animation: fqStormPulse 2s ease-in-out infinite;
+}
+
+/* ─── Wolf Stalking Badge (Alaska — wolf tracking) ─── */
+
+.fq-wolf-stalking {
+    color: #ff8a80;
+    animation: fqWolfPulse 3s ease-in-out infinite;
+}
+
+/* ─── Karma Bar (Forest — forest attitude indicator) ─── */
+
+.fq-karma-bar {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.fq-karma-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.fq-karma-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease, background 0.5s ease;
+}
+
+.fq-karma-fill.karma-friendly { background: linear-gradient(90deg, #4caf50, #66bb6a); }
+.fq-karma-fill.karma-neutral   { background: linear-gradient(90deg, #ff9800, #ffc107); }
+.fq-karma-fill.karma-hostile   { background: linear-gradient(90deg, #f44336, #ff5252); }
+
+/* ─── Mythic Event Card (Forest — fairy/wisp/stone events) ─── */
+
+.fq-event-mythic {
+    border: 2px solid rgba(150, 255, 150, 0.35) !important;
+    background: linear-gradient(135deg, rgba(0, 40, 20, 0.95), rgba(20, 20, 30, 0.95)) !important;
+    box-shadow: 0 0 24px rgba(150, 255, 150, 0.15),
+                inset 0 0 40px rgba(150, 255, 150, 0.04) !important;
+}
+
+.fq-event-mythic .fq-event-title {
+    color: #b9f6ca !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+    KEYFRAMES
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes fqShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+@keyframes fqHitFlash {
+    0%   { box-shadow: inset 0 0 80px rgba(255, 0, 0, 0.6); }
+    100% { box-shadow: inset 0 0 0px rgba(255, 0, 0, 0); }
+}
+
+@keyframes fqDespair {
+    0%   { box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.85); }
+    100% { box-shadow: inset 0 0 0px rgba(0, 0, 0, 0); }
+}
+
+@keyframes fqHeatShimmer {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    50%      { transform: translateY(-3px) scaleY(1.02); }
+}
+
+@keyframes fqSandstorm {
+    0%, 100% { opacity: 0.2; transform: translateX(-10px); }
+    50%      { opacity: 0.4; transform: translateX(10px); }
+}
+
+@keyframes fqPlaneShadow {
+    0%, 100% { box-shadow: inset 0 0 0px rgba(0, 0, 0, 0); }
+    50%      { box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.3); }
+}
+
+@keyframes fqPlaneFly {
+    0%   { left: -10%; top: 15%; }
+    100% { left: 110%; top: 10%; }
+}
+
+@keyframes fqFairyGlowContainer {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes fqFairyFloat {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25%      { transform: translateY(-18px) translateX(12px); }
+    50%      { transform: translateY(-6px) translateX(-10px); }
+    75%      { transform: translateY(-22px) translateX(6px); }
+}
+
+@keyframes fqVultures {
+    0%   { transform: translateY(-30px); opacity: 0; }
+    15%  { transform: translateY(0); opacity: 1; }
+    75%  { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-30px); opacity: 0; }
+}
+
+@keyframes fqStormFlash {
+    0%   { opacity: 0.95; }
+    15%  { opacity: 0; }
+    30%  { opacity: 0.7; }
+    45%  { opacity: 0; }
+    60%  { opacity: 0.4; }
+    80%  { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes fqDiscoveryReveal {
+    0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+    25%  { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+    55%  { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+@keyframes fqEyesFade {
+    0%   { opacity: 0; }
+    10%  { opacity: 1; }
+    65%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes eyesBlink {
+    0%, 40%, 48%, 100% { opacity: 0.9; }
+    44%  { opacity: 0; }
+}
+
+@keyframes fqStormPulse {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 1; text-shadow: 0 0 10px rgba(255, 87, 34, 0.6); }
+}
+
+@keyframes fqWolfPulse {
+    0%, 100% { opacity: 0.75; }
+    50%      { opacity: 1; text-shadow: 0 0 8px rgba(255, 138, 128, 0.5); }
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   27. KEYFRAME ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Core ─── */
+
+@keyframes fqFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fqPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+}
+
+@keyframes fqLoading {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+}
+
+@keyframes fqDiscover {
+    0%  { opacity: 0; transform: scale(0.8); }
+    50% { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* ─── Shake ─── */
+
+@keyframes fqShake {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-8px, -4px); }
+    20% { transform: translate(8px, 4px); }
+    30% { transform: translate(-6px, 6px); }
+    40% { transform: translate(6px, -6px); }
+    50% { transform: translate(-4px, 2px); }
+    60% { transform: translate(4px, -2px); }
+    70% { transform: translate(-2px, 4px); }
+    80% { transform: translate(2px, -4px); }
+    90% { transform: translate(-1px, 1px); }
+}
+
+/* ─── Hit / Despair Flashes ─── */
+
+@keyframes fqHitFlash {
+    0% { box-shadow: inset 0 0 80px rgba(255, 0, 0, 0.6); }
+    100% { box-shadow: inset 0 0 0 transparent; }
+}
+
+@keyframes fqDespair {
+    0% { box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.8); }
+    30% { box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.5); }
+    100% { box-shadow: inset 0 0 0 transparent; }
+}
+
+/* ─── Overlay Effects (Heat Shimmer, Sandstorm) ─── */
+
+@keyframes fqHeatShimmer {
+    0%, 100% { opacity: 0.4; transform: translateY(0px); }
+    50% { opacity: 0.8; transform: translateY(-3px); }
+}
+
+@keyframes fqSandstorm {
+    0%, 100% { opacity: 0.3; transform: translateX(0); }
+    25% { opacity: 0.5; transform: translateX(10px); }
+    50% { opacity: 0.4; transform: translateX(-5px); }
+    75% { opacity: 0.6; transform: translateX(8px); }
+}
+
+/* ─── Plane Flyover ─── */
+
+@keyframes fqPlaneShadow {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: inset 0 -20px 60px rgba(0, 0, 0, 0.3); }
+}
+
+@keyframes fqPlaneFly {
+    0% { left: -10%; top: 15%; opacity: 1; }
+    80% { left: 110%; top: 25%; opacity: 0.8; }
+    100% { left: 120%; top: 30%; opacity: 0; }
+}
+
+/* ─── Eyes in the Dark ─── */
+
+@keyframes eyesBlink {
+    0% { opacity: 0; transform: scale(0.5); }
+    15% { opacity: 0.9; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1); }
+    60% { opacity: 0; transform: scale(0.8); }
+    65% { opacity: 0.9; transform: scale(1); }
+    85% { opacity: 0.9; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.5); }
+}
+
+/* ─── Injury Pulse ─── */
+
+@keyframes fq-injury-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ─── Aurora ─── */
+
+@keyframes fq-aurora-move {
+    0% { transform: translateX(-10%) scaleY(1); }
+    25% { transform: translateX(5%) scaleY(1.2); }
+    50% { transform: translateX(10%) scaleY(0.8); }
+    75% { transform: translateX(-5%) scaleY(1.1); }
+    100% { transform: translateX(-10%) scaleY(1); }
+}
+
+/* ─── Snow & Blizzard ─── */
+
+@keyframes fq-snow-fall {
+    0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    100% { transform: translateY(100vh) translateX(30px); opacity: 0.2; }
+}
+
+@keyframes fq-blizzard-fall {
+    0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+    5% { opacity: 0.9; }
+    100% { transform: translateY(100vh) translateX(-60px); opacity: 0.3; }
+}
+
+/* ─── Rain ─── */
+
+@keyframes fq-rain-fall {
+    0% { transform: translateY(-20px); opacity: 0; }
+    5% { opacity: 1; }
+    100% { transform: translateY(calc(100vh + 20px)); opacity: 0.3; }
+}
+
+/* ─── Heat Haze (contained) ─── */
+
+@keyframes fq-heat-shimmer {
+    0%, 100% { transform: scaleY(1); opacity: 0.6; }
+    50% { transform: scaleY(1.05) translateY(-2px); opacity: 0.8; }
+}
+
+/* ─── Sand Blow ─── */
+
+@keyframes fq-sand-blow {
+    0% { transform: translateX(-10px) translateY(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    100% { transform: translateX(calc(100vw + 20px)) translateY(-20px); opacity: 0; }
+}
+
+/* ─── Mist Drift ─── */
+
+@keyframes fq-mist-drift {
+    0%, 100% { transform: translateX(-10%); }
+    50% { transform: translateX(10%); }
+}
+
+/* ─── Achievement Toast ─── */
+
+@keyframes fq-achievement-pop {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    25% { transform: translate(-50%, -50%) scale(1); }
+    75% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+@keyframes fq-achievement-bounce {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   28. FQ RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+    .fq-page { padding: 0.5rem; }
+    .fq-title { font-size: 1.6rem; }
+    .fq-scenario-grid { grid-template-columns: 1fr; }
+    .fq-resources { grid-template-columns: 1fr 1fr; }
+    .fq-resources.fq-5-bars { grid-template-columns: 1fr 1fr; }
+    .fq-action-grid { grid-template-columns: 1fr; }
+    .fq-options-grid { grid-template-columns: 1fr; }
+    .fq-event-choices { grid-template-columns: 1fr; }
+    .fq-changes-list { grid-template-columns: 1fr; }
+    .fq-gameover-stats { grid-template-columns: 1fr 1fr; }
+    .fq-journal-stats { grid-template-columns: 1fr 1fr; }
+    .fq-intro-actions { flex-direction: column; align-items: center; }
+    .fq-gameover-actions { flex-direction: column; align-items: center; }
+    .fq-top-bar { font-size: 0.85rem; }
+}
+
+@media (max-width: 768px) {
+    .fq-atmosphere { height: 100%; }
+    .fq-aurora-band { filter: blur(20px); }
+    .fq-snow-particle,
+    .fq-blizzard-particle { transform: scale(0.7); }
+    .fq-achievement-toast {
+        padding: 1rem 1.5rem;
+        max-width: 90vw;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   29. OVERLAY SCREENS (Scenario Select & Intro)
+   ═══════════════════════════════════════════════════════════════ */
+
+#fq-select.active,
+#fq-intro.active {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(5, 10, 5, 0.95) !important;
+    z-index: 100 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2rem 1rem !important;
+    backdrop-filter: blur(10px) !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+}
+
+.fq-popup-box {
+    background: linear-gradient(145deg, #0a1f0a, #132613) !important;
+    border: 2px solid var(--green-leaf) !important;
+    border-radius: 16px !important;
+    padding: 2rem 1.5rem !important;
+    max-width: 750px !important;
+    width: 100% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8) !important;
+    animation: fqFadeIn 0.4s ease !important;
+    box-sizing: border-box !important;
+}
+
+#fq-scenarios {
+    max-width: 100% !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   30. GAME SCREEN POLISH
+   ═══════════════════════════════════════════════════════════════ */
+
+#fq-app.fq-page {
+    position: relative;
+    min-height: 80vh;
+}
+
+#fq-game {
+    max-width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   31. SURVIVAL STORY
+   ═══════════════════════════════════════════════════════════════ */
+
+.fq-gameover-story {
+    background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    color: var(--cream);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    text-align: left;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.fq-gameover-story::before {
+    content: '📖 Your Tale of Survival';
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--amber);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-shadow: none;
+}
