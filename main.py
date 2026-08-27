@@ -198,7 +198,7 @@ def get_dangerous_plants(month=None):
 
 # ── 4a. Home ──
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def home():
     ctx = get_default_season_context()
     plants_in_season = get_plants_in_season()
@@ -873,7 +873,7 @@ async def api_stats():
     }
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health_check():
     return {
         "status": "healthy",
