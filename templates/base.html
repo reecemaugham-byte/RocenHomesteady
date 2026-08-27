@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Rocen Homesteady{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Rocen Homesteady — The UK's Ultimate Foraging Companion. Learn wild plants, play educational games, and master off-grid skills.{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}https://www.rocenhomesteady.pro/{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}Rocen Homesteady — The UK's Ultimate Foraging Companion{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Learn wild plants, play educational games, and master off-grid skills.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://www.rocenhomesteady.pro/static/images/Blogo.png{% endblock %}">
     <link rel="stylesheet" href="/static/css/style.css">
     {% block extra_css %}{% endblock %}
     <link rel="icon" href="/static/images/Blogo.png" type="image/png">
