@@ -227,6 +227,17 @@ nav {
 
 .btn-discord:hover { background: #4752c4; color: #fff; }
 
+.btn-home {
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    color: #fff;
+    border: 2px solid #4CAF50;
+}
+
+.btn-home:hover {
+    background: linear-gradient(135deg, #388e3c, #2e7d32);
+    border-color: #66BB6A;
+}
+
 .discord-note {
     font-size: 0.85rem;
     color: #b0b0b0;
