@@ -227,15 +227,45 @@ nav {
 
 .btn-discord:hover { background: #4752c4; color: #fff; }
 
-.btn-home {
-    background: linear-gradient(135deg, #2e7d32, #1b5e20);
-    color: #fff;
+.community-box {
+    display: block;
+    max-width: 320px;
+    margin: 1.5rem auto 0;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, #1a3a1a, #1b5e20);
     border: 2px solid #4CAF50;
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s;
 }
 
-.btn-home:hover {
-    background: linear-gradient(135deg, #388e3c, #2e7d32);
+.community-box:hover {
     border-color: #66BB6A;
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);
+}
+
+.community-icon {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 0.3rem;
+}
+
+.community-text {
+    display: block;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #e8e0d4;
+}
+
+.community-sub {
+    display: block;
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    margin-top: 0.25rem;
 }
 
 .discord-note {
